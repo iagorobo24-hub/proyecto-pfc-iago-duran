@@ -1,0 +1,62 @@
+# PROYECTO FIN DE CICLO — PROYECTOS SONEPAR
+
+**Título del proyecto:** Desarrollo de una suite de herramientas web para automatización industrial aplicada al sector eléctrico, construida con IA generativa
+
+**Autor:** Iago (iagorobo24-hub)
+**Ciclo formativo:** Automatización y Robótica Industrial
+**Centro educativo:** [Nombre del centro]
+**Empresa de prácticas:** Sonepar Ibérica
+**Fecha:** Curso 2025-2026
+
+## Estructura de esta documentación
+
+| Capítulo | Contenido | Estado |
+|----------|-----------|--------|
+| 01 | Resumen ejecutivo | 📝 Pendiente |
+| 02 | Estado del arte en IA generativa aplicada a desarrollo web | 📝 Pendiente |
+| 03 | Análisis de requisitos de la empresa | ✅ Documentado (parcial) |
+| 04 | Diseño técnico y arquitectura | 📝 Pendiente |
+| 05 | Proceso de desarrollo con herramientas de IA | ✅ En curso |
+| 06 | Catálogo de herramientas IA (fichas técnicas) | 📝 Pendiente |
+| 07 | Manuales de uso de la aplicación | 📝 Pendiente |
+| 08 | Resultados y validación | 📝 Pendiente |
+| 09 | Conclusiones y líneas futuras | 📝 Pendiente |
+| 10 | Manual para profesores (recursos didácticos) | 📝 Pendiente |
+
+## Convenciones de los estados
+
+- ✅ Completado
+- 📝 Pendiente
+- 🔄 En progreso
+- ⏸️ Bloqueado / A la espera
+
+## Cómo usar esta documentación
+
+Este repositorio de documentación está diseñado para ser:
+
+1. **Tu guía de trabajo diario** — Cada capítulo se puede ejecutar por separado, no necesitas seguir el orden estricto.
+2. **El esqueleto de tu presentación final** — Cada sección se puede exportar directamente a diapositivas o al documento DOCX final.
+3. **Un recurso reutilizable para futuros alumnos** — Los profesores pueden usar las fichas de herramientas y los manuales como material de clase.
+
+## Glosario de términos
+
+| Término | Definición |
+|---------|------------|
+| **SPA** | Single Page Application — Aplicación web de una sola página (sin recarga de página) |
+| **CSS Modules** | Sistema de estilos donde cada clase CSS está scoped al componente, evitando colisiones |
+| **Lazy Loading** | Carga diferida de componentes solo cuando se necesitan (optimización de rendimiento) |
+| **Firestore** | Base de datos NoSQL de Firebase, en la nube |
+| **Vercel Function** | Funciones serverless que ejecutan código backend sin necesidad de servidor propio |
+| **Scraper** | Script que extrae datos automáticamente de una página web |
+| **OpenRouter** | Gateway que unifica múltiples APIs de IA (Claude, GPT, Gemini, etc.) |
+| **Mock user** | Usuario simulado para desarrollo y testing sin necesidad de autenticación real |
+
+## Contacto y repositorio
+
+- **Repositorio del proyecto:** https://github.com/iagorobo24-hub/proyectos-sonepar
+- **Demo en producción:** https://proyectos-sonepar.vercel.app
+- **Autor:** iagorobo24-hub
+
+---
+
+> **Nota para el tribunal evaluador:** Este proyecto no consiste únicamente en el desarrollo de una herramienta web. Su valor fundamental reside en la **metodología de trabajo con IA generativa** empleada durante todo el ciclo de desarrollo, documentada en el Capítulo 5 y demostrada en el Capítulo 8. La aplicación en sí es la prueba tangible de que un estudiante de ciclo formativo puede, con las herramientas adecuadas, desplegar soluciones profesionales que tradicionalmente requerirían un equipo completo de desarrollo.
