@@ -39,18 +39,16 @@ export default function useNavegacionFichas() {
     setCategorias(cats)
     if (cats.length === 0) {
      setError('No se pudieron cargar las categorías')
-     toast.error('Error al cargar categorías')
     }
    } catch (err) {
     console.error('❌ [useNavegacionFichas] Error:', err.message);
     setError(err.message || 'Error al cargar categorías')
-    toast.error(err.message || 'Error al cargar categorías')
    } finally {
     setCargando(false)
    }
   }
   loadCategorias()
- }, [toast])
+ }, [])
 
  // 1. Cargar Marcas al seleccionar Categoría
  useEffect(() => {
@@ -62,17 +60,17 @@ export default function useNavegacionFichas() {
     const data = await catalogService.getMarcasPorCategoria(categoria)
     setMarcasDisponibles(data)
     if (data.length === 0) {
-     toast.info(`La categoría ${categoria} no tiene productos sincronizados.`, { id: 'no-data' })
+     console.log('ℹ️ La categoría', categoria, 'no tiene productos sincronizados.')
     }
    } catch (err) {
+    console.error('Error al cargar marcas:', err.message);
     setError(err.message || 'Error al cargar marcas')
-    toast.error(err.message || 'Error al cargar marcas')
    } finally {
     setCargando(false)
    }
   }
   load()
- }, [categoria, toast])
+ }, [categoria])
 
  // 2. Cargar Gamas al seleccionar Marca
  useEffect(() => {
@@ -84,8 +82,8 @@ export default function useNavegacionFichas() {
     const data = await catalogService.getGamasPorMarcaYCategoria(marca, categoria)
     setGamasDisponibles(data.map(g => g.nombre))
    } catch (err) {
+    console.error('Error al cargar gamas:', err.message);
     setError(err.message || 'Error al cargar gamas')
-    toast.error(err.message || 'Error al cargar gamas')
    } finally {
     setCargando(false)
    }
@@ -103,8 +101,8 @@ export default function useNavegacionFichas() {
     const data = await catalogService.getTiposPorGamaMarcaYFamilia(gama, marca, categoria)
     setTiposDisponibles(data)
    } catch (err) {
+    console.error('Error al cargar tipos:', err.message);
     setError(err.message || 'Error al cargar tipos')
-    toast.error(err.message || 'Error al cargar tipos')
    } finally {
     setCargando(false)
    }
@@ -122,8 +120,8 @@ export default function useNavegacionFichas() {
     const products = await catalogService.getProductosPorFiltro(categoria, marca, gama, tipo)
     setReferenciasDisponibles(products)
    } catch (err) {
+    console.error('Error al cargar productos:', err.message);
     setError(err.message || 'Error al cargar productos')
-    toast.error(err.message || 'Error al cargar productos')
    } finally {
     setCargando(false)
    }
@@ -174,8 +172,8 @@ export default function useNavegacionFichas() {
    setPaso('ficha')
    setHistorial(prev => [...prev, { paso: 'referencias' }])
   } catch (err) {
+   console.error('Error al cargar ficha:', err.message);
    setError(err.message || 'Error al cargar ficha')
-   toast.error(err.message || 'Error al cargar ficha')
   } finally {
    setCargando(false)
   }
