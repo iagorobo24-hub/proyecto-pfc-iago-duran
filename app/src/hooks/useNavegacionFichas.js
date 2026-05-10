@@ -28,17 +28,21 @@ export default function useNavegacionFichas() {
 
  // Cargar categorías desde Supabase al montar
  useEffect(() => {
+  console.log('🔍 [useNavegacionFichas] useEffect categorías montando...');
   async function loadCategorias() {
    setCargando(true)
    setError(null)
    try {
+    console.log('🔍 [useNavegacionFichas] Llamando a getCategorias()...');
     const cats = await getCategorias()
+    console.log('✅ [useNavegacionFichas] Categorías cargadas:', cats.length);
     setCategorias(cats)
     if (cats.length === 0) {
      setError('No se pudieron cargar las categorías')
      toast.error('Error al cargar categorías')
     }
    } catch (err) {
+    console.error('❌ [useNavegacionFichas] Error:', err.message);
     setError(err.message || 'Error al cargar categorías')
     toast.error(err.message || 'Error al cargar categorías')
    } finally {

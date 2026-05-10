@@ -21,23 +21,34 @@ const productCache = new Map();
  * Obtiene todas las categorías desde Supabase
  */
 export async function getCategorias() {
+  console.log('🔍 [catalogService] getCategorias() llamado');
+  console.log('🔍 [catalogService] supabaseUrl:', import.meta.env.VITE_SUPABASE_URL || 'usando default');
+  console.log('🔍 [catalogService] supabaseKey:', import.meta.env.VITE_SUPABASE_ANON_KEY ? 'KEY PRESENTE' : 'KEY AUSENTE');
+  
   try {
     const { data: categories, error } = await supabase
       .from('categories')
       .select('id, name')
       .order('name');
     
+    console.log('🔍 [catalogService] Resultado Supabase:', { 
+      count: categories?.length, 
+      error: error?.message 
+    });
+    
     if (error) throw error;
     
-    // Mapear a formato esperado por la UI
-    return categories.map(cat => ({
+    const result = categories.map(cat => ({
       id: cat.name.toUpperCase().replace(/Í/g, 'I').replace(/Ó/g, 'O').replace(/Á/g, 'A').replace(/É/g, 'E').replace(/-/g, ' ').trim(),
       label: cat.name.charAt(0).toUpperCase() + cat.name.slice(1),
       icon: '📁',
       color: '#3b82f6'
     }));
+    
+    console.log('✅ [catalogService] getCategorias() completado:', result.length, 'categorías');
+    return result;
   } catch (error) {
-    console.error('Error al obtener categorías:', error);
+    console.error('❌ [catalogService] Error en getCategorias:', error.message);
     return [];
   }
 }
