@@ -31,6 +31,10 @@ export default function useNavegacionFichas() {
   async function load() {
    setCargando(true)
    try {
+    // Inicializar catálogo primero
+    await catalogService.initCatalog()
+    
+    // Luego cargar categorías
     const cats = await catalogService.getCategorias()
     setCategorias(cats)
    } catch (err) {

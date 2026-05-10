@@ -1,67 +1,50 @@
 /**
- * SERVICIO DE CATÁLOGO (SUPABASE)
- * Flujo: Categoría → Marca → Gama (subfamilia) → Tipo → Referencia
+ * SERVICIO DE CATÁLOGO (SUPABASE) - VERSIÓN SIMPLIFICADA
+ * Estrategia: precargar TODO el árbol al inicio y servir desde memoria
  */
 import { createClient } from '@supabase/supabase-js';
 import { ServiceError } from './errorHandler';
 import { normalizarFamilia, CATEGORIAS_VALIDAS } from '../data/familiaMapping';
 
-// Cliente Supabase
 const supabaseUrl = 'https://fncmzrnmzmuhlullkrud.supabase.co';
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZuY216cm5tem11aGx1bGxrcnVkIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MzM2MDY5NSwiZXhwIjoyMDg4OTM2Njk1fQ.3DfYKquAUFFNx_c8NdMWmic7pVVckWsXEZWOJTuC5wg';
 
-const supabase = createClient(supabaseUrl, supabaseKey, {
-  auth: { autoRefreshToken: false, persistSession: false }
-});
+const supabase = createClient(supabaseUrl, supabaseKey);
 
-let hierarchyCache = null;
-let brandsCache = null;
+let treeCache = null;
+let brandsMap = null;
 
 /**
- * Obtiene todas las categorías desde Supabase
+ * Inicializa el árbol jerárquico
+ * Se llama una sola vez al cargar la app
  */
-export async function getCategorias() {
-  try {
-    const { data: categories } = await supabase
-      .from('categories')
-      .select('id, name')
-      .order('name');
-    
-    if (!categories) return [];
-    
-    return categories.map(cat => ({
-      id: cat.name.toUpperCase().replace(/Í/g, 'I').replace(/Ó/g, 'O').replace(/Á/g, 'A').replace(/É/g, 'E').replace(/-/g, ' ').trim(),
-      label: cat.name.charAt(0).toUpperCase() + cat.name.slice(1),
-      icon: '📁',
-      color: '#3b82f6'
-    }));
-  } catch (error) {
-    console.error('Error en getCategorias:', error);
-    return [];
-  }
-}
-
-/**
- * Obtiene el árbol jerárquico completo
- * Estructura: { [categoria]: { [marca]: { [gama]: [tipos] } } }
- */
-async function getHierarchy() {
-  if (hierarchyCache) return hierarchyCache;
+export async function initCatalog() {
+  if (treeCache) return treeCache;
+  if (brandsMap) return treeCache;
 
   try {
-    // 1. Obtener todas las marcas
-    const { data: allBrands } = await supabase
+    console.log('🌳 Iniciando catálogo...');
+    
+    // 1. Cargar todas las marcas
+    const { data: brandsData, error: brandsError } = await supabase
       .from('brands')
       .select('id, name');
     
-    const brandMap = new Map(allBrands?.map(b => [b.id, b.name]) || []);
-    brandsCache = brandMap;
+    if (brandsError) throw brandsError;
+    
+    brandsMap = new Map();
+    brandsData?.forEach(b => {
+      brandsMap.set(b.id, b.name);
+    });
+    
+    console.log('  ✅ Marcas cargadas:', brandsMap.size);
 
-    // 2. Leer productos en bloques
+    // 2. Cargar productos en bloques pequeños
     const tree = {};
     let offset = 0;
-    const batchSize = 10000;
-    let totalLeidos = 0;
+    const batchSize = 5000; // Reducido para evitar error 500
+    let total = 0;
+    let processed = 0;
 
     while (true) {
       const { data: products, error } = await supabase
@@ -69,29 +52,35 @@ async function getHierarchy() {
         .select('familia, subfamilia, tipo, brand_id')
         .range(offset, offset + batchSize - 1);
 
-      if (error || !products || products.length === 0) break;
+      if (error) {
+        console.error('  ⚠️ Error en bloque:', error.message);
+        break;
+      }
+
+      if (!products || products.length === 0) break;
 
       products.forEach(p => {
-        // Normalizar familia a categoría
         const categoria = normalizarFamilia(p.familia);
         if (!categoria || !CATEGORIAS_VALIDAS.includes(categoria)) return;
 
-        const marca = brandMap.get(p.brand_id)?.trim() || 'DESCONOCIDA';
+        const marca = brandsMap.get(p.brand_id) || 'DESCONOCIDA';
         const gama = p.subfamilia?.toUpperCase().trim() || 'GENERAL';
         const tipo = p.tipo?.toUpperCase().trim() || 'GENERAL';
 
-        // Construir árbol
         if (!tree[categoria]) tree[categoria] = {};
         if (!tree[categoria][marca]) tree[categoria][marca] = {};
         if (!tree[categoria][marca][gama]) tree[categoria][marca][gama] = new Set();
         
         tree[categoria][marca][gama].add(tipo);
+        processed++;
       });
 
-      totalLeidos += products.length;
+      total += products.length;
       offset += batchSize;
+      
+      // Limitar a 2 bloques para no saturar (10K productos)
+      if (offset >= 10000) break;
       if (products.length < batchSize) break;
-      if (totalLeidos >= 50000) break; // Límite de seguridad
     }
 
     // Convertir Sets a arrays
@@ -103,17 +92,40 @@ async function getHierarchy() {
       });
     });
 
-    hierarchyCache = tree;
-    console.log('✅ hierarchyCache generado:', {
+    treeCache = tree;
+    console.log('✅ Catálogo inicializado:', {
       categorias: Object.keys(tree).length,
-      totalMarcas: Object.values(tree).reduce((acc, cat) => acc + Object.keys(cat).length, 0)
+      productos_procesados: processed,
+      total_leidos: total
     });
 
     return tree;
   } catch (error) {
-    console.error('❌ Error en getHierarchy:', error);
-    hierarchyCache = {};
+    console.error('❌ Error inicializando catálogo:', error);
+    treeCache = {};
     return {};
+  }
+}
+
+/**
+ * Obtiene categorías
+ */
+export async function getCategorias() {
+  try {
+    const { data } = await supabase
+      .from('categories')
+      .select('id, name')
+      .order('name');
+    
+    return data?.map(cat => ({
+      id: cat.name.toUpperCase().replace(/Í/g, 'I').replace(/Ó/g, 'O').replace(/Á/g, 'A').replace(/É/g, 'E').replace(/-/g, ' ').trim(),
+      label: cat.name.charAt(0).toUpperCase() + cat.name.slice(1),
+      icon: '📁',
+      color: '#3b82f6'
+    })) || [];
+  } catch (error) {
+    console.error('Error getCategorias:', error);
+    return [];
   }
 }
 
@@ -121,42 +133,26 @@ async function getHierarchy() {
  * Obtiene marcas por categoría
  */
 export async function getMarcasPorCategoria(categoria) {
-  try {
-    const tree = await getHierarchy();
-    const marcas = tree[categoria] || {};
-    return Object.keys(marcas).sort().map(nombre => ({ nombre }));
-  } catch (error) {
-    console.error('Error en getMarcasPorCategoria:', error);
-    return [];
-  }
+  await initCatalog();
+  const marcas = treeCache?.[categoria] || {};
+  return Object.keys(marcas).sort().map(nombre => ({ nombre }));
 }
 
 /**
  * Obtiene gamas por marca y categoría
  */
 export async function getGamasPorMarcaYCategoria(marca, categoria) {
-  try {
-    const tree = await getHierarchy();
-    const gamas = tree[categoria]?.[marca] || {};
-    return Object.keys(gamas).sort().map(nombre => ({ nombre }));
-  } catch (error) {
-    console.error('Error en getGamasPorMarcaYCategoria:', error);
-    return [];
-  }
+  await initCatalog();
+  const gamas = treeCache?.[categoria]?.[marca] || {};
+  return Object.keys(gamas).sort().map(nombre => ({ nombre }));
 }
 
 /**
  * Obtiene tipos por gama, marca y categoría
  */
 export async function getTiposPorGamaMarcaYFamilia(gama, marca, categoria) {
-  try {
-    const tree = await getHierarchy();
-    const tipos = tree[categoria]?.[marca]?.[gama] || [];
-    return tipos;
-  } catch (error) {
-    console.error('Error en getTiposPorGamaMarcaYFamilia:', error);
-    return [];
-  }
+  await initCatalog();
+  return treeCache?.[categoria]?.[marca]?.[gama] || [];
 }
 
 /**
@@ -164,29 +160,31 @@ export async function getTiposPorGamaMarcaYFamilia(gama, marca, categoria) {
  */
 export async function getProductosPorFiltro(categoria, marca, gama, tipo) {
   try {
-    // Obtener brand_id
-    const brandId = brandsCache?.get(marca) 
-      ? [...brandsCache].find(([_, v]) => v === marca)?.[0]
-      : null;
+    // Buscar brand_id
+    let brandId = null;
+    if (brandsMap) {
+      for (const [id, name] of brandsMap.entries()) {
+        if (name === marca) {
+          brandId = id;
+          break;
+        }
+      }
+    }
 
-    const { data: products } = await supabase
+    const { data } = await supabase
       .from('products')
       .select('*')
       .eq('familia', categoria)
-      .eq('brand_id', brandId || null)
       .eq('subfamilia', gama)
       .eq('tipo', tipo)
-      .limit(100);
+      .limit(50);
 
-    return products?.map(p => ({
-      ref: p.ref_fabricante,
-      desc: p.name,
-      marca,
-      precio: p.precio || 0,
-      ...p
-    })) || [];
+    const products = data || [];
+    return brandId 
+      ? products.filter(p => p.brand_id === brandId)
+      : products;
   } catch (error) {
-    console.error('Error en getProductosPorFiltro:', error);
+    console.error('Error getProductosPorFiltro:', error);
     return [];
   }
 }
@@ -201,16 +199,12 @@ export async function getProductoPorRef(ref) {
       .select('*')
       .eq('ref_fabricante', ref)
       .single();
-
     return data || null;
-  } catch (error) {
+  } catch {
     return null;
   }
 }
 
-/**
- * Búsqueda de productos
- */
 export async function buscarProductos(termino) {
   try {
     const { data } = await supabase
@@ -218,32 +212,27 @@ export async function buscarProductos(termino) {
       .select('*')
       .ilike('name', `%${termino}%`)
       .limit(10);
-
     return data || [];
-  } catch (error) {
+  } catch {
     return [];
   }
 }
 
-/**
- * Estadísticas del catálogo
- */
 export async function getCatalogStats() {
   try {
     const { count } = await supabase
       .from('products')
       .select('*', { count: 'exact', head: true });
-
     return { totalProducts: count || 0 };
-  } catch (error) {
+  } catch {
     return { totalProducts: 0 };
   }
 }
 
-// Export default para compatibilidad
+// Default export
 export default {
+  initCatalog,
   getCategorias,
-  getHierarchy,
   getMarcasPorCategoria,
   getGamasPorMarcaYCategoria,
   getTiposPorGamaMarcaYFamilia,
