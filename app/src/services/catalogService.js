@@ -65,6 +65,8 @@ async function getHierarchy() {
   if (hierarchyCache) return hierarchyCache;
 
   try {
+    console.log('🔍 [getHierarchy] Iniciando carga desde Supabase...');
+    
     // Obtener todas las categorías de Supabase
     const { data: categories, error: catError } = await supabase
       .from('categories')
@@ -72,13 +74,20 @@ async function getHierarchy() {
       .order('name');
 
     if (catError) throw catError;
+    console.log('🔍 [getHierarchy] Categorías:', categories.map(c => c.name));
 
     // Obtener todos los productos para extraer marcas por categoría
-    // Usamos un muestreo de 100K productos máximo para no saturar
-    const { data: products } = await supabase
+    console.log('🔍 [getHierarchy] Leyendo productos...');
+    const { data: products, error: prodError } = await supabase
       .from('products')
       .select('familia, brand_id')
       .limit(100000);
+
+    if (prodError) {
+      console.error('Error leyendo productos:', prodError);
+    } else {
+      console.log('🔍 [getHierarchy] Productos leídos:', products?.length || 0);
+    }
 
     // Obtener todas las marcas
     const { data: brands } = await supabase
@@ -86,6 +95,7 @@ async function getHierarchy() {
       .select('id, name');
 
     const brandMap = new Map(brands?.map(b => [b.id, b.name]) || []);
+    console.log('🔍 [getHierarchy] Marcas mapeadas:', brandMap.size);
 
     // Construir árbol: Familia (de products) -> Marca
     const tree = {};
@@ -94,9 +104,11 @@ async function getHierarchy() {
     categories.forEach(cat => {
       const catName = cat.name.toUpperCase().replace(/Í/g, 'I').replace(/Ó/g, 'O').replace(/Á/g, 'A').replace(/É/g, 'E').replace(/-/g, ' ').trim();
       tree[catName] = {};
+      console.log('  - Categoría inicializada:', catName);
     });
 
     // Extraer marcas por familia desde products
+    let productosProcesados = 0;
     if (products) {
       products.forEach(p => {
         if (!p.familia) return;
@@ -104,14 +116,21 @@ async function getHierarchy() {
         const marca = brandMap.get(p.brand_id)?.trim() || 'DESCONOCIDA';
         
         if (!tree[familia]) tree[familia] = {};
-        if (!tree[familia][marca]) tree[familia][marca] = [];
+        if (!tree[familia][marca]) {
+          tree[familia][marca] = [];
+          productosProcesados++;
+        }
       });
     }
+    
+    console.log('🔍 [getHierarchy] Total familias:', Object.keys(tree).length);
+    console.log('🔍 [getHierarchy] Total marcas procesadas:', productosProcesados);
+    console.log('🔍 [getHierarchy] Ejemplo árbol:', Object.keys(tree).slice(0, 3), '...');
 
     hierarchyCache = tree;
     return hierarchyCache;
   } catch (error) {
-    console.error('Error al obtener jerarquía de Supabase:', error.message);
+    console.error('❌ [getHierarchy] Error:', error.message);
     hierarchyCache = {};
     return hierarchyCache;
   }
@@ -122,19 +141,27 @@ async function getHierarchy() {
  */
 export async function getMarcasPorCategoria(categoria) {
   try {
+    console.log('🔍 [getMarcasPorCategoria] Buscando categoría:', categoria);
     const tree = await getHierarchy();
+    console.log('🔍 [getMarcasPorCategoria] Árbol cargado, keys:', Object.keys(tree));
+    
     const fam = Object.keys(tree).find(k => 
       k.toUpperCase().includes(categoria.toUpperCase())
     );
     
+    console.log('🔍 [getMarcasPorCategoria] Familia encontrada:', fam);
+    
     if (!fam) return [];
     
-    return Object.keys(tree[fam]).sort().map(m => ({ 
+    const marcas = Object.keys(tree[fam]).sort().map(m => ({ 
       nombre: m, 
       color: "#666" 
     }));
+    
+    console.log('🔍 [getMarcasPorCategoria] Marcas encontradas:', marcas.length);
+    return marcas;
   } catch (error) {
-    console.error('Error al obtener marcas:', error);
+    console.error('❌ Error al obtener marcas:', error);
     throw ServiceError.from(error, 'catalog.getMarcasPorCategoria');
   }
 }
