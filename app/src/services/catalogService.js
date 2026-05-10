@@ -77,17 +77,35 @@ async function getHierarchy() {
     console.log('🔍 [getHierarchy] Categorías:', categories.map(c => c.name));
 
     // Obtener todos los productos para extraer marcas por categoría
-    console.log('🔍 [getHierarchy] Leyendo productos...');
-    const { data: products, error: prodError } = await supabase
-      .from('products')
-      .select('familia, brand_id')
-      .limit(100000);
-
-    if (prodError) {
-      console.error('Error leyendo productos:', prodError);
-    } else {
-      console.log('🔍 [getHierarchy] Productos leídos:', products?.length || 0);
+    // Leemos de a bloques para evitar límites de Supabase
+    console.log('🔍 [getHierarchy] Leyendo productos en bloques...');
+    let allProducts = [];
+    const batchSize = 10000;
+    let offset = 0;
+    
+    while (true) {
+      const { data: batch, error: batchError } = await supabase
+        .from('products')
+        .select('familia, brand_id')
+        .range(offset, offset + batchSize - 1);
+      
+      if (batchError) {
+        console.error('Error en bloque:', batchError);
+        break;
+      }
+      
+      if (!batch || batch.length === 0) break;
+      
+      allProducts = allProducts.concat(batch);
+      offset += batchSize;
+      console.log(`  Bloque ${offset/batchSize}: ${batch.length} productos (total: ${allProducts.length})`);
+      
+      // Solo leemos 5 bloques para no saturar (50K productos)
+      if (offset >= 50000) break;
     }
+    
+    const products = allProducts;
+    console.log('🔍 [getHierarchy] Total productos leídos:', products.length);
 
     // Obtener todas las marcas
     const { data: brands } = await supabase
