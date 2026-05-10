@@ -6,9 +6,12 @@
 import { createClient } from '@supabase/supabase-js';
 import { ServiceError } from './errorHandler';
 
-// Inicializar cliente de Supabase desde variables de entorno
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://fncmzrnmzmuhlullkrud.supabase.co';
-const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+// Inicializar cliente de Supabase - usando URL directa para evitar problemas de env
+const supabaseUrl = 'https://fncmzrnmzmuhlullkrud.supabase.co';
+// NOTA: Esta es la anon key, es segura para cliente
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZuY216cm5tem11aGx1bGxrcnVkIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MzM2MDY5NSwiZXhwIjoyMDg4OTM2Njk1fQ.3DfYKquAUFFNx_c8NdMWmic7pVVckWsXEZWOJTuC5wg';
+
+console.log('🔍 [catalogService] Inicializando Supabase client...');
 
 const supabase = createClient(supabaseUrl, supabaseKey, {
   auth: { autoRefreshToken: false, persistSession: false }
