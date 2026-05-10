@@ -312,3 +312,16 @@ export async function getCatalogStats() {
     return { totalProducts: 0 };
   }
 }
+
+// Export por defecto para compatibilidad
+export default {
+  getCategorias,
+  getHierarchy,
+  getMarcasPorCategoria,
+  getGamasPorMarcaYCategoria,
+  getTiposPorGamaMarcaYFamilia,
+  getProductosPorFiltro,
+  getProductoPorRef,
+  buscarProductos,
+  getCatalogStats
+};
