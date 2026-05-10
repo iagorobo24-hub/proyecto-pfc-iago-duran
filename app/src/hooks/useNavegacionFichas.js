@@ -1,15 +1,15 @@
 /**
- * Hook para navegación jerárquica PROFUNDA conectado a Supabase
- * Flujo: Categoría (N1) → MARCA → Gama (N2) → Tipo (N3) → Referencia
+ * Hook para navegación jerárquica conectado a Supabase
+ * Flujo: Categoría → Marca → Gama → Tipo → Referencia
  */
 import { useState, useCallback, useMemo, useEffect } from 'react'
-import catalogService, { getCategorias } from '../services/catalogService'
+import catalogService from '../services/catalogService'
 import { useToast } from '../contexts/ToastContext'
 
 export default function useNavegacionFichas() {
  const { toast } = useToast()
  
- // Estados de navegación
+ // Estados
  const [paso, setPaso] = useState('categorias')
  const [categorias, setCategorias] = useState([])
  const [categoria, setCategoria] = useState(null)
@@ -26,31 +26,24 @@ export default function useNavegacionFichas() {
  const [error, setError] = useState(null)
  const [historial, setHistorial] = useState([])
 
- // Cargar categorías desde Supabase al montar
+ // Cargar categorías al montar
  useEffect(() => {
-  console.log('🔍 [useNavegacionFichas] useEffect categorías montando...');
-  async function loadCategorias() {
+  async function load() {
    setCargando(true)
-   setError(null)
    try {
-    console.log('🔍 [useNavegacionFichas] Llamando a getCategorias()...');
-    const cats = await getCategorias()
-    console.log('✅ [useNavegacionFichas] Categorías cargadas:', cats.length);
+    const cats = await catalogService.getCategorias()
     setCategorias(cats)
-    if (cats.length === 0) {
-     setError('No se pudieron cargar las categorías')
-    }
    } catch (err) {
-    console.error('❌ [useNavegacionFichas] Error:', err.message);
-    setError(err.message || 'Error al cargar categorías')
+    console.error('Error cargando categorías:', err)
+    setError('Error al cargar categorías')
    } finally {
     setCargando(false)
    }
   }
-  loadCategorias()
+  load()
  }, [])
 
- // 1. Cargar Marcas al seleccionar Categoría
+ // Cargar marcas al seleccionar categoría
  useEffect(() => {
   if (!categoria) return;
   async function load() {
@@ -60,11 +53,11 @@ export default function useNavegacionFichas() {
     const data = await catalogService.getMarcasPorCategoria(categoria)
     setMarcasDisponibles(data)
     if (data.length === 0) {
-     console.log('ℹ️ La categoría', categoria, 'no tiene productos sincronizados.')
+     console.log('ℹ️', categoria, 'no tiene marcas')
     }
    } catch (err) {
-    console.error('Error al cargar marcas:', err.message);
-    setError(err.message || 'Error al cargar marcas')
+    console.error('Error cargando marcas:', err)
+    setError('Error al cargar marcas')
    } finally {
     setCargando(false)
    }
@@ -72,7 +65,7 @@ export default function useNavegacionFichas() {
   load()
  }, [categoria])
 
- // 2. Cargar Gamas al seleccionar Marca
+ // Cargar gamas al seleccionar marca
  useEffect(() => {
   if (!categoria || !marca) return;
   async function load() {
@@ -82,8 +75,8 @@ export default function useNavegacionFichas() {
     const data = await catalogService.getGamasPorMarcaYCategoria(marca, categoria)
     setGamasDisponibles(data.map(g => g.nombre))
    } catch (err) {
-    console.error('Error al cargar gamas:', err.message);
-    setError(err.message || 'Error al cargar gamas')
+    console.error('Error cargando gamas:', err)
+    setError('Error al cargar gamas')
    } finally {
     setCargando(false)
    }
@@ -91,7 +84,7 @@ export default function useNavegacionFichas() {
   load()
  }, [categoria, marca])
 
- // 3. Cargar Tipos al seleccionar Gama
+ // Cargar tipos al seleccionar gama
  useEffect(() => {
   if (!categoria || !marca || !gama) return;
   async function load() {
@@ -101,8 +94,8 @@ export default function useNavegacionFichas() {
     const data = await catalogService.getTiposPorGamaMarcaYFamilia(gama, marca, categoria)
     setTiposDisponibles(data)
    } catch (err) {
-    console.error('Error al cargar tipos:', err.message);
-    setError(err.message || 'Error al cargar tipos')
+    console.error('Error cargando tipos:', err)
+    setError('Error al cargar tipos')
    } finally {
     setCargando(false)
    }
@@ -110,7 +103,7 @@ export default function useNavegacionFichas() {
   load()
  }, [categoria, marca, gama])
 
- // 4. Cargar Productos al seleccionar Tipo
+ // Cargar productos al seleccionar tipo
  useEffect(() => {
   if (!categoria || !marca || !gama || !tipo) return;
   async function load() {
@@ -120,8 +113,8 @@ export default function useNavegacionFichas() {
     const products = await catalogService.getProductosPorFiltro(categoria, marca, gama, tipo)
     setReferenciasDisponibles(products)
    } catch (err) {
-    console.error('Error al cargar productos:', err.message);
-    setError(err.message || 'Error al cargar productos')
+    console.error('Error cargando productos:', err)
+    setError('Error al cargar productos')
    } finally {
     setCargando(false)
    }
@@ -129,6 +122,7 @@ export default function useNavegacionFichas() {
   load()
  }, [categoria, marca, gama, tipo])
 
+ // Funciones de navegación
  const seleccionarCategoria = useCallback((catId) => {
   setCategoria(catId)
   setMarca(null)
@@ -172,8 +166,8 @@ export default function useNavegacionFichas() {
    setPaso('ficha')
    setHistorial(prev => [...prev, { paso: 'referencias' }])
   } catch (err) {
-   console.error('Error al cargar ficha:', err.message);
-   setError(err.message || 'Error al cargar ficha')
+   console.error('Error cargando ficha:', err)
+   setError('Error al cargar ficha')
   } finally {
    setCargando(false)
   }
@@ -200,7 +194,6 @@ export default function useNavegacionFichas() {
  const buscarReferenciaDirecta = useCallback(async (refId) => {
   if (!refId) return false
   setCargando(true)
-  setError(null)
   try {
    const ficha = await catalogService.getProductoPorRef(refId)
    if (ficha) {
@@ -211,11 +204,10 @@ export default function useNavegacionFichas() {
     setReferencia(ficha)
     setPaso('ficha')
     setHistorial(prev => [...prev, { paso: 'categorias' }])
-    setCargando(false)
     return true
    }
   } catch (e) {
-   setError(e.message || 'Error en búsqueda directa')
+   console.error('Error en búsqueda directa:', e)
   }
   setCargando(false)
   return false
