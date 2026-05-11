@@ -321,10 +321,10 @@ export async function getProductosPorFiltro(familia, marca, gama, tipo) {
     
     let query = supabase
       .from('products')
-      .select('id, ref_fabricante, name, imagen, precio, marca, familia, subfamilia, tipo')
+      .select('id, ref_fabricante, name, precio, marca, familia, subfamilia, tipo')
       .eq('familia', familia)
-      .eq('subfamilia', gama)
-      .eq('tipo', tipo)
+      .eq('subfamilia', gama.trim())
+      .eq('tipo', tipo.trim())
       .limit(50);
     
     if (brandId) {
