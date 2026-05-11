@@ -113,18 +113,41 @@ export async function initCatalog() {
  */
 export async function getCategorias() {
   try {
-    const { data } = await supabase
-      .from('categories')
-      .select('id, name')
-      .order('name');
+    // Asegurar que el árbol est� cargado
+    await initCatalog();
     
-    return data?.map(cat => ({
-      // Usar normalizarCategoria del nuevo utils (consistente con initCatalog)
-      id: normalizarCategoria(cat.name),
-      label: cat.name.charAt(0).toUpperCase() + cat.name.slice(1),
+    // Obtener nombres de categorías del árbol REAL de productos
+    const categoriasARetornar = Object.keys(treeCache || {});
+    
+    if (categoriasARetornar.length === 0) {
+      console.warn('⚠️ treeCache vacío o no inicializado');
+      return [];
+    }
+    
+    console.log('📂 Categorías disponibles (desde treeCache):', categoriasARetornar);
+
+    // Mapear a formato de UI con nombres legibles
+    const categoriasConLabel = {
+      'CABLES': 'Cables',
+      'INTERRUPTORES Y MECANISMOS': 'Interruptores y Mecanismos',
+      'AUTOMATISMOS': 'Automatismos',
+      'ILUMINACION': 'Iluminación',
+      'CLIMATIZACION': 'Climatización',
+      'DOMOTICA': 'Domótica',
+      'CANALIZACION': 'Canalización',
+      'COMUNICACION': 'Comunicación',
+      'HERRAMIENTAS': 'Herramientas',
+      'PROTECCION': 'Protección',
+      'FONTANERIA': 'Fontanería',
+      'ENERGIAS RENOVABLES': 'Energías Renovables'
+    };
+    
+    return categoriasARetornar.map(id => ({
+      id,
+      label: categoriasConLabel[id] || id.charAt(0) + id.slice(1).toLowerCase(),
       icon: '📁',
       color: '#3b82f6'
-    })) || [];
+    }));
   } catch (error) {
     console.error('Error getCategorias:', error);
     return [];
