@@ -118,7 +118,13 @@ export async function getCategorias() {
       .select('familia')
       .not('familia', 'is', null);
     
-    if (error) throw error;
+    console.log('📂 raw familias count:', data?.length);
+    console.log('📂 raw familias sample:', data?.slice(0, 10).map(p => p.familia));
+    
+    if (error) {
+      console.error('❌ Error consultando familias:', error);
+      throw error;
+    }
     
     // Normalizar y obtener categorías únicas
     const familiasNormalizadas = new Set();
