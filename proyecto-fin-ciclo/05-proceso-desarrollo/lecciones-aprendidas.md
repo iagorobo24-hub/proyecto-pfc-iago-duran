@@ -96,6 +96,72 @@ Esta sección documenta las lecciones más importantes aprendidas durante el pro
 
 ---
 
+### Error 8: La pesadilla de configurar la base de datos — Scraping, Sync y Conexión
+
+**Qué pasó:** El proceso de obtener los datos del catálogo de Sonepar y mostrarlos en la web resultó ser mucho más complejo de lo esperado. Pasé por tres fases críticas:
+
+#### Fase 1: Scraping de sonepar.es
+
+**El problema:** Scrapear la web de Sonepar fue un proceso largo y frustrante. La web tiene protecciones contra bots, estructura HTML cambiante, y miles de productos con información incompleta o mal formateada.
+
+**Qué intenté:**
+- Múltiples versiones del scraper (v1 a v7)
+- Diferentes bibliotecas (Puppeteer, Playwright, requests)
+- Manejo de CAPTCHA y rate limiting
+- Parsing de JSONs embebidos en el HTML
+
+**Qué salió mal:**
+- La tienda online cambiaba estructura cada semana
+- Algunos productos no tenían precio o imagen
+- Los datos vinieron con caracteres especiales mal codificados
+- Timeout constantes en las requests
+
+**Tiempo invertido:** Semanas de iteración hasta conseguir ~400.000 productos scrapeados.
+
+#### Fase 2: Sync a Supabase
+
+**El problema:** Una vez scrapeados los datos, había que subirlos a Supabase de forma ordenada.
+
+**Qué intenté:**
+- Scripts de sincronización incremental
+- Manejo de duplicados
+- Normalización de familias y categorías
+
+**Qué salió mal:**
+- El tier gratuito de Supabase tiene límites de inserción
+- Algunas columnas no existían en la tabla (precio, imagen)
+- El sync tardaba horas y a veces fallaba a mitad
+- La estructura de datos no era óptima para las queries que necesitaba la web
+
+**Tiempo invertido:** Días de scripts y pruebas hasta tener los datos subidos.
+
+#### Fase 3: Conexión web <-> Base de datos
+
+**El problema:** Actualmente (Mayo 2026), la navegación entre fichas técnicas no funciona correctamente. La web no puede cargar todas las categorías y la conexión es inestable.
+
+**Síntomas observados:**
+- Solo aparecen 3 categorías (deberían ser 12+)
+- Error 500 en algunas consultas
+- Timeout en consultas que piden muchos datos
+- Inconsistencia entre los datos que devuelve Supabase y lo que espera el código
+
+**Causas identificadas:**
+1. **Límite de 1000 productos:** Supabase por defecto limita las queries a 1000 resultados. Los datos scrapeados tienen familias con miles de productos cada una.
+2. **Valores con saltos de línea:** Los datos scrapeados tienen `\n` al final de cada campo, rompiendo las comparaciones.
+3. **Timeouts en consultas pesadas:** Consultas sin filtros específicos (como "dame todas las familias") son demasiado lentas (>30s) y Supabase las cancela.
+4. **Posible confusión de proyectos:** Puede que haya múltiples proyectos Supabase y los datos no estén donde el código espera.
+5. **Mapeo de familias incompleto:** El código tiene un mapeo fijo de familias, pero los datos reales pueden tener nombres diferentes.
+
+**Estado actual (11 Mayo 2026):**
+- Los datos están en Supabase (~400k productos)
+- La conexión desde Vercel funciona (ve las 455 marcas)
+- La navegación de categorías no funciona correctamente
+- Estamos iterando para resolver los problemas de consulta
+
+**Lección:** Los datos son labase de todo. Sin una estructura de datos limpia y queries optimizadas, el frontend no puede funcionar, sin importar cuánto código escribas. Además, los tiers gratuitos tienen limitaciones importantes que hay que entender antes de comprometerse con una arquitectura.
+
+---
+
 ## Decisiones que funcionaron bien
 
 ### Acierto 1: Empezar con artefactos simples
