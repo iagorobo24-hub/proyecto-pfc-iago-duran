@@ -12,16 +12,16 @@
 
 | Capítulo | Contenido | Estado |
 |----------|-----------|--------|
-| 01 | Resumen ejecutivo | 📝 Pendiente |
-| 02 | Estado del arte en IA generativa aplicada a desarrollo web | 📝 Pendiente |
-| 03 | Análisis de requisitos de la empresa | ✅ Documentado (parcial) |
-| 04 | Diseño técnico y arquitectura | 📝 Pendiente |
-| 05 | Proceso de desarrollo con herramientas de IA | ✅ En curso |
-| 06 | Catálogo de herramientas IA (fichas técnicas) | 📝 Pendiente |
-| 07 | Manuales de uso de la aplicación | 📝 Pendiente |
-| 08 | Resultados y validación | 📝 Pendiente |
-| 09 | Conclusiones y líneas futuras | 📝 Pendiente |
-| 10 | Manual para profesores (recursos didácticos) | 📝 Pendiente |
+| 01 | Resumen ejecutivo | ✅ Completado (3 archivos) |
+| 02 | Estado del arte en IA generativa aplicada a desarrollo web | ✅ Completado (3 archivos) |
+| 03 | Análisis de requisitos de la empresa | ✅ Completado (4 archivos) |
+| 04 | Diseño técnico y arquitectura | ✅ Completado (4 archivos) |
+| 05 | Proceso de desarrollo con herramientas de IA | ✅ Completado (4 archivos) |
+| 06 | Catálogo de herramientas IA (fichas técnicas) | ✅ Completado (14 fichas) |
+| 07 | Manuales de uso de la aplicación | ✅ Completado (6 archivos) |
+| 08 | Resultados y validación | ✅ Completado (3 archivos) |
+| 09 | Conclusiones y líneas futuras | ✅ Completado (3 archivos) |
+| 10 | Manual para profesores (recursos didácticos) | ✅ Completado (5 archivos) |
 
 ## Convenciones de los estados
 

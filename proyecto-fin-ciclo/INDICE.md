@@ -78,60 +78,60 @@ proyecto-fin-ciclo/
 ## 📖 Contenido por capítulo
 
 ### 01 — Resumen Ejecutivo
-- [ ] `resumen-ejecutivo.md` — Síntesis del proyecto
-- [ ] `objetivos.md` — Objetivos generales y específicos
-- [ ] `resumen-ejecutivo-fichas.md` — Una página por herramienta usada
+- [x] `resumen-ejecutivo.md` — Síntesis del proyecto
+- [x] `objetivos.md` — Objetivos generales y específicos
+- [x] `resumen-ejecutivo-fichas.md` — Una página por herramienta usada
 
 ### 02 — Estado del Arte
-- [ ] `estado-arte-ia-generativa.md` — Evolución de la IA generativa
-- [ ] `herramientas-comparativa.md` — Comparativa de herramientas 2024-2026
-- [ ] `tendencias-futuro.md` — Líneas de evolución
+- [x] `estado-arte-ia-generativa.md` — Evolución de la IA generativa
+- [x] `herramientas-comparativa.md` — Comparativa de herramientas 2024-2026
+- [x] `tendencias-futuro.md` — Líneas de evolución
 
 ### 03 — Análisis de Requisitos
-- [ ] `analisis-empresa.md` — Estudio de Sonepar y necesidades
-- [ ] `entrevistas.md` — Notas de entrevistas con técnicos
-- [ ] `requisitos-funcionales.md` — Casos de uso
-- [ ] `requisitos-no-funcionales.md` — Rendimiento, seguridad, etc.
+- [x] `analisis-empresa.md` — Estudio de Sonepar y necesidades
+- [x] `entrevistas.md` — Notas de entrevistas con técnicos
+- [x] `requisitos-funcionales.md` — Casos de uso
+- [x] `requisitos-no-funcionales.md` — Rendimiento, seguridad, etc.
 
 ### 04 — Diseño Técnico
-- [ ] `arquitectura.md` — Diagrama de arquitectura
-- [ ] `stack-tecnologico.md` — Decisiones de tecnología
-- [ ] `modelo-datos.md` — Esquema de datos
-- [ ] `diseno-ui-ux.md` — Sistema de diseño
+- [x] `arquitectura.md` — Diagrama de arquitectura
+- [x] `stack-tecnologico.md` — Decisiones de tecnología
+- [x] `modelo-datos.md` — Esquema de datos
+- [x] `diseno-ui-ux.md` — Sistema de diseño
 
 ### 05 — Proceso de Desarrollo
-- [ ] `metodologia.md` — Cómo trabajé con IA generativa
-- [ ] `fases-desarrollo.md` — Cronología de fases
-- [ ] `prompts-exitosos.md` — Ejemplos de prompts efectivos
-- [ ] `lecciones-aprendidas.md` — Errores y aciertos
+- [x] `metodologia.md` — Cómo trabajé con IA generativa
+- [x] `fases-desarrollo.md` — Cronología de fases
+- [x] `prompts-exitosos.md` — Ejemplos de prompts efectivos
+- [x] `lecciones-aprendidas.md` — Errores y aciertos
 
 ### 06 — Herramientas IA
 - [x] 14 fichas técnicas completadas
 - [ ] `comparativa-final.md` — Tabla comparativa de todas
 
 ### 07 — Manuales de Uso
-- [ ] `manual-sonex.md` — Cómo usar el asistente IA
-- [ ] `manual-fichas-tecnicas.md` — Navegación del catálogo
-- [ ] `manual-almacen.md` — Simulador de pedidos
-- [ ] `manual-presupuestos.md` — Generador de presupuestos
-- [ ] `manual-kpis.md` — Dashboard de KPIs
-- [ ] `manual-formacion.md` — Gestión de formación
+- [x] `manual-sonex.md` — Cómo usar el asistente IA
+- [x] `manual-fichas-tecnicas.md` — Navegación del catálogo
+- [x] `manual-almacen.md` — Simulador de pedidos
+- [x] `manual-presupuestos.md` — Generador de presupuestos
+- [x] `manual-kpis.md` — Dashboard de KPIs
+- [x] `manual-formacion.md` — Gestión de formación
 
 ### 08 — Resultados
-- [ ] `resultados-cuantitativos.md` — Métricas (velocidad, coste, etc.)
-- [ ] `resultados-cualitativos.md` — Valor percibido por usuarios
-- [ ] `validacion-profesores.md` — Feedback de los tutores
+- [x] `resultados-cuantitativos.md` — Métricas (velocidad, coste, etc.)
+- [x] `resultados-cualitativos.md` — Valor percibido por usuarios
+- [x] `validacion-profesores.md` — Feedback de los tutores
 
 ### 09 — Conclusiones
-- [ ] `conclusiones.md` — ¿Se cumplieron los objetivos?
-- [ ] `lineas-futuro.md` — Mejoras y ampliaciones
-- [ ] `impacto-educativo.md` — Qué aporta al ciclo formativo
+- [x] `conclusiones.md` — ¿Se cumplieron los objetivos?
+- [x] `lineas-futuro.md` — Mejoras y ampliaciones
+- [x] `impacto-educativo.md` — Qué aporta al ciclo formativo
 
 ### 10 — Manual para Profesores
-- [ ] `guia-rapida.md` — Cómo usar la documentación
-- [ ] `actividades-propuestas.md` — Ejercicios para alumnos
-- [ ] `evaluacion.md` — Rúbricas de evaluación
-- [ ] `recursos-adicionales.md` — Enlaces y materiales
+- [x] `guia-rapida.md` — Cómo usar la documentación
+- [x] `actividades-propuestas.md` — Ejercicios para alumnos
+- [x] `evaluacion.md` — Rúbricas de evaluación
+- [x] `recursos-adicionales.md` — Enlaces y materiales
 
 ---
 
@@ -163,18 +163,18 @@ proyecto-fin-ciclo/
 | Capítulo | Archivos | Estado |
 |----------|----------|--------|
 | 00 - README | 1 | ✅ |
-| 01 - Resumen | 0 | 📝 Pendiente |
-| 02 - Estado del arte | 0 | 📝 Pendiente |
-| 03 - Análisis requisitos | 0 | 📝 Pendiente |
-| 04 - Diseño técnico | 0 | 📝 Pendiente |
-| 05 - Proceso desarrollo | 0 | 📝 Pendiente |
-| **06 - Herramientas IA** | **14** | **✅ Completo** |
-| 07 - Manuales de uso | 0 | 📝 Pendiente |
-| 08 - Resultados | 0 | 📝 Pendiente |
-| 09 - Conclusiones | 0 | 📝 Pendiente |
-| 10 - Manual profesores | 0 | 📝 Pendiente |
+| 01 - Resumen | 3 | ✅ Completo |
+| 02 - Estado del arte | 3 | ✅ Completo |
+| 03 - Análisis requisitos | 4 | ✅ Completo |
+| 04 - Diseño técnico | 4 | ✅ Completo |
+| 05 - Proceso desarrollo | 4 | ✅ Completo |
+| 06 - Herramientas IA | 14 | ✅ Completo |
+| 07 - Manuales de uso | 6 | ✅ Completo |
+| 08 - Resultados | 3 | ✅ Completo |
+| 09 - Conclusiones | 3 | ✅ Completo |
+| 10 - Manual profesores | 5 | ✅ Completo |
 
-**Total creado:** 15 archivos MD (1 README + 14 fichas de herramientas)
+**Total creado:** 50 archivos MD (1 README + 14 fichas + 35 capítulo)
 
 ---
 
