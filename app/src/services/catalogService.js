@@ -112,42 +112,48 @@ export async function getCategorias() {
   try {
     console.log('📂 Cargando familias...');
     
-    // Usar select con filtro más específico para obtener valores únicos
-    // Esto es más eficiente que cargar todos los registros
-    const { data, error } = await supabase
-      .from('products')
-      .select('familia')
-      .not('familia', 'is', null)
-      .not('familia', 'eq', '')
-      .limit(1000); // Empezar con 1000 y ver qué hay
+    // Estrategia: consultar directamente las familias conocidas del mapeo
+    // Hacemos una consulta por cada familia posible y vemos cuáles tienen productos
+    const familiasPosibles = [
+      'CABLES',
+      'DISTRIBUCION DE POTENCIA', 
+      'INTERRUPTORES Y MECANISMOS',
+      'AUTOMATIZACION DE EDIFICIOS',
+      'CONTROL Y AUTOMATIZACION INDUSTRIAL',
+      'ILUMINACION',
+      'LUMINARIAS',
+      'CLIMATIZACION',
+      'HVAC',
+      'DOMOTICA',
+      'CANALIZACION',
+      'COMUNICACION',
+      'HERRAMIENTAS',
+      'SEGURIDAD Y HERRAMIENTAS',
+      'PROTECCION',
+      'FONTANERIA',
+      'ENERGIAS RENOVABLES'
+    ];
     
-    if (error) {
-      console.error('❌ Error consultando familias:', error);
-      // Si falla, intentar con otra aproximación
-      return [];
+    const familiasConProductos = new Set();
+    
+    // Probar cada familia para ver cuáles tienen productos
+    for (const familia of familiasPosibles) {
+      const { data, error } = await supabase
+        .from('products')
+        .select('id')
+        .eq('familia', familia)
+        .limit(1);
+      
+      if (!error && data && data.length > 0) {
+        console.log(`✅ Familia encontrada: ${familia}`);
+        const cat = normalizarFamilia(familia);
+        if (cat) familiasConProductos.add(cat);
+      }
     }
     
-    console.log('📂 raw familias count:', data?.length);
-    console.log('📂 raw familias sample:', data?.slice(0, 10).map(p => p.familia?.trim()));
-    
-    // Obtener familias únicas en memoria
-    const familiasUnicas = new Set();
-    data?.forEach(p => {
-      const familiaLimpia = p.familia?.trim();
-      if (familiaLimpia) familiasUnicas.add(familiaLimpia);
-    });
-    
-    console.log('📂 raw familias únicas:', Array.from(familiasUnicas));
-    
-    // Normalizar y obtener categorías únicas
-    const familiasNormalizadas = new Set();
-    familiasUnicas.forEach(familia => {
-      const cat = normalizarFamilia(familia);
-      if (cat) familiasNormalizadas.add(cat);
-    });
-    
-    const categorias = Array.from(familiasNormalizadas).sort();
+    const categorias = Array.from(familiasConProductos).sort();
     console.log('📂 Familias normalizadas:', categorias);
+    console.log('📂 Total familias con productos:', categorias.length);
     
     return categorias.map(id => ({
       id,
