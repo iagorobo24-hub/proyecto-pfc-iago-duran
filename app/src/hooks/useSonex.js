@@ -1,17 +1,12 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { doc, getDoc } from 'firebase/firestore';
-import { db } from '../firebase/firebaseConfig';
 import useFirestoreSync from './useFirestoreSync';
-import { useAuth } from '../contexts/AuthContext';
 
 /**
  * Hook personalizado para Sonex - Asistente virtual Sonepar
  * Gestiona historial de chat y configuraciones de sesión
  */
 export function useSonex() {
-  const { user } = useAuth();
-  
-  // Sync para historial de chat
+  // Sync para historial de chat (ahora usa localStorage)
   const { data: historialData, saveData: saveHistorial, syncStatus: chatSync } = useFirestoreSync(
     'sonex',
     'history',
@@ -29,7 +24,7 @@ export function useSonex() {
   
   const messagesEndRef = useRef(null);
 
-  // Normalizar timestamps al cargar mensajes desde Firestore
+  // Normalizar timestamps al cargar mensajes
   const normalizarMensajes = (msgs) => {
     if (!Array.isArray(msgs)) return [];
     return msgs.map(m => ({
@@ -80,31 +75,15 @@ export function useSonex() {
     return texto;
   };
 
-  // Cargar sugerencias populares globales
-  const [sugerenciasPopulares, setSugerenciasPopulares] = useState([]);
-  const [loadingSugerencias, setLoadingSugerencias] = useState(true);
-
-  useEffect(() => {
-    async function fetchPopularSearches() {
-      try {
-        const docRef = doc(db, 'global', 'popularSearches');
-        const snap = await getDoc(docRef);
-        if (snap.exists()) {
-          const searches = snap.data().searches || {};
-          const topSearches = Object.entries(searches)
-            .sort((a, b) => b[1] - a[1])
-            .slice(0, 5)
-            .map(([query]) => query.charAt(0).toUpperCase() + query.slice(1));
-          setSugerenciasPopulares(topSearches);
-        }
-      } catch (e) {
-        console.warn('Error cargando búsquedas populares:', e);
-      } finally {
-        setLoadingSugerencias(false);
-      }
-    }
-    fetchPopularSearches();
-  }, []);
+  // Cargar sugerencias populares (hardcoded para evitar Firebase)
+  const [sugerenciasPopulares, setSugerenciasPopulares] = useState([
+    'Interruptor magnetotérmico',
+    'Cable eléctrico',
+    'Placa solar',
+    'Domótica',
+    'Iluminación LED'
+  ]);
+  const [loadingSugerencias, setLoadingSugerencias] = useState(false);
 
   return {
     // Estados
