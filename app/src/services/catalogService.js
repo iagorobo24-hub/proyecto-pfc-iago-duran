@@ -348,7 +348,7 @@ export async function getProductosPorFiltro(familia, marca, gama, tipo) {
     
     let query = supabase
       .from('products')
-      .select('id, ref_fabricante, name, imagen, precio, familia, subfamilia, tipo')
+      .select('id, ref_fabricante, name, precio, familia, subfamilia, tipo')
       .eq('familia', familiaNormalizada)
       .eq('subfamilia', gamaNormalizada)
       .eq('tipo', tipoNormalizado)
@@ -377,7 +377,7 @@ export async function getProductoPorRef(ref) {
   try {
     const { data, error } = await supabase
       .from('products')
-      .select('*')
+      .select('id, ref_fabricante, name, precio, familia, subfamilia, tipo, marca')
       .eq('ref_fabricante', ref)
       .single();
     
