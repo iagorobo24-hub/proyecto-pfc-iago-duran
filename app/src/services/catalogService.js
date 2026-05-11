@@ -18,6 +18,18 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 let marcasCache = null;
 
 /**
+ * Normaliza un string para consultas - elimina acentos para evitar problemas de codificación
+ */
+function normalizarString(str) {
+  if (!str) return '';
+  return str
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '') // Eliminar diacríticos
+    .toUpperCase()
+    .trim();
+}
+
+/**
  * Carga el mapa de marcas (se hace una sola vez)
  */
 async function cargarMarcas() {
@@ -328,7 +340,7 @@ export async function getProductosPorFiltro(familia, marca, gama, tipo) {
     
     let query = supabase
       .from('products')
-      .select('id, ref_fabricante, name, imagen, marca, familia, subfamilia, tipo')
+      .select('id, ref_fabricante, name, marca, familia, subfamilia, tipo, precio')
       .eq('familia', familiaLimpia)
       .eq('subfamilia', gamaLimpia)
       .eq('tipo', tipoLimpia)
