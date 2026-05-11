@@ -338,12 +338,20 @@ export async function getProductosPorFiltro(familia, marca, gama, tipo) {
       }
     }
     
+    // Normalizar tipo para evitar problemas con tildes
+    const normalizar = (str) => str?.toUpperCase()
+      .normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim() || '';
+    
+    const familiaNormalizada = normalizar(familiaLimpia);
+    const gamaNormalizada = normalizar(gamaLimpia);
+    const tipoNormalizado = normalizar(tipoLimpia);
+    
     let query = supabase
       .from('products')
-      .select('id, ref_fabricante, name, marca, familia, subfamilia, tipo, precio')
-      .eq('familia', familiaLimpia)
-      .eq('subfamilia', gamaLimpia)
-      .eq('tipo', tipoLimpia)
+      .select('id, ref_fabricante, name, imagen, precio, familia, subfamilia, tipo')
+      .eq('familia', familiaNormalizada)
+      .eq('subfamilia', gamaNormalizada)
+      .eq('tipo', tipoNormalizado)
       .limit(50);
     
     if (brandId) {
