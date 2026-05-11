@@ -1,11 +1,6 @@
 /**
- * SERVICIO DE CATÁLOGO (SUPABASE) - CARGA INCREMENTAL
- * Estrategia: cargar datos bajo demanda según navegación del usuario
- * 1. Familias al entrar
- * 2. Marcas al seleccionar familia
- * 3. Gamas al seleccionar marca
- * 4. Tipos al seleccionar gama
- * 5. Productos al seleccionar tipo
+ * SERVICIO DE CATÁLOGO (SUPABASE) - CONSULTAS OPTIMIZADAS
+ * Estrategia: usar consultas filtradas para evitar timeout
  */
 import { createClient } from '@supabase/supabase-js';
 
@@ -16,18 +11,6 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 
 // Cache simple para evitar recargas innecesarias
 let marcasCache = null;
-
-/**
- * Normaliza un string para consultas - elimina acentos para evitar problemas de codificación
- */
-function normalizarString(str) {
-  if (!str) return '';
-  return str
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '') // Eliminar diacríticos
-    .toUpperCase()
-    .trim();
-}
 
 /**
  * Carga el mapa de marcas (se hace una sola vez)
@@ -67,6 +50,7 @@ function normalizarFamilia(familia) {
     'AUTOMATISMOS': 'AUTOMATISMOS',
     'CONTROL Y AUTOMATIZACION INDUSTRIAL': 'AUTOMATISMOS',
     'AUTOMATIZACION INDUSTRIAL': 'AUTOMATISMOS',
+    'AUTOMATIZACION DE EDIFICIOS': 'DOMOTICA',
     'ILUMINACION': 'ILUMINACION',
     'LUMINARIAS': 'ILUMINACION',
     'CLIMATIZACION': 'CLIMATIZACION',
@@ -74,7 +58,6 @@ function normalizarFamilia(familia) {
     'HVAC: HVAC: CLIMATIZACION VENTILACION Y AIRE ACONDICIONADO': 'CLIMATIZACION',
     'CLIMA': 'CLIMATIZACION',
     'DOMOTICA': 'DOMOTICA',
-    'AUTOMATIZACION DE EDIFICIOS': 'DOMOTICA',
     'DOMOTICA Y CONTROL': 'DOMOTICA',
     'CANALIZACION': 'CANALIZACION',
     'CANALIZACIONES': 'CANALIZACION',
@@ -116,58 +99,50 @@ const etiquetasCategorias = {
   'ENERGIAS RENOVABLES': 'Energías Renovables'
 };
 
+// Lista de familias válidas a verificar directamente
+const FAMILIAS_A_VERIFICAR = [
+  'CABLES',
+  'INTERRUPTORES Y MECANISMOS', 
+  'AUTOMATISMOS',
+  'ILUMINACION',
+  'CLIMATIZACION',
+  'DOMOTICA',
+  'CANALIZACION',
+  'COMUNICACION',
+  'HERRAMIENTAS',
+  'PROTECCION',
+  'FONTANERIA',
+  'ENERGIAS RENOVABLES'
+];
+
 /**
- * Obtiene las familias únicas que tienen productos en Supabase
+ * Obtiene las familias que tienen productos
  * Se llama al entrar en fichas técnicas
+ * Estrategia: verificar cada familia con una consulta rápida
  */
 export async function getCategorias() {
   try {
-    console.log('📂 Cargando familias...');
+    console.log('📂 Verificando familias disponibles...');
     
-    // Estrategia: consultar directamente las familias conocidas del mapeo
-    // Hacemos una consulta por cada familia posible y vemos cuáles tienen productos
-    const familiasPosibles = [
-      'CABLES',
-      'DISTRIBUCION DE POTENCIA', 
-      'INTERRUPTORES Y MECANISMOS',
-      'AUTOMATIZACION DE EDIFICIOS',
-      'CONTROL Y AUTOMATIZACION INDUSTRIAL',
-      'ILUMINACION',
-      'LUMINARIAS',
-      'CLIMATIZACION',
-      'HVAC',
-      'DOMOTICA',
-      'CANALIZACION',
-      'COMUNICACION',
-      'HERRAMIENTAS',
-      'SEGURIDAD Y HERRAMIENTAS',
-      'PROTECCION',
-      'FONTANERIA',
-      'ENERGIAS RENOVABLES'
-    ];
+    const familiasDisponibles = [];
     
-    const familiasConProductos = new Set();
-    
-    // Probar cada familia para ver cuáles tienen productos
-    for (const familia of familiasPosibles) {
+    // Verificar cada familia con una consulta rápida (limit 1)
+    for (const familia of FAMILIAS_A_VERIFICAR) {
       const { data, error } = await supabase
         .from('products')
-        .select('id')
+        .select('familia')
         .eq('familia', familia)
         .limit(1);
       
       if (!error && data && data.length > 0) {
-        console.log(`✅ Familia encontrada: ${familia}`);
-        const cat = normalizarFamilia(familia);
-        if (cat) familiasConProductos.add(cat);
+        familiasDisponibles.push(familia);
+        console.log(`  ✅ ${familia} tiene productos`);
       }
     }
     
-    const categorias = Array.from(familiasConProductos).sort();
-    console.log('📂 Familias normalizadas:', categorias);
-    console.log('📂 Total familias con productos:', categorias.length);
+    console.log('📂 Familias disponibles:', familiasDisponibles);
     
-    return categorias.map(id => ({
+    return familiasDisponibles.map(id => ({
       id,
       label: etiquetasCategorias[id] || id,
       icon: '📁',
@@ -185,16 +160,19 @@ export async function getCategorias() {
  */
 export async function getMarcasPorCategoria(familia) {
   try {
-    const familiaLimpia = familia?.trim(); // Limpiar valores
-    console.log(`🏷️ Cargando marcas para familia: ${familiaLimpia}`);
+    console.log(`🏷️ Cargando marcas para familia: ${familia}`);
     
     // Obtener brand_ids únicos que tienen productos en esta familia
     const { data, error } = await supabase
       .from('products')
       .select('brand_id')
-      .eq('familia', familiaLimpia);
+      .eq('familia', familia)
+      .limit(5000);
     
-    if (error) throw error;
+    if (error) {
+      console.error('❌ Error:', error);
+      return [];
+    }
     
     // Obtener brand_ids únicos
     const brandIdsUnicos = [...new Set(data?.map(p => p.brand_id).filter(Boolean))];
@@ -210,13 +188,16 @@ export async function getMarcasPorCategoria(familia) {
       .select('id, name')
       .in('id', brandIdsUnicos);
     
-    if (brandsError) throw brandsError;
+    if (brandsError) {
+      console.error('❌ Error cargando brands:', brandsError);
+      return [];
+    }
     
     const marcas = brands?.map(b => ({ nombre: b.name })).sort((a, b) => 
       a.nombre.localeCompare(b.nombre)
     ) || [];
     
-    console.log(`✅ Marcas encontradas: ${marcas.length}`, marcas.slice(0, 5));
+    console.log(`✅ Marcas encontradas: ${marcas.length}`);
     return marcas;
   } catch (error) {
     console.error('❌ Error getMarcasPorCategoria:', error);
@@ -230,15 +211,13 @@ export async function getMarcasPorCategoria(familia) {
  */
 export async function getGamasPorMarcaYCategoria(marca, familia) {
   try {
-    const familiaLimpia = familia?.trim();
-    const gamaLimpia = marca?.trim();
-    console.log(`📦 Cargando gamas para ${gamaLimpia} en ${familiaLimpia}`);
+    console.log(`📦 Cargando gamas para ${marca} en ${familia}`);
     
     // Primero obtener el brand_id
     const marcasMap = await cargarMarcas();
     let brandId = null;
     for (const [id, name] of marcasMap.entries()) {
-      if (name === marca) {
+      if (name.trim() === marca.trim()) {
         brandId = id;
         break;
       }
@@ -253,18 +232,22 @@ export async function getGamasPorMarcaYCategoria(marca, familia) {
     const { data, error } = await supabase
       .from('products')
       .select('subfamilia')
-      .eq('familia', familiaLimpia)
+      .eq('familia', familia)
       .eq('brand_id', brandId)
-      .not('subfamilia', 'is', null);
+      .not('subfamilia', 'is', null)
+      .limit(5000);
     
-    if (error) throw error;
+    if (error) {
+      console.error('❌ Error:', error);
+      return [];
+    }
     
     // Obtener subfamilias únicas (limpiar newlines)
     const gamasUnicas = [...new Set(data?.map(p => p.subfamilia?.trim()).filter(Boolean))];
     
     const gamas = gamasUnicas.sort().map(nombre => ({ nombre }));
     
-    console.log(`✅ Gamas encontradas: ${gamas.length}`, gamas.slice(0, 5));
+    console.log(`✅ Gamas encontradas: ${gamas.length}`);
     return gamas;
   } catch (error) {
     console.error('❌ Error getGamasPorMarcaYCategoria:', error);
@@ -278,16 +261,13 @@ export async function getGamasPorMarcaYCategoria(marca, familia) {
  */
 export async function getTiposPorGamaMarcaYFamilia(gama, marca, familia) {
   try {
-    const familiaLimpia = familia?.trim();
-    const gamaLimpia = gama?.trim();
-    const marcaLimpia = marca?.trim();
-    console.log(`🏷️ Cargando tipos para ${marcaLimpia} - ${gamaLimpia} en ${familiaLimpia}`);
+    console.log(`🏷️ Cargando tipos para ${marca} - ${gama} en ${familia}`);
     
     // Obtener brand_id
     const marcasMap = await cargarMarcas();
     let brandId = null;
     for (const [id, name] of marcasMap.entries()) {
-      if (name.trim() === marcaLimpia) {
+      if (name.trim() === marca.trim()) {
         brandId = id;
         break;
       }
@@ -299,16 +279,21 @@ export async function getTiposPorGamaMarcaYFamilia(gama, marca, familia) {
     const { data, error } = await supabase
       .from('products')
       .select('tipo')
-      .eq('familia', familiaLimpia)
+      .eq('familia', familia)
       .eq('brand_id', brandId)
-      .eq('subfamilia', gamaLimpia)
-      .not('tipo', 'is', null);
+      .eq('subfamilia', gama)
+      .not('tipo', 'is', null)
+      .limit(5000);
     
-    if (error) throw error;
+    if (error) {
+      console.error('❌ Error:', error);
+      return [];
+    }
     
     // Obtener tipos únicos (limpiar newlines)
     const tiposUnicos = [...new Set(data?.map(p => p.tipo?.trim()).filter(Boolean))];
-    console.log(`✅ Tipos encontrados: ${tiposUnicos.length}`, tiposUnicos.slice(0, 5));
+    
+    console.log(`✅ Tipos encontrados: ${tiposUnicos.length}`);
     return tiposUnicos.sort();
   } catch (error) {
     console.error('❌ Error getTiposPorGamaMarcaYFamilia:', error);
@@ -322,36 +307,24 @@ export async function getTiposPorGamaMarcaYFamilia(gama, marca, familia) {
  */
 export async function getProductosPorFiltro(familia, marca, gama, tipo) {
   try {
-    const familiaLimpia = familia?.trim();
-    const marcaLimpia = marca?.trim();
-    const gamaLimpia = gama?.trim();
-    const tipoLimpia = tipo?.trim();
-    console.log(`📋 Cargando productos: ${familiaLimpia} > ${marcaLimpia} > ${gamaLimpia} > ${tipoLimpia}`);
+    console.log(`📋 Cargando productos: ${familia} > ${marca} > ${gama} > ${tipo}`);
     
     // Obtener brand_id
     const marcasMap = await cargarMarcas();
     let brandId = null;
     for (const [id, name] of marcasMap.entries()) {
-      if (name.trim() === marcaLimpia) {
+      if (name.trim() === marca.trim()) {
         brandId = id;
         break;
       }
     }
     
-    // Normalizar tipo para evitar problemas con tildes
-    const normalizar = (str) => str?.toUpperCase()
-      .normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim() || '';
-    
-    const familiaNormalizada = normalizar(familiaLimpia);
-    const gamaNormalizada = normalizar(gamaLimpia);
-    const tipoNormalizado = normalizar(tipoLimpia);
-    
     let query = supabase
       .from('products')
-      .select('id, ref_fabricante, name, precio, marca, familia, subfamilia, tipo')
-      .eq('familia', familiaLimpia)
-      .eq('subfamilia', gamaLimpia)
-      .eq('tipo', tipoLimpia)
+      .select('id, ref_fabricante, name, imagen, precio, marca, familia, subfamilia, tipo')
+      .eq('familia', familia)
+      .eq('subfamilia', gama)
+      .eq('tipo', tipo)
       .limit(50);
     
     if (brandId) {
@@ -360,7 +333,10 @@ export async function getProductosPorFiltro(familia, marca, gama, tipo) {
     
     const { data, error } = await query;
     
-    if (error) throw error;
+    if (error) {
+      console.error('❌ Error:', error);
+      return [];
+    }
     
     console.log(`✅ Productos encontrados: ${data?.length || 0}`);
     return data || [];
@@ -377,7 +353,7 @@ export async function getProductoPorRef(ref) {
   try {
     const { data, error } = await supabase
       .from('products')
-      .select('id, ref_fabricante, name, precio, familia, subfamilia, tipo, marca')
+      .select('*')
       .eq('ref_fabricante', ref)
       .single();
     
@@ -396,7 +372,7 @@ export async function buscarProductos(termino) {
   try {
     const { data, error } = await supabase
       .from('products')
-      .select('id, ref_fabricante, name, marca')
+      .select('id, ref_fabricante, name, imagen, marca')
       .ilike('name', `%${termino}%`)
       .limit(10);
     

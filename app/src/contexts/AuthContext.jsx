@@ -1,7 +1,5 @@
 import { createContext, useContext, useEffect, useState } from 'react'
-import { GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from 'firebase/auth'
-import { auth, db } from '../firebase/firebaseConfig'
-import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore'
+import { supabase } from '../supabase/supabaseClient'
 
 const AuthContext = createContext()
 
@@ -15,129 +13,37 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
 
-  /* Bypass auth solo en desarrollo (Playwright) — NUNCA en producción */
-  const isDev = typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.DEV
-  const mockUser = isDev && typeof window !== 'undefined' ? (window.__PW_MOCK_USER__ || null) : null
-
   useEffect(() => {
-    /* Si hay usuario mock (solo DEV), usarlo directamente */
-    if (mockUser) {
-      // Doble verificación: rechazar en producción
-      if (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.PROD) {
-        console.error('SECURITY: Mock user rejected in production')
-      } else {
-        setUser(mockUser)
-        setLoading(false)
-        return
-      }
-    }
-
-    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-      if (firebaseUser) {
-        // Verificar y ejecutar migración si es necesario
-        await checkAndMigrateUserData(firebaseUser.uid)
-      }
-      setUser(firebaseUser)
+    // Verificar sesión existente en Supabase
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null)
       setLoading(false)
     })
-    return unsubscribe
-  }, [mockUser])
 
-  /* Función para verificar y migrar datos de localStorage a Firestore */
-  async function checkAndMigrateUserData(uid) {
-    try {
-      // Verificar si ya está migrado
-      const profileRef = doc(db, 'users', uid, 'profile', 'default')
-      const profileSnap = await getDoc(profileRef)
+    // Escuchar cambios de auth
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null)
+    })
 
-      if (profileSnap.exists() && profileSnap.data().migratedAt) {
-        // Ya migrado, no hacer nada
-        return
-      }
+    return () => subscription.unsubscribe()
+  }, [])
 
-      // Recopilar datos de localStorage con prefijo sonepar_
-      const keysToMigrate = []
-      for (let i = 0; i < localStorage.length; i++) {
-        const key = localStorage.key(i)
-        if (key && (key.startsWith('sonepar_') || key === 'sidebar_collapsed')) {
-          keysToMigrate.push(key)
-        }
-      }
-
-      if (keysToMigrate.length === 0) {
-        // No hay datos que migrar, marcar como migrado
-        await setDoc(profileRef, { migratedAt: serverTimestamp() }, { merge: true })
-        return
-      }
-
-      // Migrar cada key
-      for (const key of keysToMigrate) {
-        const value = localStorage.getItem(key)
-        if (!value) continue
-
-        let parsedValue
-        try {
-          parsedValue = JSON.parse(value)
-        } catch {
-          parsedValue = value
-        }
-
-        // Determinar ruta según la key — usar doc() con segmentos separados
-        let docRef
-        if (key === 'sonepar_fichas_historial') {
-          docRef = doc(db, 'users', uid, 'fichas', 'history', 'default')
-        } else if (key === 'sonepar_presupuestos_historial') {
-          docRef = doc(db, 'users', uid, 'budgets', 'default')
-        } else if (key === 'sonepar_incidencias') {
-          docRef = doc(db, 'users', uid, 'incidents', 'default')
-        } else if (key === 'sonepar_kpi_historial') {
-          docRef = doc(db, 'users', uid, 'kpi', 'entries', 'default')
-        } else if (key.startsWith('sonepar_sim_')) {
-          const simId = key.replace('sonepar_sim_', '')
-          docRef = doc(db, 'users', uid, 'simulator', simId)
-        } else if (key.startsWith('sonepar_formacion_')) {
-          const formId = key.replace('sonepar_formacion_', '')
-          docRef = doc(db, 'users', uid, 'training', formId)
-        } else if (key === 'sonepar_theme') {
-          docRef = doc(db, 'users', uid, 'preferences', 'theme')
-        } else if (key === 'sidebar_collapsed') {
-          docRef = doc(db, 'users', uid, 'preferences', 'sidebar')
-        } else {
-          continue
-        }
-
-        // Guardar en Firestore
-        await setDoc(docRef, {
-          data: parsedValue,
-          sourceKey: key,
-          migratedAt: serverTimestamp()
-        }, { merge: true })
-      }
-
-      // Marcar migración completada
-      await setDoc(profileRef, { migratedAt: serverTimestamp() }, { merge: true })
-
-    } catch (error) {
-      console.error('Error during migration:', error)
-    }
-  }
-
-  /* Login con Google */
+  /* Login con Google via Supabase */
   async function loginWithGoogle() {
-    const provider = new GoogleAuthProvider()
-    // Sin custom parameters — la versión más simple posible
-    const result = await signInWithPopup(auth, provider)
-    return result.user
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: window.location.origin
+      }
+    })
+    if (error) throw error
+    return data
   }
 
-  /* Logout — limpia tanto Firebase como mock */
+  /* Logout */
   async function logout() {
-    if (mockUser) {
-      setUser(null)
-      try { delete window.__PW_MOCK_USER__ } catch {}
-      return
-    }
-    await signOut(auth)
+    const { error } = await supabase.auth.signOut()
+    if (error) throw error
   }
 
   const value = { user, loading, loginWithGoogle, logout }
