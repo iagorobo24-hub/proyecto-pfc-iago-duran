@@ -1,6 +1,7 @@
 /**
- * SERVICIO DE CATÁLOGO (SUPABASE) - CONSULTAS OPTIMIZADAS
- * Estrategia: usar consultas filtradas para evitar timeout
+ * SERVICIO DE CATÁLOGO (SUPABASE) - CONSULTA DIRECTA A PRODUCTS
+ * No usa tablas auxiliares (families, categories) - consulta directamente products
+ * para obtener familias, marcas, gamas y tipos únicos.
  */
 import { createClient } from '@supabase/supabase-js';
 
@@ -9,8 +10,49 @@ const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS
 
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-// Cache simple para evitar recargas innecesarias
+// Cache simple
 let marcasCache = null;
+
+// Nombres legibles para familias
+const etiquetasFamilias = {
+  'CABLES': 'Cables',
+  'CABLES DE BAJA TENSION': 'Cables',
+  'CABLES DE MEDIA TENSION': 'Cables',
+  'DISTRIBUCION DE POTENCIA': 'Interruptores y Mecanismos',
+  'INTERRUPTORES Y MECANISMOS': 'Interruptores y Mecanismos',
+  'APARAMENTA MODULAR': 'Interruptores y Mecanismos',
+  'ENVOLVENTES Y CUADROS ELECTRICOS': 'Interruptores y Mecanismos',
+  'AUTOMATISMOS': 'Automatismos',
+  'CONTROL Y AUTOMATIZACION INDUSTRIAL': 'Automatismos',
+  'AUTOMATIZACION INDUSTRIAL': 'Automatismos',
+  'AUTOMATIZACION DE EDIFICIOS': 'Domótica',
+  'ILUMINACION': 'Iluminación',
+  'LUMINARIAS': 'Iluminación',
+  'CLIMATIZACION': 'Climatización',
+  'HVAC': 'Climatización',
+  'HVAC: HVAC: CLIMATIZACION VENTILACION Y AIRE ACONDICIONADO': 'Climatización',
+  'CLIMA': 'Climatización',
+  'DOMOTICA': 'Domótica',
+  'DOMOTICA Y CONTROL': 'Domótica',
+  'CANALIZACION': 'Canalización',
+  'CANALIZACIONES': 'Canalización',
+  'BANDEJAS': 'Canalización',
+  'COMUNICACION': 'Comunicación',
+  'COMUNICACIONES': 'Comunicación',
+  'REDES': 'Comunicación',
+  'HERRAMIENTAS': 'Herramientas',
+  'HERRAMIENTAS Y MANIPULACION': 'Herramientas',
+  'SEGURIDAD Y HERRAMIENTAS': 'Herramientas',
+  'PROTECCION': 'Protección',
+  'PROTECCION ELECTRICA': 'Protección',
+  'EPIs': 'Protección',
+  'FONTANERIA': 'Fontanería',
+  'FONTANERÍA': 'Fontanería',
+  'AGUA Y SANEAMIENTO': 'Fontanería',
+  'ENERGIAS RENOVABLES': 'Energías Renovables',
+  'ENERGIAS RENOVABLES Y VEHICULO ELECTRICO': 'Energías Renovables',
+  'PLACAS SOLARES': 'Energías Renovables'
+};
 
 /**
  * Carga el mapa de marcas (se hace una sola vez)
@@ -34,120 +76,44 @@ async function cargarMarcas() {
 }
 
 /**
- * Normaliza familia a categoría válida
- */
-function normalizarFamilia(familia) {
-  if (!familia) return null;
-  
-  const mapeo = {
-    'CABLES': 'CABLES',
-    'CABLES DE BAJA TENSION': 'CABLES',
-    'CABLES DE MEDIA TENSION': 'CABLES',
-    'DISTRIBUCION DE POTENCIA': 'INTERRUPTORES Y MECANISMOS',
-    'INTERRUPTORES Y MECANISMOS': 'INTERRUPTORES Y MECANISMOS',
-    'APARAMENTA MODULAR': 'INTERRUPTORES Y MECANISMOS',
-    'ENVOLVENTES Y CUADROS ELECTRICOS': 'INTERRUPTORES Y MECANISMOS',
-    'AUTOMATISMOS': 'AUTOMATISMOS',
-    'CONTROL Y AUTOMATIZACION INDUSTRIAL': 'AUTOMATISMOS',
-    'AUTOMATIZACION INDUSTRIAL': 'AUTOMATISMOS',
-    'AUTOMATIZACION DE EDIFICIOS': 'DOMOTICA',
-    'ILUMINACION': 'ILUMINACION',
-    'LUMINARIAS': 'ILUMINACION',
-    'CLIMATIZACION': 'CLIMATIZACION',
-    'HVAC': 'CLIMATIZACION',
-    'HVAC: HVAC: CLIMATIZACION VENTILACION Y AIRE ACONDICIONADO': 'CLIMATIZACION',
-    'CLIMA': 'CLIMATIZACION',
-    'DOMOTICA': 'DOMOTICA',
-    'DOMOTICA Y CONTROL': 'DOMOTICA',
-    'CANALIZACION': 'CANALIZACION',
-    'CANALIZACIONES': 'CANALIZACION',
-    'BANDEJAS': 'CANALIZACION',
-    'COMUNICACION': 'COMUNICACION',
-    'COMUNICACIONES': 'COMUNICACION',
-    'REDES': 'COMUNICACION',
-    'HERRAMIENTAS': 'HERRAMIENTAS',
-    'HERRAMIENTAS Y MANIPULACION': 'HERRAMIENTAS',
-    'SEGURIDAD Y HERRAMIENTAS': 'HERRAMIENTAS',
-    'PROTECCION': 'PROTECCION',
-    'PROTECCION ELECTRICA': 'PROTECCION',
-    'EPIs': 'PROTECCION',
-    'FONTANERIA': 'FONTANERIA',
-    'FONTANERÍA': 'FONTANERIA',
-    'AGUA Y SANEAMIENTO': 'FONTANERIA',
-    'ENERGIAS RENOVABLES': 'ENERGIAS RENOVABLES',
-    'ENERGIAS RENOVABLES Y VEHICULO ELECTRICO': 'ENERGIAS RENOVABLES',
-    'PLACAS SOLARES': 'ENERGIAS RENOVABLES'
-  };
-  
-  const normalizada = familia.toUpperCase().trim();
-  return mapeo[normalizada] || normalizada;
-}
-
-// Nombres legibles para categorías
-const etiquetasCategorias = {
-  'CABLES': 'Cables',
-  'INTERRUPTORES Y MECANISMOS': 'Interruptores y Mecanismos',
-  'AUTOMATISMOS': 'Automatismos',
-  'ILUMINACION': 'Iluminación',
-  'CLIMATIZACION': 'Climatización',
-  'DOMOTICA': 'Domótica',
-  'CANALIZACION': 'Canalización',
-  'COMUNICACION': 'Comunicación',
-  'HERRAMIENTAS': 'Herramientas',
-  'PROTECCION': 'Protección',
-  'FONTANERIA': 'Fontanería',
-  'ENERGIAS RENOVABLES': 'Energías Renovables'
-};
-
-// Lista de familias válidas a verificar directamente
-const FAMILIAS_A_VERIFICAR = [
-  'CABLES',
-  'INTERRUPTORES Y MECANISMOS', 
-  'AUTOMATISMOS',
-  'ILUMINACION',
-  'CLIMATIZACION',
-  'DOMOTICA',
-  'CANALIZACION',
-  'COMUNICACION',
-  'HERRAMIENTAS',
-  'PROTECCION',
-  'FONTANERIA',
-  'ENERGIAS RENOVABLES'
-];
-
-/**
- * Obtiene las familias que tienen productos
- * Se llama al entrar en fichas técnicas
- * Estrategia: verificar cada familia con una consulta rápida
+ * Obtiene las familias únicas que tienen productos
+ * Consulta directamente la tabla products
  */
 export async function getCategorias() {
   try {
-    console.log('📂 Verificando familias disponibles...');
+    console.log('📂 Cargando familias desde products...');
     
-    const familiasDisponibles = [];
+    // Obtener familias únicas con count
+    const { data, error } = await supabase
+      .from('products')
+      .select('familia')
+      .not('familia', 'is', null);
     
-    // Verificar cada familia con una consulta rápida (limit 1)
-    for (const familia of FAMILIAS_A_VERIFICAR) {
-      const { data, error } = await supabase
-        .from('products')
-        .select('familia')
-        .eq('familia', familia)
-        .limit(1);
-      
-      if (!error && data && data.length > 0) {
-        familiasDisponibles.push(familia);
-        console.log(`  ✅ ${familia} tiene productos`);
-      }
+    if (error) {
+      console.error('❌ Error:', error);
+      return [];
     }
     
-    console.log('📂 Familias disponibles:', familiasDisponibles);
+    // Limpiar y obtener únicas
+    const familiasRaw = data?.map(p => p.familia?.trim()).filter(Boolean) || [];
+    const familiasUnicas = [...new Set(familiasRaw)];
     
-    return familiasDisponibles.map(id => ({
-      id,
-      label: etiquetasCategorias[id] || id,
+    console.log('📂 Familias únicas encontradas:', familiasUnicas.length);
+    console.log('📂 Sample:', familiasUnicas.slice(0, 5));
+    
+    // Mapear a formato de categoría
+    const categorias = familiasUnicas.map(familia => ({
+      id: familia,
+      label: etiquetasFamilias[familia] || familia,
       icon: '📁',
       color: '#3b82f6'
     }));
+    
+    // Ordenar por label
+    categorias.sort((a, b) => a.label.localeCompare(b.label));
+    
+    console.log('📂 Categorías procesadas:', categorias.length);
+    return categorias;
   } catch (error) {
     console.error('❌ Error getCategorias:', error);
     return [];
@@ -156,17 +122,16 @@ export async function getCategorias() {
 
 /**
  * Obtiene las marcas que tienen productos en una familia específica
- * Se llama al seleccionar una familia
  */
 export async function getMarcasPorCategoria(familia) {
   try {
-    console.log(`🏷️ Cargando marcas para familia: ${familia}`);
+    console.log(`🏷️ Cargando marcas para: ${familia}`);
     
-    // Obtener brand_ids únicos que tienen productos en esta familia
     const { data, error } = await supabase
       .from('products')
       .select('brand_id')
       .eq('familia', familia)
+      .not('brand_id', 'is', null)
       .limit(5000);
     
     if (error) {
@@ -174,7 +139,6 @@ export async function getMarcasPorCategoria(familia) {
       return [];
     }
     
-    // Obtener brand_ids únicos
     const brandIdsUnicos = [...new Set(data?.map(p => p.brand_id).filter(Boolean))];
     
     if (brandIdsUnicos.length === 0) {
@@ -182,7 +146,7 @@ export async function getMarcasPorCategoria(familia) {
       return [];
     }
     
-    // Cargar nombres de esas marcas
+    // Cargar nombres de marcas
     const { data: brands, error: brandsError } = await supabase
       .from('brands')
       .select('id, name')
@@ -207,13 +171,12 @@ export async function getMarcasPorCategoria(familia) {
 
 /**
  * Obtiene las gamas (subfamilias) para una familia + marca
- * Se llama al seleccionar una marca
  */
 export async function getGamasPorMarcaYCategoria(marca, familia) {
   try {
     console.log(`📦 Cargando gamas para ${marca} en ${familia}`);
     
-    // Primero obtener el brand_id
+    // Obtener brand_id
     const marcasMap = await cargarMarcas();
     let brandId = null;
     for (const [id, name] of marcasMap.entries()) {
@@ -228,7 +191,7 @@ export async function getGamasPorMarcaYCategoria(marca, familia) {
       return [];
     }
     
-    // Obtener subfamilias únicas para esta familia + marca
+    // Obtener subfamilias únicas
     const { data, error } = await supabase
       .from('products')
       .select('subfamilia')
@@ -242,9 +205,7 @@ export async function getGamasPorMarcaYCategoria(marca, familia) {
       return [];
     }
     
-    // Obtener subfamilias únicas (limpiar newlines)
     const gamasUnicas = [...new Set(data?.map(p => p.subfamilia?.trim()).filter(Boolean))];
-    
     const gamas = gamasUnicas.sort().map(nombre => ({ nombre }));
     
     console.log(`✅ Gamas encontradas: ${gamas.length}`);
@@ -257,13 +218,11 @@ export async function getGamasPorMarcaYCategoria(marca, familia) {
 
 /**
  * Obtiene los tipos para una familia + marca + gama
- * Se llama al seleccionar una gama
  */
 export async function getTiposPorGamaMarcaYFamilia(gama, marca, familia) {
   try {
     console.log(`🏷️ Cargando tipos para ${marca} - ${gama} en ${familia}`);
     
-    // Obtener brand_id
     const marcasMap = await cargarMarcas();
     let brandId = null;
     for (const [id, name] of marcasMap.entries()) {
@@ -275,7 +234,6 @@ export async function getTiposPorGamaMarcaYFamilia(gama, marca, familia) {
     
     if (!brandId) return [];
     
-    // Obtener tipos únicos para esta familia + marca + gama
     const { data, error } = await supabase
       .from('products')
       .select('tipo')
@@ -290,9 +248,7 @@ export async function getTiposPorGamaMarcaYFamilia(gama, marca, familia) {
       return [];
     }
     
-    // Obtener tipos únicos (limpiar newlines)
     const tiposUnicos = [...new Set(data?.map(p => p.tipo?.trim()).filter(Boolean))];
-    
     console.log(`✅ Tipos encontrados: ${tiposUnicos.length}`);
     return tiposUnicos.sort();
   } catch (error) {
@@ -302,14 +258,12 @@ export async function getTiposPorGamaMarcaYFamilia(gama, marca, familia) {
 }
 
 /**
- * Obtiene los productos filtrados por familia + marca + gama + tipo
- * Se llama al seleccionar un tipo
+ * Obtiene los productos filtrados
  */
 export async function getProductosPorFiltro(familia, marca, gama, tipo) {
   try {
     console.log(`📋 Cargando productos: ${familia} > ${marca} > ${gama} > ${tipo}`);
     
-    // Obtener brand_id
     const marcasMap = await cargarMarcas();
     let brandId = null;
     for (const [id, name] of marcasMap.entries()) {
@@ -321,7 +275,7 @@ export async function getProductosPorFiltro(familia, marca, gama, tipo) {
     
     let query = supabase
       .from('products')
-      .select('id, ref_fabricante, name, marca, familia, subfamilia, tipo')
+      .select('id, ref_fabricante, name, imagen, marca, familia, subfamilia, tipo')
       .eq('familia', familia)
       .eq('subfamilia', gama)
       .eq('tipo', tipo)
@@ -346,9 +300,6 @@ export async function getProductosPorFiltro(familia, marca, gama, tipo) {
   }
 }
 
-/**
- * Obtiene un producto por su referencia
- */
 export async function getProductoPorRef(ref) {
   try {
     const { data, error } = await supabase
@@ -365,14 +316,11 @@ export async function getProductoPorRef(ref) {
   }
 }
 
-/**
- * Busca productos por nombre
- */
 export async function buscarProductos(termino) {
   try {
     const { data, error } = await supabase
       .from('products')
-      .select('id, ref_fabricante, name, marca')
+      .select('id, ref_fabricante, name, imagen, marca')
       .ilike('name', `%${termino}%`)
       .limit(10);
     
@@ -384,9 +332,6 @@ export async function buscarProductos(termino) {
   }
 }
 
-/**
- * Obtiene estadísticas del catálogo
- */
 export async function getCatalogStats() {
   try {
     const { count, error } = await supabase
@@ -401,13 +346,11 @@ export async function getCatalogStats() {
   }
 }
 
-// Función de inicialización mínima (solo carga marcas)
 export async function initCatalog() {
   await cargarMarcas();
   return {};
 }
 
-// Default export
 export default {
   initCatalog,
   getCategorias,
