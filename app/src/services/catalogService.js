@@ -112,24 +112,27 @@ export async function getCategorias() {
   try {
     console.log('📂 Cargando familias...');
     
-    // Obtener familias únicas de la tabla products
+    // Obtener familias únicas de la tabla products - SIN LÍMITE
+    // Usar .limit(10000) para traer muchos más registros
     const { data, error } = await supabase
       .from('products')
       .select('familia')
-      .not('familia', 'is', null);
+      .not('familia', 'is', null)
+      .limit(10000);
     
     console.log('📂 raw familias count:', data?.length);
-    console.log('📂 raw familias sample:', data?.slice(0, 10).map(p => p.familia));
+    console.log('📂 raw familias sample:', data?.slice(0, 10).map(p => p.familia?.trim()));
     
     if (error) {
       console.error('❌ Error consultando familias:', error);
       throw error;
     }
     
-    // Normalizar y obtener categorías únicas
+    // Normalizar y obtener categorías únicas (limpiar newlines)
     const familiasNormalizadas = new Set();
     data?.forEach(p => {
-      const cat = normalizarFamilia(p.familia);
+      const familiaLimpia = p.familia?.trim(); // Eliminar newlines
+      const cat = normalizarFamilia(familiaLimpia);
       if (cat) familiasNormalizadas.add(cat);
     });
     
@@ -154,13 +157,14 @@ export async function getCategorias() {
  */
 export async function getMarcasPorCategoria(familia) {
   try {
-    console.log(`🏷️ Cargando marcas para familia: ${familia}`);
+    const familiaLimpia = familia?.trim(); // Limpiar valores
+    console.log(`🏷️ Cargando marcas para familia: ${familiaLimpia}`);
     
     // Obtener brand_ids únicos que tienen productos en esta familia
     const { data, error } = await supabase
       .from('products')
       .select('brand_id')
-      .eq('familia', familia);
+      .eq('familia', familiaLimpia);
     
     if (error) throw error;
     
@@ -198,7 +202,9 @@ export async function getMarcasPorCategoria(familia) {
  */
 export async function getGamasPorMarcaYCategoria(marca, familia) {
   try {
-    console.log(`📦 Cargando gamas para ${marca} en ${familia}`);
+    const familiaLimpia = familia?.trim();
+    const gamaLimpia = marca?.trim();
+    console.log(`📦 Cargando gamas para ${gamaLimpia} en ${familiaLimpia}`);
     
     // Primero obtener el brand_id
     const marcasMap = await cargarMarcas();
@@ -219,14 +225,14 @@ export async function getGamasPorMarcaYCategoria(marca, familia) {
     const { data, error } = await supabase
       .from('products')
       .select('subfamilia')
-      .eq('familia', familia)
+      .eq('familia', familiaLimpia)
       .eq('brand_id', brandId)
       .not('subfamilia', 'is', null);
     
     if (error) throw error;
     
-    // Obtener subfamilias únicas
-    const gamasUnicas = [...new Set(data?.map(p => p.subfamilia).filter(Boolean))];
+    // Obtener subfamilias únicas (limpiar newlines)
+    const gamasUnicas = [...new Set(data?.map(p => p.subfamilia?.trim()).filter(Boolean))];
     
     const gamas = gamasUnicas.sort().map(nombre => ({ nombre }));
     
@@ -244,13 +250,16 @@ export async function getGamasPorMarcaYCategoria(marca, familia) {
  */
 export async function getTiposPorGamaMarcaYFamilia(gama, marca, familia) {
   try {
-    console.log(`🏷️ Cargando tipos para ${marca} - ${gama} en ${familia}`);
+    const familiaLimpia = familia?.trim();
+    const gamaLimpia = gama?.trim();
+    const marcaLimpia = marca?.trim();
+    console.log(`🏷️ Cargando tipos para ${marcaLimpia} - ${gamaLimpia} en ${familiaLimpia}`);
     
     // Obtener brand_id
     const marcasMap = await cargarMarcas();
     let brandId = null;
     for (const [id, name] of marcasMap.entries()) {
-      if (name === marca) {
+      if (name.trim() === marcaLimpia) {
         brandId = id;
         break;
       }
@@ -262,15 +271,15 @@ export async function getTiposPorGamaMarcaYFamilia(gama, marca, familia) {
     const { data, error } = await supabase
       .from('products')
       .select('tipo')
-      .eq('familia', familia)
+      .eq('familia', familiaLimpia)
       .eq('brand_id', brandId)
-      .eq('subfamilia', gama)
+      .eq('subfamilia', gamaLimpia)
       .not('tipo', 'is', null);
     
     if (error) throw error;
     
-    const tiposUnicos = [...new Set(data?.map(p => p.tipo).filter(Boolean))];
-    
+    // Obtener tipos únicos (limpiar newlines)
+    const tiposUnicos = [...new Set(data?.map(p => p.tipo?.trim()).filter(Boolean))];
     console.log(`✅ Tipos encontrados: ${tiposUnicos.length}`, tiposUnicos.slice(0, 5));
     return tiposUnicos.sort();
   } catch (error) {
@@ -285,13 +294,17 @@ export async function getTiposPorGamaMarcaYFamilia(gama, marca, familia) {
  */
 export async function getProductosPorFiltro(familia, marca, gama, tipo) {
   try {
-    console.log(`📋 Cargando productos: ${familia} > ${marca} > ${gama} > ${tipo}`);
+    const familiaLimpia = familia?.trim();
+    const marcaLimpia = marca?.trim();
+    const gamaLimpia = gama?.trim();
+    const tipoLimpia = tipo?.trim();
+    console.log(`📋 Cargando productos: ${familiaLimpia} > ${marcaLimpia} > ${gamaLimpia} > ${tipoLimpia}`);
     
     // Obtener brand_id
     const marcasMap = await cargarMarcas();
     let brandId = null;
     for (const [id, name] of marcasMap.entries()) {
-      if (name === marca) {
+      if (name.trim() === marcaLimpia) {
         brandId = id;
         break;
       }
@@ -300,9 +313,9 @@ export async function getProductosPorFiltro(familia, marca, gama, tipo) {
     let query = supabase
       .from('products')
       .select('id, ref_fabricante, name, imagen, precio, marca, familia, subfamilia, tipo')
-      .eq('familia', familia)
-      .eq('subfamilia', gama)
-      .eq('tipo', tipo)
+      .eq('familia', familiaLimpia)
+      .eq('subfamilia', gamaLimpia)
+      .eq('tipo', tipoLimpia)
       .limit(50);
     
     if (brandId) {
