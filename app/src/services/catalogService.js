@@ -4,7 +4,8 @@
  */
 import { createClient } from '@supabase/supabase-js';
 import { ServiceError } from './errorHandler';
-import { normalizarFamilia, CATEGORIAS_VALIDAS } from '../data/familiaMapping';
+import { CATEGORIAS_VALIDAS } from '../data/familiaMapping';
+import { normalizarCategoria, normalizarFamilia } from '../utils/normalizarCategoria';
 
 const supabaseUrl = 'https://fncmzrnmzmuhlullkrud.supabase.co';
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZuY216cm5tem11aGx1bGxrcnVkIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MzM2MDY5NSwiZXhwIjoyMDg4OTM2Njk1fQ.3DfYKquAUFFNx_c8NdMWmic7pVVckWsXEZWOJTuC5wg';
@@ -20,7 +21,6 @@ let brandsMap = null;
  */
 export async function initCatalog() {
   if (treeCache) return treeCache;
-  if (brandsMap) return treeCache;
 
   try {
     console.log('🌳 Iniciando catálogo...');
@@ -60,6 +60,7 @@ export async function initCatalog() {
       if (!products || products.length === 0) break;
 
       products.forEach(p => {
+        // Usar normalizarFamilia del nuevo utils (consistente con getCategorias)
         const categoria = normalizarFamilia(p.familia);
         if (!categoria || !CATEGORIAS_VALIDAS.includes(categoria)) return;
 
@@ -118,7 +119,8 @@ export async function getCategorias() {
       .order('name');
     
     return data?.map(cat => ({
-      id: cat.name.toUpperCase().replace(/Í/g, 'I').replace(/Ó/g, 'O').replace(/Á/g, 'A').replace(/É/g, 'E').replace(/-/g, ' ').trim(),
+      // Usar normalizarCategoria del nuevo utils (consistente con initCatalog)
+      id: normalizarCategoria(cat.name),
       label: cat.name.charAt(0).toUpperCase() + cat.name.slice(1),
       icon: '📁',
       color: '#3b82f6'
