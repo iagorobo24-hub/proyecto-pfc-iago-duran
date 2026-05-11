@@ -60,8 +60,22 @@ export async function initCatalog() {
       if (!products || products.length === 0) break;
 
       products.forEach(p => {
+        // DEBUG: Ver qué valores vienen de la DB
+        if (processed < 5) {
+          console.log('🔍 DEBUG producto:', { familia: p.familia, subfamilia: p.subfamilia, tipo: p.tipo });
+        }
+        
         // Usar normalizarFamilia del nuevo utils (consistente con getCategorias)
         const categoria = normalizarFamilia(p.familia);
+        
+        if (processed < 5) {
+          console.log('🔍 DEBUG normalizarFamilia:', { 
+            input: p.familia, 
+            output: categoria,
+            esValida: categoria ? CATEGORIAS_VALIDAS.includes(categoria) : false 
+          });
+        }
+        
         if (!categoria || !CATEGORIAS_VALIDAS.includes(categoria)) return;
 
         const marca = brandsMap.get(p.brand_id) || 'DESCONOCIDA';
