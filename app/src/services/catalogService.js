@@ -112,27 +112,47 @@ export async function getCategorias() {
   try {
     console.log('📂 Cargando familias...');
     
-    // Obtener familias únicas de la tabla products - SIN LÍMITE
-    // Usar .limit(10000) para traer muchos más registros
-    const { data, error } = await supabase
-      .from('products')
-      .select('familia')
-      .not('familia', 'is', null)
-      .limit(10000);
+    // Obtener familias con paginación manual
+    const todasLasFamilias = new Set();
+    const batchSize = 5000;
+    let offset = 0;
+    let totalLeidos = 0;
     
-    console.log('📂 raw familias count:', data?.length);
-    console.log('📂 raw familias sample:', data?.slice(0, 10).map(p => p.familia?.trim()));
-    
-    if (error) {
-      console.error('❌ Error consultando familias:', error);
-      throw error;
+    while (true) {
+      const { data, error } = await supabase
+        .from('products')
+        .select('familia')
+        .not('familia', 'is', null)
+        .range(offset, offset + batchSize - 1);
+      
+      if (error) {
+        console.error('❌ Error consultando familias:', error);
+        throw error;
+      }
+      
+      if (!data || data.length === 0) break;
+      
+      data.forEach(p => {
+        const familiaLimpia = p.familia?.trim();
+        if (familiaLimpia) todasLasFamilias.add(familiaLimpia);
+      });
+      
+      totalLeidos += data.length;
+      offset += batchSize;
+      
+      console.log(`📂 Leídos ${totalLeidos} productos, familias únicas: ${todasLasFamilias.size}`);
+      
+      // Si trajo menos que el batchSize, terminamos
+      if (data.length < batchSize) break;
     }
     
-    // Normalizar y obtener categorías únicas (limpiar newlines)
+    console.log('📂 Total productos leídos:', totalLeidos);
+    console.log('📂 raw familias únicas:', Array.from(todasLasFamilias));
+    
+    // Normalizar y obtener categorías únicas
     const familiasNormalizadas = new Set();
-    data?.forEach(p => {
-      const familiaLimpia = p.familia?.trim(); // Eliminar newlines
-      const cat = normalizarFamilia(familiaLimpia);
+    todasLasFamilias.forEach(familia => {
+      const cat = normalizarFamilia(familia);
       if (cat) familiasNormalizadas.add(cat);
     });
     
