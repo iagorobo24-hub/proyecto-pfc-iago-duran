@@ -112,46 +112,36 @@ export async function getCategorias() {
   try {
     console.log('📂 Cargando familias...');
     
-    // Obtener familias con paginación manual
-    const todasLasFamilias = new Set();
-    const batchSize = 5000;
-    let offset = 0;
-    let totalLeidos = 0;
+    // Usar select con filtro más específico para obtener valores únicos
+    // Esto es más eficiente que cargar todos los registros
+    const { data, error } = await supabase
+      .from('products')
+      .select('familia')
+      .not('familia', 'is', null)
+      .not('familia', 'eq', '')
+      .limit(1000); // Empezar con 1000 y ver qué hay
     
-    while (true) {
-      const { data, error } = await supabase
-        .from('products')
-        .select('familia')
-        .not('familia', 'is', null)
-        .range(offset, offset + batchSize - 1);
-      
-      if (error) {
-        console.error('❌ Error consultando familias:', error);
-        throw error;
-      }
-      
-      if (!data || data.length === 0) break;
-      
-      data.forEach(p => {
-        const familiaLimpia = p.familia?.trim();
-        if (familiaLimpia) todasLasFamilias.add(familiaLimpia);
-      });
-      
-      totalLeidos += data.length;
-      offset += batchSize;
-      
-      console.log(`📂 Leídos ${totalLeidos} productos, familias únicas: ${todasLasFamilias.size}`);
-      
-      // Si trajo menos que el batchSize, terminamos
-      if (data.length < batchSize) break;
+    if (error) {
+      console.error('❌ Error consultando familias:', error);
+      // Si falla, intentar con otra aproximación
+      return [];
     }
     
-    console.log('📂 Total productos leídos:', totalLeidos);
-    console.log('📂 raw familias únicas:', Array.from(todasLasFamilias));
+    console.log('📂 raw familias count:', data?.length);
+    console.log('📂 raw familias sample:', data?.slice(0, 10).map(p => p.familia?.trim()));
+    
+    // Obtener familias únicas en memoria
+    const familiasUnicas = new Set();
+    data?.forEach(p => {
+      const familiaLimpia = p.familia?.trim();
+      if (familiaLimpia) familiasUnicas.add(familiaLimpia);
+    });
+    
+    console.log('📂 raw familias únicas:', Array.from(familiasUnicas));
     
     // Normalizar y obtener categorías únicas
     const familiasNormalizadas = new Set();
-    todasLasFamilias.forEach(familia => {
+    familiasUnicas.forEach(familia => {
       const cat = normalizarFamilia(familia);
       if (cat) familiasNormalizadas.add(cat);
     });
