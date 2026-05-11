@@ -321,10 +321,10 @@ export async function getProductosPorFiltro(familia, marca, gama, tipo) {
     
     let query = supabase
       .from('products')
-      .select('id, ref_fabricante, name, precio, marca, familia, subfamilia, tipo')
+      .select('id, ref_fabricante, name, marca, familia, subfamilia, tipo')
       .eq('familia', familia)
-      .eq('subfamilia', gama.trim())
-      .eq('tipo', tipo.trim())
+      .eq('subfamilia', gama)
+      .eq('tipo', tipo)
       .limit(50);
     
     if (brandId) {
@@ -372,7 +372,7 @@ export async function buscarProductos(termino) {
   try {
     const { data, error } = await supabase
       .from('products')
-      .select('id, ref_fabricante, name, imagen, marca')
+      .select('id, ref_fabricante, name, marca')
       .ilike('name', `%${termino}%`)
       .limit(10);
     
