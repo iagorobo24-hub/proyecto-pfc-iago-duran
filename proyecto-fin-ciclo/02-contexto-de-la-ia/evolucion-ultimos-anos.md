@@ -2,7 +2,7 @@
 
 ## Introducción
 
-Si hace cuatro años me dices que iba a hacer una aplicación web sin saber programar, te digo que estás loco. Pues aquí estamos. La inteligencia artificial generativa ha cambiado las reglas del juego en el desarrollo de software, y justo por eso este proyecto tiene sentido ahora y no hace cinco años.
+Si hace cuatro años me dices que iba a hacer una aplicación web sin saber programar, no me lo hubiera creído. Pues aquí estamos. La inteligencia artificial generativa ha cambiado las reglas del juego en el desarrollo de software, y justo por eso este proyecto tiene sentido ahora y no hace cinco años.
 
 Este capítulo cuenta un poco la historia de cómo hemos llegado hasta aquí y por qué un alumno de FP puede hoy hacer lo que antes requería un equipo entero.
 
@@ -12,7 +12,7 @@ Este capítulo cuenta un poco la historia de cómo hemos llegado hasta aquí y p
 
 ### 2020-2022: Los inicios
 - **GPT-3 (2020)** — El primer modelo de lenguaje que sabía escribir código. Era interesante pero todavía muy limitado.
-- **GitHub Copilot (2021)** — El primer "copiloto" que te sugería código mientras escribías. Una pasada para la época.
+- **GitHub Copilot (2021)** — El primer "copiloto" que te sugería código mientras escribías. Algo increíble para la época.
 - **ChatGPT (2022)** — Cuando la IA se volvió mainstream. Todo el mundo podía hablar con ella.
 
 ### 2023: El boom

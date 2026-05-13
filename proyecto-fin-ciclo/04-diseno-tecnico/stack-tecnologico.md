@@ -96,7 +96,7 @@ Necesitaba un sitio donde esconder la clave de la API de IA (no puede estar en e
 
 Vercel es donde está publicada la web. Tiene varias ventajas:
 
-| Ventaja | Por qué mola |
+| Ventaja | Por qué destaca |
 |---------|-------------|
 | **Deploy automático** | Cada vez que subo código a GitHub, Vercel lo publica solo |
 | **Gratis** | El plan Hobby (gratuito) da para mucho |

@@ -6,7 +6,7 @@
 
 ## Lo que está pasando ahora (y por qué no es el futuro)
 
-Vale, lo primero: el otro día revisé lo que había escrito antes sobre "tendencias futuras" y era básicamente describir cosas que ya existen. Decía que "en el futuro los agentes harán tareas solos" — pero OpenCode y Devin ya hacen eso ahora mismo. Decía que "los modelos gratis mejorarán" — pero ya hay modelos gratuitos que funcionan de puta madre.
+Vale, lo primero: el otro día revisé lo que había escrito antes sobre "tendencias futuras" y era básicamente describir cosas que ya existen. Decía que "en el futuro los agentes harán tareas solos" — pero OpenCode y Devin ya hacen eso ahora mismo. Decía que "los modelos gratis mejorarán" — pero ya hay modelos gratuitos que funcionan muy bien.
 
 Así que voy a intentar ir un paso más allá, a lo que **todavía no existe del todo** pero que se ve venir.
 
@@ -24,13 +24,13 @@ Proyectos como OpenClaw (aunque todavía están verdes) apuntan a eso: un agente
 
 ## 2. IAs que se auto-refinan mientras trabajan
 
-Esto es lo que más me alucina pensar. Ahora mismo los modelos de lenguaje son estáticos: salen una versión, la entrenan con un montón de datos, y la congelan. El modelo que usas hoy es el mismo que vas a usar dentro de seis meses (aunque ellos saquen versiones nuevas).
+Esto es lo que más me sorprende pensar. Ahora mismo los modelos de lenguaje son estáticos: salen una versión, la entrenan con un montón de datos, y la congelan. El modelo que usas hoy es el mismo que vas a usar dentro de seis meses (aunque ellos saquen versiones nuevas).
 
 **Lo que viene:** Modelos que aprenden durante el uso real. Imagínate una IA que mientras te ayuda con tu proyecto, va identificando qué respuestas te han funcionado mejor, qué patrones de código han dado menos errores, qué explicaciones has entendido más rápido. Y con todo eso, se va ajustando a ti.
 
 Sería como tener un estudiante y un trabajador a la vez, a velocidades increíbles. La IA aprende de ti mientras tú aprendes de ella. Cada interacción la hace mejor para la siguiente. Y no solo para ti — todo lo que aprende trabajando con miles de usuarios podría servir para mejorar el modelo base.
 
-¿Los riesgos? Muchos. Si aprende de ejemplos malos, se vuelve mala. Si alguien la envenena con datos incorrectos, replica errores a lo bestia. Pero el potencial es bestial.
+¿Los riesgos? Muchos. Si aprende de ejemplos malos, se vuelve mala. Si alguien la envenena con datos incorrectos, replica errores a gran escala. Pero el potencial es enorme.
 
 ---
 
@@ -54,7 +54,7 @@ Cada cosa va por separado. **Lo que viene:** agentes que hagan todo eso solos. L
 4. Conecta la pasarela de pago
 5. Te da el enlace
 
-Cuando alguien se tome en serio la seguridad y el control de estos agentes, veremos empresas automatizadas donde no haya un solo trabajador humano en el día a día. Solo supervisión. Y eso, para un alumno de FP que ha visto de cerca cómo funcionan los almacenes y la logística, flipas porque te das cuenta de lo cerca que está.
+Cuando alguien se tome en serio la seguridad y el control de estos agentes, veremos empresas automatizadas donde no haya un solo trabajador humano en el día a día. Solo supervisión. Y eso, para un alumno de FP que ha visto de cerca cómo funcionan los almacenes y la logística, te hace pensar lo cerca que estamos de eso.
 
 ---
 

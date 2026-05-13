@@ -53,7 +53,7 @@ Copilot está bien para empezar pero se queda corto cuando el proyecto se hace g
 | **Gemini CLI** | Muy buena | Buena | Excelente | Gratis | Sí | 8/10 |
 | **Hermes** | Excelente | Excelente | Muy buena | Gratis | Sí | **9/10** |
 
-**Mi opinión:** Los agentes CLI fueron un descubrimiento tardío pero brutal. Le dices desde la terminal "oye, haz tal cosa" y el agente solo mira tus archivos, los modifica, ejecuta comandos, y te dice qué ha hecho. **OpenCode y Hermes son los que uso ahora mismo.** Lástima que Qwen CLI cerrara en abril de 2026, porque también era muy bueno.
+**Mi opinión:** Los agentes CLI fueron un descubrimiento tardío pero increíble. Le dices desde la terminal "oye, haz tal cosa" y el agente solo mira tus archivos, los modifica, ejecuta comandos, y te dice qué ha hecho. **OpenCode y Hermes son los que uso ahora mismo.** Lástima que Qwen CLI cerrara en abril de 2026, porque también era muy bueno.
 
 ---
 
