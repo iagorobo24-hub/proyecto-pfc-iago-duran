@@ -14,9 +14,9 @@ Esta sección documenta las lecciones más importantes aprendidas durante el pro
 
 **Por qué fue un error:** Perdí tiempo reescribiendo código que podría haber hecho bien desde el principio.
 
-**Qué habría hecho diferente:** Planea la estructura del proyecto antes de empezar a generar código.
+**Qué habría hecho diferente:** Planear la estructura del proyecto antes de empezar a generar código.
 
-**Lección:** Un poco de planificación ahorra mucho tiempo de refactorización.
+**Lección:** Un poco de planificación ahorra mucho tiempo de refactorización. 
 
 ---
 
@@ -24,7 +24,7 @@ Esta sección documenta las lecciones más importantes aprendidas durante el pro
 
 **Qué pasó:** La primera versión tenía la clave de API de Anthropic directamente en el código JavaScript. Cualquier usuario podía verla en "Ver código fuente".
 
-**Cómo se detectó:** Un compañero de prácticas lo mencionó.
+**Cómo se detectó:** Salta el aviso en Vercel, cualquiera de los modelos LLM que use avisto este tipo de errores en los analisis, y Anthropic mismo detectó que estaba la clave expuesta y la deprecó.
 
 **Cómo se solucionó:** Crear una Vercel Function que hace de proxy:
 ```javascript
@@ -38,7 +38,7 @@ Esta sección documenta las lecciones más importantes aprendidas durante el pro
 
 ### Error 3: No hacer tests desde el principio
 
-**Qué pasó:** Creé Playwright tests en la Fase 6, pero después se perdieron en commits y nuncalos recuperé.
+**Qué pasó:** Creé Playwright tests en la Fase 6, pero después se perdieron en commits y nunca los recuperé.
 
 **Por qué fue un error:** Sin tests, no hay forma de verificar que los cambios no rompen funcionalidad existente.
 
@@ -62,7 +62,7 @@ Esta sección documenta las lecciones más importantes aprendidas durante el pro
 
 ### Error 5: No documentar mientras trabajaba
 
-**Qué pasó:** Solo documenté EVOLUCION.md al final de cada sesión grande. En una sesión olvidédocumentar cambios importantes.
+**Qué pasó:** Solo documenté EVOLUCION.md al final de cada sesión grande. En una sesión olvidé documentar cambios importantes.
 
 **Por qué fue un error:** Después no recordaba por qué había tomado ciertas decisiones.
 
