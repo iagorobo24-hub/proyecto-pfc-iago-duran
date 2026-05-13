@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 700" font-family="'Segoe UI', Arial, sans-serif">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f172a"/>
+      <stop offset="100%" style="stop-color:#020617"/>
+    </linearGradient>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1e293b" stroke-width="0.5"/>
+    </pattern>
+  </defs>
+
+  <rect width="1100" height="700" fill="url(#bg)"/>
+  <rect width="1100" height="700" fill="url(#grid)"/>
+
+  <text x="550" y="38" fill="#f8fafc" font-size="20" font-weight="700" text-anchor="middle">Comparativa de Herramientas IA — Proyectos Sonepar</text>
+  <text x="550" y="56" fill="#94a3b8" font-size="11" text-anchor="middle">15+ herramientas evaluadas | Uso real en el proyecto</text>
+
+  <!-- CATEGORY 1: Code Generation -->
+  <rect x="30" y="75" width="520" height="290" rx="12" fill="rgba(8, 51, 68, 0.15)" stroke="#22d3ee" stroke-width="1" stroke-dasharray="6,4"/>
+  <text x="50" y="95" fill="#22d3ee" font-size="11" font-weight="600">GENERACION DE CODIGO</text>
+
+  <!-- Windsurf -->
+  <rect x="50" y="110" width="230" height="70" rx="8" fill="rgba(8, 51, 68, 0.4)" stroke="#22d3ee" stroke-width="1.5"/>
+  <text x="165" y="132" fill="white" font-size="12" font-weight="700" text-anchor="middle">Windsurf</text>
+  <text x="165" y="148" fill="#94a3b8" font-size="9" text-anchor="middle">IDE + IA (Cascade Flow)</text>
+  <!-- Rating bar -->
+  <rect x="70" y="158" width="190" height="8" rx="4" fill="rgba(30, 41, 59, 0.8)"/>
+  <rect x="70" y="158" width="170" height="8" rx="4" fill="#22d3ee"/>
+  <text x="70" y="173" fill="#94a3b8" font-size="7">Uso: 90% — IDE principal del proyecto</text>
+
+  <!-- OpenCode CLI -->
+  <rect x="300" y="110" width="230" height="70" rx="8" fill="rgba(8, 51, 68, 0.35)" stroke="#22d3ee" stroke-width="1"/>
+  <text x="415" y="132" fill="white" font-size="12" font-weight="700" text-anchor="middle">OpenCode CLI</text>
+  <text x="415" y="148" fill="#94a3b8" font-size="9" text-anchor="middle">Agente terminal + multi-modelo</text>
+  <rect x="320" y="158" width="190" height="8" rx="4" fill="rgba(30, 41, 59, 0.8)"/>
+  <rect x="320" y="158" width="130" height="8" rx="4" fill="#22d3ee" opacity="0.7"/>
+  <text x="320" y="173" fill="#94a3b8" font-size="7">Uso: 70% — Refactor + debugging</text>
+
+  <!-- Claude Web -->
+  <rect x="50" y="195" width="230" height="70" rx="8" fill="rgba(8, 51, 68, 0.3)" stroke="#22d3ee" stroke-width="1"/>
+  <text x="165" y="217" fill="white" font-size="12" font-weight="700" text-anchor="middle">Claude Web</text>
+  <text x="165" y="233" fill="#94a3b8" font-size="9" text-anchor="middle">Diseno + arquitectura</text>
+  <rect x="70" y="243" width="190" height="8" rx="4" fill="rgba(30, 41, 59, 0.8)"/>
+  <rect x="70" y="243" width="100" height="8" rx="4" fill="#22d3ee" opacity="0.5"/>
+  <text x="70" y="258" fill="#94a3b8" font-size="7">Uso: 50% — Arquitectura + prompts complejos</text>
+
+  <!-- Hermes Agent -->
+  <rect x="300" y="195" width="230" height="70" rx="8" fill="rgba(8, 51, 68, 0.3)" stroke="#22d3ee" stroke-width="1"/>
+  <text x="415" y="217" fill="white" font-size="12" font-weight="700" text-anchor="middle">Hermes Agent</text>
+  <text x="415" y="233" fill="#94a3b8" font-size="9" text-anchor="middle">Orquestador multi-tarea</text>
+  <rect x="320" y="243" width="190" height="8" rx="4" fill="rgba(30, 41, 59, 0.8)"/>
+  <rect x="320" y="243" width="110" height="8" rx="4" fill="#22d3ee" opacity="0.55"/>
+  <text x="320" y="258" fill="#94a3b8" font-size="7">Uso: 55% — Docs + deploy + automatizacion</text>
+
+  <!-- Codex -->
+  <rect x="50" y="280" width="230" height="55" rx="8" fill="rgba(8, 51, 68, 0.2)" stroke="#22d3ee" stroke-width="1" stroke-dasharray="3,3"/>
+  <text x="165" y="302" fill="white" font-size="11" font-weight="600" text-anchor="middle">OpenAI Codex</text>
+  <text x="165" y="318" fill="#94a3b8" font-size="9" text-anchor="middle">PRs automaticos (evaluado)</text>
+  <rect x="70" y="325" width="190" height="6" rx="3" fill="rgba(30, 41, 59, 0.8)"/>
+  <rect x="70" y="325" width="40" height="6" rx="3" fill="#22d3ee" opacity="0.3"/>
+  <text x="70" y="336" fill="#64748b" font-size="7">Uso: 20% — Exploratorio</text>
+
+  <!-- CATEGORY 2: AI Models -->
+  <rect x="580" y="75" width="490" height="290" rx="12" fill="rgba(251, 146, 60, 0.1)" stroke="#fb923c" stroke-width="1" stroke-dasharray="6,4"/>
+  <text x="600" y="95" fill="#fb923c" font-size="11" font-weight="600">MODELOS DE IA (via OpenRouter)</text>
+
+  <!-- Claude 3.5 Sonnet -->
+  <rect x="600" y="110" width="220" height="70" rx="8" fill="rgba(251, 146, 60, 0.3)" stroke="#fb923c" stroke-width="1.5"/>
+  <text x="710" y="132" fill="white" font-size="12" font-weight="700" text-anchor="middle">Claude 3.5 Sonnet</text>
+  <text x="710" y="148" fill="#94a3b8" font-size="9" text-anchor="middle">Mejor razonamiento</text>
+  <rect x="620" y="158" width="180" height="8" rx="4" fill="rgba(30, 41, 59, 0.8)"/>
+  <rect x="620" y="158" width="160" height="8" rx="4" fill="#fb923c"/>
+  <text x="620" y="173" fill="#94a3b8" font-size="7">Calidad: 95% — Modelo principal SONEX</text>
+
+  <!-- Claude 3 Haiku -->
+  <rect x="840" y="110" width="210" height="70" rx="8" fill="rgba(251, 146, 60, 0.25)" stroke="#fb923c" stroke-width="1"/>
+  <text x="945" y="132" fill="white" font-size="12" font-weight="700" text-anchor="middle">Claude 3 Haiku</text>
+  <text x="945" y="148" fill="#94a3b8" font-size="9" text-anchor="middle">Rapido + economico</text>
+  <rect x="860" y="158" width="170" height="8" rx="4" fill="rgba(30, 41, 59, 0.8)"/>
+  <rect x="860" y="158" width="130" height="8" rx="4" fill="#fb923c" opacity="0.7"/>
+  <text x="860" y="173" fill="#94a3b8" font-size="7">Calidad: 75% — Consultas rapidas</text>
+
+  <!-- DeepSeek -->
+  <rect x="600" y="195" width="220" height="70" rx="8" fill="rgba(251, 146, 60, 0.2)" stroke="#fb923c" stroke-width="1"/>
+  <text x="710" y="217" fill="white" font-size="12" font-weight="700" text-anchor="middle">DeepSeek V3</text>
+  <text x="710" y="233" fill="#94a3b8" font-size="9" text-anchor="middle">Open source + eficiente</text>
+  <rect x="620" y="243" width="180" height="8" rx="4" fill="rgba(30, 41, 59, 0.8)"/>
+  <rect x="620" y="243" width="140" height="8" rx="4" fill="#fb923c" opacity="0.75"/>
+  <text x="620" y="258" fill="#94a3b8" font-size="7">Calidad: 80% — Fallback + codigo</text>
+
+  <!-- Qwen -->
+  <rect x="840" y="195" width="210" height="70" rx="8" fill="rgba(251, 146, 60, 0.15)" stroke="#fb923c" stroke-width="1"/>
+  <text x="945" y="217" fill="white" font-size="12" font-weight="700" text-anchor="middle">Qwen 2.5</text>
+  <text x="945" y="233" fill="#94a3b8" font-size="9" text-anchor="middle">Alibaba open source</text>
+  <rect x="860" y="243" width="170" height="8" rx="4" fill="rgba(30, 41, 59, 0.8)"/>
+  <rect x="860" y="243" width="110" height="8" rx="4" fill="#fb923c" opacity="0.6"/>
+  <text x="860" y="258" fill="#94a3b8" font-size="7">Calidad: 65% — Fallback economico</text>
+
+  <!-- Gemini -->
+  <rect x="600" y="280" width="220" height="55" rx="8" fill="rgba(251, 146, 60, 0.1)" stroke="#fb923c" stroke-width="1" stroke-dasharray="3,3"/>
+  <text x="710" y="302" fill="white" font-size="11" font-weight="600" text-anchor="middle">Gemini 2.0 Flash</text>
+  <text x="710" y="318" fill="#94a3b8" font-size="9" text-anchor="middle">Google — rapido + gratis</text>
+  <rect x="620" y="325" width="180" height="6" rx="3" fill="rgba(30, 41, 59, 0.8)"/>
+  <rect x="620" y="325" width="90" height="6" rx="3" fill="#fb923c" opacity="0.5"/>
+  <text x="620" y="336" fill="#64748b" font-size="7">Calidad: 55% — Prototipos rapidos</text>
+
+  <!-- CATEGORY 3: Infrastructure & DevOps -->
+  <rect x="30" y="390" width="520" height="140" rx="12" fill="rgba(120, 53, 15, 0.1)" stroke="#fbbf24" stroke-width="1" stroke-dasharray="6,4"/>
+  <text x="50" y="410" fill="#fbbf24" font-size="11" font-weight="600">INFRAESTRUCTURA + DEVOPS</text>
+
+  <rect x="50" y="425" width="110" height="45" rx="6" fill="rgba(120, 53, 15, 0.3)" stroke="#fbbf24" stroke-width="1"/>
+  <text x="105" y="445" fill="white" font-size="10" font-weight="600" text-anchor="middle">Vercel</text>
+  <text x="105" y="460" fill="#94a3b8" font-size="8" text-anchor="middle">CI/CD</text>
+
+  <rect x="175" y="425" width="110" height="45" rx="6" fill="rgba(120, 53, 15, 0.25)" stroke="#fbbf24" stroke-width="1"/>
+  <text x="230" y="445" fill="white" font-size="10" font-weight="600" text-anchor="middle">GitHub</text>
+  <text x="230" y="460" fill="#94a3b8" font-size="8" text-anchor="middle">Repositorio</text>
+
+  <rect x="300" y="425" width="110" height="45" rx="6" fill="rgba(120, 53, 15, 0.2)" stroke="#fbbf24" stroke-width="1"/>
+  <text x="355" y="445" fill="white" font-size="10" font-weight="600" text-anchor="middle">Firebase</text>
+  <text x="355" y="460" fill="#94a3b8" font-size="8" text-anchor="middle">Auth + DB</text>
+
+  <rect x="425" y="425" width="110" height="45" rx="6" fill="rgba(120, 53, 15, 0.2)" stroke="#fbbf24" stroke-width="1"/>
+  <text x="480" y="445" fill="white" font-size="10" font-weight="600" text-anchor="middle">Puppeteer</text>
+  <text x="480" y="460" fill="#94a3b8" font-size="8" text-anchor="middle">Scraping</text>
+
+  <!-- Cost badge -->
+  <rect x="50" y="480" width="480" height="35" rx="6" fill="rgba(6, 78, 59, 0.15)" stroke="#34d399" stroke-width="1"/>
+  <text x="290" y="502" fill="#34d399" font-size="11" font-weight="700" text-anchor="middle">COSTE TOTAL DEL PROYECTO: 0€ — Todo en tier gratuita</text>
+
+  <!-- CATEGORY 4: Frontend Stack -->
+  <rect x="580" y="390" width="490" height="140" rx="12" fill="rgba(76, 29, 149, 0.1)" stroke="#a78bfa" stroke-width="1" stroke-dasharray="6,4"/>
+  <text x="600" y="410" fill="#a78bfa" font-size="11" font-weight="600">STACK FRONTEND</text>
+
+  <rect x="600" y="425" width="95" height="45" rx="6" fill="rgba(76, 29, 149, 0.3)" stroke="#a78bfa" stroke-width="1"/>
+  <text x="647" y="445" fill="white" font-size="10" font-weight="600" text-anchor="middle">React 19</text>
+  <text x="647" y="460" fill="#94a3b8" font-size="8" text-anchor="middle">UI</text>
+
+  <rect x="710" y="425" width="95" height="45" rx="6" fill="rgba(76, 29, 149, 0.25)" stroke="#a78bfa" stroke-width="1"/>
+  <text x="757" y="445" fill="white" font-size="10" font-weight="600" text-anchor="middle">Vite 7</text>
+  <text x="757" y="460" fill="#94a3b8" font-size="8" text-anchor="middle">Build</text>
+
+  <rect x="820" y="425" width="95" height="45" rx="6" fill="rgba(76, 29, 149, 0.2)" stroke="#a78bfa" stroke-width="1"/>
+  <text x="867" y="445" fill="white" font-size="10" font-weight="600" text-anchor="middle">Recharts</text>
+  <text x="867" y="460" fill="#94a3b8" font-size="8" text-anchor="middle">Graficos</text>
+
+  <rect x="930" y="425" width="120" height="45" rx="6" fill="rgba(76, 29, 149, 0.2)" stroke="#a78bfa" stroke-width="1"/>
+  <text x="990" y="445" fill="white" font-size="10" font-weight="600" text-anchor="middle">CSS Mod.</text>
+  <text x="990" y="460" fill="#94a3b8" font-size="8" text-anchor="middle">Estilos</text>
+
+  <!-- Key insight -->
+  <rect x="600" y="480" width="450" height="35" rx="6" fill="rgba(76, 29, 149, 0.15)" stroke="#a78bfa" stroke-width="1"/>
+  <text x="825" y="502" fill="#a78bfa" font-size="10" text-anchor="middle">7 modulos funcionales + asistente IA — ~8000 lineas de codigo</text>
+
+  <!-- Bottom summary: Usage stats -->
+  <rect x="30" y="550" width="1040" height="130" rx="12" fill="rgba(15, 23, 42, 0.5)" stroke="#1e293b" stroke-width="1"/>
+  <text x="550" y="575" fill="#f8fafc" font-size="13" font-weight="700" text-anchor="middle">Resumen de Uso por Categoria</text>
+
+  <!-- Bar chart: usage -->
+  <text x="80" y="605" fill="#22d3ee" font-size="9">Codigo</text>
+  <rect x="140" y="595" width="400" height="12" rx="6" fill="rgba(30, 41, 59, 0.8)"/>
+  <rect x="140" y="595" width="360" height="12" rx="6" fill="#22d3ee"/>
+  <text x="510" y="605" fill="#94a3b8" font-size="9">90%</text>
+
+  <text x="80" y="627" fill="#fb923c" font-size="9">Modelos</text>
+  <rect x="140" y="617" width="400" height="12" rx="6" fill="rgba(30, 41, 59, 0.8)"/>
+  <rect x="140" y="617" width="280" height="12" rx="6" fill="#fb923c"/>
+  <text x="430" y="627" fill="#94a3b8" font-size="9">70%</text>
+
+  <text x="80" y="649" fill="#fbbf24" font-size="9">DevOps</text>
+  <rect x="140" y="639" width="400" height="12" rx="6" fill="rgba(30, 41, 59, 0.8)"/>
+  <rect x="140" y="639" width="200" height="12" rx="6" fill="#fbbf24"/>
+  <text x="350" y="649" fill="#94a3b8" font-size="9">50%</text>
+
+  <text x="80" y="671" fill="#a78bfa" font-size="9">Frontend</text>
+  <rect x="140" y="661" width="400" height="12" rx="6" fill="rgba(30, 41, 59, 0.8)"/>
+  <rect x="140" y="661" width="320" height="12" rx="6" fill="#a78bfa"/>
+  <text x="470" y="671" fill="#94a3b8" font-size="9">80%</text>
+
+  <text x="550" y="690" fill="#475569" font-size="9" text-anchor="middle">Proyectos Sonepar PFC | Comparativa Herramientas IA | Mayo 2026</text>
+</svg>

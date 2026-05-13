@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 650" font-family="'Segoe UI', Arial, sans-serif">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#64748b"/>
+    </marker>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f172a"/>
+      <stop offset="100%" style="stop-color:#020617"/>
+    </linearGradient>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1e293b" stroke-width="0.5"/>
+    </pattern>
+  </defs>
+
+  <rect width="1100" height="650" fill="url(#bg)"/>
+  <rect width="1100" height="650" fill="url(#grid)"/>
+
+  <text x="550" y="38" fill="#f8fafc" font-size="20" font-weight="700" text-anchor="middle">Flujo de Desarrollo con IA — Proyectos Sonepar</text>
+  <text x="550" y="56" fill="#94a3b8" font-size="11" text-anchor="middle">Ciclo iterativo: Prompt → Codigo → Validacion → Refinacion</text>
+
+  <!-- PHASE 1: IDES/AGENTS -->
+  <rect x="30" y="80" width="350" height="260" rx="12" fill="rgba(8, 51, 68, 0.15)" stroke="#22d3ee" stroke-width="1" stroke-dasharray="8,4"/>
+  <text x="50" y="100" fill="#22d3ee" font-size="11" font-weight="600">PASO 1: GENERACION DE CODIGO</text>
+
+  <!-- Windsurf -->
+  <rect x="50" y="115" width="150" height="55" rx="8" fill="rgba(8, 51, 68, 0.4)" stroke="#22d3ee" stroke-width="1.5"/>
+  <text x="125" y="138" fill="white" font-size="12" font-weight="600" text-anchor="middle">Windsurf</text>
+  <text x="125" y="156" fill="#94a3b8" font-size="9" text-anchor="middle">IDE + IA integrada</text>
+
+  <!-- OpenCode -->
+  <rect x="220" y="115" width="140" height="55" rx="8" fill="rgba(8, 51, 68, 0.4)" stroke="#22d3ee" stroke-width="1.5"/>
+  <text x="290" y="138" fill="white" font-size="12" font-weight="600" text-anchor="middle">OpenCode</text>
+  <text x="290" y="156" fill="#94a3b8" font-size="9" text-anchor="middle">Agente CLI</text>
+
+  <!-- Hermes -->
+  <rect x="50" y="185" width="150" height="55" rx="8" fill="rgba(8, 51, 68, 0.35)" stroke="#22d3ee" stroke-width="1"/>
+  <text x="125" y="208" fill="white" font-size="12" font-weight="600" text-anchor="middle">Hermes</text>
+  <text x="125" y="226" fill="#94a3b8" font-size="9" text-anchor="middle">Agente autonomo</text>
+
+  <!-- Claude Web -->
+  <rect x="220" y="185" width="140" height="55" rx="8" fill="rgba(8, 51, 68, 0.35)" stroke="#22d3ee" stroke-width="1"/>
+  <text x="290" y="208" fill="white" font-size="12" font-weight="600" text-anchor="middle">Claude Web</text>
+  <text x="290" y="226" fill="#94a3b8" font-size="9" text-anchor="middle">Diseno / Arq.</text>
+
+  <!-- What they produce -->
+  <rect x="50" y="255" width="310" height="70" rx="6" fill="rgba(8, 51, 68, 0.2)" stroke="#22d3ee" stroke-width="1" stroke-dasharray="4,4"/>
+  <text x="205" y="275" fill="#22d3ee" font-size="9" font-weight="600" text-anchor="middle">OUTPUT</text>
+  <text x="205" y="293" fill="#e2e8f0" font-size="9" text-anchor="middle">Componentes React, funciones, estilos</text>
+  <text x="205" y="308" fill="#e2e8f0" font-size="9" text-anchor="middle">Configuracion, scripts, documentacion</text>
+
+  <!-- PHASE 2: REVIEW -->
+  <rect x="420" y="80" width="250" height="260" rx="12" fill="rgba(6, 78, 59, 0.15)" stroke="#34d399" stroke-width="1" stroke-dasharray="8,4"/>
+  <text x="440" y="100" fill="#34d399" font-size="11" font-weight="600">PASO 2: VALIDACION</text>
+
+  <rect x="440" y="115" width="210" height="55" rx="8" fill="rgba(6, 78, 59, 0.3)" stroke="#34d399" stroke-width="1.5"/>
+  <text x="545" y="138" fill="white" font-size="12" font-weight="600" text-anchor="middle">Revision Manual</text>
+  <text x="545" y="156" fill="#94a3b8" font-size="9" text-anchor="middle">Comprender codigo generado</text>
+
+  <rect x="440" y="185" width="210" height="55" rx="8" fill="rgba(6, 78, 59, 0.25)" stroke="#34d399" stroke-width="1"/>
+  <text x="545" y="208" fill="white" font-size="12" font-weight="600" text-anchor="middle">Test en navegador</text>
+  <text x="545" y="226" fill="#94a3b8" font-size="9" text-anchor="middle">Funcionalidad + UI correcta</text>
+
+  <rect x="440" y="255" width="210" height="70" rx="6" fill="rgba(6, 78, 59, 0.15)" stroke="#34d399" stroke-width="1" stroke-dasharray="4,4"/>
+  <text x="545" y="275" fill="#34d399" font-size="9" font-weight="600" text-anchor="middle">DECISION</text>
+  <text x="545" y="293" fill="#e2e8f0" font-size="9" text-anchor="middle">OK → Commit a GitHub</text>
+  <text x="545" y="308" fill="#fb7185" font-size="9" text-anchor="middle">Error → Refinar prompt (Paso 3)</text>
+
+  <!-- PHASE 3: ITERATE -->
+  <rect x="710" y="80" width="360" height="260" rx="12" fill="rgba(251, 146, 60, 0.15)" stroke="#fb923c" stroke-width="1" stroke-dasharray="8,4"/>
+  <text x="730" y="100" fill="#fb923c" font-size="11" font-weight="600">PASO 3: REFINACION / DEPURACION</text>
+
+  <rect x="730" y="115" width="155" height="55" rx="8" fill="rgba(251, 146, 60, 0.3)" stroke="#fb923c" stroke-width="1.5"/>
+  <text x="807" y="138" fill="white" font-size="12" font-weight="600" text-anchor="middle">Prompt ajustado</text>
+  <text x="807" y="156" fill="#94a3b8" font-size="9" text-anchor="middle">Contexto del error</text>
+
+  <rect x="905" y="115" width="145" height="55" rx="8" fill="rgba(251, 146, 60, 0.25)" stroke="#fb923c" stroke-width="1"/>
+  <text x="977" y="138" fill="white" font-size="12" font-weight="600" text-anchor="middle">Debug con IA</text>
+  <text x="977" y="156" fill="#94a3b8" font-size="9" text-anchor="middle">Pegar error + fix</text>
+
+  <rect x="730" y="185" width="320" height="55" rx="6" fill="rgba(251, 146, 60, 0.15)" stroke="#fb923c" stroke-width="1" stroke-dasharray="4,4"/>
+  <text x="890" y="208" fill="#e2e8f0" font-size="10" text-anchor="middle">"Este componente da error X, arreglalo considerando Y"</text>
+  <text x="890" y="226" fill="#94a3b8" font-size="9" text-anchor="middle">Iterar hasta solucionar</text>
+
+  <rect x="730" y="255" width="320" height="70" rx="6" fill="rgba(251, 146, 60, 0.1)" stroke="#fb923c" stroke-width="1" stroke-dasharray="4,4"/>
+  <text x="890" y="278" fill="#fb923c" font-size="9" font-weight="600" text-anchor="middle">PATRON TIPICO</text>
+  <text x="890" y="295" fill="#e2e8f0" font-size="9" text-anchor="middle">1. Prompt inicial → 2. Codigo generado</text>
+  <text x="890" y="310" fill="#e2e8f0" font-size="9" text-anchor="middle">3. Error → 4. Prompt de fix → 5. OK → Commit</text>
+
+  <!-- Arrows between phases -->
+  <line x1="360" y1="180" x2="438" y2="180" stroke="#22d3ee" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="399" y="173" fill="#94a3b8" font-size="9" text-anchor="middle">code</text>
+
+  <line x1="650" y1="180" x2="728" y2="180" stroke="#34d399" stroke-width="2" marker-end="url(#arrow)"/>
+  <text x="689" y="173" fill="#94a3b8" font-size="9" text-anchor="middle">fix?</text>
+
+  <!-- Return arrow (feedback loop) -->
+  <path d="M 890 340 L 890 370 Q 890 385 870 385 L 150 385 Q 130 385 130 370 L 130 340" fill="none" stroke="#fb7185" stroke-width="1.5" stroke-dasharray="5,5" marker-end="url(#arrow)"/>
+  <text x="550" y="400" fill="#fb7185" font-size="10" font-weight="600" text-anchor="middle">CICLO DE FEEDBACK — Refinar hasta que funcione</text>
+
+  <!-- BOTTOM: Deployment pipeline -->
+  <rect x="30" y="420" width="1040" height="100" rx="12" fill="rgba(120, 53, 15, 0.1)" stroke="#fbbf24" stroke-width="1" stroke-dasharray="8,4"/>
+  <text x="50" y="440" fill="#fbbf24" font-size="11" font-weight="600">PIPELINE DE DESPLIEGUE</text>
+
+  <rect x="50" y="455" width="160" height="50" rx="8" fill="rgba(120, 53, 15, 0.3)" stroke="#fbbf24" stroke-width="1.5"/>
+  <text x="130" y="478" fill="white" font-size="11" font-weight="600" text-anchor="middle">git commit</text>
+  <text x="130" y="496" fill="#94a3b8" font-size="9" text-anchor="middle">Codigo aceptado</text>
+
+  <rect x="250" y="455" width="160" height="50" rx="8" fill="rgba(120, 53, 15, 0.25)" stroke="#fbbf24" stroke-width="1"/>
+  <text x="330" y="478" fill="white" font-size="11" font-weight="600" text-anchor="middle">git push</text>
+  <text x="330" y="496" fill="#94a3b8" font-size="9" text-anchor="middle">Push a GitHub</text>
+
+  <rect x="450" y="455" width="160" height="50" rx="8" fill="rgba(120, 53, 15, 0.25)" stroke="#fbbf24" stroke-width="1"/>
+  <text x="530" y="478" fill="white" font-size="11" font-weight="600" text-anchor="middle">Vercel Build</text>
+  <text x="530" y="496" fill="#94a3b8" font-size="9" text-anchor="middle">Auto-deploy</text>
+
+  <rect x="650" y="455" width="160" height="50" rx="8" fill="rgba(6, 78, 59, 0.3)" stroke="#34d399" stroke-width="1.5"/>
+  <text x="730" y="478" fill="white" font-size="11" font-weight="600" text-anchor="middle">Produccion</text>
+  <text x="730" y="496" fill="#94a3b8" font-size="9" text-anchor="middle">proyectos-sonepar.vercel.app</text>
+
+  <rect x="850" y="455" width="200" height="50" rx="8" fill="rgba(6, 78, 59, 0.2)" stroke="#34d399" stroke-width="1"/>
+  <text x="950" y="478" fill="white" font-size="11" font-weight="600" text-anchor="middle">Validacion</text>
+  <text x="950" y="496" fill="#94a3b8" font-size="9" text-anchor="middle">Lighthouse + test manual</text>
+
+  <line x1="210" y1="480" x2="248" y2="480" stroke="#fbbf24" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="410" y1="480" x2="448" y2="480" stroke="#fbbf24" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="610" y1="480" x2="648" y2="480" stroke="#fbbf24" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <line x1="810" y1="480" x2="848" y2="480" stroke="#34d399" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+  <!-- BOTTOM: Metrics -->
+  <rect x="30" y="545" width="1040" height="80" rx="12" fill="rgba(15, 23, 42, 0.5)" stroke="#1e293b" stroke-width="1"/>
+  <text x="550" y="568" fill="#94a3b8" font-size="11" font-weight="600" text-anchor="middle">METRICAS DEL FLUJO CON IA</text>
+
+  <rect x="80" y="580" width="140" height="35" rx="6" fill="rgba(8, 51, 68, 0.3)" stroke="#22d3ee" stroke-width="1"/>
+  <text x="150" y="602" fill="white" font-size="10" text-anchor="middle">15+ herramientas IA</text>
+
+  <rect x="260" y="580" width="140" height="35" rx="6" fill="rgba(6, 78, 59, 0.3)" stroke="#34d399" stroke-width="1"/>
+  <text x="330" y="602" fill="white" font-size="10" text-anchor="middle">200+ commits</text>
+
+  <rect x="440" y="580" width="140" height="35" rx="6" fill="rgba(76, 29, 149, 0.3)" stroke="#a78bfa" stroke-width="1"/>
+  <text x="510" y="602" fill="white" font-size="10" text-anchor="middle">~8000 lineas</text>
+
+  <rect x="620" y="580" width="140" height="35" rx="6" fill="rgba(120, 53, 15, 0.3)" stroke="#fbbf24" stroke-width="1"/>
+  <text x="690" y="602" fill="white" font-size="10" text-anchor="middle">3 meses</text>
+
+  <rect x="800" y="580" width="140" height="35" rx="6" fill="rgba(251, 146, 60, 0.2)" stroke="#fb923c" stroke-width="1"/>
+  <text x="870" y="602" fill="white" font-size="10" text-anchor="middle">0 euros</text>
+
+  <text x="550" y="640" fill="#475569" font-size="9" text-anchor="middle">Proyectos Sonepar PFC | Flujo de Desarrollo con IA | Mayo 2026</text>
+</svg>

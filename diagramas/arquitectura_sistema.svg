@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1100 750" font-family="'Segoe UI', Arial, sans-serif">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#64748b"/>
+    </marker>
+    <marker id="arrow-cyan" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#22d3ee"/>
+    </marker>
+    <marker id="arrow-green" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#34d399"/>
+    </marker>
+    <marker id="arrow-amber" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#fbbf24"/>
+    </marker>
+    <marker id="arrow-rose" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#fb7185"/>
+    </marker>
+    <linearGradient id="bg-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f172a"/>
+      <stop offset="100%" style="stop-color:#020617"/>
+    </linearGradient>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1e293b" stroke-width="0.5"/>
+    </pattern>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1100" height="750" fill="url(#bg-grad)"/>
+  <rect width="1100" height="750" fill="url(#grid)"/>
+
+  <!-- Title -->
+  <text x="550" y="40" fill="#f8fafc" font-size="22" font-weight="700" text-anchor="middle">Arquitectura del Sistema — Proyectos Sonepar</text>
+  <text x="550" y="60" fill="#94a3b8" font-size="12" text-anchor="middle">SPA React + Firebase + Vercel + OpenRouter</text>
+
+  <!-- CLIENT LAYER -->
+  <rect x="30" y="80" width="1040" height="140" rx="12" fill="rgba(8, 51, 68, 0.2)" stroke="#22d3ee" stroke-width="1" stroke-dasharray="8,4"/>
+  <text x="50" y="100" fill="#22d3ee" font-size="11" font-weight="600">CAPA CLIENTE</text>
+
+  <rect x="60" y="115" width="130" height="85" rx="8" fill="rgba(30, 41, 59, 0.5)" stroke="#94a3b8" stroke-width="1.5"/>
+  <text x="125" y="142" fill="white" font-size="12" font-weight="600" text-anchor="middle">Navegador</text>
+  <text x="125" y="158" fill="#94a3b8" font-size="9" text-anchor="middle">Chrome / Firefox</text>
+  <text x="125" y="174" fill="#94a3b8" font-size="9" text-anchor="middle">Desktop / Mobile</text>
+  <text x="125" y="190" fill="#22d3ee" font-size="8" text-anchor="middle">HTTPS</text>
+
+  <rect x="250" y="110" width="220" height="95" rx="8" fill="rgba(8, 51, 68, 0.4)" stroke="#22d3ee" stroke-width="1.5"/>
+  <text x="360" y="135" fill="white" font-size="13" font-weight="700" text-anchor="middle">React 19 SPA</text>
+  <text x="360" y="155" fill="#94a3b8" font-size="9" text-anchor="middle">Vite 7 + React Router v7</text>
+  <text x="360" y="170" fill="#94a3b8" font-size="9" text-anchor="middle">CSS Modules + Variables CSS</text>
+  <text x="360" y="185" fill="#94a3b8" font-size="9" text-anchor="middle">Recharts + lucide-react</text>
+  <text x="360" y="198" fill="#22d3ee" font-size="8" text-anchor="middle">7 Modulos Funcionales</text>
+
+  <!-- 7 Modules -->
+  <rect x="520" y="110" width="530" height="95" rx="8" fill="rgba(8, 51, 68, 0.25)" stroke="#22d3ee" stroke-width="1" stroke-dasharray="4,4"/>
+  <text x="535" y="128" fill="#22d3ee" font-size="9" font-weight="600">MODULOS FUNCIONALES</text>
+  <rect x="535" y="135" width="90" height="28" rx="4" fill="rgba(8, 51, 68, 0.5)" stroke="#22d3ee" stroke-width="1"/>
+  <text x="580" y="153" fill="white" font-size="8" text-anchor="middle">Fichas Tecnicas</text>
+  <rect x="635" y="135" width="90" height="28" rx="4" fill="rgba(8, 51, 68, 0.5)" stroke="#22d3ee" stroke-width="1"/>
+  <text x="680" y="153" fill="white" font-size="8" text-anchor="middle">Sim. Almacen</text>
+  <rect x="735" y="135" width="90" height="28" rx="4" fill="rgba(8, 51, 68, 0.5)" stroke="#22d3ee" stroke-width="1"/>
+  <text x="780" y="153" fill="white" font-size="8" text-anchor="middle">Incidencias</text>
+  <rect x="835" y="135" width="90" height="28" rx="4" fill="rgba(8, 51, 68, 0.5)" stroke="#22d3ee" stroke-width="1"/>
+  <text x="880" y="153" fill="white" font-size="8" text-anchor="middle">KPI Logistico</text>
+  <rect x="935" y="135" width="100" height="28" rx="4" fill="rgba(8, 51, 68, 0.5)" stroke="#22d3ee" stroke-width="1"/>
+  <text x="985" y="153" fill="white" font-size="8" text-anchor="middle">Presupuestos</text>
+  <rect x="535" y="170" width="90" height="28" rx="4" fill="rgba(8, 51, 68, 0.5)" stroke="#22d3ee" stroke-width="1"/>
+  <text x="580" y="188" fill="white" font-size="8" text-anchor="middle">Formacion</text>
+  <rect x="635" y="170" width="90" height="28" rx="4" fill="rgba(8, 51, 68, 0.5)" stroke="#22d3ee" stroke-width="1"/>
+  <text x="680" y="188" fill="white" font-size="8" text-anchor="middle">SONEX (IA)</text>
+
+  <line x1="190" y1="157" x2="248" y2="157" stroke="#22d3ee" stroke-width="1.5" marker-end="url(#arrow-cyan)"/>
+  <line x1="470" y1="157" x2="518" y2="157" stroke="#22d3ee" stroke-width="1.5" marker-end="url(#arrow-cyan)"/>
+
+  <!-- AUTH LAYER -->
+  <rect x="30" y="240" width="340" height="160" rx="12" fill="rgba(136, 19, 55, 0.1)" stroke="#fb7185" stroke-width="1" stroke-dasharray="8,4"/>
+  <text x="50" y="260" fill="#fb7185" font-size="11" font-weight="600">CAPA AUTENTICACION</text>
+
+  <rect x="60" y="275" width="140" height="55" rx="8" fill="rgba(136, 19, 55, 0.4)" stroke="#fb7185" stroke-width="1.5"/>
+  <text x="130" y="298" fill="white" font-size="12" font-weight="600" text-anchor="middle">Firebase Auth</text>
+  <text x="130" y="316" fill="#94a3b8" font-size="9" text-anchor="middle">Google Sign-In</text>
+
+  <rect x="220" y="275" width="130" height="55" rx="8" fill="rgba(136, 19, 55, 0.3)" stroke="#fb7185" stroke-width="1"/>
+  <text x="285" y="298" fill="white" font-size="11" font-weight="600" text-anchor="middle">Auth Context</text>
+  <text x="285" y="316" fill="#94a3b8" font-size="9" text-anchor="middle">Rutas Protegidas</text>
+
+  <line x1="130" y1="330" x2="130" y2="360" stroke="#fb7185" stroke-width="1.5" marker-end="url(#arrow-rose)"/>
+  <rect x="60" y="350" width="280" height="40" rx="6" fill="rgba(136, 19, 55, 0.15)" stroke="#fb7185" stroke-width="1" stroke-dasharray="4,4"/>
+  <text x="200" y="374" fill="#fb7185" font-size="9" text-anchor="middle">Middleware: redirige a /login si no autenticado</text>
+
+  <path d="M 200 220 L 200 273" fill="none" stroke="#fb7185" stroke-width="1.5" stroke-dasharray="5,5" marker-end="url(#arrow-rose)"/>
+  <text x="210" y="250" fill="#fb7185" font-size="8">OAuth 2.0</text>
+
+  <!-- DATA LAYER -->
+  <rect x="400" y="240" width="340" height="160" rx="12" fill="rgba(76, 29, 149, 0.1)" stroke="#a78bfa" stroke-width="1" stroke-dasharray="8,4"/>
+  <text x="420" y="260" fill="#a78bfa" font-size="11" font-weight="600">CAPA DATOS</text>
+
+  <rect x="420" y="275" width="150" height="55" rx="8" fill="rgba(76, 29, 149, 0.4)" stroke="#a78bfa" stroke-width="1.5"/>
+  <text x="495" y="298" fill="white" font-size="12" font-weight="600" text-anchor="middle">Firestore</text>
+  <text x="495" y="316" fill="#94a3b8" font-size="9" text-anchor="middle">400K+ productos</text>
+
+  <rect x="590" y="275" width="130" height="55" rx="8" fill="rgba(76, 29, 149, 0.3)" stroke="#a78bfa" stroke-width="1"/>
+  <text x="655" y="298" fill="white" font-size="11" font-weight="600" text-anchor="middle">Colecciones</text>
+  <text x="655" y="314" fill="#94a3b8" font-size="8" text-anchor="middle">productos</text>
+  <text x="655" y="324" fill="#94a3b8" font-size="8" text-anchor="middle">usuarios / incidencias</text>
+
+  <rect x="420" y="350" width="300" height="40" rx="6" fill="rgba(76, 29, 149, 0.15)" stroke="#a78bfa" stroke-width="1" stroke-dasharray="4,4"/>
+  <text x="570" y="374" fill="#a78bfa" font-size="9" text-anchor="middle">presupuestos / formacion / kpis</text>
+
+  <path d="M 360 205 L 495 273" fill="none" stroke="#a78bfa" stroke-width="1.5" marker-end="url(#arrow)"/>
+  <text x="410" y="240" fill="#94a3b8" font-size="9">SDK Firestore</text>
+
+  <!-- AI LAYER -->
+  <rect x="770" y="240" width="300" height="160" rx="12" fill="rgba(251, 146, 60, 0.1)" stroke="#fb923c" stroke-width="1" stroke-dasharray="8,4"/>
+  <text x="790" y="260" fill="#fb923c" font-size="11" font-weight="600">CAPA IA</text>
+
+  <rect x="790" y="275" width="130" height="55" rx="8" fill="rgba(251, 146, 60, 0.3)" stroke="#fb923c" stroke-width="1.5"/>
+  <text x="855" y="298" fill="white" font-size="12" font-weight="600" text-anchor="middle">OpenRouter</text>
+  <text x="855" y="316" fill="#94a3b8" font-size="9" text-anchor="middle">Gateway API</text>
+
+  <rect x="935" y="275" width="115" height="55" rx="8" fill="rgba(251, 146, 60, 0.2)" stroke="#fb923c" stroke-width="1"/>
+  <text x="992" y="295" fill="white" font-size="10" font-weight="600" text-anchor="middle">Claude 3.5</text>
+  <text x="992" y="310" fill="#94a3b8" font-size="9" text-anchor="middle">Haiku</text>
+  <text x="992" y="323" fill="#94a3b8" font-size="8" text-anchor="middle">DeepSeek / Qwen</text>
+
+  <path d="M 785 157 L 855 273" fill="none" stroke="#fb923c" stroke-width="1.5" marker-end="url(#arrow-amber)"/>
+  <text x="840" y="220" fill="#94a3b8" font-size="9">API Proxy</text>
+
+  <!-- DEPLOY LAYER -->
+  <rect x="30" y="430" width="1040" height="130" rx="12" fill="rgba(120, 53, 15, 0.1)" stroke="#fbbf24" stroke-width="1" stroke-dasharray="8,4"/>
+  <text x="50" y="450" fill="#fbbf24" font-size="11" font-weight="600">CAPA DESPLIEGUE E INFRAESTRUCTURA</text>
+
+  <rect x="60" y="465" width="180" height="75" rx="8" fill="rgba(120, 53, 15, 0.3)" stroke="#fbbf24" stroke-width="1.5"/>
+  <text x="150" y="490" fill="white" font-size="13" font-weight="700" text-anchor="middle">Vercel</text>
+  <text x="150" y="508" fill="#94a3b8" font-size="9" text-anchor="middle">Hobby Tier (Gratis)</text>
+  <text x="150" y="524" fill="#94a3b8" font-size="9" text-anchor="middle">CI/CD: Git Push</text>
+  <text x="150" y="535" fill="#fbbf24" font-size="8" text-anchor="middle">proyectos-sonepar.vercel.app</text>
+
+  <rect x="280" y="465" width="180" height="75" rx="8" fill="rgba(120, 53, 15, 0.25)" stroke="#fbbf24" stroke-width="1"/>
+  <text x="370" y="490" fill="white" font-size="12" font-weight="600" text-anchor="middle">Serverless Functions</text>
+  <text x="370" y="508" fill="#94a3b8" font-size="9" text-anchor="middle">api/anthropic.js</text>
+  <text x="370" y="524" fill="#94a3b8" font-size="9" text-anchor="middle">Proxy para OpenRouter</text>
+  <text x="370" y="535" fill="#fbbf24" font-size="8" text-anchor="middle">Oculta API keys</text>
+
+  <rect x="500" y="465" width="180" height="75" rx="8" fill="rgba(120, 53, 15, 0.25)" stroke="#fbbf24" stroke-width="1"/>
+  <text x="590" y="490" fill="white" font-size="12" font-weight="600" text-anchor="middle">GitHub</text>
+  <text x="590" y="508" fill="#94a3b8" font-size="9" text-anchor="middle">iagorobo24-hub</text>
+  <text x="590" y="524" fill="#94a3b8" font-size="9" text-anchor="middle">200+ commits</text>
+  <text x="590" y="535" fill="#fbbf24" font-size="8" text-anchor="middle">Repositorio principal</text>
+
+  <rect x="720" y="465" width="180" height="75" rx="8" fill="rgba(120, 53, 15, 0.25)" stroke="#fbbf24" stroke-width="1"/>
+  <text x="810" y="490" fill="white" font-size="12" font-weight="600" text-anchor="middle">Scraping</text>
+  <text x="810" y="508" fill="#94a3b8" font-size="9" text-anchor="middle">sonepar.es</text>
+  <text x="810" y="524" fill="#94a3b8" font-size="9" text-anchor="middle">Puppeteer + scripts</text>
+  <text x="810" y="535" fill="#fbbf24" font-size="8" text-anchor="middle">Sync a Firestore</text>
+
+  <!-- SECURITY LAYER -->
+  <rect x="30" y="580" width="1040" height="80" rx="12" fill="rgba(6, 78, 59, 0.1)" stroke="#34d399" stroke-width="1" stroke-dasharray="8,4"/>
+  <text x="50" y="600" fill="#34d399" font-size="11" font-weight="600">SEGURIDAD Y BUENAS PRACTICAS</text>
+  <rect x="60" y="612" width="140" height="35" rx="6" fill="rgba(6, 78, 59, 0.3)" stroke="#34d399" stroke-width="1"/>
+  <text x="130" y="634" fill="white" font-size="9" text-anchor="middle">HTTPS obligatorio</text>
+  <rect x="220" y="612" width="140" height="35" rx="6" fill="rgba(6, 78, 59, 0.3)" stroke="#34d399" stroke-width="1"/>
+  <text x="290" y="634" fill="white" font-size="9" text-anchor="middle">API Key oculta</text>
+  <rect x="380" y="612" width="140" height="35" rx="6" fill="rgba(6, 78, 59, 0.3)" stroke="#34d399" stroke-width="1"/>
+  <text x="450" y="634" fill="white" font-size="9" text-anchor="middle">Firestore Rules</text>
+  <rect x="540" y="612" width="140" height="35" rx="6" fill="rgba(6, 78, 59, 0.3)" stroke="#34d399" stroke-width="1"/>
+  <text x="610" y="634" fill="white" font-size="9" text-anchor="middle">Env Variables</text>
+  <rect x="700" y="612" width="140" height="35" rx="6" fill="rgba(6, 78, 59, 0.3)" stroke="#34d399" stroke-width="1"/>
+  <text x="770" y="634" fill="white" font-size="9" text-anchor="middle">CORS Config</text>
+  <rect x="860" y="612" width="140" height="35" rx="6" fill="rgba(6, 78, 59, 0.3)" stroke="#34d399" stroke-width="1"/>
+  <text x="930" y="634" fill="white" font-size="9" text-anchor="middle">Rate Limiting</text>
+
+  <!-- Vertical arrows -->
+  <line x1="150" y1="220" x2="150" y2="275" stroke="#fb7185" stroke-width="1.5" stroke-dasharray="5,5" marker-end="url(#arrow-rose)"/>
+  <line x1="495" y1="390" x2="150" y2="463" stroke="#fbbf24" stroke-width="1.5" marker-end="url(#arrow-amber)"/>
+  <line x1="495" y1="390" x2="495" y2="463" stroke="#fbbf24" stroke-width="1.5" marker-end="url(#arrow-amber)"/>
+
+  <!-- Legend -->
+  <rect x="30" y="685" width="1040" height="50" rx="8" fill="rgba(15, 23, 42, 0.5)" stroke="#1e293b" stroke-width="1"/>
+  <rect x="50" y="700" width="16" height="10" rx="2" fill="rgba(8, 51, 68, 0.4)" stroke="#22d3ee" stroke-width="1"/>
+  <text x="72" y="709" fill="#94a3b8" font-size="9">Frontend</text>
+  <rect x="150" y="700" width="16" height="10" rx="2" fill="rgba(136, 19, 55, 0.4)" stroke="#fb7185" stroke-width="1"/>
+  <text x="172" y="709" fill="#94a3b8" font-size="9">Autenticacion</text>
+  <rect x="280" y="700" width="16" height="10" rx="2" fill="rgba(76, 29, 149, 0.4)" stroke="#a78bfa" stroke-width="1"/>
+  <text x="302" y="709" fill="#94a3b8" font-size="9">Datos</text>
+  <rect x="370" y="700" width="16" height="10" rx="2" fill="rgba(251, 146, 60, 0.3)" stroke="#fb923c" stroke-width="1"/>
+  <text x="392" y="709" fill="#94a3b8" font-size="9">IA</text>
+  <rect x="430" y="700" width="16" height="10" rx="2" fill="rgba(120, 53, 15, 0.3)" stroke="#fbbf24" stroke-width="1"/>
+  <text x="452" y="709" fill="#94a3b8" font-size="9">Infraestructura</text>
+  <rect x="570" y="700" width="16" height="10" rx="2" fill="rgba(6, 78, 59, 0.3)" stroke="#34d399" stroke-width="1"/>
+  <text x="592" y="709" fill="#94a3b8" font-size="9">Seguridad</text>
+  <text x="820" y="709" fill="#475569" font-size="8">Proyectos Sonepar PFC | Mayo 2026</text>
+</svg>
