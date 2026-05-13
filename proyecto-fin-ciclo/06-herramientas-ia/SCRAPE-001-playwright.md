@@ -15,14 +15,14 @@ Playwright es una herramienta de Microsoft para **automatización de navegadores
 
 ### 1. Web Scraping del catálogo la empresa
 
-Playwright fue fundamental para extraer los datos de Proyectos PFC.es:
+Playwright fue fundamental para extraer los datos de Proyecto PFC.es:
 
 - Navegación automática por categorías
 - Extracción de productos (referencias, nombres, precios, marcas)
 - Manejo de paginación infinita
 - Interceptación de peticiones HTTP para obtener datos estructurados
 
-El scraper está en: `app/Proyectos PFC-catalog-scraper/`
+El scraper está en: `app/Proyecto PFC-catalog-scraper/`
 
 ### 2. Testing E2E (en teoría)
 
@@ -53,7 +53,7 @@ async function scrapeCatalog() {
     route.continue()
   })
   
-  await page.goto('https://www.Proyectos PFC.es/catalogo')
+  await page.goto('https://www.Proyecto PFC.es/catalogo')
   await page.waitForSelector('.product-list')
   
   const products = await page.$$eval('.product-item', items =>

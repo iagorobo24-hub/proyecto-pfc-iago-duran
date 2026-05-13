@@ -14,13 +14,13 @@ El proyecto pasó por 12 fases en 3 meses. Algunas duraron un día, otras una se
 
 Cada herramienta era un archivo autocontenido:
 
-- `Proyectos PFC-almacen-simulador.jsx` — Simulador de flujo de almacén
-- `Proyectos PFC-fichas-tecnicas.jsx` — Fichas técnicas de productos
-- `Proyectos PFC-dashboard-incidencias.jsx` — Dashboard de incidencias industriales
-- `Proyectos PFC-kpi-logistico.jsx` — KPI logístico con semáforo
-- `Proyectos PFC-generador-presupuestos.jsx` — Generador de presupuestos
-- `Proyectos PFC-formacion-interna.jsx` — Matriz de competencias y formación
-- `Proyectos PFC-chatbot-tecnico.jsx` — SONEX, chatbot técnico
+- `Proyecto PFC-almacen-simulador.jsx` — Simulador de flujo de almacén
+- `Proyecto PFC-fichas-tecnicas.jsx` — Fichas técnicas de productos
+- `Proyecto PFC-dashboard-incidencias.jsx` — Dashboard de incidencias industriales
+- `Proyecto PFC-kpi-logistico.jsx` — KPI logístico con semáforo
+- `Proyecto PFC-generador-presupuestos.jsx` — Generador de presupuestos
+- `Proyecto PFC-formacion-interna.jsx` — Matriz de competencias y formación
+- `Proyecto PFC-chatbot-tecnico.jsx` — SONEX, chatbot técnico
 
 ### Tecnología usada
 

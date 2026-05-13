@@ -57,7 +57,7 @@ Según el roadmap del proyecto, se planeaba migrar el catálogo de Firestore a S
 CREATE TABLE products (
   id SERIAL PRIMARY KEY,
   ref VARCHAR(50) UNIQUE NOT NULL,
-  ref_Proyectos PFC VARCHAR(50),
+  ref_Proyecto PFC VARCHAR(50),
   nombre TEXT NOT NULL,
   marca VARCHAR(100),
   familia VARCHAR(100),

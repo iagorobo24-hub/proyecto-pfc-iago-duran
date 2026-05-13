@@ -61,7 +61,7 @@ Durante las prácticas, identifiqué varias áreas de mejora:
 ### 1. Acceso a información de productos
 
 **Problema:** Los técnicos tardaban mucho buscando fichas técnicas
-- Tenían que navegar por Proyectos PFC.es manualmente
+- Tenían que navegar por Proyecto PFC.es manualmente
 - No había forma de buscar por características técnicas
 - Las fichas PDF estaban dispersas
 
