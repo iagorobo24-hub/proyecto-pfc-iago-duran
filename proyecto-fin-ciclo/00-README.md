@@ -14,7 +14,7 @@
 |----------|-----------|--------|
 | 01 | Presentación del proyecto | ✅ Completado (3 archivos) |
 | 02 | Contexto de la IA en desarrollo web | ✅ Completado (3 archivos) |
-| 03 | Análisis de requisitos de la empresa | ✅ Completado (4 archivos) |
+| 03 | Análisis y requisitos de la empresa | ✅ Completado (4 archivos) |
 | 04 | Diseño técnico y arquitectura | ✅ Completado (4 archivos) |
 | 05 | Proceso de desarrollo con herramientas de IA | ✅ Completado (4 archivos) |
 | 06 | Catálogo de herramientas IA (fichas técnicas) | ✅ Completado (14 fichas) |

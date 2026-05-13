@@ -18,7 +18,7 @@ proyecto-fin-ciclo/
 ├── ════════════════════════════════════════════════════
 ├── FASE II — ANÁLISIS Y DISEÑO
 ├── ════════════════════════════════════════════════════
-├── 03-analisis-requisitos/         ← Estudio de la empresa, propuesta inicial
+├── 03-analisis-y-requisitos/       ← Estudio de la empresa, propuesta inicial
 ├── 04-diseno-tecnico/              ← Arquitectura y componentes del sistema
 │
 ├── ════════════════════════════════════════════════════
@@ -126,14 +126,13 @@ Panorama actual de la IA generativa aplicada al desarrollo web.
 
 > **Propósito:** Demostrar que hay trabajo de ingeniería previo a la codificación.
 
-### 03 — Análisis de Requisitos
+### 03 — Análisis y Requisitos
 > *"¿Qué problemas reales resuelve la aplicación?"*
 
 Documenta necesidades detectadas durante las prácticas y la propuesta inicial del proyecto.
 
-- [x] `anteproyecto.md` — Propuesta inicial del proyecto (entregable Fase 1 oficial)
+- [x] `analisis-previo.md` — Propuesta inicial del proyecto (entregable Fase 1 oficial)
 - [x] `analisis-empresa.md` — Estudio de la empresa: quién es, cómo funciona, qué necesidades tiene
-- [x] `entrevistas.md` — Notas de entrevistas con técnicos de almacén y oficina
 - [x] `requisitos-funcionales.md` — Casos de uso: qué debe hacer cada módulo
 - [x] `requisitos-no-funcionales.md` — Rendimiento, seguridad, usabilidad, restricciones
 
@@ -251,7 +250,7 @@ Guía didáctica para que docentes repliquen la metodología.
 | | 00 - README + INDICE | 2 | ✅ |
 | **I** Contexto | 01 - Presentación del proyecto | 3 | ✅ |
 | **I** Contexto | 02 - Contexto de la IA | 3 | ✅ |
-| **II** Análisis y diseño | 03 - Análisis requisitos | 5 | ✅ |
+| **II** Análisis y diseño | 03 - Análisis y requisitos | 4 | ✅ |
 | **II** Análisis y diseño | 04 - Diseño técnico | 5 | ✅ |
 | **III** Ejecución con IA | 05 - Proceso desarrollo | 4 | ✅ |
 | **III** Ejecución con IA | 06 - Herramientas IA | 13 | ✅ |

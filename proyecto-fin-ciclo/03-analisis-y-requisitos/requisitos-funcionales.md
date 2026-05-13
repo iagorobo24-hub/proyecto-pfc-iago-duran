@@ -254,4 +254,4 @@ Esto es lo que la aplicación tiene que poder hacer, visto desde el punto de vis
 ---
 
 *Requisitos funcionales documentados: Abril 2026*
-*Validados contra entrevistas: Mayo 2026*
+*Validados con personal de la empresa: Mayo 2026*

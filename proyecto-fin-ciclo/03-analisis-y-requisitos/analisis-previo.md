@@ -1,4 +1,4 @@
-# Anteproyecto — Propuesta Inicial
+# Análisis previo
 
 > Este documento recoge la idea inicial del proyecto, antes de empezar a programar.
 > Sirve para dejar claro qué se quería hacer, por qué y cómo se pensaba abordar.
