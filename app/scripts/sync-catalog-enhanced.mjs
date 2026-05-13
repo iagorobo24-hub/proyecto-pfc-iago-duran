@@ -1,9 +1,9 @@
 /**
- * Enhanced Catalog Sync: Sonepar -> Firestore
+ * Enhanced Catalog Sync: Catálogo -> Firestore
  * Creates complete product catalog with proper hierarchy
  * 
  * Expected data format from scraper:
- * - ref, refSonepar, nombre, marca, familia, precio, pvp, stock, pdf
+ * - ref, refCatalogo, nombre, marca, familia, precio, pvp, stock, pdf
  * 
  * Missing fields (gama, tipo) will be populated from hierarchy.json
  */
@@ -66,7 +66,7 @@ async function syncCatalog() {
     // Build product with complete fields
     const product = {
       ref: p.ref,
-      refSonepar: p.refSonepar || '',
+      refCatalogo: p.refCatalogo || '',
       nombre: p.nombre || '',
       marca: marca,
       familia: familia,
@@ -183,7 +183,7 @@ function generateSearchKeywords(product) {
   const nameWords = (product.nombre || '').toLowerCase().split(/\s+/).filter(w => w.length > 2);
   const keywords = [
     product.ref?.toLowerCase(),
-    product.refSonepar?.toLowerCase(),
+    product.refCatalogo?.toLowerCase(),
     product.marca?.toLowerCase(),
     product.familia?.toLowerCase(),
     ...nameWords

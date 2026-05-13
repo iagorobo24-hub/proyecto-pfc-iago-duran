@@ -91,8 +91,8 @@ export default async function handler(req, res) {
       headers = {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${apiKey}`,
-        'HTTP-Referer': 'https://proyectos-sonepar.vercel.app',
-        'X-Title': 'Sonepar Tools'
+        'HTTP-Referer': 'https://proyecto-pfc-iago-duran.vercel.app',
+        'X-Title': 'Proyectos PFC'
       };
       body = {
         model: model,
