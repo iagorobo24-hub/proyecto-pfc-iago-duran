@@ -19,7 +19,7 @@
   <rect width="1100" height="680" fill="url(#bg)"/>
   <rect width="1100" height="680" fill="url(#grid)"/>
 
-  <text x="550" y="38" fill="#f8fafc" font-size="20" font-weight="700" text-anchor="middle">Modelo de Datos — Proyectos Sonepar</text>
+  <text x="550" y="38" fill="#f8fafc" font-size="20" font-weight="700" text-anchor="middle">Modelo de Datos — Proyectos PFC</text>
   <text x="550" y="56" fill="#94a3b8" font-size="11" text-anchor="middle">Firestore: Colecciones y relaciones</text>
 
   <!-- productos collection -->
@@ -142,5 +142,5 @@
   <text x="300" y="318" fill="#a78bfa" font-size="8">ref</text>
 
   <!-- Footer -->
-  <text x="550" y="670" fill="#475569" font-size="9" text-anchor="middle">Proyectos Sonepar PFC | Modelo Firestore | Mayo 2026</text>
+  <text x="550" y="670" fill="#475569" font-size="9" text-anchor="middle">Proyectos PFC PFC | Modelo Firestore | Mayo 2026</text>
 </svg>

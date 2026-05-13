@@ -2,14 +2,14 @@
 
 ## Objetivo general
 
-Desarrollar una **suite de herramientas web** funcional para técnicos eléctricos de Sonepar Ibérica, construida mediante **IA generativa**, que demuestre la viabilidad de esta metodología para proyectos de ciclo formativo.
+Desarrollar una **suite de herramientas web** funcional para técnicos eléctricos de la empresa Ibérica, construida mediante **IA generativa**, que demuestre la viabilidad de esta metodología para proyectos de ciclo formativo.
 
 ---
 
 ## Objetivos específicos
 
 ### OE1 — Funcionalidad
-> Crear 7 módulos web que cubran las necesidades identificadas en Sonepar
+> Crear 7 módulos web que cubran las necesidades identificadas en la empresa
 
 - [x] Catálogo de fichas técnicas con navegación jerárquica
 - [x] Simulador de flujo de almacén
@@ -61,7 +61,7 @@ Desarrollar una **suite de herramientas web** funcional para técnicos eléctric
 | Tests unitarios con Vitest | ❌ No hecho | Prioridad a funcionalidad |
 | CI/CD con GitHub Actions | ❌ Parcial | Solo deploy automático |
 | Validación con usuarios reales | ❌ Limitada | Solo pruebas propias |
-| Integración con SAP de Sonepar | ❌ Descartado | Sin acceso a sistemas internos |
+| Integración con SAP de la empresa | ❌ Descartado | Sin acceso a sistemas internos |
 
 ---
 
@@ -77,7 +77,7 @@ Desarrollar una **suite de herramientas web** funcional para técnicos eléctric
 
 ### Excluido
 - APP móvil nativa (solo web responsive)
-- Integración con sistemas internos de Sonepar
+- Integración con sistemas internos de la empresa
 - Pago online / procesamiento de pedidos real
 - Hardware físico / IoT
 

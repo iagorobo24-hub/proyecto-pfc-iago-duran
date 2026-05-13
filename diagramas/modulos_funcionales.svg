@@ -16,7 +16,7 @@
   <rect width="1100" height="650" fill="url(#bg)"/>
   <rect width="1100" height="650" fill="url(#grid)"/>
 
-  <text x="550" y="38" fill="#f8fafc" font-size="20" font-weight="700" text-anchor="middle">Modulos Funcionales — Proyectos Sonepar</text>
+  <text x="550" y="38" fill="#f8fafc" font-size="20" font-weight="700" text-anchor="middle">Modulos Funcionales — Proyectos PFC</text>
   <text x="550" y="56" fill="#94a3b8" font-size="11" text-anchor="middle">7 modulos + Auth + Routing | SPA React 19</text>
 
   <!-- Central hub: App -->
@@ -113,5 +113,5 @@
 
   <line x1="550" y1="530" x2="550" y2="560" stroke="#a78bfa" stroke-width="1.5" stroke-dasharray="4,4" marker-end="url(#arrow)"/>
 
-  <text x="550" y="645" fill="#475569" font-size="9" text-anchor="middle">Proyectos Sonepar PFC | Modulos Funcionales | Mayo 2026</text>
+  <text x="550" y="645" fill="#475569" font-size="9" text-anchor="middle">Proyectos PFC PFC | Modulos Funcionales | Mayo 2026</text>
 </svg>

@@ -2,7 +2,7 @@
 
 ## Metodología
 
-Realicé **3 entrevistas informales** con técnicos de Sonepar durante mis prácticas. Las conversaciones fueron abiertas, enfocadas en entender su día a día y los problemas que encontraban.
+Realicé **3 entrevistas informales** con técnicos de la empresa durante mis prácticas. Las conversaciones fueron abiertas, enfocadas en entender su día a día y los problemas que encontraban.
 
 ---
 

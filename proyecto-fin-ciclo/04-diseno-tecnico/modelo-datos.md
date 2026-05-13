@@ -156,12 +156,12 @@ Archivo local con la jerarquía de familias/marcas/gamas:
 
 ---
 
-### catalogoSonepar.js
+### catalogola empresa.js
 
 Archivo legacy con productos mock (120 referencias originales).
 
 ```javascript
-export const productosSonepar = [
+export const productosla empresa = [
   {
     ref: "ABB123",
     name: "Interruptor automático...",

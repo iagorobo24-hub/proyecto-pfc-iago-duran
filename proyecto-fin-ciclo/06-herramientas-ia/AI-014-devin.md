@@ -67,7 +67,7 @@ Issue creado → Devin clona repo → Analiza código → Ejecuta cambios → Co
 
 ## Limitaciones que encontré
 
-1. **No tiene contexto de negocio:** No entiende que "Sonepar" es una empresa de material eléctrico. Trata todo como código genérico.
+1. **No tiene contexto de negocio:** No entiende que "la empresa" es una empresa de material eléctrico. Trata todo como código genérico.
 2. **A veces propone cambios excesivos:** Algunos PRs incluían cambios que no eran estrictamente necesarios.
 3. **No puede preguntar dudas:** Trabaja de forma autónoma, si algo no está claro, hace suposiciones.
 4. **Coste:** Devin es un producto de pago (no disclosed pricing publicly).

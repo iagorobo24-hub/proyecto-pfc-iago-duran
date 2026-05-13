@@ -39,7 +39,7 @@ A diferencia de Claude Web, Windsurf tiene acceso a todo tu proyecto:
 ## ¿Cómo lo usé?
 
 1. Descargué Windsurf desde codeium.com/windsurf
-2. Abrí el proyecto `proyectos-sonepar/app`
+2. Abrí el proyecto `proyecto-pfc-iago-duran/app`
 3. El autocompletado funcionaba automáticamente
 4. Para chat, usaba el panel lateral (Cascade AI)
 

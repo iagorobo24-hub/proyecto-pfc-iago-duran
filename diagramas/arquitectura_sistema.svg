@@ -30,7 +30,7 @@
   <rect width="1100" height="750" fill="url(#grid)"/>
 
   <!-- Title -->
-  <text x="550" y="40" fill="#f8fafc" font-size="22" font-weight="700" text-anchor="middle">Arquitectura del Sistema — Proyectos Sonepar</text>
+  <text x="550" y="40" fill="#f8fafc" font-size="22" font-weight="700" text-anchor="middle">Arquitectura del Sistema — Proyectos PFC</text>
   <text x="550" y="60" fill="#94a3b8" font-size="12" text-anchor="middle">SPA React + Firebase + Vercel + OpenRouter</text>
 
   <!-- CLIENT LAYER -->
@@ -133,7 +133,7 @@
   <text x="150" y="490" fill="white" font-size="13" font-weight="700" text-anchor="middle">Vercel</text>
   <text x="150" y="508" fill="#94a3b8" font-size="9" text-anchor="middle">Hobby Tier (Gratis)</text>
   <text x="150" y="524" fill="#94a3b8" font-size="9" text-anchor="middle">CI/CD: Git Push</text>
-  <text x="150" y="535" fill="#fbbf24" font-size="8" text-anchor="middle">proyectos-sonepar.vercel.app</text>
+  <text x="150" y="535" fill="#fbbf24" font-size="8" text-anchor="middle">proyecto-pfc-iago-duran.vercel.app</text>
 
   <rect x="280" y="465" width="180" height="75" rx="8" fill="rgba(120, 53, 15, 0.25)" stroke="#fbbf24" stroke-width="1"/>
   <text x="370" y="490" fill="white" font-size="12" font-weight="600" text-anchor="middle">Serverless Functions</text>
@@ -149,7 +149,7 @@
 
   <rect x="720" y="465" width="180" height="75" rx="8" fill="rgba(120, 53, 15, 0.25)" stroke="#fbbf24" stroke-width="1"/>
   <text x="810" y="490" fill="white" font-size="12" font-weight="600" text-anchor="middle">Scraping</text>
-  <text x="810" y="508" fill="#94a3b8" font-size="9" text-anchor="middle">sonepar.es</text>
+  <text x="810" y="508" fill="#94a3b8" font-size="9" text-anchor="middle">catalogo-electrico.es</text>
   <text x="810" y="524" fill="#94a3b8" font-size="9" text-anchor="middle">Puppeteer + scripts</text>
   <text x="810" y="535" fill="#fbbf24" font-size="8" text-anchor="middle">Sync a Firestore</text>
 
@@ -188,5 +188,5 @@
   <text x="452" y="709" fill="#94a3b8" font-size="9">Infraestructura</text>
   <rect x="570" y="700" width="16" height="10" rx="2" fill="rgba(6, 78, 59, 0.3)" stroke="#34d399" stroke-width="1"/>
   <text x="592" y="709" fill="#94a3b8" font-size="9">Seguridad</text>
-  <text x="820" y="709" fill="#475569" font-size="8">Proyectos Sonepar PFC | Mayo 2026</text>
+  <text x="820" y="709" fill="#475569" font-size="8">Proyectos PFC PFC | Mayo 2026</text>
 </svg>

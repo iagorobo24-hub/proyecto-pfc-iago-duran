@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════
- * SISTEMA DE DISEÑO — Proyectos Sonepar v3.0
+ * SISTEMA DE DISEÑO — Proyectos PFC v3.0
  * Layout Circular con Centro + Órbitas
  * ═══════════════════════════════════════════════════════ */
 
@@ -8,8 +8,8 @@
 
 :root {
   /* ── Colores corporativos ── */
-  --sonepar-blue: #0072CE;
-  --sonepar-blue-dark: #00569e;
+  --brand-primary: #0072CE;
+  --brand-primary-dark: #00569e;
   --sonepar-black: #0f172a;
   --color-brand: #003087;
   --color-brand-vivid: #0056d9;

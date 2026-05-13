@@ -54,7 +54,7 @@ Este capítulo evalúa si los objetivos definidos al inicio del proyecto se han 
 
 1. **Tiempo** — Solo 3 meses de desarrollo
 2. **Experiencia previa** — Curva de aprendizaje alta
-3. **Acceso a sistemas** — No hay integración con Sonepar
+3. **Acceso a sistemas** — No hay integración con la empresa
 4. **Usuarios reales** — Sin validación externa
 
 ---

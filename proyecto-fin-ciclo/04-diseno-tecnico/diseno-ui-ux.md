@@ -2,17 +2,17 @@
 
 ## Sistema de diseño
 
-La aplicación usa un **sistema de diseño propio** basado en los colores corporativos de Sonepar, implementado con CSS Modules y Variables CSS.
+La aplicación usa un **sistema de diseño propio** basado en los colores corporativos de la empresa, implementado con CSS Modules y Variables CSS.
 
 ---
 
 ## Paleta de colores
 
-### Colores corporativos Sonepar
+### Colores corporativos la empresa
 
 | Color | Hex | RGB | Uso |
 |-------|-----|-----|-----|
-| **Azul Sonepar** | `#004B8D` | 0, 75, 141 | Primary, botones principales |
+| **Azul la empresa** | `#004B8D` | 0, 75, 141 | Primary, botones principales |
 | **Azul claro** | `#4A90D9` | 74, 144, 217 | Links, acentos |
 | **Verde éxito** | `#28A745` | 40, 167, 69 |KPIs OK, confirmaciones |
 | **Amarillo warning** | `#FFC107` | 255, 193, 7 |KPIs Warning |

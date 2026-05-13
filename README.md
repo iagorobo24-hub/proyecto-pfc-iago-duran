@@ -4,7 +4,7 @@
 
 Aplicación SPA con **7 módulos funcionales**, autenticación con Google, diseño responsive y asistente técnico impulsado por IA.
 
-**Demo:** [proyectos-sonepar.vercel.app](https://proyectos-sonepar.vercel.app)
+**Demo:** [proyecto-pfc-iago-duran.vercel.app](https://proyecto-pfc-iago-duran.vercel.app)
 
 ---
 
@@ -46,7 +46,7 @@ Aplicación SPA con **7 módulos funcionales**, autenticación con Google, dise�
 ## Arquitectura
 
 ```
-proyectos-sonepar/
+proyecto-pfc-iago-duran/
 ├── app/
 │   ├── api/
 │   │   └── ai.js                  # Vercel Function — gateway IA (OpenRouter/Groq)
@@ -141,7 +141,7 @@ Las credenciales de Firebase están en `app/src/firebase/firebaseConfig.js` y so
 1. Crear proyecto en [Firebase Console](https://console.firebase.google.com/)
 2. **Authentication → Sign-in method** → Activar **Google**
 3. **Firestore Database** → Crear base de datos
-4. Añadir `localhost` y `proyectos-sonepar.vercel.app` como **Authorized Domains**
+4. Añadir `localhost` y `proyecto-pfc-iago-duran.vercel.app` como **Authorized Domains**
 
 ### Vercel
 

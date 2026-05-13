@@ -28,7 +28,7 @@ El ciclo de Automatización y Robótica Industrial forma técnicos que trabajar�
 - **Software de gestión y visualización** ← Este proyecto cubre este aspecto
 
 Aunque el proyecto no es de automatización pura, demuestra competencias transferibles:
-- Análisis de requisitos con el cliente (Sonepar)
+- Análisis de requisitos con el cliente (la empresa)
 - Diseño de soluciones técnicas
 - Implementación y pruebas
 - Documentación
@@ -127,7 +127,7 @@ Aunque el proyecto no es de automatización pura, demuestra competencias transfe
 
 ---
 
-### Sesión 4: Proyecto en grupo — Aplicación para Sonepar (2h)
+### Sesión 4: Proyecto en grupo — Aplicación para la empresa (2h)
 
 **Objetivo:** Aplicar todo lo aprendido en un proyecto simplificado
 
@@ -244,7 +244,7 @@ Ver la carpeta `proyecto-fin-ciclo/06-herramientas-ia/` donde hay fichas técnic
 ### Lo que se podría mejorar
 
 1. **Tests desde el principio:** Añadir tests E2E con Playwright antes de refactorizar.
-2. **Validación con usuarios reales:** Probar la aplicación con técnicos de Sonepar durante el desarrollo.
+2. **Validación con usuarios reales:** Probar la aplicación con técnicos de la empresa durante el desarrollo.
 3. **Integración continua:** GitHub Actions para build y tests automáticos.
 
 ---
@@ -261,7 +261,7 @@ Este proyecto y su documentación están bajo licencia **MIT**. Puedes:
 ---
 
 *Manual elaborado en Mayo 2026*
-*Proyecto: "Proyectos Sonepar — Suite de herramientas web para técnicos eléctricos"*
+*Proyecto: "Proyectos la empresa — Suite de herramientas web para técnicos eléctricos"*
 *Autor: Iago (iagorobo24-hub)*
 *Ciclo: Automatización y Robótica Industrial*
 

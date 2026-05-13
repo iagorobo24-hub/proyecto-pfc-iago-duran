@@ -166,7 +166,7 @@ El campo de la IA generativa aplicada al desarrollo de software evoluciona rápi
 ### Medio plazo (2027)
 
 - [ ] APP móvil (PWA o React Native)
-- [ ] Integración con sistemas de Sonepar
+- [ ] Integración con sistemas de la empresa
 - [ ] Módulo de pedidos real
 
 ### Largo plazo (2028+)

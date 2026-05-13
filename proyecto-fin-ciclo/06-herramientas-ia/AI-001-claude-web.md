@@ -43,7 +43,7 @@ Claude también ayudó en el rediseño y reconstrucción de los artefactos suelt
 
 ### Fase 3: Diseño visual
 
-- Definición del sistema de diseño basado en colores corporativos Sonepar
+- Definición del sistema de diseño basado en colores corporativos la empresa
 - Generación de componentes UI (Button, Badge, Input, Card, etc.)
 - Implementación del modo oscuro/claro
 

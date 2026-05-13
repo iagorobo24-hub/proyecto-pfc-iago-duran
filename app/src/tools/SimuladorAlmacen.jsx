@@ -93,7 +93,7 @@ const PROMPT_ANALISIS = (pedido, tiempos, categoria, incResueltas, operario) => 
   const estandares = ETAPAS.map((_, i) => getEstandar(i, categoria) || 75);
   const desv = tiempos.map((t, i) => Math.round(((t - estandares[i]) / estandares[i]) * 100));
   const incFalladas = incResueltas.filter(r => !r.correcto);
-  return `Eres el responsable de logística de Sonepar España. Analiza la sesión.\nOperario: ${operario || "Anónimo"}\nPedido: ${pedido.producto} (${pedido.referencia})\n\nTiempos:\n${ETAPAS.map((e, i) => `- ${e.nombre}: ${tiempos[i]}s (est: ${estandares[i]}s, ${desv[i] > 0 ? "+" : ""}${desv[i]}%)`).join("\n")}\nTotal: ${tiempos.reduce((a, b) => a + b, 0)}s\nIncidencias: ${incResueltas.length} presentadas${incFalladas.length > 0 ? `, ${incFalladas.length} falladas` : ", todas correctas"}.\n\n3 párrafos: (1) rendimiento por etapa con tiempos, (2) gestión de incidencias, (3) recomendación accionable. Tono constructivo.`;
+  return `Eres el responsable de logística de la empresa. Analiza la sesión.\nOperario: ${operario || "Anónimo"}\nPedido: ${pedido.producto} (${pedido.referencia})\n\nTiempos:\n${ETAPAS.map((e, i) => `- ${e.nombre}: ${tiempos[i]}s (est: ${estandares[i]}s, ${desv[i] > 0 ? "+" : ""}${desv[i]}%)`).join("\n")}\nTotal: ${tiempos.reduce((a, b) => a + b, 0)}s\nIncidencias: ${incResueltas.length} presentadas${incFalladas.length > 0 ? `, ${incFalladas.length} falladas` : ", todas correctas"}.\n\n3 párrafos: (1) rendimiento por etapa con tiempos, (2) gestión de incidencias, (3) recomendación accionable. Tono constructivo.`;
 };
 
 // ── Componente principal ──────────────────────────────────────────────────────
@@ -122,10 +122,10 @@ export default function SimuladorAlmacen() {
   const inicioEtapaRef = useRef(null);
 
   useEffect(() => {
-    try { const p = localStorage.getItem("sonepar_sim_perfil"); if (p) setOperario(JSON.parse(p)); const h = localStorage.getItem("sonepar_simulaciones_v3"); if (h) setHistorial(JSON.parse(h)); } catch {}
+    try { const p = localStorage.getItem("pfc_sim_perfil"); if (p) setOperario(JSON.parse(p)); const h = localStorage.getItem("pfc_simulaciones_v3"); if (h) setHistorial(JSON.parse(h)); } catch {}
   }, []);
 
-  const guardarPerfil = () => { if (!operario.nombre.trim()) return; try { localStorage.setItem("sonepar_sim_perfil", JSON.stringify(operario)); } catch {}; setPantalla("onboarding"); };
+  const guardarPerfil = () => { if (!operario.nombre.trim()) return; try { localStorage.setItem("pfc_sim_perfil", JSON.stringify(operario)); } catch {}; setPantalla("onboarding"); };
   const showToast = (msg) => { setToast(msg); setTimeout(() => setToast(""), 2500); };
 
   useEffect(() => {
@@ -186,7 +186,7 @@ export default function SimuladorAlmacen() {
     const nuevaEntrada = { fecha: new Date().toISOString(), pedido: pedidoActivo, tiempos: todosTiempos, puntuacion: punt, incResueltas, operario: operario.nombre, modo: modoSim };
     const nuevoHistorial = [nuevaEntrada, ...historial].slice(0, 20);
     setHistorial(nuevoHistorial);
-    try { localStorage.setItem("sonepar_simulaciones_v3", JSON.stringify(nuevoHistorial)); } catch {}
+    try { localStorage.setItem("pfc_simulaciones_v3", JSON.stringify(nuevoHistorial)); } catch {}
     setPantalla("resultado");
     if (cargando) return;
     setCargando(true);

@@ -122,7 +122,7 @@ export default function Presupuestos() {
   const [filtroCatalogo, setFiltroCatalogo] = useState("");
   const [añadidos, setAñadidos] = useState({});
 
-  useEffect(() => { try { const h = localStorage.getItem("sonepar_presupuestos_historial"); if (h) setHistorial(JSON.parse(h)); } catch {} }, []);
+  useEffect(() => { try { const h = localStorage.getItem("pfc_presupuestos_historial"); if (h) setHistorial(JSON.parse(h)); } catch {} }, []);
   useEffect(() => {
     const producto = searchParams.get('producto');
     const referencia = searchParams.get('referencia');
@@ -155,7 +155,7 @@ export default function Presupuestos() {
     const presupuesto = { numero: numPresupuesto, fecha: new Date().toISOString(), cliente: datosCliente, partidas, categoria, total: partidas.reduce((s, p) => s + p.precio_total, 0) };
     const nuevo = [presupuesto, ...historial].slice(0, 20);
     setHistorial(nuevo);
-    try { localStorage.setItem("sonepar_presupuestos_historial", JSON.stringify(nuevo)); } catch {}
+    try { localStorage.setItem("pfc_presupuestos_historial", JSON.stringify(nuevo)); } catch {}
     setGuardando(false);
     toast.show("Presupuesto guardado", "success");
   };

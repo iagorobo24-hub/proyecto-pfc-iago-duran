@@ -93,7 +93,7 @@ export default function Sonex() {
         ? `\nEl usuario está consultando sobre la categoría: ${categoriaActiva}. Enfoca tus respuestas en productos y soluciones de esta familia.`
         : '';
 
-      const systemPrompt = `Eres SONEX, el asistente técnico experto de Sonepar España. Responde de forma concisa, enfocándote en soluciones técnicas de Sonepar, referencias de producto y recomendaciones de aplicación.\n\n${modoInstrucciones[modoActivo] || modoInstrucciones.busqueda}${categoriaTexto}`;
+      const systemPrompt = `Eres SONEX, el asistente técnico experto técnico España. Responde de forma concisa, enfocándote en soluciones técnicas de Sonepar, referencias de producto y recomendaciones de aplicación.\n\n${modoInstrucciones[modoActivo] || modoInstrucciones.busqueda}${categoriaTexto}`;
       
       const { text } = await callAnthropicAI({ 
         provider: 'openrouter',
@@ -155,7 +155,7 @@ export default function Sonex() {
             <div className={styles.sonexName}>SONEX <span className={styles.sonexVersion}>v7</span></div>
             <div className={styles.sonexStatus}>
               <span className={styles.statusDot} />
-              Asistente técnico IA · Sonepar
+              Asistente técnico IA · Proyectos PFC
             </div>
           </div>
         </div>

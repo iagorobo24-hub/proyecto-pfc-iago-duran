@@ -44,7 +44,7 @@ Este documento enumera las posibles mejoras y ampliaciones del proyecto, tanto a
 - O bien React Native / Expo
 - Funcionalidad offline
 
-### 5. Integración con Sonepar
+### 5. Integración con la empresa
 
 **Estado:** Idea
 
@@ -134,7 +134,7 @@ Este documento enumera las posibles mejoras y ampliaciones del proyecto, tanto a
 
 Si quieres continuar este proyecto:
 
-1. **Clona el repo:** `git clone https://github.com/iagorobo24-hub/proyectos-sonepar`
+1. **Clona el repo:** `git clone https://github.com/iagorobo24-hub/proyecto-pfc-iago-duran`
 2. **Instala dependencias:** `cd app && npm install`
 3. **Ejecuta en local:** `npm run dev`
 4. **Revisa los issues:** Busca en GitHub

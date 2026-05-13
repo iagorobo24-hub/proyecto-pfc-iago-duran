@@ -122,7 +122,7 @@ Este documento explica **por qué** se eligió cada tecnología, considerando el
 | **Hosting** | Vercel | Deploy automático desde GitHub |
 | **CDN** | Vercel Edge | Rápido globalmente |
 | **SSL** | Automático | Lets Encrypt incluido |
-| **Dominio** | proyectos-sonepar.vercel.app | Gratis |
+| **Dominio** | proyecto-pfc-iago-duran.vercel.app | Gratis |
 
 **Alternativas considered:**
 - Netlify: Similar, pero Vercel mejor para Vite/React

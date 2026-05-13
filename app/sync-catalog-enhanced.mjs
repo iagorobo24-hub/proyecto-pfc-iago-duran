@@ -1,5 +1,5 @@
 /**
- * Enhanced Catalog Sync: Sonepar -> Firestore
+ * Enhanced Catalog Sync: Catálogo -> Firestore
  * Creates complete product catalog with proper hierarchy
  * 
  * Expected data format from scraper:
@@ -11,7 +11,7 @@ import admin from 'firebase-admin';
 import fs from 'fs';
 import path from 'path';
 
-const JSON_SOURCE = './sonepar-catalog-scraper/catalogo-final-v12.json';
+const JSON_SOURCE = './catalog-scraper/catalogo-final-v12.json';
 const HIERARCHY_SOURCE = './src/data/hierarchy.json';
 const SERVICE_ACCOUNT_PATH = './service-account.json';
 

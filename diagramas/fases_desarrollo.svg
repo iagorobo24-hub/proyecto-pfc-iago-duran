@@ -29,7 +29,7 @@
   <rect width="1100" height="500" fill="url(#bg)"/>
   <rect width="1100" height="500" fill="url(#grid)"/>
 
-  <text x="550" y="38" fill="#f8fafc" font-size="20" font-weight="700" text-anchor="middle">Fases de Desarrollo — Proyectos Sonepar</text>
+  <text x="550" y="38" fill="#f8fafc" font-size="20" font-weight="700" text-anchor="middle">Fases de Desarrollo — Proyectos PFC</text>
   <text x="550" y="56" fill="#94a3b8" font-size="11" text-anchor="middle">Timeline: Febrero 2026 → Mayo 2026 (3 meses)</text>
 
   <!-- Timeline axis -->
@@ -73,7 +73,7 @@
   <text x="350" y="369" fill="white" font-size="12" font-weight="700">Integracion IA</text>
   <text x="330" y="390" fill="#e2e8f0" font-size="9">SONEX: Asistente inteligente</text>
   <text x="330" y="405" fill="#e2e8f0" font-size="9">OpenRouter + Claude + DeepSeek</text>
-  <text x="330" y="420" fill="#e2e8f0" font-size="9">Formacion + Scraping sonepar.es</text>
+  <text x="330" y="420" fill="#e2e8f0" font-size="9">Formacion + Scraping catalogo-electrico.es</text>
   <text x="330" y="435" fill="#34d399" font-size="8">4 semanas</text>
 
   <!-- PHASE 4: Testing & Deploy -->
@@ -104,5 +104,5 @@
   <text x="785" y="477" fill="#34d399" font-size="8" text-anchor="middle">IA + Form.</text>
   <text x="985" y="477" fill="#fbbf24" font-size="8" text-anchor="middle">Test+Dep</text>
 
-  <text x="550" y="495" fill="#475569" font-size="9" text-anchor="middle">Proyectos Sonepar PFC | Fases de Desarrollo | Mayo 2026</text>
+  <text x="550" y="495" fill="#475569" font-size="9" text-anchor="middle">Proyectos PFC PFC | Fases de Desarrollo | Mayo 2026</text>
 </svg>

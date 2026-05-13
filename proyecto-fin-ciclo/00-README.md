@@ -5,7 +5,7 @@
 **Autor:** Iago (iagorobo24-hub)
 **Ciclo formativo:** Automatización y Robótica Industrial
 **Centro educativo:** [Nombre del centro]
-**Empresa de prácticas:** Sonepar Ibérica
+**Empresa de prácticas:** la empresa Ibérica
 **Fecha:** Curso 2025-2026
 
 ## Estructura de esta documentación
@@ -53,8 +53,8 @@ Este repositorio de documentación está diseñado para ser:
 
 ## Contacto y repositorio
 
-- **Repositorio del proyecto:** https://github.com/iagorobo24-hub/proyectos-sonepar
-- **Demo en producción:** https://proyectos-sonepar.vercel.app
+- **Repositorio del proyecto:** https://github.com/iagorobo24-hub/proyecto-pfc-iago-duran
+- **Demo en producción:** https://proyecto-pfc-iago-duran.vercel.app
 - **Autor:** iagorobo24-hub
 
 ---

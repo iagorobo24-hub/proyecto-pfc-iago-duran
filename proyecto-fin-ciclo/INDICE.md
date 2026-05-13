@@ -9,7 +9,7 @@ proyecto-fin-ciclo/
 ├── 00-README.md                    ← Este archivo: índice y guía de uso
 ├── 01-resumen-ejecutivo/           ← Resumen ejecutivo del proyecto
 ├── 02-estado-del-arte/             ← IA generativa en desarrollo web
-├── 03-analisis-requisitos/         ← Análisis de necesidades de Sonepar
+├── 03-analisis-requisitos/         ← Análisis de necesidades de la empresa
 ├── 04-diseno-tecnico/              ← Arquitectura y decisiones técnicas
 ├── 05-proceso-desarrollo/          ← Metodología de trabajo con IA
 ├── 06-herramientas-ia/            ← Catálogo de herramientas (fichas)
@@ -88,7 +88,7 @@ proyecto-fin-ciclo/
 - [x] `tendencias-futuro.md` — Líneas de evolución
 
 ### 03 — Análisis de Requisitos
-- [x] `analisis-empresa.md` — Estudio de Sonepar y necesidades
+- [x] `analisis-empresa.md` — Estudio de la empresa y necesidades
 - [x] `entrevistas.md` — Notas de entrevistas con técnicos
 - [x] `requisitos-funcionales.md` — Casos de uso
 - [x] `requisitos-no-funcionales.md` — Rendimiento, seguridad, etc.

@@ -43,9 +43,9 @@ export default function KPILogistico() {
     toast.show("Datos de ejemplo cargados", "success");
   };
 
-  useEffect(() => { try { const h = localStorage.getItem("sonepar_kpi_historial"); if (h) setHistorial(JSON.parse(h)); } catch {} }, []);
+  useEffect(() => { try { const h = localStorage.getItem("pfc_kpi_historial"); if (h) setHistorial(JSON.parse(h)); } catch {} }, []);
 
-  const guardarHistorial = (entrada) => { const nuevo = [entrada, ...historial].slice(0, 30); setHistorial(nuevo); try { localStorage.setItem("sonepar_kpi_historial", JSON.stringify(nuevo)); } catch {} };
+  const guardarHistorial = (entrada) => { const nuevo = [entrada, ...historial].slice(0, 30); setHistorial(nuevo); try { localStorage.setItem("pfc_kpi_historial", JSON.stringify(nuevo)); } catch {} };
 
   const calcularKPIs = () => {
     const d = datos;

@@ -86,7 +86,7 @@ La API key de Anthropic estaba hardcodeada en el frontend. Se creó un proxy ser
 - Componentes base: `Button`, `Badge`, `Input`, `Card`, `StreamIndicator`, `Toast`
 - Extracción de hooks personalizados (`useFichasTecnicas`, etc.)
 - Componentes especializados (`TarjetaFicha`)
-- Estandarización visual con tema azul/blanco corporativo Sonepar
+- Estandarización visual con tema azul/blanco corporativo la empresa
 - Sidebar con iconos lucide-react
 
 ### Herramienta IA
@@ -103,10 +103,10 @@ La API key de Anthropic estaba hardcodeada en el frontend. Se creó un proxy ser
 
 | Versión | Características |
 |---------|-----------------|
-| **v3** | Especialización Sonepar, 5 modos de consulta, system prompt completo |
+| **v3** | Especialización la empresa, 5 modos de consulta, system prompt completo |
 | **v4** | Analytics, exportar consultas, detección de familias de producto |
 | **v5** | Fix pantalla blanca (error en orden de declaraciones) |
-| **v6** | Diseño corporativo Sonepar, catálogo ampliado a 80 productos |
+| **v6** | Diseño corporativo la empresa, catálogo ampliado a 80 productos |
 | **v7** | Streaming de respuestas, detección automática de modo, verificador de referencias, exportar PDF |
 
 ### Herramienta IA
@@ -121,7 +121,7 @@ La API key de Anthropic estaba hardcodeada en el frontend. Se creó un proxy ser
 
 ### Logros
 
-- Catálogo unificado de 65 referencias reales de Sonepar
+- Catálogo unificado de 65 referencias reales de la empresa
 - SONEX detecta referencias en sus respuestas y ofrece botón "Ver ficha"
 - Desde fichas se puede ir a presupuestos con `ADD_ITEM` (URL param)
 - Procesamiento de Markdown en respuestas de SONEX

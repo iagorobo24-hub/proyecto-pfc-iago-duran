@@ -126,8 +126,8 @@ No puedes:
 
 ## Dónde encontrar más
 
-- **Repo:** https://github.com/iagorobo24-hub/proyectos-sonepar
-- **Demo:** https://proyectos-sonepar.vercel.app
+- **Repo:** https://github.com/iagorobo24-hub/proyecto-pfc-iago-duran
+- **Demo:** https://proyecto-pfc-iago-duran.vercel.app
 - **Documentación:** Carpeta `proyecto-fin-ciclo/`
 
 ---

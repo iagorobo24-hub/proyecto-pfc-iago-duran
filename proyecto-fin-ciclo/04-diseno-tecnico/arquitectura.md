@@ -2,7 +2,7 @@
 
 ## Visión general
 
-Proyectos Sonepar es una **Single Page Application (SPA)** construida con React 19, desplegada en Vercel, con autenticación y base de datos en Firebase, e integrada con OpenRouter para funcionalidades de IA.
+Proyectos la empresa es una **Single Page Application (SPA)** construida con React 19, desplegada en Vercel, con autenticación y base de datos en Firebase, e integrada con OpenRouter para funcionalidades de IA.
 
 ---
 

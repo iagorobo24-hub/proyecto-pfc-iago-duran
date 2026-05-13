@@ -27,7 +27,7 @@ const progresoInicial = (modulos) => Object.fromEntries(modulos.map(m => [m.id, 
 const PROMPT_PLAN = (emp, modulos, progreso) => {
   const completados = modulos.filter(m => progreso[m.id] === "completado").map(m => m.nombre);
   const pendientes = modulos.filter(m => progreso[m.id] === "pendiente").map(m => m.nombre);
-  return `Eres el responsable de formación de Sonepar España.\nEmpleado: ${emp.nombre} — ${emp.rol}\nCompletados: ${completados.join(", ") || "ninguno"}\nPendientes: ${pendientes.join(", ") || "ninguno"}\n\nPlan en 3 párrafos: (1) valoración, (2) módulos prioritarios, (3) recomendación semanal.`;
+  return `Eres el responsable de formación de la empresa.\nEmpleado: ${emp.nombre} — ${emp.rol}\nCompletados: ${completados.join(", ") || "ninguno"}\nPendientes: ${pendientes.join(", ") || "ninguno"}\n\nPlan en 3 párrafos: (1) valoración, (2) módulos prioritarios, (3) recomendación semanal.`;
 };
 
 export default function FormacionInterna() {
@@ -45,9 +45,9 @@ export default function FormacionInterna() {
 
   useEffect(() => {
     try {
-      const emp = localStorage.getItem("sonepar_formacion_empleados");
-      const prg = localStorage.getItem("sonepar_formacion_progresos");
-      const fec = localStorage.getItem("sonepar_formacion_fechas");
+      const emp = localStorage.getItem("pfc_formacion_empleados");
+      const prg = localStorage.getItem("pfc_formacion_progresos");
+      const fec = localStorage.getItem("pfc_formacion_fechas");
       const emps = emp ? JSON.parse(emp) : EMPLEADOS_INIT();
       const prgs = prg ? JSON.parse(prg) : {};
       const fecs = fec ? JSON.parse(fec) : {};
@@ -63,7 +63,7 @@ export default function FormacionInterna() {
   }, []);
 
   const guardar = (emps, prgs, fecs) => {
-    try { localStorage.setItem("sonepar_formacion_empleados", JSON.stringify(emps)); localStorage.setItem("sonepar_formacion_progresos", JSON.stringify(prgs)); localStorage.setItem("sonepar_formacion_fechas", JSON.stringify(fecs)); } catch {}
+    try { localStorage.setItem("pfc_formacion_empleados", JSON.stringify(emps)); localStorage.setItem("pfc_formacion_progresos", JSON.stringify(prgs)); localStorage.setItem("pfc_formacion_fechas", JSON.stringify(fecs)); } catch {}
   };
 
   const cambiarProgreso = (empId, modId, nuevoEstado) => {
@@ -94,7 +94,7 @@ export default function FormacionInterna() {
     setCargandoIA(true); setPlanIA("");
     try {
       const { callAnthropicAI } = await import('../services/anthropicService');
-      const { text } = await callAnthropicAI({ model: "anthropic/claude-3.5-haiku", max_tokens: 1000, system: "Eres el responsable de formación de Sonepar España.", messages: [{ role: "user", content: PROMPT_PLAN(emp, modulos, progresos[emp.id] || {}) }] });
+      const { text } = await callAnthropicAI({ model: "anthropic/claude-3.5-haiku", max_tokens: 1000, system: "Eres el responsable de formación de la empresa.", messages: [{ role: "user", content: PROMPT_PLAN(emp, modulos, progresos[emp.id] || {}) }] });
       setPlanIA(text || "Error al generar el plan.");
     } catch { setPlanIA("Error al generar el plan."); }
     setCargandoIA(false);

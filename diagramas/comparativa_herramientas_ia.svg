@@ -13,7 +13,7 @@
   <rect width="1100" height="700" fill="url(#bg)"/>
   <rect width="1100" height="700" fill="url(#grid)"/>
 
-  <text x="550" y="38" fill="#f8fafc" font-size="20" font-weight="700" text-anchor="middle">Comparativa de Herramientas IA — Proyectos Sonepar</text>
+  <text x="550" y="38" fill="#f8fafc" font-size="20" font-weight="700" text-anchor="middle">Comparativa de Herramientas IA — Proyectos PFC</text>
   <text x="550" y="56" fill="#94a3b8" font-size="11" text-anchor="middle">15+ herramientas evaluadas | Uso real en el proyecto</text>
 
   <!-- CATEGORY 1: Code Generation -->
@@ -178,5 +178,5 @@
   <rect x="140" y="661" width="320" height="12" rx="6" fill="#a78bfa"/>
   <text x="470" y="671" fill="#94a3b8" font-size="9">80%</text>
 
-  <text x="550" y="690" fill="#475569" font-size="9" text-anchor="middle">Proyectos Sonepar PFC | Comparativa Herramientas IA | Mayo 2026</text>
+  <text x="550" y="690" fill="#475569" font-size="9" text-anchor="middle">Proyectos PFC PFC | Comparativa Herramientas IA | Mayo 2026</text>
 </svg>

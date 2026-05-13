@@ -71,7 +71,7 @@ const handleLogin = async () => {
 ## Limitaciones que encontré
 
 1. **Lógica compleja requiere ajustes:** En hooks con estados interdependientes, las sugerencias podían ser inexactas.
-2. **No entiende el negocio:** No sabía que "Sonepar" era una empresa de material eléctrico, generaba nombres genéricos.
+2. **No entiende el negocio:** No sabía que "la empresa" era una empresa de material eléctrico, generaba nombres genéricos.
 3. **Saturación de sugerencias:** En archivos grandes, las sugerencias dejaban de ser útiles.
 4. **Coste acumulado:** Aunque VSCode es gratuito, requiere una cuenta de GitHub (que en su momento tenía Copilot incluido gratis).
 

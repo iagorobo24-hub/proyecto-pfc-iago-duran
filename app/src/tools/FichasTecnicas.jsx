@@ -160,7 +160,7 @@ export default function FichasTecnicas() {
         ))}
       </nav>
       <div className={styles.sidebar__footer}>
-        <p className={styles.sidebar__footerText}>Sonepar España · A Coruña</p>
+        <p className={styles.sidebar__footerText}>Proyectos PFC · Iago Durán</p>
         <p className={styles.sidebar__footerText}>PFC CFGS · 2026</p>
       </div>
     </aside>

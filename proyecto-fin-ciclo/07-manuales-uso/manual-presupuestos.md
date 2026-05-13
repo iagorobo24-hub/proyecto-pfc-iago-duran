@@ -2,7 +2,7 @@
 
 ## Introducción
 
-El Generador de Presupuestos te permite crear presupuestos profesionales para clientes, usando productos reales del catálogo de Sonepar.
+El Generador de Presupuestos te permite crear presupuestos profesionales para clientes, usando productos reales del catálogo de la empresa.
 
 ---
 
@@ -184,7 +184,7 @@ Para empezar de cero:
 ### El precio aparece como "Consultar"
 
 - Algunos productos no tienen precio definido
-- Contacta con Sonepar para pricing
+- Contacta con la empresa para pricing
 
 ---
 

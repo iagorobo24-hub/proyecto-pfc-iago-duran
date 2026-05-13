@@ -1,5 +1,5 @@
 /**
- * Servicio de Firestore para SoneparTools
+ * Servicio de Firestore para ProyectosPFC
  * Capa de abstracción para operaciones CRUD en Firestore
  *
  * IMPORTANTE: Firestore doc() requiere número PAR de segmentos.
@@ -187,21 +187,21 @@ export async function migrateLocalStorageToFirestore(uid, localStorageData) {
       }
 
       let docRef
-      if (key === 'sonepar_fichas_historial') {
+      if (key === 'pfc_fichas_historial') {
         docRef = doc(db, 'users', uid, 'fichas', 'history', 'default')
-      } else if (key === 'sonepar_presupuestos_historial') {
+      } else if (key === 'pfc_presupuestos_historial') {
         docRef = doc(db, 'users', uid, 'budgets', 'default')
-      } else if (key === 'sonepar_incidencias') {
+      } else if (key === 'pfc_incidencias') {
         docRef = doc(db, 'users', uid, 'incidents', 'default')
-      } else if (key === 'sonepar_kpi_historial') {
+      } else if (key === 'pfc_kpi_historial') {
         docRef = doc(db, 'users', uid, 'kpi', 'entries', 'default')
-      } else if (key.startsWith('sonepar_sim_')) {
-        const simId = key.replace('sonepar_sim_', '')
+      } else if (key.startsWith('pfc_sim_')) {
+        const simId = key.replace('pfc_sim_', '')
         docRef = doc(db, 'users', uid, 'simulator', simId)
-      } else if (key.startsWith('sonepar_formacion_')) {
-        const formId = key.replace('sonepar_formacion_', '')
+      } else if (key.startsWith('pfc_formacion_')) {
+        const formId = key.replace('pfc_formacion_', '')
         docRef = doc(db, 'users', uid, 'training', formId)
-      } else if (key === 'sonepar_theme') {
+      } else if (key === 'pfc_theme') {
         docRef = doc(db, 'users', uid, 'preferences', 'theme')
       } else if (key === 'sidebar_collapsed') {
         docRef = doc(db, 'users', uid, 'preferences', 'sidebar')

@@ -2,11 +2,11 @@
 
 ## El proyecto en una frase
 
-Desarrollo de una **suite de herramientas web** para técnicos eléctricos de Sonepar Ibérica, construida íntegramente con **IA generativa** como metodología de trabajo, demostrando que un estudiante de ciclo formativo puede crear soluciones profesionales sin conocimientos previos de programación.
+Desarrollo de una **suite de herramientas web** para técnicos eléctricos de la empresa Ibérica, construida íntegramente con **IA generativa** como metodología de trabajo, demostrando que un estudiante de ciclo formativo puede crear soluciones profesionales sin conocimientos previos de programación.
 
 ---
 
-## ¿Qué es Proyectos Sonepar?
+## ¿Qué es Proyectos la empresa?
 
 Es una aplicación web (SPA) con **7 módulos funcionales** que resuelven necesidades reales de técnicos electricistas en su día a día:
 
@@ -26,7 +26,7 @@ Es una aplicación web (SPA) con **7 módulos funcionales** que resuelven necesi
 
 ### El problema encontrado
 
-Durante mis prácticas en **Sonepar Ibérica** (empresa de distribución de material eléctrico), observé que los técnicos销售人员:
+Durante mis prácticas en **la empresa Ibérica** (empresa de distribución de material eléctrico), observé que los técnicos销售人员:
 
 - Tardaban mucho buscando fichas técnicas de productos
 - No tenían acceso fácil a información de compatibilidad entre productos
@@ -58,7 +58,7 @@ Lo que hace único este proyecto no es solo la aplicación en sí, sino **cómo 
 
 ## Impacto esperado
 
-### Para Sonepar
+### Para la empresa
 - Reducción del tiempo de búsqueda de productos
 - Estandarización en el registro de incidencias
 - Mejora en la formación de nuevos técnicos
@@ -107,4 +107,4 @@ Este proyecto fin de ciclo se documenta en 10 capítulos:
 ---
 
 *Documento elaborado: Mayo 2026*
-*Proyecto: Proyectos Sonepar — PFC Automatización y Robótica Industrial*
+*Proyecto: Proyectos la empresa — PFC Automatización y Robótica Industrial*

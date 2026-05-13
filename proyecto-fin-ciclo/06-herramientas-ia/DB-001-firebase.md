@@ -67,8 +67,8 @@ import { getFirestore } from 'firebase/firestore'
 
 const firebaseConfig = {
   apiKey: "...",
-  authDomain: "proyectos-sonepar.firebaseapp.com",
-  projectId: "proyectos-sonepar",
+  authDomain: "proyecto-pfc-iago-duran.firebaseapp.com",
+  projectId: "proyecto-pfc-iago-duran",
   // ... otras config
 }
 

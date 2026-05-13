@@ -86,7 +86,7 @@ Esta sección documenta las lecciones más importantes aprendidas durante el pro
 
 ### Error 7: No validar con usuarios reales
 
-**Qué pasó:** Desarrollé la aplicación sin probarla con técnicos reales de Sonepar (solo con ellos como fuente de requisitos).
+**Qué pasó:** Desarrollé la aplicación sin probarla con técnicos reales de la empresa (solo con ellos como fuente de requisitos).
 
 **Por qué fue un error:** Puede que las soluciones no resuelvan los problemas reales.
 
@@ -98,11 +98,11 @@ Esta sección documenta las lecciones más importantes aprendidas durante el pro
 
 ### Error 8: La pesadilla de configurar la base de datos — Scraping, Sync y Conexión
 
-**Qué pasó:** El proceso de obtener los datos del catálogo de Sonepar y mostrarlos en la web resultó ser mucho más complejo de lo esperado. Pasé por tres fases críticas:
+**Qué pasó:** El proceso de obtener los datos del catálogo de la empresa y mostrarlos en la web resultó ser mucho más complejo de lo esperado. Pasé por tres fases críticas:
 
 #### Fase 1: Scraping de sonepar.es
 
-**El problema:** Scrapear la web de Sonepar fue un proceso largo y frustrante. La web tiene protecciones contra bots, estructura HTML cambiante, y miles de productos con información incompleta o mal formateada.
+**El problema:** Scrapear la web de la empresa fue un proceso largo y frustrante. La web tiene protecciones contra bots, estructura HTML cambiante, y miles de productos con información incompleta o mal formateada.
 
 **Qué intenté:**
 - Múltiples versiones del scraper (v1 a v7)

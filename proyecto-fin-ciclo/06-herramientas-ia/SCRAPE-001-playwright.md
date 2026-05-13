@@ -14,7 +14,7 @@ Playwright es una herramienta de Microsoft para **automatización de navegadores
 
 ## ¿Para qué lo usé?
 
-### 1. Web Scraping del catálogo Sonepar
+### 1. Web Scraping del catálogo la empresa
 
 Playwright fue fundamental para extraer los datos de sonepar.es:
 
@@ -101,7 +101,7 @@ export default defineConfig({
 
 ## Limitaciones que encontré
 
-1. **Scraping anti-bot:** Sonepar.es eventualmente bloqueó las peticiones automatizadas.
+1. **Scraping anti-bot:** la empresa.es eventualmente bloqueó las peticiones automatizadas.
 2. **Velocidad:** Un scraper con Playwright es más lento que uno con requests + BeautifulSoup.
 3. **Recursos:** Ejecutar un navegador consume mucha RAM.
 
@@ -116,7 +116,7 @@ El scraper final (`v12 - THE ULTIMATE HARVESTER`) usaba:
 ## Lecciones aprendidas
 
 1. **Interceptar peticiones > parsing HTML:** Los sitios modernos generan contenido con JS; es más fácil interceptar la respuesta JSON de la API que parsear el HTML.
-2. **El scraping tiene límites legales y técnicos:** Sonepar.es eventualmente bloqueó el acceso automatizado.
+2. **El scraping tiene límites legales y técnicos:** la empresa.es eventualmente bloqueó el acceso automatizado.
 3. **Playwright es mejor para testing que para scraping:** Para scraping puro, herramientas como Puppeteer o Cheerio son más ligeras.
 
 ## Comparativa con alternativas

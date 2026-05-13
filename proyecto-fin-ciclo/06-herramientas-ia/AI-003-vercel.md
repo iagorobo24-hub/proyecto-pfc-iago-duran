@@ -18,7 +18,7 @@ Vercel es una plataforma de **despliegue en la nube** especializada en aplicacio
 
 - Subí el repositorio a GitHub y conecté Vercel
 - Cada push a `main` activaba un despliegue automático
-- La URL de producción: **https://proyectos-sonepar.vercel.app**
+- La URL de producción: **https://proyecto-pfc-iago-duran.vercel.app**
 
 ### Funciones Serverless
 
@@ -35,7 +35,7 @@ La carpeta `app/api/` contiene funciones serverless que Vercel ejecuta:
 ## ¿Cómo lo usé?
 
 1. Creé cuenta en vercel.com
-2. Conecté el repo de GitHub (`iagorobo24-hub/proyectos-sonepar`)
+2. Conecté el repo de GitHub (`iagorobo24-hub/proyecto-pfc-iago-duran`)
 3. Configuré el root directory: `app` (la aplicación está en `/app`)
 4. Añadí las variables de entorno
 5. Vercel detectó automáticamente React + Vite
@@ -110,7 +110,7 @@ GitHub push → Vercel webhook → Build (npm run build) → Deploy a CDN
 
 ## Dominio personalizado
 
-En algún momento podrías querer conectar tu propio dominio (ej: `proyectos-sonepar.es`). Vercel lo permite gratis con Let's Encrypt.
+En algún momento podrías querer conectar tu propio dominio (ej: `proyecto-pfc-iago-duran.es`). Vercel lo permite gratis con Let's Encrypt.
 
 ## Referencias
 

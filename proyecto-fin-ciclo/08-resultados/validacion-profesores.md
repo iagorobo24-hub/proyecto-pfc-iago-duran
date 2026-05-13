@@ -100,7 +100,7 @@ Esta sección documenta las sesiones de feedback con los tutores del ciclo forma
    - Resultados
 
 2. **Demo en producción**
-   - https://proyectos-sonepar.vercel.app
+   - https://proyecto-pfc-iago-duran.vercel.app
 
 3. **Documentación completa**
    - 10 capítulos

@@ -16,7 +16,7 @@
   <rect width="1100" height="600" fill="url(#bg)"/>
   <rect width="1100" height="600" fill="url(#grid)"/>
 
-  <text x="550" y="38" fill="#f8fafc" font-size="20" font-weight="700" text-anchor="middle">Resultados Cuantitativos — Proyectos Sonepar</text>
+  <text x="550" y="38" fill="#f8fafc" font-size="20" font-weight="700" text-anchor="middle">Resultados Cuantitativos — Proyectos PFC</text>
   <text x="550" y="56" fill="#94a3b8" font-size="11" text-anchor="middle">Metricas de rendimiento, productividad y calidad</text>
 
   <!-- LEFT: Performance Metrics -->
@@ -192,5 +192,5 @@
   <text x="740" y="543" fill="#94a3b8" font-size="9">OpenRouter API (REST)</text>
   <text x="740" y="560" fill="#94a3b8" font-size="9">Puppeteer (Scraping)</text>
 
-  <text x="550" y="590" fill="#475569" font-size="9" text-anchor="middle">Proyectos Sonepar PFC | Resultados Cuantitativos | Mayo 2026</text>
+  <text x="550" y="590" fill="#475569" font-size="9" text-anchor="middle">Proyectos PFC PFC | Resultados Cuantitativos | Mayo 2026</text>
 </svg>

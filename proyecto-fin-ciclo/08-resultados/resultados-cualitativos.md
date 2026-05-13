@@ -2,7 +2,7 @@
 
 ## Introducción
 
-Este documento evalúa el valor percibido del proyecto desde diferentes perspectivas: la experiencia del usuario, la utilidad para Sonepar, y el aprendizaje personal.
+Este documento evalúa el valor percibido del proyecto desde diferentes perspectivas: la experiencia del usuario, la utilidad para la empresa, y el aprendizaje personal.
 
 ---
 
@@ -29,7 +29,7 @@ Este documento evalúa el valor percibido del proyecto desde diferentes perspect
 
 ---
 
-## Valor para Sonepar
+## Valor para la empresa
 
 ### Lo que aporta
 
@@ -137,7 +137,7 @@ Este documento evalúa el valor percibido del proyecto desde diferentes perspect
 | **Aprendizaje** | 9/10 |
 | **Documentación** | 9/10 |
 | **Tiempo invertido** | 7/10 |
-| **Valor para Sonepar** | 6/10 |
+| **Valor para la empresa** | 6/10 |
 
 ---
 

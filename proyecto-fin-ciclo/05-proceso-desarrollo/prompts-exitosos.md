@@ -167,7 +167,7 @@ El servicio debe funcionar tanto con stream: true como con stream: false.
 **Prompt exacto:**
 
 ```
-Crea un script de scraping con Playwright que obtenga el catálogo de productos de Sonepar.
+Crea un script de scraping con Playwright que obtenga el catálogo de productos de la empresa.
 
 Requisitos:
 - Usa Playwright con Chromium

@@ -2,7 +2,7 @@
 
 ## Introducción
 
-El módulo de Fichas Técnicas te permite explorar el catálogo completo de productos de Sonepar. Con más de 400.000 productos organizados jerárquicamente, puedes encontrar rápidamente la información que necesitas.
+El módulo de Fichas Técnicas te permite explorar el catálogo completo de productos de la empresa. Con más de 400.000 productos organizados jerárquicamente, puedes encontrar rápidamente la información que necesitas.
 
 ---
 
