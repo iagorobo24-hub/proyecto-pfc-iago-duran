@@ -5,8 +5,7 @@ version_observada: 2025-2026 (migración en curso desde Firestore)
 rol_principal: Base de datos PostgreSQL (futura migración)
 url: https://supabase.com
 ---
-
-# Ficha Técnica: Supabase
+Supabase es como Firebase pero con bases de datos de verdad (PostgreSQL). Es open-source, tienes SQL de verdad con búsqueda de texto completo y los límites del plan gratis son más generosos. Estaba migrando el proyecto de Firestore a esto.
 
 ## ¿Qué es?
 

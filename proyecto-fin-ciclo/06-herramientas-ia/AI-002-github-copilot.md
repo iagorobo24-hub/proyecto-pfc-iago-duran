@@ -5,8 +5,7 @@ version_observada: 2025-2026 (incluido en VSCode gratuito)
 rol_principal: Autocompletado de código contextual durante el desarrollo
 url: https://github.com/features/copilot
 ---
-
-# Ficha Técnica: GitHub Copilot
+GitHub Copilot es el asistente que me autocompletaba el código mientras escribía en VSCode. No hace falta ni pedirle nada — empiezas a escribir y él te sugiere lo que viene después. Es como tener a alguien al lado que sabe lo que quieres escribir antes de que termines la línea.
 
 ## ¿Qué es?
 

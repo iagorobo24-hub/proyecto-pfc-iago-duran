@@ -1,8 +1,8 @@
-# Requisitos Funcionales
+# Requisitos Funcionales — Lo que la app tiene que hacer
 
 ## Definición
 
-Los requisitos funcionales describen **qué debe hacer el sistema** desde la perspectiva del usuario. Cada requisito está vinculado a un módulo de la aplicación.
+Esto es lo que la aplicación tiene que poder hacer, visto desde el punto de vista del usuario que la usa. Cada requisito está relacionado con un módulo concreto.
 
 ---
 

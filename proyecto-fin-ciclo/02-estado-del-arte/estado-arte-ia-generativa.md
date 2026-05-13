@@ -2,151 +2,111 @@
 
 ## Introducción
 
-La inteligencia artificial generativa ha transformado radicalmente la forma en que se desarrolla software. En menos de dos años (2023-2026), hemos pasado de no existir herramientas de coding con IA a tener agentes completos que pueden escribir, revisar y depurar código de forma autónoma.
+Si hace cuatro años me dices que iba a hacer una aplicación web sin saber programar, te digo que estás loco. Pues aquí estamos. La inteligencia artificial generativa ha cambiado las reglas del juego en el desarrollo de software, y justo por eso este proyecto tiene sentido ahora y no hace cinco años.
 
-Este capítulo documenta el estado del arte de estas herramientas en el contexto de un proyecto de ciclo formativo.
-
----
-
-## Cronología de la IA Generativa
-
-### 2020-2022: Los orígenes
-
-| Año | Acontecimiento |
-|-----|----------------|
-| 2020 | GPT-3 de OpenAI — Primer modelo de lenguaje con capacidades de código |
-| 2021 | GitHub Copilot (preview) — Primer copiloto de código con IA |
-| 2022 | ChatGPT — IA conversacional accesible para todos |
-
-### 2023: Explosión
-
-| Mes | Acontecimiento |
-|-----|----------------|
-| Marzo | GPT-4 — Modelo multimodelo con razonamiento avanzado |
-| Marzo | Claude (Anthropic) — Competidor con enfoque en seguridad |
-| Mayo | Bing Chat / Claude AI — Chatbots con acceso a internet |
-| Octubre | OpenAI o1 — Modelos con razonamiento |
-
-### 2024-2025: Agentes y CLI
-
-| Año | Acontecimiento |
-|-----|----------------|
-| 2024 | GPT-4o, Claude 3 — Modelos más rápidos y capaces |
-| 2024 | Windsurf (Codeium) — Primer IDE completo con IA |
-| 2024 | Gemini CLI, Qwen CLI — Agentes de terminal |
-| 2025 | OpenCode, Devin — Agentes autónomos completos |
-
-### 2026: Estado actual
-
-- **Agentes CLI** accesibles gratuitamente (NVIDIA, Google)
-- **IDE con IA** integrados en el flujo de trabajo
-- **Agentes autónomos** que pueden hacer PRs automáticamente
-- **Modelos gratuitos** suficientes para proyectos académicos
+Este capítulo cuenta un poco la historia de cómo hemos llegado hasta aquí y por qué un alumno de FP puede hoy hacer lo que antes requería un equipo entero.
 
 ---
 
-## Herramientas en el mercado (2026)
+## Un poco de historia (la versión rápida)
+
+### 2020-2022: Los inicios
+- **GPT-3 (2020)** — El primer modelo de lenguaje que sabía escribir código. Era interesante pero todavía muy limitado.
+- **GitHub Copilot (2021)** — El primer "copiloto" que te sugería código mientras escribías. Una pasada para la época.
+- **ChatGPT (2022)** — Cuando la IA se volvió mainstream. Todo el mundo podía hablar con ella.
+
+### 2023: El boom
+En 2023 explotó todo:
+- GPT-4 y Claude empezaron a razonar bastante bien
+- Salieron chatbots con acceso a internet
+- Ya no era solo "escribir texto", era "entender problemas complejos"
+
+### 2024-2025: Aparecen los agentes
+Aquí viene lo interesante para este proyecto:
+- **Windsurf IDE** — Un editor completo que lleva la IA integrada, no solo un plugin
+- **Gemini CLI, Qwen CLI** — Agentes que trabajan desde la terminal, como si fueran un programador más
+- Empiezan a salir herramientas **gratuitas** que realmente funcionan
+
+### 2026: Ahora mismo
+Hoy en día tienes:
+- Agentes CLI gratis (OpenCode, Gemini) que pueden tocar todos tus archivos
+- IDEs con IA ilimitada sin pagar (Windsurf)
+- Modelos de IA gratis que son suficientemente buenos para proyectos de verdad
+- Agentes autónomos (Devin) que pueden hacer tareas enteras solos
+
+---
+
+## Las herramientas que hay hoy (y por qué importan)
 
 ### Asistentes conversacionales
+Son los chatbots de toda la vida pero mucho más potentes.
 
-| Herramienta | Desarrollador | Coste gratuito | Mejor para |
-|-------------|---------------|----------------|------------|
-| **Claude Web** | Anthropic | Sí (limitado) | Razonamiento complejo |
-| **ChatGPT** | OpenAI | Sí (limitado) |通用 |
-| **Gemini** | Google | Sí | Velocidad |
+| Herramienta | ¿Para qué la uso yo? |
+|-------------|---------------------|
+| **Claude Web** | Para diseñar la estructura, pensar la arquitectura, resolver dudas |
+| **ChatGPT** | Para cosas generales, aunque personalmente prefiero Claude |
+| **Gemini** | Rápido pero a veces se queda corto en temas técnicos |
 
 ### IDEs con IA
+Editores de código que tienen la IA metida dentro.
 
-| Herramienta | Tipo | Coste | Diferenciador |
-|-------------|------|-------|---------------|
-| **Windsurf** | IDE completo | Gratis | Coding ilimitado |
-| **Cursor** | IDE basado en VSCode | Gratis | autocomplete avanzado |
-| **Copilot** | Extensión VSCode | Gratis estudiantes | IDEs tradicionales |
+| Herramienta | Lo bueno |
+|-------------|----------|
+| **Windsurf** | Uso ilimitado gratis, fue mi editor principal durante meses |
+| **Cursor** | También muy bueno, pero Windsurf me gustó más |
+| **Copilot** | Bien para empezar, pero se acaba la prueba gratis rápido |
 
 ### Agentes CLI
+Esto fue lo que más me sorprendió. Desde la terminal, le pides a la IA que haga algo y ella sola mira tus archivos, los modifica, ejecuta comandos...
 
-| Herramienta | Desarrollador | Modelo | Coste |
-|-------------|---------------|--------|-------|
-| **OpenCode** | NVIDIA | Nemotron | Gratis |
-| **Qwen CLI** | Alibaba | Qwen | Gratis (cerró abr 2026) |
-| **Gemini CLI** | Google | Gemini | Gratis |
-| **Hermes** | Nous Research | Varios | Gratis (NVIDIA) |
-
-### Agentes autónomos
-
-| Herramienta | Función | Coste |
-|-------------|---------|-------|
-| **Devin** | Agente que hace PRs | Pago |
-| **Claude Code** | Agente CLI + coding | Pago |
-| **OpenCode** | Agente terminal | Gratis |
+| Herramienta | Lo que hace |
+|-------------|-------------|
+| **OpenCode** | El que uso ahora mismo. Acceso completo al proyecto, puede leer y modificar todo |
+| **Gemini CLI** | Alternativa buena, integración con Google |
+| **Hermes** | Un agente especializado en documentación y análisis |
 
 ---
 
-## ¿Por qué IA generativa para desarrollo web?
+## ¿Y por qué esto es importante para mi proyecto?
 
-### Ventajas documentadas
+Muy sencillo: **yo no sabía programar web antes de empezar**. En el ciclo de automatización damos PLCs, robots, neumática... pero no React ni Firebase. Con estas herramientas pude:
 
-1. **Velocidad:** Un estudiante sin experiencia puede generar código funcional en minutos
-2. **Aprendizaje:** Ver código generado ayuda a entender patrones
-3. **Productividad:** Automatiza tareas repetitivas (boilerplate, tests)
-4. **Accesibilidad:** Reduce la barrera de entrada a la programación
+1. **Aprender sobre la marcha** — La IA me explicaba por qué el código funcionaba (o no)
+2. **Ser productivo desde el día 1** — No pasé meses aprendiendo antes de hacer algo útil
+3. **Llegar a un resultado profesional** — La aplicación funciona, está en producción, y no tiene nada que envidiar a una hecha por un programador tradicional
 
-### Riesgos y limitaciones
+### Lo malo también existe
 
-1. **Calidad variable:** El código generado puede tener errores sutiles
-2. **Dependencia:** Usar IA sin entender el código impide el aprendizaje
-3. **Seguridad:** Pueden generar código con vulnerabilidades
-4. **Obsolescencia:** Herramientas cambian rápidamente
+No todo es perfecto, ojo:
+
+1. **A veces la IA alucina** — Te inventa código que no funciona y tienes que saber detectarlo
+2. **Puedes volverte dependiente** — Si solo copias y pegas sin entender, no aprendes
+3. **Las herramientas cambian cada semana** — Lo que usabas hace dos meses igual ya no existe
+4. **El código no siempre es seguro** — Hay que revisar lo que genera
 
 ---
 
-## Estado del arte en este proyecto
+## Cómo encaja en mi proyecto
 
-Este proyecto用了 15+ herramientas de IA, desde Claude Web (marzo 2026) hasta Hermes Agent (mayo 2026). La metodología evolucionó:
+Si miras la línea de tiempo de las herramientas que usé, se ve claramente cómo fui evolucionando:
 
 ```
-Marzo 2026          Abril 2026           Mayo 2026
-    │                   │                    │
-    ▼                   ▼                    ▼
-Claude Web    →    Windsurf IDE    →    OpenCode CLI
-(artefactos)      (SPA completa)       (scripts, migración)
-                        │
-                        ▼
-                   Qwen CLI / Gemini CLI
-                   (agentes terminal)
+Marzo 2026 → Claude Web (prototipos sueltos)
+Abril 2026 → Windsurf IDE (la app completa)
+Mayo 2026 → OpenCode CLI + Hermes (documentación y mejoras)
 ```
 
----
-
-## Tendencias identificadas
-
-### Lo que está creciendo
-- Agentes CLI con acceso a filesystem
-- IDEs con coding ilimitado (no solo autocompletado)
-- Modelos gratuitos de alta calidad (NVIDIA, Google)
-- Integración nativa en herramientas de desarrollo
-
-### Lo que está decreciendo
-- Chat web como herramienta principal de coding
-- Copilot tradicional (sustituido por Windsurf/Cursor)
-- Herramientas de pago para casos de uso básicos
-
-### Lo que está por venir
-- Agentes完全 autónomos (Devin, Claude Code)
-- Mejora en razonamiento técnico
-- Integración con sistemas de build y deployment
+Empecé con un chat web haciendo páginas sueltas y acabé con agentes autónomos escribiendo documentación. En tres meses.
 
 ---
 
-## Conclusión
+## Conclusión (en plan resumen)
 
-La IA generativa ha alcanzado un punto de madurez donde **un estudiante sin experiencia previa puede desarrollar aplicaciones web profesionales** utilizando únicamente herramientas gratuitas.
+La IA generativa ha llegado a un punto en el que **cualquier estudiante de FP puede hacer una aplicación web profesional sin saber programar**. No hace falta pagar, no hace falta ser un genio de la informática.
 
-El factor crítico no es la herramienta en sí, sino **cómo se usa**: el mejor resultado viene de entender el código generado, iterar sobre él, y documentar el proceso.
-
-Este proyecto demuestra esa metodología: 7 módulos funcionales, 400K+ productos en catálogo, deploy en producción, todo construido con IA como herramienta principal.
+Lo importante no es la herramienta, sino **cómo la usas**: entender lo que genera, mejorarlo, y sobre todo, documentar el proceso para que otros lo puedan repetir. Que es justo de lo que va este PFC.
 
 ---
 
 *Capítulo 02 — Estado del Arte*
-*Elaborado: Mayo 2026*
+*Escrito por un alumno de Automatización que no sabía React hace tres meses*

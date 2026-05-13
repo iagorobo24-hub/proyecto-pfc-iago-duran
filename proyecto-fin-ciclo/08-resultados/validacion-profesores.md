@@ -1,8 +1,8 @@
-# Validación: Feedback de Tutores
+# Validación — Qué dijeron los tutores
 
 ## Introducción
 
-Esta sección documenta las sesiones de feedback con los tutores del ciclo formativo, donde se presentaron avances del proyecto y se recibieron indicaciones de mejora.
+Durante el desarrollo del proyecto, fui presentando avances a los tutores del ciclo. Ellos me iban diciendo qué estaba bien, qué mejoraría y por dónde seguir. Esto es un resumen de esas sesiones.
 
 ---
 

@@ -2,7 +2,7 @@
 
 ## Introducción
 
-Este capítulo documenta los resultados medibles del proyecto, incluyendo métricas de desarrollo, rendimiento, uso y costes.
+Aquí van los números. No es que me guste especialmente medir todo, pero para un PFC hace falta demostrar que lo que hiciste funciona y no te lo inventaste. Estos son los datos reales del proyecto.
 
 ---
 

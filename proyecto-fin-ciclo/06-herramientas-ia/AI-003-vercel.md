@@ -5,8 +5,7 @@ version_observada: 2025-2026
 rol_principal: Despliegue automático de la aplicación web
 url: https://vercel.com
 ---
-
-# Ficha Técnica: Vercel
+Vercel es donde vive la web de verdad. Es una plataforma que coge tu código, lo compila y lo sirve en internet. Lo mejor de todo: es gratis y cada vez que subes algo a GitHub se actualiza solo. No hay que hacer nada manual.
 
 ## ¿Qué es?
 

@@ -2,7 +2,7 @@
 
 ## Objetivo general
 
-Desarrollar una **suite de herramientas web** funcional para técnicos eléctricos de la empresa Ibérica, construida mediante **IA generativa**, que demuestre la viabilidad de esta metodología para proyectos de ciclo formativo.
+Desarrollar una **suite de herramientas web** funcional para técnicos del sector de distribución de material eléctrico, construida mediante **IA generativa**, que demuestre la viabilidad de esta metodología para proyectos de ciclo formativo.
 
 ---
 
@@ -69,7 +69,7 @@ Desarrollar una **suite de herramientas web** funcional para técnicos eléctric
 
 ### Incluido
 - Aplicación web completa con 7 módulos
-- Catálogo de productos real (scraping de Proyectos PFC.es)
+- Catálogo de productos real (scraping de web pública del distribuidor)
 - Autenticación de usuarios
 - Asistente IA integrado
 - Documentación técnica completa

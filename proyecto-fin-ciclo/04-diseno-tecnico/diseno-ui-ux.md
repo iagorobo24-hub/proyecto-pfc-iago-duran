@@ -1,8 +1,8 @@
-# Diseño UI/UX
+# Diseño UI/UX — El aspecto visual
 
 ## Sistema de diseño
 
-La aplicación usa un **sistema de diseño propio** basado en los colores corporativos de la empresa, implementado con CSS Modules y Variables CSS.
+La web tiene un estilo propio, con colores azules corporativos. Todo está hecho con CSS Modules (los estilos de cada componente no se mezclan con los de otros) y variables CSS (para poder cambiar entre modo claro y oscuro fácilmente).
 
 ---
 

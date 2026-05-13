@@ -2,50 +2,40 @@
 
 ## Visión general
 
-Proyectos la empresa es una **Single Page Application (SPA)** construida con React 19, desplegada en Vercel, con autenticación y base de datos en Firebase, e integrada con OpenRouter para funcionalidades de IA.
+**Proyecto PFC** es una **Single Page Application (SPA)** construida con React 19, desplegada en Vercel, con autenticación y base de datos en Firebase, e integrada con OpenRouter para funcionalidades de IA.
 
 ---
 
-## Diagrama de arquitectura
+## Diagramas del sistema
+
+En vez de esquemas eléctricos (que no tocan aquí), el proyecto tiene diagramas visuales que explican cómo está montado todo. Están hechos con Excalidraw y guardados como SVG en la carpeta `diagramas/`.
+
+### Diagrama de arquitectura general
+
+El archivo `diagramas/arquitectura_sistema.svg` muestra cómo se conectan todas las piezas:
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                         NAVEGADOR CLIENTE                        │
-│  ┌─────────────┐  ┌─────────────┐  ┌─────────────────────────┐  │
-│  │   React 19  │  │   Router    │  │  Componentes + Hooks   │  │
-│  │   (Vite 7)  │  │  (v7 SPA)   │  │  (Fichas, SONEX, etc)  │  │
-│  └──────┬──────┘  └──────┬──────┘  └────────────┬────────────┘  │
-│         │                │                      │               │
-│         └────────────────┼──────────────────────┘               │
-│                          ▼                                       │
-│               ┌─────────────────────┐                           │
-│               │   Context Providers │                           │
-│               │ (Auth, Theme, Toast)│                           │
-│               └──────────┬──────────┘                           │
-└──────────────────────────┼──────────────────────────────────────┘
-                           │
-         ┌─────────────────┼─────────────────┐
-         ▼                 ▼                 ▼
-┌─────────────────┐ ┌─────────────┐ ┌─────────────────────┐
-│  Firebase Auth  │ │   Firestore  │ │   Vercel Functions  │
-│ (Google Sign-In)│ │  (productos, │ │    (API de IA)      │
-│                 │ │   usuarios)  │ │                     │
-└─────────────────┘ └──────┬──────┘ └──────────┬────────────┘
-                           │                    │
-                           ▼                    ▼
-                    ┌─────────────────┐  ┌─────────────┐
-                    │  Firebase       │  │  OpenRouter │
-                    │  (Servicios)    │  │  (Claude,   │
-                    │                 │  │   DeepSeek) │
-                    └─────────────────┘  └─────────────┘
-                           │                    │
-                           ▼                    ▼
-                    ┌─────────────────────────────────────────────┐
-                    │              SONEPAR IBÉRICA                 │
-                    │          (Fuente de datos pública)           │
-                    │           Proyectos PFC.es (scraping)              │
-                    └─────────────────────────────────────────────┘
+Navegador (React) ──→ Firebase Auth ──→ Google Login
+                  ──→ Firestore ──→ Base de datos
+                  ──→ Vercel Functions ──→ OpenRouter ──→ IA
 ```
+
+**Para verlo:** abrir el archivo `diagramas/arquitectura_sistema.svg` en cualquier navegador.
+
+### Otros diagramas disponibles
+
+En la carpeta `diagramas/` hay más esquemas que ayudan a entender el proyecto:
+
+| Archivo | Muestra |
+|---------|---------|
+| `arquitectura_sistema.svg` | Cómo se conectan frontend, Firebase, Vercel y la IA |
+| `modelo_datos.svg` | Estructura de las colecciones en Firestore |
+| `modulos_funcionales.svg` | Los 7 módulos y cómo se relacionan entre sí |
+| `seguridad_capas.svg` | Las 4 capas de seguridad (auth, datos, red, API) |
+| `flujo_desarrollo_ia.svg` | Cómo se usó la IA durante el desarrollo |
+| `fases_desarrollo.svg` | Las 12 fases del proyecto en orden cronológico |
+| `comparativa_herramientas_ia.svg` | Comparación visual de las herramientas IA usadas |
+| `resultados_cuantitativos.svg` | Gráficos con los resultados numéricos del proyecto |
 
 ---
 
@@ -176,4 +166,7 @@ Proyectos la empresa es una **Single Page Application (SPA)** construida con Rea
 ---
 
 *Arquitectura documentada: Mayo 2026*
-*Ver también: EVOLUCION.md para cronología de decisiones*
+*Ver también:*
+- `listado-componentes.md` — Inventario completo de rutas, componentes, hooks y APIs
+- `EVOLUCION.md` — Cronología de decisiones técnicas
+- `diagramas/` — Esquemas visuales del sistema*

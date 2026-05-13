@@ -1,8 +1,8 @@
-# Fases de Desarrollo — Cronología
+# Fases de Desarrollo — Cómo fue evolucionando
 
 ## Visión general
 
-El proyecto evolucionó a través de **9 fases principales** a lo largo de 3 meses (marzo-mayo 2026). Esta cronología documenta qué ocurrió en cada fase, qué herramientas se usaron, y qué problemas se resolvieron.
+El proyecto pasó por 12 fases en 3 meses. Algunas duraron un día, otras una semana. Esto es lo que pasó en cada una, ordenado tal y como ocurrió.
 
 ---
 
@@ -219,7 +219,7 @@ Los tests E2E funcionaban pero se perdieron en commits posteriores.
 
 ## Fase 10 — Migración a Supabase (mayo 2026, en curso)
 
-**Objetivo:**替代Firestore con PostgreSQL
+**Objetivo:** Sustituir Firestore por PostgreSQL
 
 ### Qué se está haciendo
 

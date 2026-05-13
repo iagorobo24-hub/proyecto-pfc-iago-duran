@@ -2,7 +2,7 @@
 
 ## Introducción
 
-SONEX es el asistente técnico con IA de Proyectos la empresa. Está diseñado para responder preguntas sobre productos, normativas, procedimientos y cualquier consulta técnica relacionada con el material eléctrico.
+SONEX es el asistente técnico con IA de **Proyecto PFC**. Está diseñado para responder preguntas sobre productos, normativas, procedimientos y cualquier consulta técnica relacionada con el material eléctrico.
 
 ---
 

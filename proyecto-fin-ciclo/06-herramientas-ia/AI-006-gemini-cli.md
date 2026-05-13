@@ -5,8 +5,7 @@ version_observada: 2025-2026
 rol_principal: Agente de IA en terminal, generación y ejecución de código
 url: https://ai.google.dev/gemini-api/docs/gemini-cli
 ---
-
-# Ficha Técnica: Gemini CLI
+Gemini CLI es el agente de Google para la terminal. Se conecta con tu cuenta de Google y puedes pedirle que cree archivos, modifique código o ejecute comandos. Es rápido y gratis, aunque a veces la autenticación da guerra.
 
 ## ¿Qué es?
 

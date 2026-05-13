@@ -2,7 +2,7 @@
 
 ## Introducción
 
-Estas actividades están diseñadas para que los alumnos pratiquen el desarrollo con IA generativa.循序渐进, desde lo básico hasta un proyecto completo.
+Estas actividades están diseñadas para que los alumnos practiquen el desarrollo con IA generativa. Siguen una progresión gradual, desde lo básico hasta un proyecto completo.
 
 ---
 

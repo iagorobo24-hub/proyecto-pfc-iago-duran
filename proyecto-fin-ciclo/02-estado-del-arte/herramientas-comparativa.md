@@ -1,157 +1,120 @@
-# Herramientas IA: Comparativa 2024-2026
+# Comparativa de Herramientas IA
 
-> Comparativa de las herramientas utilizadas en este proyecto. Para fichas técnicas detalladas, ver Capítulo 06.
-
----
-
-## Metodología de evaluación
-
-Cada herramienta se evaluó en 6 dimensiones:
-
-- **Calidad de código:** ¿El código generado funciona correctamente?
-- **Comprensión de contexto:** ¿Entiende el proyecto existente?
-- **Velocidad:** ¿Cuánto tarda en responder?
-- **Coste:** ¿Es gratuita o de pago?
-- **Facilidad de uso:** ¿Cuánto hay que configurar?
-- **Acceso a proyecto:** ¿Puede leer/escribir archivos directamente?
+> Esto es mi experiencia usando cada herramienta durante el proyecto. No es un análisis de laboratorio — es lo que me funcionó (y lo que no) en el día a día. Las fichas técnicas completas están en el Capítulo 06.
 
 ---
 
-## Herramientas conversacionales
+## ¿Cómo las evalué?
 
-| Herramienta | Calidad | Contexto | Velocidad | Coste | Acceso | Puntuación |
-|-------------|---------|----------|-----------|-------|--------|------------|
-| **Claude Web** | ★★★★★ | ★★☆☆☆ | ★★★☆☆ | Gratis | No | 7/10 |
-| **ChatGPT 4o** | ★★★★☆ | ★★☆☆☆ | ★★★★☆ | Pago | No | 7/10 |
-| **Gemini** | ★★★☆☆ | ★★☆☆☆ | ★★★★★ | Gratis | No | 6/10 |
+No usé ningún método científico raro. Simplemente fui probando cada herramienta según las necesitaba y viendo cuál me daba mejores resultados. Las cosas que miraba:
 
-**Veredicto:** Claude Web es el mejor para diseño y arquitectura, pero limitado sin acceso al proyecto.
-
----
-
-## IDEs con IA
-
-| Herramienta | Calidad | Contexto | Velocidad | Coste | Acceso | Puntuación |
-|-------------|---------|----------|-----------|-------|--------|------------|
-| **Windsurf** | ★★★★★ | ★★★★★ | ★★★★☆ | Gratis | Sí | 9/10 |
-| **Cursor** | ★★★★★ | ★★★★★ | ★★★★☆ | Gratis | Sí | 9/10 |
-| **Copilot** | ★★★☆☆ | ★★★☆☆ | ★★★★★ | Gratis* | Sí | 7/10 |
-
-*Gratis para estudiantes
-
-**Veredicto:** Windsurf y Cursor son equivalentes. Windsurf se usó por su tier gratuito ilimitado.
+- **¿El código funciona?** — Lo más importante, si no sirve no sirve
+- **¿Entiende mi proyecto?** — O repite lo mismo siempre sin mirar el contexto
+- **¿Es rápido?** —O tarda veinte minutos en responder
+- **¿Es gratis?** — Crítico, porque no tengo dinero para pagar suscripciones
+- **¿Es fácil de usar?** — O tengo que leer manuales tres horas antes de empezar
+- **¿Puede tocar mis archivos?** — O solo habla y no hace nada
 
 ---
 
-## Agentes CLI
+## Asistentes conversacionales (los chatbots)
 
-| Herramienta | Calidad | Contexto | Velocidad | Coste | Acceso | Puntuación |
-|-------------|---------|----------|-----------|-------|--------|------------|
-| **OpenCode** | ★★★★★ | ★★★★★ | ★★★★☆ | Gratis | Sí | 9/10 |
-| **Qwen CLI** | ★★★★☆ | ★★★★★ | ★★★★☆ | Gratis | Sí | 8/10 |
-| **Gemini CLI** | ★★★★☆ | ★★★★☆ | ★★★★★ | Gratis | Sí | 8/10 |
-| **Hermes** | ★★★★★ | ★★★★★ | ★★★★☆ | Gratis | Sí | 9/10 |
+| Herramienta | Calidad código | Entiende contexto | Velocidad | Coste | Toca archivos | Nota |
+|-------------|--------------|-------------------|-----------|-------|---------------|------|
+| **Claude Web** | Excelente | Regular | Buena | Gratis | No | 7/10 |
+| **ChatGPT** | Buena | Regular | Buena | Pago | No | 6/10 |
+| **Gemini** | Aceptable | Regular | Muy buena | Gratis | No | 5/10 |
 
-**Veredicto:** OpenCode y Hermes son los más completos. Qwen cerró en abril 2026.
+**Mi opinión:** Claude Web se llevó la palma para diseñar cosas y pensar la arquitectura. Pero el problema gordo es que **no puede ver tus archivos**. Tienes que copiar y pegar código todo el rato, y eso cansa rápido. Los chatbots están bien para empezar, pero para trabajar de verdad necesitas algo más.
 
 ---
 
-## Gateways de IA
+## IDEs con IA (los editores inteligentes)
 
-| Herramienta | Modelos | Coste | Fiabilidad | Documentación |
-|-------------|---------|-------|------------|----------------|
-| **OpenRouter** | Muchos (Claude, GPT, DeepSeek) | Gratis* | ★★★★☆ | ★★★★☆ |
-| **Groq** | Llama, Mixtral | Gratis | ★★★☆☆ | ★★★☆☆ |
-| **Anthropic directo** | Claude | Pago | ★★★★★ | ★★★★★ |
+| Herramienta | Calidad código | Entiende contexto | Velocidad | Coste | Toca archivos | Nota |
+|-------------|--------------|-------------------|-----------|-------|---------------|------|
+| **Windsurf** | Excelente | Excelente | Muy buena | Gratis | Sí | **9/10** |
+| **Cursor** | Excelente | Excelente | Muy buena | Gratis | Sí | 9/10 |
+| **Copilot** | Buena | Buena | Excelente | Gratis* | Sí | 7/10 |
 
-*Gratis con límites en modelos seleccionados
+\*Gratis para estudiantes, pero se acaba
 
-**Veredicto:** OpenRouter es ideal para proyectos académicos por su tier gratuito generoso.
+**Mi opinión:** Aquí está el salto de calidad. Cuando pasas de un chat web a un IDE con IA, es como pasar de un destornillador manual a un taladro eléctrico. **Windsurf fue mi herramienta principal durante casi todo el proyecto.** Ve mis archivos, entiende cómo está estructurado el código, y puede modificarlo sin que yo tenga que copiar y pegar nada. 
+Copilot está bien para empezar pero se queda corto cuando el proyecto se hace grande. Además la versión gratuita de estudiante tiene límites.
+
+---
+
+## Agentes CLI (los que trabajan desde la terminal)
+
+| Herramienta | Calidad código | Entiende contexto | Velocidad | Coste | Toca archivos | Nota |
+|-------------|--------------|-------------------|-----------|-------|---------------|------|
+| **OpenCode** | Excelente | Excelente | Muy buena | Gratis | Sí | **9/10** |
+| **Qwen CLI** | Muy buena | Excelente | Muy buena | Gratis | Sí | 8/10 |
+| **Gemini CLI** | Muy buena | Buena | Excelente | Gratis | Sí | 8/10 |
+| **Hermes** | Excelente | Excelente | Muy buena | Gratis | Sí | **9/10** |
+
+**Mi opinión:** Los agentes CLI fueron un descubrimiento tardío pero brutal. Le dices desde la terminal "oye, haz tal cosa" y el agente solo mira tus archivos, los modifica, ejecuta comandos, y te dice qué ha hecho. **OpenCode y Hermes son los que uso ahora mismo.** Lástima que Qwen CLI cerrara en abril de 2026, porque también era muy bueno.
+
+---
+
+## Puertas de enlace para IA (APIs)
+
+| Servicio | Modelos disponibles | Coste | Es fiable? |
+|----------|-------------------|-------|------------|
+| **OpenRouter** | Muchísimos (Claude, GPT, DeepSeek...) | Gratis* | Bastante |
+| **Groq** | Llama, Mixtral | Gratis | Normal |
+| **Anthropic directo** | Solo Claude | Pago | Muy fiable |
+
+\*Gratis para modelos seleccionados
+
+**Mi opinión:** OpenRouter fue un salvavidas. Cuando Anthropic directo no funcionaba (y os prometo que pasamos tres días peleándonos con CORS y configuraciones), OpenRouter nos dio acceso a modelos gratis sin complicaciones. Es como un "centro comercial" de IAs: vas, eliges el modelo que quieras, y pagas poco o nada.
 
 ---
 
 ## Bases de datos
 
-| Servicio | Tipo | Tier gratuito | Escalabilidad | Complejidad |
-|----------|------|---------------|---------------|-------------|
-| **Firebase/Firestore** | NoSQL | 50K escrituras/día | Alta | Baja |
-| **Supabase** | PostgreSQL | 500MB, 2GB bandwidth | Muy alta | Media |
-| **MongoDB Atlas** | NoSQL | 512MB | Alta | Media |
+| Servicio | Tipo | Gratis hasta... | Para proyectos grandes | Fácil de montar |
+|----------|------|-----------------|----------------------|----------------|
+| **Firebase (Firestore)** | NoSQL | 50 mil escrituras/día | Regular | Muy fácil |
+| **Supabase** | PostgreSQL | 500 MB | Buena | Normal |
+| **MongoDB Atlas** | NoSQL | 512 MB | Buena | Normal |
 
-**Veredicto:** Firebase fue el inicial, pero Supabase ofrece mejor relación características/gratis.
-
----
-
-## Comparativa por caso de uso
-
-### Para principiantes
-
-| Caso de uso | Herramienta recomendada | Razón |
-|-------------|------------------------|-------|
-| Primeros pasos | Claude Web | Interfaz fácil, sin instalar nada |
-| Primer proyecto | Windsurf | IDE completo, coding ilimitado |
-| Despliegue | Vercel | Deploy en 1 click |
-
-### Para proyectos académicos
-
-| Caso de uso | Herramienta recomendada | Razón |
-|-------------|------------------------|-------|
-| Catálogo de productos | Firebase Firestore | Schema flexible, fácil de empezar |
-| API de IA | OpenRouter | Modelos gratuitos suficientes |
-| Hosting | Vercel | Integrado con GitHub |
-
-### Para producción
-
-| Caso de uso | Herramienta recomendada | Razón |
-|-------------|------------------------|-------|
-| Base de datos | Supabase | PostgreSQL, mejor escalabilidad |
-| Testing | Playwright | E2E robusto, open source |
-| CI/CD | GitHub Actions | Integrado, gratis para open source |
+**Mi opinión:** Empecé con Firebase porque es lo más fácil del mundo para empezar — en 10 minutos tienes base de datos funcionando. Pero cuando el catálogo llegó a 400.000 productos, los límites del plan gratis empezaron a notarse. Por eso estoy migrando a Supabase, que da más por el mismo precio (cero euros).
 
 ---
 
-## Lecciones aprendidas
-
-1. **No hay herramienta perfecta:** Cada una tiene fortalezas y debilidades
-2. **Combinar es optimal:** Claude para diseño, Windsurf para coding, OpenCode para scripts
-3. **El tier gratuito es suficiente:** Para proyectos académicos, no necesitas pagar
-4. **La velocidad cambia:** Herramientas que eran lentas ahora son rápidas (y viceversa)
-5. **Algunas cierran:** Qwen CLI cerró en abril 2026 — no depender de una sola
-
----
-
-## Recomendaciones para futuros alumnos
-
-### Empezar con:
-1. **Claude Web** — Para entender qué es posible
-2. **Windsurf** — Para el primer código real
-3. **Vercel** — Para desplegar rápido
-
-### Evolucionar a:
-1. **OpenCode CLI** — Para tareas complejas
-2. **Supabase** — Para bases de datos más robustas
-3. **Playwright** — Para testing automático
-
-### Evitar:
-1. **Pagar antes de necesitarlo** — El tier gratuito es suficiente
-2. **Usar solo chat web** — IDE con IA es mucho más productivo
-3. **Depender de una herramienta** — El ecosistema cambia rápido
-
----
-
-## Matriz de decisión rápida
+## Tabla rápida: qué usar según lo que necesites
 
 ```
-¿Necesitas coding real?        → Windsurf / OpenCode
-¿Necesitas analizar código?    → OpenCode / Hermes  
-¿Necesitas diseño/arquitectura? → Claude Web
-¿Necesitas ejecutar scripts?   → OpenCode / Qwen CLI
-¿Necesitas API de IA?          → OpenRouter
-¿Necesitas base de datos?      → Supabase (no Firebase)
-¿Necesitas desplegar?          → Vercel
+¿Empezar desde cero?        → Claude Web (diseño) → Windsurf (código)
+¿Ya tienes un proyecto?     → Windsurf / OpenCode
+¿Bases de datos?            → Firebase para empezar, Supabase para crecer
+¿API de IA?                 → OpenRouter
+¿Publicar la web?           → Vercel (un click y ya está)
+¿Probar que funciona?       → Playwright
 ```
 
 ---
 
-*Comparativa elaborada: Mayo 2026*
-*Ver fichas técnicas en: `06-herramientas-ia/`*
+## Lo que aprendí con todo esto
+
+1. **No existe la herramienta perfecta** — Cada una es buena para algo distinto
+2. **Lo mejor es combinarlas** — Claude para pensar, Windsurf para escribir, OpenCode para arreglar
+3. **Lo gratis es suficiente** — Para un proyecto de FP no necesitas pagar nada
+4. **Las herramientas cambian** — Qwen CLI cerró, otras aparecen. No te cases con ninguna
+5. **El IDE con IA es el futuro** — Los chatbots se quedan cortos cuando el proyecto crece
+
+---
+
+## Para futuros alumnos (por si os sirve)
+
+**Empezad con:** Claude Web (para ver qué es posible), Windsurf (para escribir código), Vercel (para publicar)
+
+**Cuando os sintáis cómodos:** OpenCode CLI (para tareas más gordas), Supabase (para datos de verdad), Playwright (para tests)
+
+**Y sobre todo:** No paguéis nada hasta que de verdad haga falta. El tier gratuito da para mucho.
+
+---
+
+*Esto es mi experiencia personal, no un análisis de una revista técnica*
+*Ver fichas detalladas en: `06-herramientas-ia/`*

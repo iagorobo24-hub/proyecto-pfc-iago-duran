@@ -1,8 +1,8 @@
-# Lecciones Aprendidas — Errores y Aciertos
+# Lecciones Aprendidas — Lo que haría diferente
 
 ## Introducción
 
-Esta sección documenta las lecciones más importantes aprendidas durante el proyecto. Incluye tanto errores que cometí como decisiones que funcionaron bien.
+Si pudiera volver atrás, hay cosas que haría distinto. Y otras que repetiría sin dudar. Esto es lo que aprendí a base de probar, equivocarme y rectificar.
 
 ---
 

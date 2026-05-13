@@ -5,8 +5,7 @@ version_observada: 2025-2026
 rol_principal: Gateway unificado de APIs de IA (modelos gratuitos y de pago)
 url: https://openrouter.ai
 ---
-
-# Ficha Técnica: OpenRouter
+OpenRouter es un sitio que junta todos los modelos de IA en una sola API. En vez de tener que registrarte en Anthropic, Google, OpenAI y mil más, usas una sola clave y accedes a todos. Y lo mejor: tiene modelos gratuitos de verdad.
 
 ## ¿Qué es?
 

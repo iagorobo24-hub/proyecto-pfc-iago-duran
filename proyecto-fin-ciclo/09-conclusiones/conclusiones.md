@@ -1,8 +1,8 @@
-# Conclusiones: ¿Se cumplieron los objetivos?
+# Conclusiones — ¿Se cumplieron los objetivos?
 
 ## Introducción
 
-Este capítulo evalúa si los objetivos definidos al inicio del proyecto se han cumplido, y analiza las razones de los casos donde no fue así.
+Vale, hemos llegado al final. Tocaba sentarse y mirar atrás para ver qué prometí al principio y qué he conseguido realmente. Spoiler: la mayoría sí, algunas no, y de todas saqué algo bueno.
 
 ---
 
@@ -48,7 +48,7 @@ Este capítulo evalúa si los objetivos definidos al inicio del proyecto se han 
 2. **Herramientas gratuitas suficientes** — No hubo barrera económica
 3. **Documentación continua** — EVOLUCION.md actualizado
 4. **Scope realista** — 7 módulos, no más
-5. **迭代 rápida** — Versiones frecuentes
+5. **Iteración rápida** — Versiones frecuentes
 
 ### Factores limitantes
 

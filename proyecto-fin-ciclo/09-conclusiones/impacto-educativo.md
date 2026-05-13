@@ -1,8 +1,8 @@
-# Impacto Educativo — Aportación al Ciclo Formativo
+# Impacto Educativo — Qué aporta esto al ciclo
 
 ## Introducción
 
-Este documento analiza qué aporta este proyecto al ciclo de Automatización y Robótica Industrial, más allá de la aplicación en sí.
+Más allá de la aplicación, este proyecto demuestra algo que creo importante: un alumno de FP puede hacer cosas chulas con IA sin necesidad de ser informático. Y creo que eso debería aprovecharse en el ciclo.
 
 ---
 

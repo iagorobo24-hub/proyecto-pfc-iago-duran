@@ -2,7 +2,7 @@
 
 ## Introducción
 
-Esta sección收集prompts que funcionaron bien en el proyecto. Cada uno es un ejemplo real que generó código útil. Se incluyen el contexto, el prompt exacto, y por qué funcionó.
+Esta sección recopila prompts que funcionaron bien en el proyecto. Cada uno es un ejemplo real que generó código útil. Se incluyen el contexto, el prompt exacto, y por qué funcionó.
 
 ---
 
@@ -176,7 +176,7 @@ Requisitos:
   - Haz click para expandir
   - Para cada subcategoría:
     - Haz click para ver los productos
-    - Espera a que carguen los productos (等待 grid con productos)
+    - Espera a que carguen los productos (esperar grid con productos)
     - Extrae: nombre, referencia, precio, marca, imagen, URL
     - Si hay paginación, navega por todas las páginas
 - Guarda los datos en un archivo JSON con estructura:
@@ -337,7 +337,7 @@ BUENO: "Crea un Button con props: variant (primary/secondary),
 
 Los mejores prompts son aquellos que:
 1. **Son específicos** — Definen exactamente lo que necesitan
-2. **Son completos** — Incluyen contexto,约束, ejemplos
+2. **Son completos** — Incluyen contexto, restricciones, ejemplos
 3. **Son verificables** — Se puede saber si el resultado es correcto
 4. **Son iterables** — Se pueden mejorar si no funcionan
 

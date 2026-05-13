@@ -1,4 +1,4 @@
-# Análisis de la Empresa: la empresa Ibérica
+# Análisis de la Empresa
 
 ## La empresa
 
@@ -6,7 +6,7 @@
 
 | Campo | Datos |
 |-------|-------|
-| **Nombre** | la empresa Ibérica |
+| **Nombre** | Empresa de distribución de material eléctrico |
 | **Sector** | Distribución de material eléctrico |
 | **Tamaño** | Gran empresa (más de 500 empleados en España) |
 | **Sede** | Barcelona |
@@ -14,14 +14,14 @@
 
 ### Modelo de negocio
 
-la empresa es una empresa de **distribución B2B** (business to business):
+Es una empresa de **distribución B2B** (business to business):
 - Compra material eléctrico a fabricantes
 - Vende a instaladores electricistas, empresas de mantenimiento, obra civil
 - No vende al público general
 
 ### Situación durante las prácticas
 
-Realicé mis prácticas curriculares en la empresa Ibérica durante el ciclo formativo. Esto me permitió:
+Realicé mis prácticas curriculares en una empresa de distribución de material eléctrico durante el ciclo formativo. Esto me permitió:
 - Conocer la estructura organizativa
 - Observar los procesos de trabajo
 - Identificar necesidades no cubiertas
@@ -32,7 +32,7 @@ Realicé mis prácticas curriculares en la empresa Ibérica durante el ciclo for
 ## Estructura organizativa relevante
 
 ```
-la empresa Ibérica
+Empresa de distribución
 │
 ├── Dirección General
 ├── Área Comercial
@@ -152,7 +152,7 @@ Durante las prácticas, identifiqué varias áreas de mejora:
 
 ## Agradecimientos
 
-Agradezco a la empresa Ibérica la oportunidad de realizar mis prácticas allí, y especialmente al departamento técnico por compartir su conocimiento y validar mis propuestas.
+Agradezco a la empresa la oportunidad de realizar mis prácticas allí, y especialmente al departamento técnico por compartir su conocimiento y validar mis propuestas.
 
 ---
 

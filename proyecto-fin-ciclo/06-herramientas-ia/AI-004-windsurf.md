@@ -5,12 +5,11 @@ version_observada: 2025-2026
 rol_principal: IDE con IA integrada, generación de código y diseño de arquitectura
 url: https://codeium.com/windsurf
 ---
-
-# Ficha Técnica: Windsurf IDE (Codeium)
+Windsurf me salvó cuando se me acabó la prueba gratis de Copilot. Es un IDE basado en VSCode que tiene IA ilimitada gratis. Literalmente puedes preguntarle lo que quieras sobre tu código sin preocuparte por límites de uso.
 
 ## ¿Qué es?
 
-Windsurf es un IDE basado en VSCode desarrollado por Codeium que incluye **modelos de IA不限 Unlimited** en su versión gratuita. A diferencia de GitHub Copilot (que tiene límites de uso), Windsurf ofrece uso ilimitado de sus modelos propietarios.
+Windsurf es un IDE basado en VSCode desarrollado por Codeium que incluye **modelos de IA ilimitados (Unlimited)** en su versión gratuita. A diferencia de GitHub Copilot (que tiene límites de uso), Windsurf ofrece uso ilimitado de sus modelos propietarios.
 
 ## ¿Para qué lo usé?
 

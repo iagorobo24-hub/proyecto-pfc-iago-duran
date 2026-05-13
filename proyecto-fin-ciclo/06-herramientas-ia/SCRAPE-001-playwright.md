@@ -5,8 +5,7 @@ version_observada: 2025-2026
 rol_principal: Testing E2E y web scraping (automatización de navegador)
 url: https://playwright.dev
 ---
-
-# Ficha Técnica: Playwright
+Playwright es una herramienta de Microsoft para controlar navegadores con código. La usé principalmente para hacer scraping del catálogo de productos: abría el navegador, navegaba por las categorías y extraía los datos automáticamente. También sirve para tests.
 
 ## ¿Qué es?
 

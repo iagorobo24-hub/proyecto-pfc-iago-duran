@@ -5,8 +5,7 @@ version_observada: Marzo-Abril 2026 (cerrado el 15 abr 2026)
 rol_principal: Agente de IA en terminal, ejecución de tareas completas
 url: https://qwenlm.ai
 ---
-
-# Ficha Técnica: Qwen CLI
+Qwen CLI fue un agente de IA que ejecutaba tareas directamente desde la terminal. Le decías "refactoriza esto" y él solo lo hacía. Lástima que lo cerraron sin avisar — duró como un mes activo y luego desapareció.
 
 ## ¿Qué es?
 

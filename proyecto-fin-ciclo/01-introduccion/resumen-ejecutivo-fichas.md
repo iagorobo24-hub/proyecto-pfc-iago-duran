@@ -1,4 +1,4 @@
-# Resumen Ejecutivo — Fichas de Herramientas
+# Presentación de herramientas
 
 > Una página por cada herramienta usada en el proyecto. Para fichas completas, ver Capítulo 06.
 
@@ -28,7 +28,7 @@
 ---
 
 ### Windsurf IDE
-**Rol:** IDE principal替代Copilot
+**Rol:** IDE principal (sustituyó a Copilot)
 
 - Coding ilimitado con IA
 - Acceso a proyecto local
@@ -146,7 +146,7 @@
 ### Playwright
 **Rol:** Scraping + Tests E2E
 
-- Scraping de Proyectos PFC.es (400K productos)
+- Scraping de web pública del distribuidor (400K productos)
 - Tests automatizados de UI
 - 14 tests implementados
 

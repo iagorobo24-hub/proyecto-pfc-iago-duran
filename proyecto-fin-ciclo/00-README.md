@@ -1,18 +1,18 @@
-# PROYECTO FIN DE CICLO — PROYECTOS SONEPAR
+# PROYECTO FIN DE CICLO — PROYECTO PFC
 
 **Título del proyecto:** Desarrollo de una suite de herramientas web para automatización industrial aplicada al sector eléctrico, construida con IA generativa
 
 **Autor:** Iago (iagorobo24-hub)
 **Ciclo formativo:** Automatización y Robótica Industrial
 **Centro educativo:** [Nombre del centro]
-**Empresa de prácticas:** la empresa Ibérica
+**Empresa de prácticas:** empresa de distribución de material eléctrico
 **Fecha:** Curso 2025-2026
 
 ## Estructura de esta documentación
 
 | Capítulo | Contenido | Estado |
 |----------|-----------|--------|
-| 01 | Resumen ejecutivo | ✅ Completado (3 archivos) |
+| 01 | Presentación del proyecto | ✅ Completado (3 archivos) |
 | 02 | Estado del arte en IA generativa aplicada a desarrollo web | ✅ Completado (3 archivos) |
 | 03 | Análisis de requisitos de la empresa | ✅ Completado (4 archivos) |
 | 04 | Diseño técnico y arquitectura | ✅ Completado (4 archivos) |

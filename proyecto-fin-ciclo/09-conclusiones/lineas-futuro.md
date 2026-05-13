@@ -1,8 +1,8 @@
-# Líneas Futuras — Mejoras y Ampliaciones
+# Líneas Futuras — Lo que queda por hacer
 
 ## Introducción
 
-Este documento enumera las posibles mejoras y ampliaciones del proyecto, tanto a corto como a medio y largo plazo.
+El proyecto funciona, pero no está acabado del todo. Siempre hay cosas que mejorar, ideas que se quedaron en el tintero y cosas que aprendí a hacer mejor para la próxima. Esto es lo que me gustaría hacer si tuviera más tiempo.
 
 ---
 

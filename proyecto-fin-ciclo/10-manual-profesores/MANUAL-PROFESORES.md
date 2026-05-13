@@ -261,7 +261,7 @@ Este proyecto y su documentación están bajo licencia **MIT**. Puedes:
 ---
 
 *Manual elaborado en Mayo 2026*
-*Proyecto: "Proyectos la empresa — Suite de herramientas web para técnicos eléctricos"*
+*Proyecto: "Proyecto PFC — Suite de herramientas web para técnicos eléctricos"*
 *Autor: Iago (iagorobo24-hub)*
 *Ciclo: Automatización y Robótica Industrial*
 

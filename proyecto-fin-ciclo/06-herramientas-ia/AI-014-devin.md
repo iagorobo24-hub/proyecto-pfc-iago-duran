@@ -5,8 +5,7 @@ version_observada: Abril 2026 (usado vía GitHub PRs)
 rol_principal: Agente de IA autónomo para código y documentación
 url: https://cognition.ai/devin
 ---
-
-# Ficha Técnica: Devin (Cognition AI)
+Devin es un agente autónomo. Le das una tarea y él solo crea una rama en GitHub, hace los cambios, hace commit y abre un PR. Tú solo revisas y haces merge. Es como tener un compañero que trabaja mientras tú haces otras cosas.
 
 ## ¿Qué es?
 

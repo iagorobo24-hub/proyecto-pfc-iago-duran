@@ -28,7 +28,7 @@ Realicé **3 entrevistas informales** con técnicos de la empresa durante mis pr
 
 ## Entrevista 2: Técnico de almacén
 
-**Perfil:** Encargado de gestión de仓库, conoce los procesos de recepción y expedición.
+**Perfil:** Encargado de gestión de almacén, conoce los procesos de recepción y expedición.
 
 ### Fragmentos relevantes
 

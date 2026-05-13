@@ -1,8 +1,8 @@
-# Metodología: Cómo trabajé con IA Generativa
+# Metodología — Cómo trabajé con IA
 
 ## Introducción
 
-Este capítulo documenta **el método de trabajo** que evolucionó durante el proyecto. No es un metodología predefinida, sino algo que fui descubriendo y refinando a medida que trabajaba con las diferentes herramientas.
+No empecé con un plan de trabajo escrito. La metodología de este proyecto se fue inventando sobre la marcha, según iba viendo qué funcionaba y qué no con cada herramienta. Esto es lo que acabó siendo mi forma de trabajar.
 
 ---
 
@@ -40,7 +40,7 @@ Antes de pedir algo a la IA, necesito:
 
 1. **Entender qué necesito** — No pedir "un código", sino "un componente que haga X"
 2. **Conocer el contexto** — Si la IA no tiene acceso al proyecto, proporcionarlo
-3. **Definir约束** — Tecnologías, estilo, limitaciones
+3. **Definir restricciones** — Tecnologías, estilo, limitaciones
 
 ### Fase 2: Prompt
 

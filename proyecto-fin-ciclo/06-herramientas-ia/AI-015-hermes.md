@@ -5,8 +5,7 @@ version_observada: 2025-2026
 rol_principal: AgenteCLI actual - análisis de repos, documentación y desarrollo
 url: https://hermes-agent.nousresearch.com
 ---
-
-# Ficha Técnica: Hermes Agent
+Hermes es el agente que está escribiendo esto ahora mismo. Es un asistente de terminal que puede leer archivos, ejecutar comandos, modificar código y hasta recordar cosas entre sesiones. Básicamente es mi compañero de desarrollo del día a día.
 
 ## ¿Qué es?
 

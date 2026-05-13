@@ -1,14 +1,14 @@
-# Resumen Ejecutivo
+# Presentación del proyecto
 
 ## El proyecto en una frase
 
-Desarrollo de una **suite de herramientas web** para técnicos eléctricos de la empresa Ibérica, construida íntegramente con **IA generativa** como metodología de trabajo, demostrando que un estudiante de ciclo formativo puede crear soluciones profesionales sin conocimientos previos de programación.
+Desarrollo de la aplicación **Proyecto PFC**, una **suite de herramientas web** para técnicos eléctricos del sector de distribución de material eléctrico, construida íntegramente con **IA generativa** como metodología de trabajo, demostrando que un estudiante de ciclo formativo puede crear soluciones profesionales sin conocimientos previos de programación.
 
 ---
 
-## ¿Qué es Proyectos la empresa?
+## ¿Qué es Proyecto PFC?
 
-Es una aplicación web (SPA) con **7 módulos funcionales** que resuelven necesidades reales de técnicos electricistas en su día a día:
+**Proyecto PFC** es una aplicación web (SPA) con **7 módulos funcionales** que resuelven necesidades reales de técnicos electricistas en su día a día:
 
 | Módulo | Función |
 |--------|---------|
@@ -26,7 +26,7 @@ Es una aplicación web (SPA) con **7 módulos funcionales** que resuelven necesi
 
 ### El problema encontrado
 
-Durante mis prácticas en **la empresa Ibérica** (empresa de distribución de material eléctrico), observé que los técnicos销售人员:
+Durante mis prácticas en una empresa de distribución de material eléctrico, observé que los técnicos:
 
 - Tardaban mucho buscando fichas técnicas de productos
 - No tenían acceso fácil a información de compatibilidad entre productos
@@ -93,18 +93,18 @@ Testing:      Playwright (E2E)
 
 Este proyecto fin de ciclo se documenta en 10 capítulos:
 
-1. ✅ Resumen ejecutivo (este documento)
-2. 📝 Estado del arte (IA generativa en desarrollo web)
-3. 📝 Análisis de requisitos
-4. 📝 Diseño técnico
-5. 📝 Proceso de desarrollo con IA
-6. ✅ Catálogo de herramientas IA (14 fichas técnicas)
-7. 📝 Manuales de uso
-8. 📝 Resultados y validación
-9. 📝 Conclusiones
+1. ✅ Resumen ejecutivo
+2. ✅ Estado del arte (IA generativa en desarrollo web)
+3. ✅ Análisis de requisitos
+4. ✅ Diseño técnico
+5. ✅ Proceso de desarrollo con IA
+6. ✅ Catálogo de herramientas IA (13 fichas técnicas)
+7. ✅ Manuales de uso
+8. ✅ Resultados y validación
+9. ✅ Conclusiones
 10. ✅ Manual para profesores
 
 ---
 
 *Documento elaborado: Mayo 2026*
-*Proyecto: Proyectos la empresa — PFC Automatización y Robótica Industrial*
+*Proyecto: Proyecto PFC — PFC Automatización y Robótica Industrial*

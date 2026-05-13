@@ -1,135 +1,113 @@
-# Stack Tecnológico
+# Stack Tecnológico — Las tecnologías que usé y por qué
 
-## Decisiones de tecnología
+## La idea general
 
-Este documento explica **por qué** se eligió cada tecnología, considerando el contexto de un proyecto de ciclo formativo sin presupuesto.
+Cuando empecé el proyecto, no sabía qué herramientas usar. Fui probando, algunas las mantuve, otras las cambié sobre la marcha. Esto es lo que acabó funcionando y por qué lo elegí.
+
+Mi única condición era: **todo gratis**. No podía gastar dinero en un proyecto de FP.
 
 ---
 
-## Capa de presentación
+## El frontend (lo que ve el usuario)
 
 ### React 19 + Vite 7
 
-| Aspecto | Decisión | Razón |
-|---------|----------|-------|
-| **Framework** | React 19 | Más moderno, mejor rendimiento |
-| **Build tool** | Vite 7 | Rápido, buena DX, fácil configuración |
-| **Routing** | React Router v7 | Estándar de facto, bien documentado |
+React es lo más usado hoy en día para hacer aplicaciones web. Vite es la herramienta que lo monta todo y lo hace funcionar.
 
-**Alternativas considered:**
-- Vue/Nuxt: Conocimientos previos limitados
-- Next.js: Overkill para SPA, más complejo
-- Svelte: Menor ecosistema
+| Decisión | Por qué |
+|----------|---------|
+| **React 19** | Es la versión más nueva, funciona bien y hay mucha documentación |
+| **Vite 7** | Es muy rápido y casi no hay que configurarlo |
+| **React Router v7** | Es lo que todo el mundo usa para navegar entre pantallas |
 
-**Veredicto:** React + Vite es la opción con mejor equilibrio entre modernidad, comunidad y curva de aprendizaje.
+**Otras opciones que miré:**
+- **Vue/Nuxt** — No lo conocía, aprender otro framework desde cero era mucho
+- **Next.js** — Está muy bien pero para lo que necesitaba yo (una web que carga una vez y ya) era más complicado de lo necesario
+- **Svelte** — Menos conocido, menos ayuda en internet si me atascaba
 
----
+**¿Por qué me quedé con React?** Porque es lo más estándar. Si algo se rompe, hay 50 soluciones en Stack Overflow. Para un proyecto de estudiante, eso es oro.
 
-### Estilos
+### Los estilos
 
-| Aspecto | Decisión | Razón |
-|---------|----------|-------|
-| **Metodología** | CSS Modules | Scope automático, sin runtime |
-| **Variables** | CSS Custom Properties | Tema claro/oscuro, consistencia |
-| **Iconos** | lucide-react | Ligeros, consistentes, buenos para producción |
-| **Tipografía** | IBM Plex Sans | Profesional, legible, gratuita (Google Fonts) |
+| Decisión | Por qué |
+|----------|---------|
+| **CSS Modules** | Los estilos de cada componente no se mezclan con los de otros |
+| **Variables CSS** | Para poder cambiar el tema claro/oscuro sin esfuerzo |
+| **lucide-react** | Iconos bonitos, ligeros y gratuitos |
+| **IBM Plex Sans** | Tipografía profesional, queda bien y es gratis |
 
-**Alternativas considered:**
-- Tailwind CSS: Aprendizaje adicional, prefiero CSS tradicional
-- Styled Components: Runtime overhead
-- Emotion: Similar a styled, sin ventajas claras
+**Otras opciones:**
+- **Tailwind CSS** — La mayoría de la gente lo adora, pero a mí me lía tener que poner mil clases en el HTML. Prefiero el CSS de toda la vida
+- **Styled Components** — Hace que el CSS esté dentro del JavaScript, pero ralentiza un poco la web
 
-**Veredicto:** CSS Modules + Variables es suficiente para proyectos medianos. Si el proyecto crece, considerar Tailwind.
+### Los gráficos
 
----
-
-### Visualización de datos
-
-| Librería | Uso | Razón |
-|----------|-----|-------|
-| **Recharts** | Gráficos de KPIs | React-native, buena documentación |
-| **HTML/CSS** | Indicadores de semáforo | Suficiente para 3 estados |
-
-**Alternativas considered:**
-- Chart.js: Más popular pero menos "React"
-- D3.js: Overkill para gráficos simples
-- Victory: Buena pero menos documentación
-
-**Veredicto:** Recharts para gráficos, CSS para indicadores simples.
+Para los KPIs (los indicadores del almacén) necesitaba gráficos. Usé **Recharts**, que es una librería de gráficos hecha para React. Los semáforos (verde/amarillo/rojo) los hice con CSS normal, no hacía falta más.
 
 ---
 
-## Autenticación y Backend
+## La autenticación y la base de datos
 
 ### Firebase (Auth + Firestore)
 
-| Servicio | Decisión | Razón |
-|----------|----------|-------|
-| **Auth** | Firebase Auth | Integración Google Sign-In trivial |
-| **Base de datos** | Firestore | Schema flexible, buena integración React |
+Firebase es de Google y te da dos cosas muy útiles: **inicio de sesión con Google** y **base de datos en la nube**.
 
-**Alternativas considered:**
-- Supabase: Mejor escalabilidad, pero más complejo de empezar
-- MongoDB Atlas: Requiere más configuración
-- PostgreSQL tradicional: Overkill para este caso
+| Servicio | Por qué lo elegí |
+|----------|-----------------|
+| **Firebase Auth** | El login con Google se configura en 10 minutos |
+| **Firestore** | Es una base de datos flexible, sin esquemas fijos |
 
-**Problemas encontrados:**
-- Firestore tiene límite de 50K escrituras/día (Spark)
-- Búsqueda por texto limitada
+**Problemas que encontré:**
+- El plan gratis de Firestore solo permite 50.000 escrituras al día. Con 400.000 productos, eso fue un problema
+- Buscar productos por nombre es más complicado de lo que parece
 
-**Veredicto:** Firebase es fácil para empezar, pero Supabase sería mejor para producción.
+**Alternativas:**
+- **Supabase** — Más potencia, más escalable. De hecho, estoy migrando a esto ahora
+- **MongoDB** — También gratis pero más lioso de montar
 
----
+**Mi opinión:** Firebase está muy bien para empezar. Es como conducir un coche automático: llegas rápido a todos sitios. Pero cuando quieres hacer cosas más avanzadas, te chocas con limitaciones. Por eso estoy migrando a Supabase.
 
-### API de IA
+### La API de IA
 
-| Servicio | Decisión | Razón |
-|----------|----------|-------|
-| **Gateway** | OpenRouter | Unifica múltiples proveedores, tier gratuito |
-| **Modelos** | Claude 3.5 Haiku, DeepSeek, Qwen | Gratuitos, buena calidad |
+Para que SONEX (el asistente) funcione, necesitaba una manera de llamar a modelos de IA desde la web.
 
-**Alternativas considered:**
-- Anthropic directo: Solo Claude, coste
-- OpenAI directo: Coste por token
-- Groq: Rápido pero menos modelos gratuitos
+| Decisión | Por qué |
+|----------|---------|
+| **OpenRouter** | Une varias IAs en una sola API, tiene modelos gratis |
+| **Claude 3.5 Haiku** | El modelo que mejor funcionó para preguntas técnicas |
+| **DeepSeek** | Alternativa gratis cuando Claude tenía límites |
 
-**Veredicto:** OpenRouter es ideal para proyectos académicos.
+**Lo que probé antes:**
+- Llamar directo a Anthropic (los creadores de Claude) — No funcionaba por problemas de configuración
+- OpenAI directo — Había que pagar
+- Groq — Rápido pero con menos modelos
 
----
+**La odisea de la API de IA:** Merece capítulo aparte. Estuvimos tres días probando configuraciones hasta que OpenRouter funcionó. Si quieres los detalles, están en `fases-desarrollo.md` (Fase 11).
 
-### Serverless
+### Las funciones en el servidor (Vercel Functions)
 
-| Servicio | Decisión | Razón |
-|----------|----------|-------|
-| **Functions** | Vercel Functions | Integrado con Vercel, gratis |
-| **API Key** | Proxy serverless | Oculta clave del cliente |
-
-**Alternativas considered:**
-- Firebase Functions: Más caro en tiers gratuitos
-- AWS Lambda: Complejo de configurar
-- Cloudflare Workers: Bueno pero menor integración
-
-**Veredicto:** Vercel Functions es la opción más integrada y gratuita.
+Necesitaba un sitio donde esconder la clave de la API de IA (no puede estar en el código del navegador porque la vería cualquiera). Las Vercel Functions son trocitos de código que se ejecutan en el servidor de Vercel sin que tengas que montar un servidor tú mismo. Gratis y fáciles.
 
 ---
 
-## Deployment
+## El despliegue (cómo llegó a internet)
 
 ### Vercel
 
-| Aspecto | Decisión | Razón |
-|---------|----------|-------|
-| **Hosting** | Vercel | Deploy automático desde GitHub |
-| **CDN** | Vercel Edge | Rápido globalmente |
-| **SSL** | Automático | Lets Encrypt incluido |
-| **Dominio** | proyecto-pfc-iago-duran.vercel.app | Gratis |
+Vercel es donde está publicada la web. Tiene varias ventajas:
 
-**Alternativas considered:**
-- Netlify: Similar, pero Vercel mejor para Vite/React
-- GitHub Pages: Limitado para SPAs con routing
-- Render: Bueno pero menos integrado con React
+| Ventaja | Por qué mola |
+|---------|-------------|
+| **Deploy automático** | Cada vez que subo código a GitHub, Vercel lo publica solo |
+| **Gratis** | El plan Hobby (gratuito) da para mucho |
+| **Rápido** | La web carga rápido en todo el mundo |
+| **Funciones serverless** | Las APIs de IA se ejecutan aquí también |
 
-**Veredicto:** Vercel es la opción más fácil para proyectos React modernos.
+**Alternativas que miré:**
+- **Netlify** — Similar a Vercel, pero Vercel funciona mejor con React
+- **GitHub Pages** — Gratis pero más limitado
+
+**Mi opinión:** Vercel es tan fácil que parece trampa. Conectas tu repositorio de GitHub, haces click en "Deploy", y ya está tu web en internet. Cuando subes cambios, se actualiza sola.
 
 ---
 
@@ -137,75 +115,50 @@ Este documento explica **por qué** se eligió cada tecnología, considerando el
 
 ### Playwright
 
-| Aspecto | Decisión | Razón |
-|---------|----------|-------|
-| **E2E** | Playwright | Moderno, buen DX, multi-browser |
-| **Scraping** | Playwright | Mejor que Puppeteer para sitios dinámicos |
+Playwright es una herramienta que automatiza navegadores. La usé para dos cosas:
+1. **Hacer tests** — Para comprobar que la web funciona correctamente en Chrome, Firefox y Safari
+2. **Scraping** — Para descargar el catálogo de 400.000 productos de la web del distribuidor
 
-**Alternativas considered:**
-- Cypress: Más popular pero menos moderno
-- Puppeteer: Solo Chrome
-- Selenium: Muy antiguo
-
-**Veredicto:** Playwright es el estándar emergente para E2E.
+Hay herramientas parecidas pero Playwright es la más moderna y la que mejor funciona.
 
 ---
 
-## Herramientas de desarrollo
-
-| Herramienta | Uso | Razón |
-|-------------|-----|-------|
-| **VSCode** | Editor principal | Amplio ecosistema |
-| **Windsurf** | Coding con IA | Coding ilimitado gratis |
-| **Git** | Control de versiones | Estándar |
-| **GitHub** | Repositorio remoto | Integración Vercel |
-
----
-
-## Resumen del stack
+## Resumen rápido
 
 ```
-Frontend:        React 19 + Vite 7 + React Router v7
-Estilos:         CSS Modules + Variables CSS
-Iconos:          lucide-react
-Gráficos:        Recharts
-
-Auth:            Firebase Auth
-Base de datos:   Firestore (→ Supabase en迁移)
-API de IA:       OpenRouter → Vercel Functions
-
-Testing:         Playwright
-Deployment:      Vercel
-Control:         GitHub
+Lo que ve el usuario:     React 19 + Vite 7
+Estilos:                  CSS Modules + variables CSS
+Login:                    Firebase Auth (Google)
+Base de datos:            Firestore (migrando a Supabase)
+IA:                       OpenRouter (Claude, DeepSeek)
+Servidor:                 Vercel Functions
+Publicación:              Vercel
+Tests:                    Playwright
+Control de versiones:     GitHub
 ```
 
 ---
 
-## Tecnologías que NO usamos y por qué
+## Tecnologías que probé y descarté
 
-| Tecnología | Razón |
-|------------|-------|
-| **TypeScript** | Curva de aprendizaje adicional, el proyecto era para aprender React primero |
-| **Tailwind CSS** | Prefiero CSS tradicional, sin preferencia personal |
-| **Redux** | React Context es suficiente |
-| **GraphQL** | Overkill para Firestore |
-| **Next.js** | Solo necesitamos SPA, no SSR |
-| **Docker** | No hay backend propio que containerizar |
-
----
-
-## Decisiones de migración
-
-### Firebase → Supabase (en curso)
-
-**Razón:**
-- Firestore tiene límite de escrituras
-- PostgreSQL es más familiar para el ciclo
-- Supabase tiene mejor tier gratuito
-
-**Estado:** Scripts de migración desarrollados, ejecución pendiente.
+| Tecnología | Por qué no la usé al final |
+|------------|---------------------------|
+| **TypeScript** | Tenía que aprender React primero, añadir tipos después era demasiado |
+| **Tailwind CSS** | Cuestión de gustos, prefiero CSS normal |
+| **Redux** | React Context hace lo mismo sin complicaciones |
+| **Next.js** | Para una web que no necesita aparecer en Google, sobra |
+| **Docker** | No tengo un servidor propio como para necesitar contenedores |
 
 ---
 
-*Stack tecnológico documentado: Mayo 2026*
-*Ver también: EVOLUCION.md para historial de cambios*
+## Migraciones en curso
+
+### Firebase → Supabase
+
+Firestore es fácil pero tiene límites. Supabase usa PostgreSQL (como las bases de datos de toda la vida) y da más por el mismo precio (gratis).
+
+**Estado:** Los scripts para migrar están hechos, solo falta ejecutarlos cuando toque.
+
+---
+
+*Esto fue lo que usé y por qué. Si quieres ver cómo fueron cambiando las decisiones con el tiempo, mira EVOLUCION.md.*

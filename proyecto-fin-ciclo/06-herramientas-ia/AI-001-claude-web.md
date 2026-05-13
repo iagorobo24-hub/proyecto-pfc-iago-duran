@@ -5,8 +5,7 @@ version_observada: 2025-2026
 rol_principal: Diseño de arquitectura y generación de componentes JSX
 url: https://claude.ai
 ---
-
-# Ficha Técnica: Claude Web (Anthropic)
+Claude fue la primera herramienta de IA que usé en el proyecto. Literalmente abría claude.ai en el navegador, escribía lo que necesitaba y copiaba el código JSX que me generaba. Parece rudimentario, pero así empezó todo.
 
 ## ¿Qué es?
 

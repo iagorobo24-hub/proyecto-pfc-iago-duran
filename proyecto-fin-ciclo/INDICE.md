@@ -2,21 +2,38 @@
 
 ## Documentación del proyecto
 
-### 📁 Estructura principal
+### 📁 Estructura principal por fases
 
 ```
 proyecto-fin-ciclo/
-├── 00-README.md                    ← Este archivo: índice y guía de uso
-├── 01-resumen-ejecutivo/           ← Resumen ejecutivo del proyecto
-├── 02-estado-del-arte/             ← IA generativa en desarrollo web
-├── 03-analisis-requisitos/         ← Análisis de necesidades de la empresa
-├── 04-diseno-tecnico/              ← Arquitectura y decisiones técnicas
+├── 00-README.md                    ← Guía de lectura + glosario
+├── INDICE.md                       ← Este archivo
+│
+├── ════════════════════════════════════════════════════
+├── FASE I — CONTEXTO Y FUNDAMENTO
+├── ════════════════════════════════════════════════════
+├── 01-introduccion/           ← Presentación del proyecto completo
+├── 02-estado-del-arte/             ← Panorama actual de IA generativa
+│
+├── ════════════════════════════════════════════════════
+├── FASE II — ANÁLISIS Y DISEÑO
+├── ════════════════════════════════════════════════════
+├── 03-analisis-requisitos/         ← Estudio de la empresa, propuesta inicial
+├── 04-diseno-tecnico/              ← Arquitectura y componentes del sistema
+│
+├── ════════════════════════════════════════════════════
+├── FASE III — EJECUCIÓN CON IA
+├── ════════════════════════════════════════════════════
 ├── 05-proceso-desarrollo/          ← Metodología de trabajo con IA
 ├── 06-herramientas-ia/            ← Catálogo de herramientas (fichas)
+│
+├── ════════════════════════════════════════════════════
+├── FASE IV — RESULTADOS Y CIERRE
+├── ════════════════════════════════════════════════════
 ├── 07-manuales-uso/                ← Manuales de usuario de la app
-├── 08-resultados/                  ← Resultados y validación
+├── 08-resultados/                  ← Métricas, validación y presupuesto
 ├── 09-conclusiones/               ← Conclusiones y líneas futuras
-├── 10-manual-profesores/          ← Guía para docentes
+├── 10-manual-profesores/          ← Guía didáctica para docentes
 └── assets/                         ← Diagramas, capturas, branding
 ```
 
@@ -77,61 +94,130 @@ proyecto-fin-ciclo/
 
 ## 📖 Contenido por capítulo
 
-### 01 — Resumen Ejecutivo
-- [x] `resumen-ejecutivo.md` — Síntesis del proyecto
-- [x] `objetivos.md` — Objetivos generales y específicos
-- [x] `resumen-ejecutivo-fichas.md` — Una página por herramienta usada
+Cada capítulo responde a una pregunta concreta dentro de la narrativa del proyecto.
+
+---
+
+### ═══ FASE I — CONTEXTO Y FUNDAMENTO ═══
+
+> **Propósito:** Situar al lector en el proyecto: qué se hizo, por qué es relevante y en qué contexto tecnológico se desarrolló.
+
+### 01 — Presentación del proyecto
+> *"¿De qué va este proyecto en conjunto?"*
+
+Vista general para quien no tiene tiempo de leer la memoria completa.
+
+- [x] `resumen-ejecutivo.md` — Presentación del proyecto: problema, solución, metodología, resultados
+- [x] `objetivos.md` — Objetivos generales y específicos del PFC
+- [x] `resumen-ejecutivo-fichas.md` — Presentación de las herramientas IA usadas en el proyecto
 
 ### 02 — Estado del Arte
-- [x] `estado-arte-ia-generativa.md` — Evolución de la IA generativa
+> *"¿Por qué este proyecto tiene sentido ahora?"*
+
+Panorama actual de la IA generativa aplicada al desarrollo web.
+
+- [x] `estado-arte-ia-generativa.md` — Evolución de la IA generativa (2020-2026)
 - [x] `herramientas-comparativa.md` — Comparativa de herramientas 2024-2026
-- [x] `tendencias-futuro.md` — Líneas de evolución
+- [x] `tendencias-futuro.md` — Hacia dónde evoluciona el desarrollo con IA
+
+---
+
+### ═══ FASE II — ANÁLISIS Y DISEÑO ═══
+
+> **Propósito:** Demostrar que hay trabajo de ingeniería previo a la codificación.
 
 ### 03 — Análisis de Requisitos
-- [x] `analisis-empresa.md` — Estudio de la empresa y necesidades
-- [x] `entrevistas.md` — Notas de entrevistas con técnicos
-- [x] `requisitos-funcionales.md` — Casos de uso
-- [x] `requisitos-no-funcionales.md` — Rendimiento, seguridad, etc.
+> *"¿Qué problemas reales resuelve la aplicación?"*
+
+Documenta necesidades detectadas durante las prácticas y la propuesta inicial del proyecto.
+
+- [x] `anteproyecto.md` — Propuesta inicial del proyecto (entregable Fase 1 oficial)
+- [x] `analisis-empresa.md` — Estudio de la empresa: quién es, cómo funciona, qué necesidades tiene
+- [x] `entrevistas.md` — Notas de entrevistas con técnicos de almacén y oficina
+- [x] `requisitos-funcionales.md` — Casos de uso: qué debe hacer cada módulo
+- [x] `requisitos-no-funcionales.md` — Rendimiento, seguridad, usabilidad, restricciones
 
 ### 04 — Diseño Técnico
-- [x] `arquitectura.md` — Diagrama de arquitectura
-- [x] `stack-tecnologico.md` — Decisiones de tecnología
-- [x] `modelo-datos.md` — Esquema de datos
-- [x] `diseno-ui-ux.md` — Sistema de diseño
+> *"¿Cómo está construido y por qué se tomaron esas decisiones?"*
+
+Traduce los requisitos a decisiones técnicas. Incluye el listado completo de componentes (equivalente al listado de E/S de un PLC).
+
+- [x] `arquitectura.md` — Diagramas del sistema, flujos de datos, capas de seguridad (con referencias a SVGs en `/diagramas/`)
+- [x] `listado-componentes.md` — Inventario completo: rutas, componentes, hooks, APIs y colecciones
+- [x] `stack-tecnologico.md` — Justificación de cada tecnología elegida
+- [x] `modelo-datos.md` — Esquema de datos Firestore y estructura de colecciones
+- [x] `diseno-ui-ux.md` — Sistema de diseño: colores, tipografía, espaciado, componentes
+
+---
+
+### ═══ FASE III — EJECUCIÓN CON IA ═══
+
+> **Propósito:** Documentar el núcleo diferencial del PFC: cómo se trabajó con IA generativa.
 
 ### 05 — Proceso de Desarrollo
-- [x] `metodologia.md` — Cómo trabajé con IA generativa
-- [x] `fases-desarrollo.md` — Cronología de fases
-- [x] `prompts-exitosos.md` — Ejemplos de prompts efectivos
-- [x] `lecciones-aprendidas.md` — Errores y aciertos
+> *"¿Cómo se construyó la aplicación usando IA generativa?"*
+
+El capítulo más importante de la memoria. Documenta la metodología, fases, errores y aciertos.
+
+- [x] `metodologia.md` — Cómo trabajé con IA generativa: flujo de 4 fases
+- [x] `fases-desarrollo.md` — Cronología real del proyecto (12 fases)
+- [x] `prompts-exitosos.md` — Ejemplos de prompts que funcionaron bien
+- [x] `lecciones-aprendidas.md` — Errores cometidos y cómo se evitarían
 
 ### 06 — Herramientas IA
-- [x] 14 fichas técnicas completadas
-- [ ] `comparativa-final.md` — Tabla comparativa de todas
+> *"¿Qué herramientas de IA se usaron y para qué?"*
+
+Catálogo detallado de cada herramienta del ecosistema IA explorado.
+
+- [x] 13 fichas técnicas de herramientas IA
+- [ ] `comparativa-final.md` — Tabla comparativa de todas las herramientas
+
+---
+
+### ═══ FASE IV — RESULTADOS Y CIERRE ═══
+
+> **Propósito:** Demostrar que el producto funciona, validar resultados y dejar materiales reutilizables.
 
 ### 07 — Manuales de Uso
-- [x] `manual-sonex.md` — Cómo usar el asistente IA
-- [x] `manual-fichas-tecnicas.md` — Navegación del catálogo
-- [x] `manual-almacen.md` — Simulador de pedidos
+> *"¿Cómo se usa cada módulo de la aplicación?"*
+
+Guías de usuario para los 6 módulos. Demuestra que el producto es usable por personal no técnico.
+
+- [x] `manual-sonex.md` — Asistente técnico con IA
+- [x] `manual-fichas-tecnicas.md` — Navegación del catálogo de productos
+- [x] `manual-almacen.md` — Simulador de ciclo de pedido
 - [x] `manual-presupuestos.md` — Generador de presupuestos
-- [x] `manual-kpis.md` — Dashboard de KPIs
-- [x] `manual-formacion.md` — Gestión de formación
+- [x] `manual-kpis.md` — Dashboard de indicadores logísticos
+- [x] `manual-formacion.md` — Matriz de competencias y formación
 
 ### 08 — Resultados
-- [x] `resultados-cuantitativos.md` — Métricas (velocidad, coste, etc.)
-- [x] `resultados-cualitativos.md` — Valor percibido por usuarios
-- [x] `validacion-profesores.md` — Feedback de los tutores
+> *"¿Funciona? ¿Mereció la pena?"*
+
+Métricas, feedback y presupuesto detallado del proyecto.
+
+- [x] `resultados-cuantitativos.md` — Métricas: tiempo, coste, rendimiento, catálogo
+- [x] `resultados-cualitativos.md` — Valor percibido por usuarios potenciales
+- [x] `validacion-profesores.md` — Feedback de los tutores del centro
+- [x] `presupuesto.md` — Desglose detallado de costes (0€) vs. costes estimados de mercado
 
 ### 09 — Conclusiones
-- [x] `conclusiones.md` — ¿Se cumplieron los objetivos?
-- [x] `lineas-futuro.md` — Mejoras y ampliaciones
-- [x] `impacto-educativo.md` — Qué aporta al ciclo formativo
+> *"¿Cumplí los objetivos? ¿Qué aprendí? ¿Qué sigue?"*
+
+Cierra el círculo del proyecto.
+
+- [x] `conclusiones.md` — Evaluación de objetivos cumplidos y no cumplidos
+- [x] `lineas-futuro.md` — Mejoras y ampliaciones posibles
+- [x] `impacto-educativo.md` — Qué aporta este proyecto al ciclo formativo
 
 ### 10 — Manual para Profesores
-- [x] `guia-rapida.md` — Cómo usar la documentación
-- [x] `actividades-propuestas.md` — Ejercicios para alumnos
-- [x] `evaluacion.md` — Rúbricas de evaluación
-- [x] `recursos-adicionales.md` — Enlaces y materiales
+> *"¿Cómo pueden otros profesores usar esto en clase?"*
+
+Guía didáctica para que docentes repliquen la metodología.
+
+- [x] `guia-rapida.md` — Cómo usar esta documentación como profesor
+- [x] `actividades-propuestas.md` — Ejercicios prácticos para alumnos
+- [x] `evaluacion.md` — Rúbricas de evaluación del proyecto
+- [x] `recursos-adicionales.md` — Enlaces y materiales complementarios
 
 ---
 
@@ -142,13 +228,13 @@ proyecto-fin-ciclo/
 1. Empieza por `00-README.md` para entender la estructura
 2. Usa las fichas de herramientas (06) como referencia
 3. Consulta `EVOLUCION.md` del repo principal para cronología real
-4. Los scripts en `/app/scripts/` son tus "pruebas" de metodología
+4. Los diagramas SVG en `/diagramas/` sirven como esquemas del sistema
 
 ### Para crear la presentación
 
-1. Cada capítulo tiene suficiente material para 3-5 diapositivas
-2. Las fichas de herramientas son ideales para "Estado del arte"
-3. Los resultados en `08-resultados` son el cierre perfecto
+1. Cada fase son 3-5 diapositivas
+2. Las fichas de herramientas y los resultados son ideales para la defensa
+3. Los diagramas SVG se pueden usar directamente en la presentación
 
 ### Para dejar recursos a futuros alumnos
 
@@ -160,31 +246,33 @@ proyecto-fin-ciclo/
 
 ## 📊 Estadísticas de documentación
 
-| Capítulo | Archivos | Estado |
-|----------|----------|--------|
-| 00 - README | 1 | ✅ |
-| 01 - Resumen | 3 | ✅ Completo |
-| 02 - Estado del arte | 3 | ✅ Completo |
-| 03 - Análisis requisitos | 4 | ✅ Completo |
-| 04 - Diseño técnico | 4 | ✅ Completo |
-| 05 - Proceso desarrollo | 4 | ✅ Completo |
-| 06 - Herramientas IA | 14 | ✅ Completo |
-| 07 - Manuales de uso | 6 | ✅ Completo |
-| 08 - Resultados | 3 | ✅ Completo |
-| 09 - Conclusiones | 3 | ✅ Completo |
-| 10 - Manual profesores | 5 | ✅ Completo |
+| Fase | Capítulo | Archivos | Estado |
+|------|----------|----------|--------|
+| | 00 - README + INDICE | 2 | ✅ |
+| **I** Contexto | 01 - Presentación del proyecto | 3 | ✅ |
+| **I** Contexto | 02 - Estado del arte | 3 | ✅ |
+| **II** Análisis y diseño | 03 - Análisis requisitos | 5 | ✅ |
+| **II** Análisis y diseño | 04 - Diseño técnico | 5 | ✅ |
+| **III** Ejecución con IA | 05 - Proceso desarrollo | 4 | ✅ |
+| **III** Ejecución con IA | 06 - Herramientas IA | 13 | ✅ |
+| **IV** Resultados y cierre | 07 - Manuales de uso | 6 | ✅ |
+| **IV** Resultados y cierre | 08 - Resultados | 4 | ✅ |
+| **IV** Resultados y cierre | 09 - Conclusiones | 3 | ✅ |
+| **IV** Resultados y cierre | 10 - Manual profesores | 5 | ✅ |
 
-**Total creado:** 50 archivos MD (1 README + 14 fichas + 35 capítulo)
+**Total creado:** 53 archivos MD (2 índices + 13 fichas + 38 capítulo)
 
 ---
 
 ## 🔜 Próximos pasos
 
-1. **Completar cap 01-05** — Narrativa del proyecto
-2. **Crear cap 07-09** — Manuales, resultados y conclusiones
-3. **Desarrollar cap 10** — Manual para profesores
+1. **Revisar coherencia narrativa entre capítulos** — Asegurar que cada fase fluye correctamente
+2. **Completar Fase I** — Revisar que contexto y fundamento están bien argumentados
+3. **Reforzar Fase III** — Añadir `comparativa-final.md` en herramientas IA
+4. **Unificar tono y estilo** — Revisar que todos los capítulos usan el mismo lenguaje
+5. **Generar documento final** — Exportar a DOCX para entrega oficial
 
 ---
 
 *Última actualización: Mayo 2026*
-*Generado con Hermes Agent para Iago — Proyecto Fin de Ciclo 2025-2026*
+*Generado para Iago Durán — Proyecto Fin de Ciclo 2025-2026*

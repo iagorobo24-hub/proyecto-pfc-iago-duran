@@ -29,21 +29,21 @@ Esta documentación está diseñada para ser usada como material docente. Aquí 
 
 ### Para enseñar metodología
 
-重点章节:
+Capítulos clave:
 - **02 (Estado del arte)** — Evolución de la IA
 - **05 (Proceso)** — Workflow real
 - **06 (Fichas)** — Herramientas en detalle
 
 ### Para evaluar proyectos
 
-重点章节:
+Capítulos clave:
 - **01 (Resumen)** — Objetivos y alcance
 - **08 (Resultados)** — Métricas
 - **09 (Conclusiones)** — Cumplimiento
 
 ### Para inspirar a alumnos
 
-重点章节:
+Capítulos clave:
 - **05.3 (Prompts)** — Ejemplos reales
 - **05.4 (Lecciones)** — Errores y aciertos
 - **10.3 (Actividades)** — Ejercicios propuestos
@@ -92,7 +92,7 @@ Criterios principales:
 
 ---
 
-## Materiales补充arios
+## Materiales complementarios
 
 ### En la carpeta assets/
 

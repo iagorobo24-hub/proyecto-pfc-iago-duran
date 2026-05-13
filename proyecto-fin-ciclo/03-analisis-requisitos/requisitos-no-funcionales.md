@@ -1,8 +1,8 @@
-# Requisitos No Funcionales
+# Requisitos No Funcionales — Cómo tiene que funcionar
 
 ## Definición
 
-Los requisitos no funcionales definen **cómo debe funcionar el sistema**, estableciendo restricciones de calidad, rendimiento y seguridad.
+No basta con que la app haga cosas. También tiene que hacerlas bien: cargar rápido, ser segura, funcionar en el móvil... Esto es lo que me propuse en ese sentido.
 
 ---
 

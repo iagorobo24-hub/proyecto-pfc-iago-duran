@@ -5,8 +5,7 @@ version_observada: 2025-2026
 rol_principal: Autenticación (Google Sign-In) y base de datos (Firestore)
 url: https://firebase.google.com
 ---
-
-# Ficha Técnica: Firebase
+Firebase es la plataforma de Google para backend sin servidor. En el proyecto la usé para dos cosas: el inicio de sesión con Google y guardar datos en Firestore. Es sencilla, tiene un plan gratis decente y funciona rápido.
 
 ## ¿Qué es?
 

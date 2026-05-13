@@ -2,7 +2,7 @@
 
 ## Introducción
 
-Este documento evalúa el valor percibido del proyecto desde diferentes perspectivas: la experiencia del usuario, la utilidad para la empresa, y el aprendizaje personal.
+Los números están bien, pero no lo cuentan todo. Esto es lo que opina la gente que ha visto o probado la aplicación, y lo que yo he aprendido por el camino.
 
 ---
 

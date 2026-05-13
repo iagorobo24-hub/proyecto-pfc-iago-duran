@@ -5,8 +5,7 @@ version_observada: 2025-2026
 rol_principal: Agente CLI con modelos NVIDIA, ejecución de tareas de desarrollo
 url: https://opencode.ai
 ---
-
-# Ficha Técnica: OpenCode CLI
+OpenCode es un agente de terminal que usa modelos de NVIDIA totalmente gratis. No necesitas cuenta, no necesitas API key, solo lo instalas y ya. Lo usé un montón para refactorizar código y crear scripts.
 
 ## ¿Qué es?
 
