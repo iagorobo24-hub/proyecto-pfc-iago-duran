@@ -196,7 +196,6 @@ Métricas, feedback y presupuesto detallado del proyecto.
 
 - [x] `resultados-cuantitativos.md` — Métricas: tiempo, coste, rendimiento, catálogo
 - [x] `resultados-cualitativos.md` — Valor percibido por usuarios potenciales
-- [x] `validacion-profesores.md` — Feedback de los tutores del centro
 - [x] `presupuesto.md` — Desglose detallado de costes (0€) vs. costes estimados de mercado
 
 ### 09 — Conclusiones
@@ -255,7 +254,7 @@ Guía didáctica para que docentes repliquen la metodología.
 | **III** Ejecución con IA | 05 - Proceso desarrollo | 4 | ✅ |
 | **III** Ejecución con IA | 06 - Herramientas IA | 13 | ✅ |
 | **IV** Resultados y cierre | 07 - Manuales de uso | 6 | ✅ |
-| **IV** Resultados y cierre | 08 - Resultados | 4 | ✅ |
+| **IV** Resultados y cierre | 08 - Resultados | 3 | ✅ |
 | **IV** Resultados y cierre | 09 - Conclusiones | 3 | ✅ |
 | **IV** Resultados y cierre | 10 - Manual profesores | 5 | ✅ |
 
