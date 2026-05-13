@@ -21,12 +21,12 @@ export default function AppShell() {
   const location = useLocation()
   const isMobile = useMobile()
   const [collapsed, setCollapsed] = useState(() => {
-    try { return localStorage.getItem('sonepar_sidebar_collapsed') === 'true' }
+    try { return localStorage.getItem('Proyectos PFC_sidebar_collapsed') === 'true' }
     catch { return false }
   })
 
   useEffect(() => {
-    try { localStorage.setItem('sonepar_sidebar_collapsed', collapsed) }
+    try { localStorage.setItem('Proyectos PFC_sidebar_collapsed', collapsed) }
     catch {}
   }, [collapsed])
 

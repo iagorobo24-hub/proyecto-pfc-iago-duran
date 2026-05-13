@@ -2,7 +2,7 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import useFirestoreSync from './useFirestoreSync';
 
 /**
- * Hook personalizado para Sonex - Asistente virtual Sonepar
+ * Hook personalizado para Sonex - Asistente virtual Proyectos PFC
  * Gestiona historial de chat y configuraciones de sesión
  */
 export function useSonex() {
@@ -11,7 +11,7 @@ export function useSonex() {
     'sonex',
     'history',
     [],
-    'sonepar_sonex_historial'
+    'pfc_sonex_historial'
   );
 
   // Estados locales

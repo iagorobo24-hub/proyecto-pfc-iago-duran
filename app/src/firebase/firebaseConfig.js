@@ -9,9 +9,9 @@ import { getAuth } from 'firebase/auth'
 // Configuración de Firebase (ya no se usa)
 const firebaseConfig = {
   apiKey: "demo-key",
-  authDomain: "proyectos-sonepar.firebaseapp.com",
-  projectId: "proyectos-sonepar",
-  storageBucket: "proyectos-sonepar.appspot.com",
+  authDomain: "proyecto-pfc-iago-duran.firebaseapp.com",
+  projectId: "proyecto-pfc-iago-duran",
+  storageBucket: "proyecto-pfc-iago-duran.appspot.com",
   messagingSenderId: "000000000000",
   appId: "1:000000000000:web:0000000000000000000000"
 }

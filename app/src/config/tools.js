@@ -1,5 +1,5 @@
 /**
- * Configuración centralizada de herramientas para SoneparTools
+ * Configuración centralizada de herramientas para Proyectos PFCTools
  * Define el array único TOOLS para usar en Sidebar.jsx y Topbar.jsx
  */
 
@@ -9,7 +9,7 @@ export const TOOLS = [
     appPath: '/app/fichas',
     icon: 'FileText',
     nombre: 'Fichas Técnicas',
-    descripcion: 'Escribe el nombre, referencia o descripción de cualquier producto del catálogo Sonepar. La IA genera una ficha técnica completa con características, aplicaciones, compatibilidades y consejo de instalación.',
+    descripcion: 'Escribe el nombre, referencia o descripción de cualquier producto del catálogo Proyectos PFC. La IA genera una ficha técnica completa con características, aplicaciones, compatibilidades y consejo de instalación.',
     consejo: 'Útil para dar respuesta rápida al técnico de mostrador.',
   },
   {
@@ -41,7 +41,7 @@ export const TOOLS = [
     appPath: '/app/presupuestos',
     icon: 'Euro',
     nombre: 'Presupuestos',
-    descripcion: 'Selecciona la categoría de instalación, introduce los parámetros técnicos y la IA genera un presupuesto detallado con referencias del catálogo Sonepar.',
+    descripcion: 'Selecciona la categoría de instalación, introduce los parámetros técnicos y la IA genera un presupuesto detallado con referencias del catálogo Proyectos PFC.',
     consejo: 'Editable línea a línea y exportable a PDF.',
   },
   {

@@ -25,10 +25,10 @@ export default function useFormacionInterna() {
   const [cargandoIA, setCargandoIA] = useState(false)
 
   /* Hooks de Firestore para formación */
-  const { data: storedEmpleados, saveData: saveEmpleados } = useFirestoreSync('training', 'employees', [], 'sonepar_formacion_empleados')
-  const { data: storedModulos, saveData: saveModulos } = useFirestoreSync('training', 'modules', [], 'sonepar_formacion_modulos')
-  const { data: storedProgresos, saveData: saveProgresos } = useFirestoreSync('training', 'progress', {}, 'sonepar_formacion_progresos')
-  const { data: storedFechas, saveData: saveFechas } = useFirestoreSync('training', 'dates', {}, 'sonepar_formacion_fechas')
+  const { data: storedEmpleados, saveData: saveEmpleados } = useFirestoreSync('training', 'employees', [], 'Proyectos PFC_formacion_empleados')
+  const { data: storedModulos, saveData: saveModulos } = useFirestoreSync('training', 'modules', [], 'Proyectos PFC_formacion_modulos')
+  const { data: storedProgresos, saveData: saveProgresos } = useFirestoreSync('training', 'progress', {}, 'Proyectos PFC_formacion_progresos')
+  const { data: storedFechas, saveData: saveFechas } = useFirestoreSync('training', 'dates', {}, 'Proyectos PFC_formacion_fechas')
 
   useEffect(() => {
     if (storedEmpleados?.length > 0) setEmpleados(storedEmpleados)

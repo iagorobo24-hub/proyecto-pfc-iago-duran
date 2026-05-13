@@ -22,7 +22,7 @@
   font-family: var(--font-display);
   font-size: var(--text-3xl);
   font-weight: var(--font-bold);
-  color: var(--sonepar-blue);
+  color: var(--brand-blue);
 }
 
 .statLabel {

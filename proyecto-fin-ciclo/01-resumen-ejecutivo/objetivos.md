@@ -69,7 +69,7 @@ Desarrollar una **suite de herramientas web** funcional para técnicos eléctric
 
 ### Incluido
 - Aplicación web completa con 7 módulos
-- Catálogo de productos real (scraping de sonepar.es)
+- Catálogo de productos real (scraping de Proyectos PFC.es)
 - Autenticación de usuarios
 - Asistente IA integrado
 - Documentación técnica completa

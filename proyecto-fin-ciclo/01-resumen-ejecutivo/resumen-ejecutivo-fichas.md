@@ -146,7 +146,7 @@
 ### Playwright
 **Rol:** Scraping + Tests E2E
 
-- Scraping de sonepar.es (400K productos)
+- Scraping de Proyectos PFC.es (400K productos)
 - Tests automatizados de UI
 - 14 tests implementados
 

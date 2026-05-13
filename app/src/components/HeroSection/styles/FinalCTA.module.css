@@ -39,7 +39,7 @@
   width: 56px;
   height: 56px;
   background: var(--white);
-  color: var(--sonepar-blue);
+  color: var(--brand-blue);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
   margin-bottom: var(--space-6);
@@ -75,7 +75,7 @@
   display: inline-flex;
   align-items: center;
   gap: var(--space-2);
-  background: var(--sonepar-blue);
+  background: var(--brand-blue);
   color: var(--white);
   padding: var(--space-4) var(--space-8);
   border-radius: var(--radius-lg);
@@ -87,7 +87,7 @@
 }
 
 .primaryBtn:hover {
-  background: var(--sonepar-blue-dark);
+  background: var(--brand-blue-dark);
   transform: translateY(-2px);
   box-shadow: 0 8px 24px rgba(0, 48, 135, 0.25);
 }
@@ -109,7 +109,7 @@
 
 .secondaryBtn:hover {
   border-color: var(--blue-200);
-  color: var(--sonepar-blue);
+  color: var(--brand-blue);
   transform: translateY(-2px);
   box-shadow: var(--shadow-sm);
 }

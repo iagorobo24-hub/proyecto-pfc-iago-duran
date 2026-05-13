@@ -37,7 +37,7 @@
   align-items: center;
   background: var(--white);
   border-radius: var(--radius-md);
-  color: var(--sonepar-blue);
+  color: var(--brand-blue);
   box-shadow: var(--shadow-sm);
 }
 

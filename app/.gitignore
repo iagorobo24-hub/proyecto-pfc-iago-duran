@@ -24,3 +24,4 @@ dist-ssr
 *.sw?
 sync-limpio-v7.mjs
 .env
+.vercel

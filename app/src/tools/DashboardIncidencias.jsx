@@ -14,7 +14,7 @@ const DEMOS = () => [
   { id: 1, equipo: "Variador ATV320 — Línea 3", zona: "Zona C — Picking", operario: "M. Fernández", sintoma: "El variador se dispara por sobrecalentamiento a los 20 minutos de arranque. Alarma F0028.", severidad: "Crítica", estado: "Abierta", fechaCreacion: Date.now() - 1800000, fechaResolucion: null, observaciones: "", diagnostico: null },
 ];
 
-const PROMPT_DIAGNOSTICO = (inc) => `Eres un técnico de mantenimiento industrial con 15 años de experiencia en Sonepar España.\nIncidencia: ${inc.equipo}\nZona: ${inc.zona}\nSíntoma: ${inc.sintoma}\nSeveridad: ${inc.severidad}\n\nResponde con JSON: {"causa_probable":"...","pasos_verificacion":["...","...","..."],"solucion":"...","medidas_preventivas":["...","..."]}`;
+const PROMPT_DIAGNOSTICO = (inc) => `Eres un técnico de mantenimiento industrial con 15 años de experiencia en Proyectos PFC España.\nIncidencia: ${inc.equipo}\nZona: ${inc.zona}\nSíntoma: ${inc.sintoma}\nSeveridad: ${inc.severidad}\n\nResponde con JSON: {"causa_probable":"...","pasos_verificacion":["...","...","..."],"solucion":"...","medidas_preventivas":["...","..."]}`;
 
 const SevBadge = ({ sev }) => {
   const cls = { "Crítica": "badge--critica", "Alta": "badge--alta", "Media": "badge--media", "Baja": "badge--baja" };

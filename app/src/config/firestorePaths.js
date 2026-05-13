@@ -1,5 +1,5 @@
 /**
- * Rutas centralizadas de Firestore para SoneparTools
+ * Rutas centralizadas de Firestore para Proyectos PFCTools
  * Todas las rutas siguen el patrón: users/{uid}/{collection}/{docId}
  */
 
@@ -32,16 +32,16 @@ export const userProfile = (uid) => `${userDoc(uid)}/profile`;
 
 // Mapeo de keys de localStorage a rutas de Firestore
 export const STORAGE_MAPPING = {
-  'sonepar_fichas_historial': { collection: 'fichas', doc: 'history' },
-  'sonepar_presupuestos_historial': { collection: 'budgets' },
-  'sonepar_incidencias': { collection: 'incidents' },
-  'sonepar_kpi_historial': { collection: 'kpi', doc: 'entries' },
-  'sonepar_simulador_*': { collection: 'simulator' },
-  'sonepar_formacion_empleados': { collection: 'training', doc: 'employees' },
-  'sonepar_formacion_modulos': { collection: 'training', doc: 'modules' },
-  'sonepar_formacion_progresos': { collection: 'training', doc: 'progress' },
-  'sonepar_formacion_fechas': { collection: 'training', doc: 'dates' },
-  'sonepar_theme': { collection: 'preferences', doc: 'theme' },
+  'Proyectos PFC_fichas_historial': { collection: 'fichas', doc: 'history' },
+  'Proyectos PFC_presupuestos_historial': { collection: 'budgets' },
+  'Proyectos PFC_incidencias': { collection: 'incidents' },
+  'Proyectos PFC_kpi_historial': { collection: 'kpi', doc: 'entries' },
+  'Proyectos PFC_simulador_*': { collection: 'simulator' },
+  'Proyectos PFC_formacion_empleados': { collection: 'training', doc: 'employees' },
+  'Proyectos PFC_formacion_modulos': { collection: 'training', doc: 'modules' },
+  'Proyectos PFC_formacion_progresos': { collection: 'training', doc: 'progress' },
+  'Proyectos PFC_formacion_fechas': { collection: 'training', doc: 'dates' },
+  'Proyectos PFC_theme': { collection: 'preferences', doc: 'theme' },
   'sidebar_collapsed': { collection: 'preferences', doc: 'sidebar' },
 };
 

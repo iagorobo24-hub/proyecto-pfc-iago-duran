@@ -37,7 +37,7 @@ export default function LoginPage() {
     <div className={styles.container}>
       <div className={styles.card}>
         <div className={styles.logoWrap}>
-          <span className={styles.logoMarca}>Sonepar</span>
+          <span className={styles.logoMarca}>Proyectos PFC</span>
           <span className={styles.logoSuite}>Tools</span>
         </div>
         <p className={styles.subtitle}>

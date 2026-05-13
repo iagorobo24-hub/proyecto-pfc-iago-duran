@@ -174,7 +174,7 @@
   align-items: center;
   gap: var(--space-2);
   padding: var(--space-2) var(--space-4);
-  background: var(--sonepar-blue);
+  background: var(--brand-primary);
   color: var(--white);
   font-size: var(--text-sm);
   font-weight: var(--font-semibold);
@@ -185,7 +185,7 @@
 }
 
 .loginBtn:hover {
-  background: var(--sonepar-blue-dark);
+  background: var(--brand-primary-dark);
   transform: translateY(-1px);
   box-shadow: var(--shadow-md);
   color: var(--white);

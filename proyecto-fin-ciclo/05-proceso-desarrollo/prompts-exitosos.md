@@ -162,7 +162,7 @@ El servicio debe funcionar tanto con stream: true como con stream: false.
 
 ### Prompt: Script de scraping
 
-**Contexto:** Necesitaba obtener el catálogo de productos de sonepar.es.
+**Contexto:** Necesitaba obtener el catálogo de productos de Proyectos PFC.es.
 
 **Prompt exacto:**
 
@@ -171,7 +171,7 @@ Crea un script de scraping con Playwright que obtenga el catálogo de productos 
 
 Requisitos:
 - Usa Playwright con Chromium
-- Navega a https://www.sonepar.es/catalogo
+- Navega a https://www.Proyectos PFC.es/catalogo
 - Para cada categoría del menú lateral:
   - Haz click para expandir
   - Para cada subcategoría:
@@ -218,7 +218,7 @@ El script debe ser robusto contra cambios en la web.
 Crea un script Node.js que sincronice productos desde un JSON a Firestore.
 
 Requisitos:
-- Lee el archivo: sonepar-catalog-scraper/catalogo-final.json
+- Lee el archivo: Proyectos PFC-catalog-scraper/catalogo-final.json
 - Configura Firebase Admin SDK con service-account.json
 - Por cada producto del JSON:
   - Inserta o actualiza en colección 'productos' de Firestore

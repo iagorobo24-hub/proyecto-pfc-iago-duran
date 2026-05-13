@@ -3,7 +3,7 @@ import { callAnthropicAI, parseAIJsonResponse } from '../services/anthropicServi
 import catalogService from '../services/catalogService'
 
 /* Prompts para la API de Anthropic — system prompt separado del input */
-const SYSTEM_FICHA = `Eres un técnico especialista en material eléctrico e industrial de Sonepar España con 15 años de experiencia. El técnico de mostrador te consulta sobre un producto.
+const SYSTEM_FICHA = `Eres un técnico especialista en material eléctrico e industrial de Proyectos PFC España con 15 años de experiencia. El técnico de mostrador te consulta sobre un producto.
 
 Si la consulta es demasiado vaga para identificar un producto concreto (una sola palabra genérica, síntoma sin contexto, o descripción que aplica a decenas de productos), responde ÚNICAMENTE con este JSON:
 {"error": true, "mensaje": "descripción breve del problema con la consulta", "sugerencias": ["consulta más específica 1", "consulta más específica 2", "consulta más específica 3"]}
@@ -51,7 +51,7 @@ export default function useFichasTecnicas() {
           const { text } = await callAnthropicAI({
             model: 'anthropic/claude-3.5-haiku',
             max_tokens: 800,
-            system: `Eres un asistente técnico de Sonepar. El producto es: ${productoReal.nombre} (Ref: ${productoReal.ref_fabricante}). Proporciona solo las características técnicas en JSON:
+            system: `Eres un asistente técnico de Proyectos PFC. El producto es: ${productoReal.nombre} (Ref: ${productoReal.ref_fabricante}). Proporciona solo las características técnicas en JSON:
 {"caracteristicas": ["característica 1", "característica 2"], "aplicaciones": ["app 1"], "normas": ["norma 1"]}`,
             messages: [{ role: 'user', content: 'Dame las características técnicas de este producto' }],
           })

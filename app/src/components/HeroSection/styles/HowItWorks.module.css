@@ -18,7 +18,7 @@
   gap: var(--space-2);
   padding: var(--space-2) var(--space-4);
   background: var(--blue-50);
-  color: var(--sonepar-blue);
+  color: var(--brand-blue);
   border-radius: var(--radius-full);
   font-size: var(--text-sm);
   font-weight: var(--font-semibold);
@@ -87,7 +87,7 @@
   align-items: center;
   justify-content: center;
   background: var(--blue-50);
-  color: var(--sonepar-blue);
+  color: var(--brand-blue);
   border-radius: var(--radius-lg);
   margin-bottom: var(--space-2);
 }
@@ -111,7 +111,7 @@
   display: inline-flex;
   align-items: center;
   gap: var(--space-1);
-  color: var(--sonepar-blue);
+  color: var(--brand-blue);
   font-size: var(--text-sm);
   font-weight: var(--font-semibold);
   transition: gap var(--duration-fast) var(--ease-out);
@@ -120,7 +120,7 @@
 
 .stepLink:hover {
   gap: var(--space-2);
-  color: var(--sonepar-blue-dark);
+  color: var(--brand-blue-dark);
 }
 
 @media (max-width: 1024px) {

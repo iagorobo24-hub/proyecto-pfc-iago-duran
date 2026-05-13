@@ -20,7 +20,7 @@ const ToolsShowcase = () => {
       desc: 'Catálogo de +64.000 referencias con filtros por familia, marca y categoría.',
       icon: <FileText size={22} />,
       href: '/app/fichas',
-      color: 'var(--sonepar-blue)'
+      color: 'var(--Proyectos PFC-blue)'
     },
     {
       name: 'Asistente SONEX',

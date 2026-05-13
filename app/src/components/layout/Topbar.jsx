@@ -64,7 +64,7 @@ export default function Topbar() {
       </button>
 
       <div className={styles.logo}>
-        <span className={styles.logoMarca}>Sonepar</span>
+        <span className={styles.logoMarca}>Proyectos PFC</span>
         <span className={styles.logoSuite}>Tools</span>
       </div>
 

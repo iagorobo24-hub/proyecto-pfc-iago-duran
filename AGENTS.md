@@ -190,7 +190,7 @@ localStorage.setItem('pfc_presupuestos_historial', JSON.stringify(data));
 
 // ❌ Incorrecto
 localStorage.setItem('fichas_historial', JSON.stringify(data));
-localStorage.setItem('sonepar_presupuestos', JSON.stringify(data));
+localStorage.setItem('Proyectos PFC_presupuestos', JSON.stringify(data));
 ```
 
 #### Firestore Collections

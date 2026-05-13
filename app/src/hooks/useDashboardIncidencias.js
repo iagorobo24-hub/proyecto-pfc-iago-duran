@@ -25,7 +25,7 @@ export default function useDashboardIncidencias() {
     loading, 
     saveData: saveIncidencias,
     syncStatus 
-  } = useFirestoreSync('incidents', 'default', [], 'sonepar_incidencias')
+  } = useFirestoreSync('incidents', 'default', [], 'pfc_incidencias')
 
   /* Cargar datos iniciales o usar demo */
   useEffect(() => {

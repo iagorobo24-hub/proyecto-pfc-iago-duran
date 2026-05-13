@@ -410,7 +410,7 @@ export default function FichasTecnicas() {
                 { label: 'Presupuesto', variant: 'secondary', onClick: () => añadirPresupuesto(referencia) },
               ]}
             />
-            <TipCard text={`Producto: ${referencia.desc}. Marca: ${referencia.marca}. Verificado por Sonepar Tools.`} />
+            <TipCard text={`Producto: ${referencia.desc}. Marca: ${referencia.marca}. Verificado por Proyectos PFC Tools.`} />
           </article>
         </div>
       )

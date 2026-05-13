@@ -6,7 +6,7 @@ const ThemeContext = createContext()
 export function ThemeProvider({ children }) {
   const [dark, setDark] = useState(() => {
     try {
-      const saved = localStorage.getItem('sonepar_theme')
+      const saved = localStorage.getItem('Proyectos PFC_theme')
       if (saved) return saved === 'dark'
       return window.matchMedia('(prefers-color-scheme: dark)').matches
     } catch {
@@ -18,7 +18,7 @@ export function ThemeProvider({ children }) {
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light')
     try {
-      localStorage.setItem('sonepar_theme', dark ? 'dark' : 'light')
+      localStorage.setItem('Proyectos PFC_theme', dark ? 'dark' : 'light')
     } catch (e) {
       console.error('Error saving theme:', e)
     }

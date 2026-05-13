@@ -27,7 +27,7 @@
 }
 
 .left .brand:first-child {
-  color: var(--sonepar-blue);
+  color: var(--brand-blue);
 }
 
 .left .brand:last-child {
@@ -75,7 +75,7 @@
 }
 
 .socialLink:hover {
-  color: var(--sonepar-blue);
+  color: var(--brand-blue);
 }
 
 @media (max-width: 768px) {

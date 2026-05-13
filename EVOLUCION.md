@@ -10,19 +10,19 @@
 **Estado:** 7 herramientas como archivos `.jsx` independientes (artefactos de Claude).
 
 Cada herramienta era un archivo autocontenido que se podía pegar en Claude.ai o en un `create-react-app`:
-- `sonepar-almacen-simulador.jsx` — Simulador de flujo de almacén
-- `sonepar-fichas-tecnicas.jsx` — Fichas técnicas de productos
-- `sonepar-dashboard-incidencias.jsx` — Dashboard de incidencias industriales
-- `sonepar-kpi-logistico.jsx` — KPI logístico con semáforo
-- `sonepar-generador-presupuestos.jsx` — Generador de presupuestos
-- `sonepar-formacion-interna.jsx` — Matriz de competencias y formación
-- `sonepar-chatbot-tecnico.jsx` — SONEX, chatbot técnico
+- `Proyectos PFC-almacen-simulador.jsx` — Simulador de flujo de almacén
+- `Proyectos PFC-fichas-tecnicas.jsx` — Fichas técnicas de productos
+- `Proyectos PFC-dashboard-incidencias.jsx` — Dashboard de incidencias industriales
+- `Proyectos PFC-kpi-logistico.jsx` — KPI logístico con semáforo
+- `Proyectos PFC-generador-presupuestos.jsx` — Generador de presupuestos
+- `Proyectos PFC-formacion-interna.jsx` — Matriz de competencias y formación
+- `Proyectos PFC-chatbot-tecnico.jsx` — SONEX, chatbot técnico
 
 **Tecnologías:** React puro (JSX), CSS-in-JS inline, llamadas directas a la API de Anthropic Claude desde el frontend, `localStorage` para persistencia, `window.print()` para exportar a PDF.
 
 **Estructura original del repo:**
 ```
-proyectos-sonepar/
+proyectos-Proyectos PFC/
 ├── 01-simulador-almacen/  (carpeta por herramienta con su .jsx, README y CHANGELOG)
 ├── 02-fichas-tecnicas/
 ├── 03-dashboard-incidencias/
@@ -132,7 +132,7 @@ El chatbot SONEX fue la herramienta que más iteraciones tuvo:
 ## Fase 8 — Sistema de diseño circular + Catálogo masivo (8-10 abr 2026)
 
 - **Diseño circular** completo aplicado a todas las herramientas
-- Catálogo expandido: 120 → 2.864 → **75.000 productos** (scraping real de sonepar.es)
+- Catálogo expandido: 120 → 2.864 → **75.000 productos** (scraping real de Proyectos PFC.es)
 - **View Transitions API** para transición animada del tema claro/oscuro
 - Fix: `flushSync` para sincronización de DOM en transiciones
 
@@ -231,7 +231,7 @@ Evolución del sistema de logos:
 | **Kiro** | IDE con IA | Alternativa probada | Descartado |
 | **Antigravity** | IDE con IA | Alternativa probada | Descartado |
 | **Devin (Cognition)** | IA Agente | Análisis de repo, limpieza, documentación | Activo |
-| **Playwright** | Scraping/Test | Web scraping catálogo sonepar.es | Activo |
+| **Playwright** | Scraping/Test | Web scraping catálogo Proyectos PFC.es | Activo |
 | **Firebase Auth** | Autenticación | Google Sign-In OAuth | Activo |
 | **Firestore** | Base de datos | Catálogo 75K productos + datos por usuario | Activo |
 

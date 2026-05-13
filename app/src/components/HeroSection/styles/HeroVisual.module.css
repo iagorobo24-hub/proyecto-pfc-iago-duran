@@ -158,13 +158,13 @@
 }
 
 .dotActive {
-  background: var(--sonepar-blue);
+  background: var(--brand-blue);
   width: 24px;
   border-radius: var(--radius-full);
 }
 
 .dotActive:hover {
-  background: var(--sonepar-blue-dark);
+  background: var(--brand-blue-dark);
 }
 
 /* Floating cards */
@@ -229,7 +229,7 @@
 .pulse {
   width: 6px;
   height: 6px;
-  background: var(--sonepar-blue);
+  background: var(--brand-blue);
   border-radius: 50%;
   position: relative;
 }
@@ -267,7 +267,7 @@
 }
 
 .statusLabel { color: var(--gray-400); }
-.statusValue { font-weight: 700; color: var(--sonepar-blue); }
+.statusValue { font-weight: 700; color: var(--brand-blue); }
 
 .progressBar {
   width: 100%;
@@ -279,7 +279,7 @@
 
 .progressFill {
   height: 100%;
-  background: var(--sonepar-blue);
+  background: var(--brand-blue);
   border-radius: var(--radius-full);
 }
 

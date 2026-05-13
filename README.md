@@ -186,7 +186,7 @@ node scripts/sync-catalog-enhanced.mjs
 
 Requiere:
 - `service-account.json` (Firebase Admin SDK)
-- `sonepar-catalog-scraper/catalogo-final-v12.json` (datos del catálogo)
+- `Proyectos PFC-catalog-scraper/catalogo-final-v12.json` (datos del catálogo)
 
 ---
 

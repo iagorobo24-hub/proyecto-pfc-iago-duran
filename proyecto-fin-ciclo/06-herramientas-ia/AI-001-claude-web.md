@@ -23,13 +23,13 @@ Claude Web fue la **primera herramienta de IA** que utilicé en el proyecto, cua
 
 Generé **7 herramientas como archivos JSX sueltos**, cada uno autocontenido:
 
-1. `sonepar-almacen-simulador.jsx`
-2. `sonepar-fichas-tecnicas.jsx`
-3. `sonepar-dashboard-incidencias.jsx`
-4. `sonepar-kpi-logistico.jsx`
-5. `sonepar-generador-presupuestos.jsx`
-6. `sonepar-formacion-interna.jsx`
-7. `sonepar-sonex-chatbot.jsx`
+1. `Proyectos PFC-almacen-simulador.jsx`
+2. `Proyectos PFC-fichas-tecnicas.jsx`
+3. `Proyectos PFC-dashboard-incidencias.jsx`
+4. `Proyectos PFC-kpi-logistico.jsx`
+5. `Proyectos PFC-generador-presupuestos.jsx`
+6. `Proyectos PFC-formacion-interna.jsx`
+7. `Proyectos PFC-sonex-chatbot.jsx`
 
 Cada artefacto era un archivo React completo con su propio estado, lógica y estilos inline.
 

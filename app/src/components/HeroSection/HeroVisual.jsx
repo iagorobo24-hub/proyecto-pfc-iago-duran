@@ -86,7 +86,7 @@ const HeroVisual = () => {
               <span className={styles.dot} />
               <span className={styles.dot} />
             </div>
-            <div className={styles.addressBar}>sonepar-tools.app{SCREENSHOTS[currentIndex].href.replace('/app', '')}</div>
+            <div className={styles.addressBar}>Proyectos PFC-tools.app{SCREENSHOTS[currentIndex].href.replace('/app', '')}</div>
           </div>
 
           {/* Mockup clickeable - link a la herramienta */}
@@ -133,7 +133,7 @@ const HeroVisual = () => {
             transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
           >
             <div className={styles.cardHeader}>
-              <div className={styles.iconBox} style={{ color: 'var(--sonepar-blue)', background: 'var(--blue-50)' }}>
+              <div className={styles.iconBox} style={{ color: 'var(--Proyectos PFC-blue)', background: 'var(--blue-50)' }}>
                 <Cpu size={14} />
               </div>
               <span className={styles.cardTitle}>Asistente SONEX</span>

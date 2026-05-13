@@ -9,7 +9,7 @@ export default function useFirestoreSync(collectionPath, docId = 'default', init
   const [syncStatus, setSyncStatus] = useState('idle')
   
   // Usar localStorageKey o generar uno basado en collectionPath
-  const storageKey = localStorageKey || `sonepar_${collectionPath}_${docId}`.replace(/\//g, '_')
+  const storageKey = localStorageKey || `pfc_${collectionPath}_${docId}`.replace(/\//g, '_')
 
   // Cargar datos del localStorage al iniciar
   useEffect(() => {

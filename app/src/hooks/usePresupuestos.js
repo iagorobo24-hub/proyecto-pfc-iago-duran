@@ -44,7 +44,7 @@ export default function usePresupuestos() {
     loading, 
     saveData: saveHistorial,
     syncStatus 
-  } = useFirestoreSync('budgets', 'default', [], 'sonepar_presupuestos_historial')
+  } = useFirestoreSync('budgets', 'default', [], 'pfc_presupuestos_historial')
 
   const [historial, setHistorial] = useState([])
 

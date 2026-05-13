@@ -36,7 +36,7 @@ export function useSimuladorAlmacen() {
     'simulator',
     'profile',
     { nombre: "", turno: "Mañana", area: "Almacén" },
-    'sonepar_sim_perfil'
+    'Proyectos PFC_sim_perfil'
   );
 
   // Sync para historial de simulaciones
@@ -44,7 +44,7 @@ export function useSimuladorAlmacen() {
     'simulator',
     'history',
     [],
-    'sonepar_simulaciones_v3'
+    'Proyectos PFC_simulaciones_v3'
   );
 
   // Estados locales

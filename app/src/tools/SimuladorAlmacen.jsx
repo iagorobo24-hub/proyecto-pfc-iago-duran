@@ -4,7 +4,7 @@ import Button from '../components/ui/Button'
 import { Label, TipCard, Breadcrumb, ViewToggle } from '../components/ui/CircleLayout'
 import styles from './SimuladorAlmacen.module.css'
 
-// ── Paleta corporativa Sonepar ───────────────────────────────────────────────
+// ── Paleta corporativa Proyectos PFC ───────────────────────────────────────────────
 const C = {
   azulOscuro: "#003087", azulMedio: "#1A4A8A", azulClaro: "#4A90D9",
   azulSuave:  "#EBF1FA", blanco: "#FFFFFF",    fondo: "#F5F6F8",

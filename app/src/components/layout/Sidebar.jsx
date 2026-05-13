@@ -50,7 +50,7 @@ export default function Sidebar({ collapsed = false }) {
       {/* Footer — oculto cuando está colapsado */}
       {!collapsed && (
         <div className={styles.footer}>
-          <p className={styles.footerText}>Sonepar España · A Coruña</p>
+          <p className={styles.footerText}>Proyectos PFC España · A Coruña</p>
           <p className={styles.footerText}>PFC CFGS · 2026</p>
         </div>
       )}

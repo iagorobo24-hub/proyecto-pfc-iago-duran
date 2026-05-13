@@ -16,7 +16,7 @@ const BENCHMARKS = {
 };
 
 const EJEMPLO_DATOS = {
-  delegacion: "Sonepar A Coruña",
+  delegacion: "Proyectos PFC A Coruña",
   turno: "Mañana",
   pedidos: "145",
   horas: "8",
@@ -71,7 +71,7 @@ export default function KPILogistico() {
     setKpis(k); setCargando(true); setInforme("");
     try {
       const { callAnthropicAI } = await import('../services/anthropicService');
-      const { text } = await callAnthropicAI({ model: "anthropic/claude-3.5-haiku", max_tokens: 1000, system: "Eres el responsable de logística de Sonepar España.", messages: [{ role: "user", content: `Turno: ${datos.turno} | ${datos.delegacion || "Delegación"}\nPedidos/hora: ${k.pedidos_hora.toFixed(1)} (obj: >18)\nError picking: ${k.error_picking.toFixed(2)}% (obj: <1%)\nTiempo ciclo: ${k.tiempo_ciclo.toFixed(1)}min (obj: <5)\nOcupación: ${k.ocupacion.toFixed(1)}%\nDevoluciones: ${k.devolucion.toFixed(2)}%\nProductividad: ${k.productividad.toFixed(1)}%\n\n3 párrafos: resumen, puntos críticos, acción próxima.` }] });
+      const { text } = await callAnthropicAI({ model: "anthropic/claude-3.5-haiku", max_tokens: 1000, system: "Eres el responsable de logística de Proyectos PFC España.", messages: [{ role: "user", content: `Turno: ${datos.turno} | ${datos.delegacion || "Delegación"}\nPedidos/hora: ${k.pedidos_hora.toFixed(1)} (obj: >18)\nError picking: ${k.error_picking.toFixed(2)}% (obj: <1%)\nTiempo ciclo: ${k.tiempo_ciclo.toFixed(1)}min (obj: <5)\nOcupación: ${k.ocupacion.toFixed(1)}%\nDevoluciones: ${k.devolucion.toFixed(2)}%\nProductividad: ${k.productividad.toFixed(1)}%\n\n3 párrafos: resumen, puntos críticos, acción próxima.` }] });
       setInforme(text || "Error al conectar."); guardarHistorial({ delegacion: datos.delegacion || "Delegación", turno: datos.turno, fecha: new Date().toISOString(), kpis: k, informe: text });
     } catch { setInforme("Error al conectar."); }
     setCargando(false);
@@ -136,7 +136,7 @@ export default function KPILogistico() {
                   </div>
                   <div className={styles.formGroup}>
                     <label className={styles.formGroup__label}>DELEGACIÓN</label>
-                    <input className={styles.formGroup__input} placeholder="Sonepar A Coruña" value={datos.delegacion} onChange={e => setDatos(p => ({ ...p, delegacion: e.target.value }))} />
+                    <input className={styles.formGroup__input} placeholder="Proyectos PFC A Coruña" value={datos.delegacion} onChange={e => setDatos(p => ({ ...p, delegacion: e.target.value }))} />
                   </div>
                 </div>
               </div>

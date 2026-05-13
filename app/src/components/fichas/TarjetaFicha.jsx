@@ -88,7 +88,7 @@ export default function TarjetaFicha({ resultado, onCopiar, onComparar, onPresup
         <div className={styles.disclaimerTexto}>
           <strong>⚠ Precios y stock orientativos.</strong> Los datos de precio, disponibilidad
           y tiempo de entrega son estimaciones generadas con IA. Verificar disponibilidad
-          y precios reales con Sonepar antes de presentar cualquier presupuesto al cliente.
+          y precios reales con Proyectos PFC antes de presentar cualquier presupuesto al cliente.
         </div>
       </div>
     </div>

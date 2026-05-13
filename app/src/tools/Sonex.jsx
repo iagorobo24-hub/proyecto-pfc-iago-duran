@@ -83,7 +83,7 @@ export default function Sonex() {
 
       const modoInfo = MODO_OBJETOS.find(m => m.id === modoActivo);
       const modoInstrucciones = {
-        busqueda: 'El usuario está en modo BÚSQUEDA. Prioriza encontrar referencias exactas, especificaciones técnicas y fichas de producto. Incluye códigos de referencia Sonepar cuando sea posible.',
+        busqueda: 'El usuario está en modo BÚSQUEDA. Prioriza encontrar referencias exactas, especificaciones técnicas y fichas de producto. Incluye códigos de referencia Proyectos PFC cuando sea posible.',
         comparativa: 'El usuario está en modo COMPARATIVA. Organiza la respuesta en formato de comparación: tablas, pros/contras, diferencias técnicas clave entre productos. Destaca qué producto es mejor para cada caso de uso.',
         asistencia: 'El usuario está en modo ASISTENCIA. Actúa como asesor técnico-comercial: recomienda productos según las necesidades del usuario, sugiere alternativas y explica por qué cada opción es adecuada.',
         formacion: 'El usuario está en modo FORMACIÓN. Explica conceptos técnicos de forma didáctica, incluye pasos de instalación, normativa aplicable y buenas prácticas. Usa un tono educativo.',
@@ -93,7 +93,7 @@ export default function Sonex() {
         ? `\nEl usuario está consultando sobre la categoría: ${categoriaActiva}. Enfoca tus respuestas en productos y soluciones de esta familia.`
         : '';
 
-      const systemPrompt = `Eres SONEX, el asistente técnico experto técnico España. Responde de forma concisa, enfocándote en soluciones técnicas de Sonepar, referencias de producto y recomendaciones de aplicación.\n\n${modoInstrucciones[modoActivo] || modoInstrucciones.busqueda}${categoriaTexto}`;
+      const systemPrompt = `Eres SONEX, el asistente técnico experto técnico España. Responde de forma concisa, enfocándote en soluciones técnicas de Proyectos PFC, referencias de producto y recomendaciones de aplicación.\n\n${modoInstrucciones[modoActivo] || modoInstrucciones.busqueda}${categoriaTexto}`;
       
       const { text } = await callAnthropicAI({ 
         provider: 'openrouter',

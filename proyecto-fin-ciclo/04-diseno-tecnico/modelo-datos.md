@@ -15,7 +15,7 @@ Este documento describe el modelo actual en Firestore.
 
 ### Colección: `productos`
 
-Catálogo de productos sincronizado desde scraping de sonepar.es.
+Catálogo de productos sincronizado desde scraping de Proyectos PFC.es.
 
 ```javascript
 {
@@ -29,7 +29,7 @@ Catálogo de productos sincronizado desde scraping de sonepar.es.
   desc: "Descripción técnica...",    // Descripción
   precio: null,                      // No disponible (preguntar)
   image: "https://...",              // URL de imagen
-  url: "https://sonepar.es/...",     // Enlace a producto
+  url: "https://Proyectos PFC.es/...",     // Enlace a producto
   keywords: ["interruptor", "10a", ...], // Búsqueda texto
   lastUpdated: timestamp
 }

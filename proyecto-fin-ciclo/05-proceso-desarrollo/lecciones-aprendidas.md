@@ -100,7 +100,7 @@ Esta sección documenta las lecciones más importantes aprendidas durante el pro
 
 **Qué pasó:** El proceso de obtener los datos del catálogo de la empresa y mostrarlos en la web resultó ser mucho más complejo de lo esperado. Pasé por tres fases críticas:
 
-#### Fase 1: Scraping de sonepar.es
+#### Fase 1: Scraping de Proyectos PFC.es
 
 **El problema:** Scrapear la web de la empresa fue un proceso largo y frustrante. La web tiene protecciones contra bots, estructura HTML cambiante, y miles de productos con información incompleta o mal formateada.
 
@@ -244,7 +244,7 @@ Esta sección documenta las lecciones más importantes aprendidas durante el pro
 
 ### Acierto 7: Hacer scraping del catálogo real
 
-**Qué hice:** En lugar de crear productos mock, scrapeé el catálogo real de sonepar.es.
+**Qué hice:** En lugar de crear productos mock, scrapeé el catálogo real de Proyectos PFC.es.
 
 **Por qué funcionó:**
 - Los datos son reales y útiles

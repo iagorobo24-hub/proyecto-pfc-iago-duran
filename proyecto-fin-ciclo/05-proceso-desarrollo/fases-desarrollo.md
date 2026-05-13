@@ -14,13 +14,13 @@ El proyecto evolucionó a través de **9 fases principales** a lo largo de 3 mes
 
 Cada herramienta era un archivo autocontenido:
 
-- `sonepar-almacen-simulador.jsx` — Simulador de flujo de almacén
-- `sonepar-fichas-tecnicas.jsx` — Fichas técnicas de productos
-- `sonepar-dashboard-incidencias.jsx` — Dashboard de incidencias industriales
-- `sonepar-kpi-logistico.jsx` — KPI logístico con semáforo
-- `sonepar-generador-presupuestos.jsx` — Generador de presupuestos
-- `sonepar-formacion-interna.jsx` — Matriz de competencias y formación
-- `sonepar-chatbot-tecnico.jsx` — SONEX, chatbot técnico
+- `Proyectos PFC-almacen-simulador.jsx` — Simulador de flujo de almacén
+- `Proyectos PFC-fichas-tecnicas.jsx` — Fichas técnicas de productos
+- `Proyectos PFC-dashboard-incidencias.jsx` — Dashboard de incidencias industriales
+- `Proyectos PFC-kpi-logistico.jsx` — KPI logístico con semáforo
+- `Proyectos PFC-generador-presupuestos.jsx` — Generador de presupuestos
+- `Proyectos PFC-formacion-interna.jsx` — Matriz de competencias y formación
+- `Proyectos PFC-chatbot-tecnico.jsx` — SONEX, chatbot técnico
 
 ### Tecnología usada
 

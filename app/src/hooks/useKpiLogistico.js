@@ -18,7 +18,7 @@ export default function useKpiLogistico() {
     loading, 
     saveData: saveHistorial,
     syncStatus 
-  } = useFirestoreSync('kpi/entries', 'default', [], 'sonepar_kpi_historial')
+  } = useFirestoreSync('kpi/entries', 'default', [], 'pfc_kpi_historial')
 
   const [historial, setHistorial] = useState([])
 

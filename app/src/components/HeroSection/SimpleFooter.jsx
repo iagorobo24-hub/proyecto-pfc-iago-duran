@@ -7,7 +7,7 @@ const SimpleFooter = () => {
     <footer className={styles.footer}>
       <div className={styles.container}>
         <div className={styles.left}>
-          <span className={styles.brand}>Sonepar</span>
+          <span className={styles.brand}>Proyectos PFC</span>
           <span className={styles.brand}>Tools</span>
         </div>
 
@@ -22,7 +22,7 @@ const SimpleFooter = () => {
 
         <div className={styles.right}>
           <a
-            href="https://github.com/iagorobo24-hub/proyectos-sonepar"
+            href="https://github.com/iagorobo24-hub/proyectos-Proyectos PFC"
             target="_blank"
             rel="noopener noreferrer"
             className={styles.socialLink}

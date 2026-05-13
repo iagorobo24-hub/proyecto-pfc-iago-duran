@@ -31,11 +31,11 @@
 }
 
 .logoBrand {
-  color: var(--sonepar-blue);
+  color: var(--brand-blue);
 }
 
 .logoProduct {
-  color: var(--sonepar-black);
+  color: var(--brand-black);
 }
 
 .nav {
@@ -54,7 +54,7 @@
 }
 
 .navLink:hover {
-  color: var(--sonepar-blue);
+  color: var(--brand-blue);
 }
 
 .appBtn {
@@ -62,7 +62,7 @@
   align-items: center;
   gap: var(--space-2);
   background: var(--gray-50);
-  color: var(--sonepar-black);
+  color: var(--brand-black);
   padding: var(--space-2) var(--space-5);
   border-radius: var(--radius-md);
   font-size: var(--text-sm);
@@ -77,7 +77,7 @@
   border-color: var(--blue-200);
   transform: translateY(-1px);
   box-shadow: var(--shadow-md);
-  color: var(--sonepar-blue);
+  color: var(--brand-blue);
 }
 
 @media (max-width: 640px) {
@@ -111,7 +111,7 @@
 }
 
 .sectionsBtn:hover {
-  color: var(--sonepar-blue);
+  color: var(--brand-blue);
   background: var(--blue-50);
 }
 
@@ -157,7 +157,7 @@
 
 .dropdownItem:hover {
   background: var(--blue-50);
-  color: var(--sonepar-blue);
+  color: var(--brand-blue);
 }
 
 .dropdownItem svg {

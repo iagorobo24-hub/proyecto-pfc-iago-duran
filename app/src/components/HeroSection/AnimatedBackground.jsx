@@ -11,18 +11,18 @@ const AnimatedBackground = () => {
             <path
               d="M 10 10 L 190 10 L 190 190 L 10 190 Z"
               fill="none"
-              stroke="var(--sonepar-blue)"
+              stroke="var(--Proyectos PFC-blue)"
               strokeWidth="1"
               opacity="0.18"
             />
-            <circle cx="10" cy="10" r="2.5" fill="var(--sonepar-blue)" opacity="0.3" />
-            <circle cx="190" cy="10" r="2.5" fill="var(--sonepar-blue)" opacity="0.3" />
-            <circle cx="190" cy="190" r="2.5" fill="var(--sonepar-blue)" opacity="0.3" />
-            <circle cx="10" cy="190" r="2.5" fill="var(--sonepar-blue)" opacity="0.3" />
+            <circle cx="10" cy="10" r="2.5" fill="var(--Proyectos PFC-blue)" opacity="0.3" />
+            <circle cx="190" cy="10" r="2.5" fill="var(--Proyectos PFC-blue)" opacity="0.3" />
+            <circle cx="190" cy="190" r="2.5" fill="var(--Proyectos PFC-blue)" opacity="0.3" />
+            <circle cx="10" cy="190" r="2.5" fill="var(--Proyectos PFC-blue)" opacity="0.3" />
 
             <motion.path
               d="M 10 100 L 190 100"
-              stroke="var(--sonepar-blue)"
+              stroke="var(--Proyectos PFC-blue)"
               strokeWidth="2"
               initial={{ pathLength: 0, opacity: 0 }}
               animate={{
@@ -39,7 +39,7 @@ const AnimatedBackground = () => {
 
             <motion.path
               d="M 100 10 L 100 190"
-              stroke="var(--sonepar-blue)"
+              stroke="var(--Proyectos PFC-blue)"
               strokeWidth="1.5"
               initial={{ pathLength: 0, opacity: 0 }}
               animate={{
@@ -57,7 +57,7 @@ const AnimatedBackground = () => {
             {/* Líneas diagonales de electricidad */}
             <motion.path
               d="M 10 10 L 190 190"
-              stroke="var(--sonepar-blue)"
+              stroke="var(--Proyectos PFC-blue)"
               strokeWidth="0.8"
               initial={{ pathLength: 0, opacity: 0 }}
               animate={{
@@ -72,7 +72,7 @@ const AnimatedBackground = () => {
               }}
             />
 
-            <circle cx="100" cy="100" r="2" fill="var(--sonepar-blue)" opacity="0.2" />
+            <circle cx="100" cy="100" r="2" fill="var(--Proyectos PFC-blue)" opacity="0.2" />
           </pattern>
         </defs>
         <rect width="100%" height="100%" fill="url(#circuit-pattern)" />

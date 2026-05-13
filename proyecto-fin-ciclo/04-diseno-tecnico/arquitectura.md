@@ -43,7 +43,7 @@ Proyectos la empresa es una **Single Page Application (SPA)** construida con Rea
                     ┌─────────────────────────────────────────────┐
                     │              SONEPAR IBÉRICA                 │
                     │          (Fuente de datos pública)           │
-                    │           sonepar.es (scraping)              │
+                    │           Proyectos PFC.es (scraping)              │
                     └─────────────────────────────────────────────┘
 ```
 
