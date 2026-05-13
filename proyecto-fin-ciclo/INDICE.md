@@ -13,7 +13,7 @@ proyecto-fin-ciclo/
 ├── FASE I — CONTEXTO Y FUNDAMENTO
 ├── ════════════════════════════════════════════════════
 ├── 01-introduccion/           ← Presentación del proyecto completo
-├── 02-estado-del-arte/             ← Panorama actual de IA generativa
+├── 02-contexto-de-la-ia/           ← Panorama actual de IA generativa
 │
 ├── ════════════════════════════════════════════════════
 ├── FASE II — ANÁLISIS Y DISEÑO
@@ -111,14 +111,14 @@ Vista general para quien no tiene tiempo de leer la memoria completa.
 - [x] `objetivos.md` — Objetivos generales y específicos del PFC
 - [x] `resumen-ejecutivo-fichas.md` — Presentación de las herramientas IA usadas en el proyecto
 
-### 02 — Estado del Arte
+### 02 — Contexto de la IA
 > *"¿Por qué este proyecto tiene sentido ahora?"*
 
 Panorama actual de la IA generativa aplicada al desarrollo web.
 
 - [x] `estado-arte-ia-generativa.md` — Evolución de la IA generativa (2020-2026)
-- [x] `herramientas-comparativa.md` — Comparativa de herramientas 2024-2026
-- [x] `tendencias-futuro.md` — Hacia dónde evoluciona el desarrollo con IA
+- [x] `herramientas-comparativa.md` — Comparativa de herramientas que probé
+- [x] `tendencias-futuro.md` — Hacia dónde va todo esto: memoria persistente, auto-aprendizaje, automatización total
 
 ---
 
@@ -250,7 +250,7 @@ Guía didáctica para que docentes repliquen la metodología.
 |------|----------|----------|--------|
 | | 00 - README + INDICE | 2 | ✅ |
 | **I** Contexto | 01 - Presentación del proyecto | 3 | ✅ |
-| **I** Contexto | 02 - Estado del arte | 3 | ✅ |
+| **I** Contexto | 02 - Contexto de la IA | 3 | ✅ |
 | **II** Análisis y diseño | 03 - Análisis requisitos | 5 | ✅ |
 | **II** Análisis y diseño | 04 - Diseño técnico | 5 | ✅ |
 | **III** Ejecución con IA | 05 - Proceso desarrollo | 4 | ✅ |

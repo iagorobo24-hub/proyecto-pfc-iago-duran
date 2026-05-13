@@ -1,4 +1,4 @@
-# Estado del Arte: IA Generativa en Desarrollo Web
+# Evolución últimos años
 
 ## Introducción
 
@@ -108,5 +108,5 @@ Lo importante no es la herramienta, sino **cómo la usas**: entender lo que gene
 
 ---
 
-*Capítulo 02 — Estado del Arte*
+*Capítulo 02 — Contexto de la IA*
 *Escrito por un alumno de Automatización que no sabía React hace tres meses*

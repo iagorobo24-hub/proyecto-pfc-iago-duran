@@ -1,4 +1,4 @@
-# Comparativa de Herramientas IA
+# Herramientas descubiertas
 
 > Esto es mi experiencia usando cada herramienta durante el proyecto. No es un análisis de laboratorio — es lo que me funcionó (y lo que no) en el día a día. Las fichas técnicas completas están en el Capítulo 06.
 
