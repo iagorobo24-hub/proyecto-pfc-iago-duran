@@ -1,4 +1,4 @@
-# Proyectos Sonepar
+# Proyectos PFC
 
 > **Ecosistema de herramientas web para automatización industrial y logística.**
 
