@@ -107,18 +107,18 @@ Cada capítulo responde a una pregunta concreta dentro de la narrativa del proye
 
 Vista general para quien no tiene tiempo de leer la memoria completa.
 
-- [x] `resumen-ejecutivo.md` — Presentación del proyecto: problema, solución, metodología, resultados
+- [x] `presentacion-del-proyecto.md` — Presentación del proyecto: problema, solución, metodología, resultados
 - [x] `objetivos.md` — Objetivos generales y específicos del PFC
-- [x] `resumen-ejecutivo-fichas.md` — Presentación de las herramientas IA usadas en el proyecto
+- [x] `presentacion-de-herramientas.md` — Presentación de las herramientas IA usadas en el proyecto
 
 ### 02 — Contexto de la IA
 > *"¿Por qué este proyecto tiene sentido ahora?"*
 
 Panorama actual de la IA generativa aplicada al desarrollo web.
 
-- [x] `estado-arte-ia-generativa.md` — Evolución de la IA generativa (2020-2026)
-- [x] `herramientas-comparativa.md` — Comparativa de herramientas que probé
-- [x] `tendencias-futuro.md` — Hacia dónde va todo esto: memoria persistente, auto-aprendizaje, automatización total
+- [x] `evolucion-ultimos-anos.md` — Evolución de la IA generativa (2020-2026)
+- [x] `herramientas-descubiertas.md` — Comparativa de herramientas que probé
+- [x] `tendencia-futuro.md` — Hacia dónde va todo esto: memoria persistente, auto-aprendizaje, automatización total
 
 ---
 
