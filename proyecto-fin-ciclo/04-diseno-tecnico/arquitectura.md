@@ -12,15 +12,7 @@ En vez de esquemas eléctricos (que no tocan aquí), el proyecto tiene diagramas
 
 ### Diagrama de arquitectura general
 
-El archivo `diagramas/arquitectura_sistema.svg` muestra cómo se conectan todas las piezas:
-
-```
-Navegador (React) ──→ Firebase Auth ──→ Google Login
-                  ──→ Firestore ──→ Base de datos
-                  ──→ Vercel Functions ──→ OpenRouter ──→ IA
-```
-
-**Para verlo:** abrir el archivo `diagramas/arquitectura_sistema.svg` en cualquier navegador.
+<img src="../../diagramas/arquitectura_sistema.svg" alt="Arquitectura del sistema" width="900"/>
 
 ### Otros diagramas disponibles
 
@@ -36,6 +28,12 @@ En la carpeta `diagramas/` hay más esquemas que ayudan a entender el proyecto:
 | `fases_desarrollo.svg` | Las 12 fases del proyecto en orden cronológico |
 | `comparativa_herramientas_ia.svg` | Comparación visual de las herramientas IA usadas |
 | `resultados_cuantitativos.svg` | Gráficos con los resultados numéricos del proyecto |
+
+<img src="../../diagramas/modulos_funcionales.svg" alt="Módulos funcionales" width="700"/>
+
+<img src="../../diagramas/seguridad_capas.svg" alt="Capas de seguridad" width="700"/>
+
+<img src="../../diagramas/flujo_desarrollo_ia.svg" alt="Flujo de desarrollo con IA" width="700"/>
 
 ---
 
