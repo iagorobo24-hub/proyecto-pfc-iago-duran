@@ -10,6 +10,8 @@
   /* ── Colores corporativos ── */
   --brand-primary: #0072CE;
   --brand-primary-dark: #00569e;
+  --brand-blue: #0072CE;
+  --brand-blue-dark: #00569e;
   --brand-black: #0f172a;
   --color-brand: #003087;
   --color-brand-vivid: #0056d9;
@@ -133,6 +135,8 @@
   --blue-200: rgba(245, 158, 11, 0.3);
   --blue-100: rgba(245, 158, 11, 0.15);
   --blue-50: rgba(245, 158, 11, 0.08);
+  --brand-blue: #fbbf24;
+  --brand-blue-dark: #f59e0b;
 
   --gray-900: #f1f5f9;
   --gray-800: #e2e8f0;
