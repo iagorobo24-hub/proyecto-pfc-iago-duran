@@ -1,5 +1,6 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState } from "react";
 import { useNavigate } from 'react-router-dom'
+import { Clock, Plus, Trash2, MessageSquare, ChevronLeft } from 'lucide-react'
 import catalogService from '../services/catalogService'
 import { FULL_CATEGORY_INFO } from '../data/categoryMapping'
 import { useToast } from '../contexts/ToastContext'
@@ -23,12 +24,15 @@ export default function Sonex() {
   const navigate = useNavigate();
   const { toast } = useToast();
   const {
+    sessions, activeSessionId,
     messages, input, setInput, isLoading, setIsLoading,
     categoriaActiva, setCategoriaActiva, modoActivo, setModoActivo,
     refsTurno, setRefsTurno,
-    messagesEndRef, sugerenciasPopulares, loadingSugerencias,
+    messagesEndRef, sugerenciasPopulares,
     guardarMensaje,
+    createNewSession, switchSession, deleteSession,
   } = useSonex();
+  const [view, setView] = useState('chat');
 
   const procesarMarkdown = (texto) => {
     if (!texto) return [];
@@ -163,43 +167,86 @@ ${modoInstrucciones[modoActivo] || modoInstrucciones.busqueda}${categoriaTexto}`
               Asistente técnico IA · Sector Eléctrico
             </div>
           </div>
-        </div>
-
-        {/* Modos */}
-        <div className={styles.seccion}>
-          <div className={styles.seccionLabel}>MODO DE OPERACIÓN</div>
-          {MODO_OBJETOS.map(modo => (
-            <button key={modo.id} onClick={() => handleModoClick(modo.id)} className={`${styles.modoBtn} ${modoActivo === modo.id ? styles['modoBtn--active'] : ''}`}>
-              <span className={styles.modoBtnLabel}>{modo.label}</span>
-              <span className={styles.modoBtnDesc}>{modo.desc}</span>
+          <div className={styles.headerActions}>
+            <button onClick={() => setView(view === 'history' ? 'chat' : 'history')} className={styles.historyToggle} title={view === 'history' ? 'Cerrar historial' : 'Historial de chats'}>
+              {view === 'history' ? <ChevronLeft size={18} /> : <Clock size={18} />}
             </button>
-          ))}
-        </div>
-
-        {/* Categorías */}
-        <div className={styles.seccion}>
-          <div className={styles.seccionLabel}>CATEGORÍAS</div>
-          <div className={styles.categoriasGrid}>
-            {CATEGORIAS.map(cat => (
-              <button key={cat.id} onClick={() => handleCategoriaClick(cat.id)} className={`${styles.catBtn} ${categoriaActiva === cat.id ? styles['catBtn--active'] : ''}`}>
-                <span className={styles.catBtnIcon}>{cat.icon}</span>
-                <span className={styles.catBtnLabel}>{cat.label}</span>
-              </button>
-            ))}
+            <button onClick={() => { createNewSession(); setView('chat'); }} className={styles.newChatBtn} title="Nuevo chat">
+              <Plus size={18} />
+            </button>
           </div>
         </div>
 
-        {/* Referencias */}
-        {refsTurno.length > 0 && (
-          <div className={styles.seccion}>
-            <div className={styles.seccionLabel}>REFERENCIAS EN TURNO ({refsTurno.length})</div>
-            {refsTurno.slice(0, 5).map((ref, i) => (
-              <button key={i} className={styles.refCard} onClick={() => irAFicha(ref.ref)}>
-                <span className={styles.refCard__ref}>{ref.ref}</span>
-                <span className={styles.refCard__desc}>{ref.desc}</span>
-              </button>
-            ))}
+        {view === 'history' ? (
+          <div className={styles.historyList}>
+            {sessions.length === 0 ? (
+              <div className={styles.historyEmpty}>
+                <MessageSquare size={32} />
+                <p>No hay chats guardados</p>
+              </div>
+            ) : (
+              [...sessions].reverse().map(session => (
+                <button
+                  key={session.id}
+                  className={`${styles.historyItem} ${session.id === activeSessionId ? styles.historyItemActive : ''}`}
+                  onClick={() => { switchSession(session.id); setView('chat'); }}
+                >
+                  <div className={styles.historyItemContent}>
+                    <span className={styles.historyItemTitle}>{session.title}</span>
+                    <span className={styles.historyItemMeta}>
+                      {session.messages.length} mensajes · {new Date(session.updatedAt).toLocaleDateString('es-ES')}
+                    </span>
+                  </div>
+                  <button
+                    onClick={(e) => { e.stopPropagation(); deleteSession(session.id); }}
+                    className={styles.historyItemDelete}
+                    title="Eliminar chat"
+                  >
+                    <Trash2 size={14} />
+                  </button>
+                </button>
+              ))
+            )}
           </div>
+        ) : (
+          <>
+            {/* Modos */}
+            <div className={styles.seccion}>
+              <div className={styles.seccionLabel}>MODO DE OPERACIÓN</div>
+              {MODO_OBJETOS.map(modo => (
+                <button key={modo.id} onClick={() => handleModoClick(modo.id)} className={`${styles.modoBtn} ${modoActivo === modo.id ? styles['modoBtn--active'] : ''}`}>
+                  <span className={styles.modoBtnLabel}>{modo.label}</span>
+                  <span className={styles.modoBtnDesc}>{modo.desc}</span>
+                </button>
+              ))}
+            </div>
+
+            {/* Categorías */}
+            <div className={styles.seccion}>
+              <div className={styles.seccionLabel}>CATEGORÍAS</div>
+              <div className={styles.categoriasGrid}>
+                {CATEGORIAS.map(cat => (
+                  <button key={cat.id} onClick={() => handleCategoriaClick(cat.id)} className={`${styles.catBtn} ${categoriaActiva === cat.id ? styles['catBtn--active'] : ''}`}>
+                    <span className={styles.catBtnIcon}>{cat.icon}</span>
+                    <span className={styles.catBtnLabel}>{cat.label}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Referencias */}
+            {refsTurno.length > 0 && (
+              <div className={styles.seccion}>
+                <div className={styles.seccionLabel}>REFERENCIAS EN TURNO ({refsTurno.length})</div>
+                {refsTurno.slice(0, 5).map((ref, i) => (
+                  <button key={i} className={styles.refCard} onClick={() => irAFicha(ref.ref)}>
+                    <span className={styles.refCard__ref}>{ref.ref}</span>
+                    <span className={styles.refCard__desc}>{ref.desc}</span>
+                  </button>
+                ))}
+              </div>
+            )}
+          </>
         )}
       </div>
 

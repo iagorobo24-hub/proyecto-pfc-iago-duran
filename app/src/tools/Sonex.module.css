@@ -40,7 +40,133 @@
   color: var(--white);
 }
 
-.sonexInfo { flex: 1; }
+.sonexInfo { flex: 1; min-width: 0; }
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  flex-shrink: 0;
+}
+
+.historyToggle, .newChatBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-md);
+  color: var(--gray-500);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--ease-out);
+}
+
+.historyToggle:hover {
+  background: var(--blue-50);
+  color: var(--brand-primary);
+}
+
+.newChatBtn {
+  background: var(--brand-primary);
+  color: var(--white);
+}
+
+.newChatBtn:hover {
+  background: var(--brand-primary-dark);
+  transform: translateY(-1px);
+}
+
+/* ── History List ── */
+.historyList {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-3);
+}
+
+.historyEmpty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-10);
+  color: var(--gray-300);
+  gap: var(--space-3);
+  text-align: center;
+}
+
+.historyEmpty p {
+  font-size: var(--text-sm);
+  color: var(--gray-400);
+}
+
+.historyItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  width: 100%;
+  padding: var(--space-3);
+  border: 1px solid var(--gray-100);
+  border-radius: var(--radius-md);
+  background: var(--white);
+  margin-bottom: var(--space-2);
+  cursor: pointer;
+  transition: all var(--duration-fast) var(--ease-out);
+  text-align: left;
+}
+
+.historyItem:hover {
+  border-color: var(--blue-200);
+  background: var(--blue-50);
+}
+
+.historyItemActive {
+  border-color: var(--brand-primary);
+  background: var(--blue-50);
+}
+
+.historyItemContent {
+  flex: 1;
+  min-width: 0;
+}
+
+.historyItemTitle {
+  display: block;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--gray-800);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.historyItemMeta {
+  display: block;
+  font-size: var(--text-xs);
+  color: var(--gray-400);
+  margin-top: 2px;
+}
+
+.historyItemDelete {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  color: var(--gray-400);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all var(--duration-fast) var(--ease-out);
+}
+
+.historyItemDelete:hover {
+  background: var(--error-soft);
+  color: var(--error);
+}
 
 .sonexName {
   font-family: var(--font-display);
