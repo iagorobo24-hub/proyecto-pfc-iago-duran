@@ -81,19 +81,28 @@ export default function Sonex() {
     try {
       const { callAnthropicAI } = await import('../services/anthropicService');
 
-      const modoInfo = MODO_OBJETOS.find(m => m.id === modoActivo);
       const modoInstrucciones = {
-        busqueda: 'El usuario está en modo BÚSQUEDA. Prioriza encontrar referencias exactas, especificaciones técnicas y fichas de producto. Incluye códigos de referencia Proyectos PFC cuando sea posible.',
-        comparativa: 'El usuario está en modo COMPARATIVA. Organiza la respuesta en formato de comparación: tablas, pros/contras, diferencias técnicas clave entre productos. Destaca qué producto es mejor para cada caso de uso.',
-        asistencia: 'El usuario está en modo ASISTENCIA. Actúa como asesor técnico-comercial: recomienda productos según las necesidades del usuario, sugiere alternativas y explica por qué cada opción es adecuada.',
-        formacion: 'El usuario está en modo FORMACIÓN. Explica conceptos técnicos de forma didáctica, incluye pasos de instalación, normativa aplicable y buenas prácticas. Usa un tono educativo.',
+        busqueda: 'Modo BÚSQUEDA activado. Responde con referencias técnicas exactas, especificaciones detalladas y datos concretos de productos. Prioriza códigos de referencia, secciones, materiales y rangos de operación. Sé preciso y directo.',
+        comparativa: 'Modo COMPARATIVA activado. Organiza la respuesta en tablas comparativas con pros y contras. Destaca diferencias técnicas clave, rendimiento, precio relativo y caso de uso ideal para cada opción. Concluye con una recomendación clara.',
+        asistencia: 'Modo ASISTENCIA activado. Actúa como asesor técnico: escucha la necesidad, valora el contexto de instalación, sugiere la solución más adecuada y explica por qué. Ofrece alternativas viables y consejos de montaje o compatibilidad.',
+        formacion: 'Modo FORMACIÓN activado. Explica conceptos técnicos de forma didáctica y estructurada. Incluye normativa aplicable (REBT, UNE), pasos de instalación, esquemas conceptuales y buenas prácticas. Usa un tono pedagógico pero profesional.',
       };
 
       const categoriaTexto = categoriaActiva
-        ? `\nEl usuario está consultando sobre la categoría: ${categoriaActiva}. Enfoca tus respuestas en productos y soluciones de esta familia.`
+        ? `\nEl usuario consulta desde la categoría: ${categoriaActiva}. Enfoca tu respuesta en productos y soluciones de esta familia técnica.`
         : '';
 
-      const systemPrompt = `Eres SONEX, el asistente técnico experto técnico España. Responde de forma concisa, enfocándote en soluciones técnicas de Proyectos PFC, referencias de producto y recomendaciones de aplicación.\n\n${modoInstrucciones[modoActivo] || modoInstrucciones.busqueda}${categoriaTexto}`;
+      const systemPrompt = `Eres SONEX, un técnico superior del sector eléctrico con 20 años de experiencia en instalaciones industriales, automatización, domótica, climatización y energías renovables. Tu conocimiento abarca normativa vigente (REBT, UNE, IEC), productos de material eléctrico, sistemas de control y herramientas de medición.
+
+Directrices obligatorias:
+- Responde siempre con rigor técnico y lenguaje profesional.
+- Nunca inventes productos, referencias, especificaciones o soluciones que no estén basadas en la realidad.
+- Si no sabes algo, indícalo claramente en lugar de improvisar.
+- Prioriza la seguridad y el cumplimiento normativo en cada recomendación.
+- Sé conciso: ve al grano sin rodeos.
+- Usa un tono formal pero cercano, como un compañero experto al que se le consulta en el mostrador técnico.
+
+${modoInstrucciones[modoActivo] || modoInstrucciones.busqueda}${categoriaTexto}`;
       
       const { text } = await callAnthropicAI({ 
         provider: 'openrouter',
@@ -128,14 +137,10 @@ export default function Sonex() {
 
   const handleCategoriaClick = (categoriaId) => {
     setCategoriaActiva(categoriaActiva === categoriaId ? "" : categoriaId);
-    const cat = CATEGORIAS.find(c => c.id === categoriaId);
-    if (cat) setInput(`Estoy interesado en productos de ${cat.label}. ¿Qué opciones recomiendas?`);
   };
 
   const handleModoClick = (modoId) => {
     setModoActivo(modoId);
-    const modo = MODO_OBJETOS.find(m => m.id === modoId);
-    if (modo) setInput(`Necesito ayuda con: ${modo.desc}`);
   };
 
   const handleKeyPress = (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSendMessage(); } };
@@ -155,7 +160,7 @@ export default function Sonex() {
             <div className={styles.sonexName}>SONEX <span className={styles.sonexVersion}>v7</span></div>
             <div className={styles.sonexStatus}>
               <span className={styles.statusDot} />
-              Asistente técnico IA · Proyectos PFC
+              Asistente técnico IA · Sector Eléctrico
             </div>
           </div>
         </div>
