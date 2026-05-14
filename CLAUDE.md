@@ -110,3 +110,178 @@ Optimize for search engine visibility and ranking. Use when asked to "improve SE
 - `.claude/skills/seo/SKILL.md`
 
 <!-- autoskills:end -->
+
+---
+
+# Proyecto PFC — Guía del Proyecto
+
+## Resumen del Proyecto
+
+Ecosistema de herramientas web para automatización industrial y logística, desarrollado como Proyecto Fin de Ciclo.
+
+### Stack Tecnológico
+
+- **Frontend:** React 19 + Vite 7 + React Router DOM v7
+- **Estilos:** CSS Modules + Variables CSS personalizadas
+- **Autenticación:** Firebase Auth (Google Sign-In)
+- **Base de datos:** Firestore (datos por usuario)
+- **IA:** OpenRouter API (Claude 3.5 Haiku, DeepSeek, Qwen)
+- **Deploy:** Vercel (Serverless Functions)
+- **Testing:** Playwright (e2e tests)
+
+### Módulos Funcionales
+
+| Ruta | Módulo | Descripción |
+|------|--------|-------------|
+| `/login` | **Login** | Autenticación con Google |
+| `/fichas` | **Fichas Técnicas** | Catálogo de productos con navegación jerárquica |
+| `/almacen` | **Simulador Almacén** | Simulación de ciclo completo de pedido |
+| `/incidencias` | **Dashboard Incidencias** | Registro y diagnóstico de fallos industriales |
+| `/kpi` | **KPI Logístico** | 6 KPIs con semáforo e informe ejecutivo |
+| `/presupuestos` | **Presupuestos** | Generador de presupuestos con referencias del catálogo |
+| `/formacion` | **Formación Interna** | Matriz de competencias y planes personalizados |
+| `/sonex` | **SONEX** | Asistente técnico con IA |
+
+### Estructura del Repositorio
+
+```
+proyecto-pfc-iago-duran/
+├── app/                          # Aplicación React
+│   ├── api/                      # Vercel Functions
+│   │   └── ai.js                 # Gateway IA (OpenRouter)
+│   ├── src/
+│   │   ├── components/           # Componentes React
+│   │   │   ├── auth/             # LoginPage, ProtectedRoute
+│   │   │   ├── layout/           # AppShell, Topbar, Sidebar
+│   │   │   └── ui/               # Button, Badge, Input, Card...
+│   │   ├── contexts/             # React Contexts
+│   │   │   ├── AuthContext.jsx
+│   │   │   ├── ThemeContext.jsx
+│   │   │   └── ToastContext.jsx
+│   │   ├── firebase/             # Firebase config
+│   │   ├── data/                 # Catálogo, jerarquía, logos
+│   │   ├── hooks/                # Custom hooks (uno por módulo)
+│   │   ├── pages/                # LandingPage
+│   │   ├── services/             # API services
+│   │   ├── styles/               # Variables CSS, animaciones
+│   │   ├── tools/                # 7 módulos (componentes de página)
+│   │   ├── App.jsx               # Router + rutas protegidas
+│   │   └── main.jsx              # Entry point + providers
+│   ├── scripts/                  # Scripts de utilidad
+│   │   └── sync-catalog-enhanced.mjs
+│   ├── public/                   # Assets estáticos
+│   ├── firestore.rules           # Reglas de seguridad Firestore
+│   ├── firebase.json
+│   ├── playwright.config.js
+│   ├── vercel.json
+│   └── package.json
+├── proyecto-fin-ciclo/           # Documentación académica (10 capítulos)
+├── diagramas/                    # Diagramas SVG del proyecto
+├── EVOLUCION.md                  # Guía cronológica de evolución
+├── README.md                     # Documentación principal
+└── CLAUDE.md                     # Este archivo
+```
+
+---
+
+## Convenciones del Proyecto
+
+### Nomenclatura
+
+- **Componentes:** PascalCase (`LoginPage.jsx`, `AppShell.jsx`)
+- **Archivos CSS:** camelCase.module.css (`Sonex.module.css`)
+- **Hooks:** camelCase con prefijo `use` (`useAuth`, `useFichas`)
+- **Variables CSS:** kebab-case (`--brand-primary`, `--brand-primary-dark`)
+- **LocalStorage keys:** Prefijo `pfc_` (`pfc_fichas_historial`, `pfc_presupuestos_historial`)
+- **Rutas:** kebab-case (`/fichas-tecnicas`, `/simulador-almacen`)
+
+### Variables CSS
+
+El proyecto usa un sistema de diseño personalizado con variables CSS. **Nunca uses colores hardcodeados.**
+
+```css
+--brand-primary: #0072CE;
+--brand-primary-dark: #00569e;
+--success: #10b981;
+--warning: #f59e0b;
+--error: #ef4444;
+--spacing-xs: 0.25rem;
+--spacing-sm: 0.5rem;
+--spacing-md: 1rem;
+--spacing-lg: 1.5rem;
+--spacing-xl: 2rem;
+--radius-sm: 0.25rem;
+--radius-md: 0.5rem;
+--radius-lg: 0.75rem;
+```
+
+### Patrones de Componentes
+
+- CSS Modules con estilos scoped (`import styles from './MiComponente.module.css'`)
+- Custom hooks por módulo (`hooks/useFichas.js`)
+- Context Pattern para estado global (`AuthContext`, `ThemeContext`, `ToastContext`)
+
+### Patrones de Datos
+
+- LocalStorage: prefijo `pfc_` en todas las keys
+- Firestore: `users/{userId}/{collection}/{docId}` (fichas, presupuestos, incidencias, kpis, formacion)
+
+---
+
+## Reglas Específicas
+
+1. **Sin referencias a terceros** — NO usar nombres de empresas o marcas específicas. Usar "la empresa", "industrial", "catálogo de productos"
+2. **Sistema de diseño** — Siempre usar variables CSS, no colores hardcodeados
+3. **Autenticación** — Todas las rutas excepto `/login` requieren `ProtectedRoute`
+4. **IA** — Prompts genéricos sin referencias a empresas. OpenRouter API vía Vercel Functions
+5. **Testing** — Tests e2e con Playwright, Page Object Model, responsive design
+6. **Git** — `main` para producción, feature branches, conventional commits
+
+---
+
+## Comandos Comunes
+
+```bash
+# Desarrollo
+cd app && npm install
+npm run dev
+npm run build
+
+# Testing
+npm run test
+npm run test:ui
+
+# Scripts
+node scripts/sync-catalog-enhanced.mjs
+```
+
+---
+
+## Design System
+
+| Variable | Valor | Uso |
+|----------|-------|-----|
+| `--brand-primary` | `#0072CE` | Color principal |
+| `--brand-primary-dark` | `#00569e` | Variante oscura |
+| `--success` | `#10b981` | Éxito |
+| `--warning` | `#f59e0b` | Advertencia |
+| `--error` | `#ef4444` | Error |
+
+- **Tipografía:** IBM Plex Sans
+- **Espaciado:** xs: 4px, sm: 8px, md: 16px, lg: 24px, xl: 32px
+- **Bordes:** sm: 4px, md: 8px, lg: 12px
+
+---
+
+## Enlaces Útiles
+
+- [React 19 Docs](https://react.dev/)
+- [Vite Docs](https://vitejs.dev/)
+- [Firebase Docs](https://firebase.google.com/docs)
+- [Playwright Docs](https://playwright.dev/)
+- [OpenRouter Docs](https://openrouter.ai/docs)
+- [GitHub Repo](https://github.com/iagorobo24-hub/proyecto-pfc-iago-duran)
+
+---
+
+**Última actualización:** Mayo 2026
