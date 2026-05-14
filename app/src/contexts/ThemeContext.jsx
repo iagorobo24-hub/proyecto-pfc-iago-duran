@@ -8,7 +8,7 @@ export function ThemeProvider({ children }) {
     try {
       const saved = localStorage.getItem('Proyectos PFC_theme')
       if (saved) return saved === 'dark'
-      return window.matchMedia('(prefers-color-scheme: dark)').matches
+      return false
     } catch {
       return false
     }
