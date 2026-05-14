@@ -30,7 +30,7 @@
   <rect width="1100" height="750" fill="url(#grid)"/>
 
   <!-- Title -->
-  <text x="550" y="40" fill="#f8fafc" font-size="22" font-weight="700" text-anchor="middle">Arquitectura del Sistema — Proyectos PFC</text>
+  <text x="550" y="40" fill="#f8fafc" font-size="22" font-weight="700" text-anchor="middle">Arquitectura del Sistema — Proyecto PFC</text>
   <text x="550" y="60" fill="#94a3b8" font-size="12" text-anchor="middle">SPA React + Firebase + Vercel + OpenRouter</text>
 
   <!-- CLIENT LAYER -->
@@ -188,5 +188,5 @@
   <text x="452" y="709" fill="#94a3b8" font-size="9">Infraestructura</text>
   <rect x="570" y="700" width="16" height="10" rx="2" fill="rgba(6, 78, 59, 0.3)" stroke="#34d399" stroke-width="1"/>
   <text x="592" y="709" fill="#94a3b8" font-size="9">Seguridad</text>
-  <text x="820" y="709" fill="#475569" font-size="8">Proyectos PFC PFC | Mayo 2026</text>
+  <text x="820" y="709" fill="#475569" font-size="8">Proyecto PFC | Mayo 2026</text>
 </svg>

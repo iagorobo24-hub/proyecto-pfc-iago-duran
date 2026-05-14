@@ -258,7 +258,7 @@ Guía didáctica para que docentes repliquen la metodología.
 | **IV** Resultados y cierre | 09 - Conclusiones | 3 | ✅ |
 | **IV** Resultados y cierre | 10 - Manual profesores | 5 | ✅ |
 
-**Total creado:** 53 archivos MD (2 índices + 13 fichas + 38 capítulo)
+**Total creado:** 51 archivos MD (2 índices + 13 fichas + 36 capítulo)
 
 ---
 

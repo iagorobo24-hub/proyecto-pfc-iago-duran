@@ -19,7 +19,7 @@
   <rect width="1100" height="700" fill="url(#bg)"/>
   <rect width="1100" height="700" fill="url(#grid)"/>
 
-  <text x="550" y="38" fill="#f8fafc" font-size="20" font-weight="700" text-anchor="middle">Seguridad por Capas — Proyectos PFC</text>
+  <text x="550" y="38" fill="#f8fafc" font-size="20" font-weight="700" text-anchor="middle">Seguridad por Capas — Proyecto PFC</text>
   <text x="550" y="56" fill="#94a3b8" font-size="11" text-anchor="middle">Modelo Defense-in-Depth | 5 capas de proteccion</text>
 
   <!-- LAYER 5 (outermost): Network/Transport -->
@@ -125,5 +125,5 @@
   <text x="550" y="683" fill="#fb7185" font-size="9" text-anchor="middle">AMENAZAS MITIGADAS: MITM (TLS) | XSS (sanitization) | CSRF (SameSite) | Data breach (Firestore Rules) | API key leak (proxy) | Brute force (rate limit)</text>
 
   <!-- Legend at bottom -->
-  <text x="550" y="660" fill="#475569" font-size="9" text-anchor="middle">Proyectos PFC PFC | Seguridad Defense-in-Depth | Mayo 2026</text>
+  <text x="550" y="660" fill="#475569" font-size="9" text-anchor="middle">Proyecto PFC | Seguridad Defense-in-Depth | Mayo 2026</text>
 </svg>

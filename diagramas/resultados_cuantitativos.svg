@@ -16,7 +16,7 @@
   <rect width="1100" height="600" fill="url(#bg)"/>
   <rect width="1100" height="600" fill="url(#grid)"/>
 
-  <text x="550" y="38" fill="#f8fafc" font-size="20" font-weight="700" text-anchor="middle">Resultados Cuantitativos — Proyectos PFC</text>
+  <text x="550" y="38" fill="#f8fafc" font-size="20" font-weight="700" text-anchor="middle">Resultados Cuantitativos — Proyecto PFC</text>
   <text x="550" y="56" fill="#94a3b8" font-size="11" text-anchor="middle">Metricas de rendimiento, productividad y calidad</text>
 
   <!-- LEFT: Performance Metrics -->
@@ -168,21 +168,14 @@
   <rect x="720" y="335" width="350" height="240" rx="12" fill="rgba(76, 29, 149, 0.1)" stroke="#a78bfa" stroke-width="1" stroke-dasharray="6,4"/>
   <text x="740" y="355" fill="#a78bfa" font-size="11" font-weight="600">DISTRIBUCION DEL STACK</text>
 
-  <!-- Pie chart approximation -->
-  <circle cx="790" cy="440" r="60" fill="rgba(8, 51, 68, 0.4)" stroke="#22d3ee" stroke-width="1.5"/>
-  <path d="M 790 380 A 60 60 0 0 1 842 470 L 790 440 Z" fill="#22d3ee" opacity="0.4"/>
-  <path d="M 842 470 A 60 60 0 0 1 738 470 L 790 440 Z" fill="#a78bfa" opacity="0.4"/>
-  <path d="M 738 470 A 60 60 0 0 1 790 380 L 790 440 Z" fill="#34d399" opacity="0.4"/>
-
-  <text x="790" y="440" fill="white" font-size="9" font-weight="600" text-anchor="middle">Stack</text>
-
-  <!-- Legend -->
-  <rect x="870" y="385" width="12" height="12" rx="2" fill="#22d3ee" opacity="0.5"/>
-  <text x="890" y="395" fill="#e2e8f0" font-size="9">React/JS — 45%</text>
-  <rect x="870" y="405" width="12" height="12" rx="2" fill="#a78bfa" opacity="0.5"/>
-  <text x="890" y="415" fill="#e2e8f0" font-size="9">CSS — 30%</text>
-  <rect x="870" y="425" width="12" height="12" rx="2" fill="#34d399" opacity="0.5"/>
-  <text x="890" y="435" fill="#e2e8f0" font-size="9">Config/JSON — 25%</text>
+  <!-- Stack distribution as horizontal stacked bar -->
+  <rect x="740" y="370" width="310" height="20" rx="4" fill="rgba(30, 41, 59, 0.8)"/>
+  <rect x="740" y="370" width="140" height="20" rx="4" fill="#22d3ee" opacity="0.7"/>
+  <rect x="880" y="370" width="93" height="20" rx="0" fill="#a78bfa" opacity="0.7"/>
+  <rect x="973" y="370" width="77" height="20" rx="4" fill="#34d399" opacity="0.7"/>
+  <text x="810" y="384" fill="white" font-size="9" text-anchor="middle">React/JS 45%</text>
+  <text x="926" y="384" fill="white" font-size="9" text-anchor="middle">CSS 30%</text>
+  <text x="1011" y="384" fill="white" font-size="9" text-anchor="middle">Conf 25%</text>
 
   <!-- Stack details -->
   <text x="740" y="475" fill="#94a3b8" font-size="9">React 19 + Vite 7</text>
@@ -192,5 +185,5 @@
   <text x="740" y="543" fill="#94a3b8" font-size="9">OpenRouter API (REST)</text>
   <text x="740" y="560" fill="#94a3b8" font-size="9">Puppeteer (Scraping)</text>
 
-  <text x="550" y="590" fill="#475569" font-size="9" text-anchor="middle">Proyectos PFC PFC | Resultados Cuantitativos | Mayo 2026</text>
+  <text x="550" y="590" fill="#475569" font-size="9" text-anchor="middle">Proyecto PFC | Resultados Cuantitativos | Mayo 2026</text>
 </svg>
