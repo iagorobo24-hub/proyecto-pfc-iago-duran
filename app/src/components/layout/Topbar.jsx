@@ -3,7 +3,7 @@ import { NavLink, Link } from 'react-router-dom'
 import { useTheme } from '../../contexts/ThemeContext'
 import { useAuth } from '../../contexts/AuthContext'
 import { useToast } from '../../contexts/ToastContext'
-import { LogOut, LogIn, Menu, X } from 'lucide-react'
+import { LogOut, LogIn, Menu, X, House } from 'lucide-react'
 import styles from './Topbar.module.css'
 import { NAV_TOOLS } from '../../config/tools'
 
@@ -52,6 +52,11 @@ export default function Topbar() {
 
   return (
     <header className={styles.topbar}>
+      {/* Botón home — vuelve a la landing */}
+      <Link to="/" className={styles.homeBtn} title="Volver al inicio">
+        <House size={18} />
+      </Link>
+
       {/* Botón hamburguesa — solo visible en tablet/mobile */}
       <button
         className={styles.menuBtn}

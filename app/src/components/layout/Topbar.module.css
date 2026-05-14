@@ -16,6 +16,28 @@
   gap: var(--space-4);
 }
 
+/* ── Home Button ── */
+.homeBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background: var(--brand-primary);
+  color: var(--white);
+  border-radius: var(--radius-md);
+  transition: all var(--duration-fast) var(--ease-out);
+  text-decoration: none;
+  flex-shrink: 0;
+}
+
+.homeBtn:hover {
+  background: var(--brand-primary-dark);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+  color: var(--white);
+}
+
 /* ── Logo ─ */
 .logo {
   display: flex;
