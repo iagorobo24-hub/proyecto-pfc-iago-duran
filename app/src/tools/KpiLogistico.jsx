@@ -143,7 +143,7 @@ export default function KPILogistico() {
 
               <div className={styles.actionButtons}>
                 <Button variant="secondary" size="md" onClick={cargarEjemplo}>Cargar ejemplo</Button>
-                <Button variant="primary" size="lg" onClick={calcular} loading={cargando}>Calcular KPIs e informe IA →</Button>
+                <Button variant="primary" size="md" onClick={calcular} loading={cargando}>Calcular KPIs e informe IA →</Button>
               </div>
 
               {/* KPIs */}
