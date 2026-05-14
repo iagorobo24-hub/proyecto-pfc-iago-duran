@@ -64,8 +64,8 @@ export default function Topbar() {
       </button>
 
       <div className={styles.logo}>
-        <span className={styles.logoMarca}>Proyectos PFC</span>
-        <span className={styles.logoSuite}>Tools</span>
+        <span className={styles.logoMarca}>Proyecto PFC</span>
+        <span className={styles.logoSuite}>Iago Durán</span>
       </div>
 
       {/* Navegación inline — visible solo en desktop */}

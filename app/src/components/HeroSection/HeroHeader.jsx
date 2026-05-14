@@ -36,8 +36,8 @@ const HeroHeader = () => {
     >
       <div className={styles.container}>
         <div className={styles.logo}>
-          <span className={styles.logoBrand}>Proyectos PFC</span>
-          <span className={styles.logoProduct}>Tools</span>
+          <span className={styles.logoBrand}>Proyecto PFC</span>
+          <span className={styles.logoProduct}>Iago Durán</span>
         </div>
 
         <nav className={styles.nav}>
