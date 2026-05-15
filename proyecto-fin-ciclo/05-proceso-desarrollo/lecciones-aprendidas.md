@@ -162,6 +162,20 @@ Si pudiera volver atrás, hay cosas que haría distinto. Y otras que repetiría 
 
 ---
 
+### Error 9: Validator de parseAIJsonResponse con tipo incorrecto
+
+**Qué pasó:** Al implementar el enriquecimiento IA para fichas técnicas, la función `parseAIJsonResponse(text, validator)` recibía un callback que retornaba `array` (ej. `(p) => p.caracteristicas || p.aplicaciones`), pero la función esperaba `{ valid: boolean }`. Como `array.valid` es `undefined`, siempre se consideraba inválido y se descartaba toda respuesta IA.
+
+**Por qué no se detectó:** El error era silencioso — no había console.error ni UI de error. Simplemente la IA nunca mostraba datos. El fallback a la ficha básica ocultaba el problema.
+
+**Cómo se detectó:** Code review del flujo completo — se siguió el camino de los datos desde la API hasta el render.
+
+**Cómo se solucionó:** Eliminar el validator en los 3 lugares donde se usaba (el system prompt ya fuerza JSON estricto). Además se corrigió `Object.assign(fichaReal, parsed)` → `Object.assign(fichaReal, parsed.data)` que mergeaba el wrapper en vez de los datos reales.
+
+**Lección:** Cuando implementes un callback que valida datos, verifica que el tipo de retorno coincide con lo que espera el receptor. Los errores silenciosos son los más peligrosos — si no hay breakage visible, asumes que funciona.
+
+---
+
 ## Decisiones que funcionaron bien
 
 ### Acierto 1: Empezar con artefactos simples

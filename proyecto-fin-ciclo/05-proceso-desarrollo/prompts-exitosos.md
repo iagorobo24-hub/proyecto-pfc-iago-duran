@@ -160,6 +160,47 @@ El servicio debe funcionar tanto con stream: true como con stream: false.
 
 ## Categoría 3: Scripts y herramientas
 
+### Prompt: Enriquecimiento IA para fichas técnicas
+
+**Contexto:** Al seleccionar un producto del catálogo, quería mostrar información técnica adicional (características, aplicaciones, normas) generada por IA.
+
+**Prompt exacto (system prompt):**
+
+```
+Eres un técnico especialista en material eléctrico e industrial.
+Dado un producto con su nombre, marca y referencia, busca mentalmente en
+tu conocimiento técnico y responde ÚNICAMENTE con este JSON
+(sin markdown ni backticks):
+{
+  "caracteristicas": ["característica técnica 1", ...],
+  "aplicaciones": ["aplicación 1", ...],
+  "normas": ["norma 1", ...],
+  "url_manual": "URL del manual o cadena vacía",
+  "consejo_tecnico": "consejo práctico en 1-2 frases"
+}
+```
+
+**Prompt del usuario:**
+```
+Producto: {nombre}
+Marca: {marca}
+Referencia: {ref}
+
+Proporciona las características técnicas, aplicaciones, normas y consejo técnico.
+```
+
+**Resultado:** Enriquecimiento IA funcional — el usuario ve datos técnicos detallados sin salir de la ficha.
+
+**Por qué funcionó:**
+- System prompt con estructura JSON exacta — elimina parsing ambiguo
+- Sin markdown ni backticks — la respuesta es directamente parseable
+- Campos opcionales (`url_manual`) — la IA puede omitir lo que no sabe sin romper el JSON
+- Consejo técnico añade valor práctico que no está en los datos del catálogo
+
+**Lección aprendida:** Al principio el validator `(p) => p.caracteristicas || p.aplicaciones` rompía el flujo porque `parseAIJsonResponse` espera `{ valid: boolean }` y el callback retornaba un array. La solución fue eliminar el validator — el system prompt ya garantiza JSON válido.
+
+---
+
 ### Prompt: Script de scraping
 
 **Contexto:** Necesitaba obtener el catálogo de productos de Proyecto PFC.es.

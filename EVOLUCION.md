@@ -192,22 +192,43 @@ Evolución del sistema de logos:
 
 ---
 
-## Estado actual (Abril 2026)
+## Fase 13 — Enriquecimiento IA en Fichas Técnicas (Mayo 2026)
+
+**Objetivo:** Añadir información técnica generada por IA (características, aplicaciones, normas, manual, consejo) a la vista de ficha de producto.
+
+**Implementación:**
+- Extracción de función `cargarInfoIA(ficha)` compartida entre navegación jerárquica y búsqueda directa
+- System prompt con JSON estricto para `anthropic/claude-3.5-haiku` vía OpenRouter
+- Parseo con `parseAIJsonResponse` sin validator (el system prompt garantiza el formato)
+- Sanitización de URL con `sanitizeUrl()` de `anthropicService`
+- Estados cubiertos: loading → datos → fallback silencioso
+
+**Bug detectado en code review:**
+- El validator `(p) => p.caracteristicas || p.aplicaciones` retornaba `array`, pero `parseAIJsonResponse` esperaba `{ valid: boolean }`. Esto hacía que toda respuesta IA se descartara silenciosamente.
+- `Object.assign(fichaReal, parsed)` mergeaba el wrapper en vez de `parsed.data`
+- `buscarReferenciaDirecta` no llamaba a `setCargando(false)` antes de `return true`, dejando la UI en skeletons
+
+**Lección:** Los errores silenciosos son los más peligrosos — sin breakage visible, asumes que funciona. Code review sistemático del flujo completo de datos evitó que el enriquecimiento IA no funcionara nunca en producción.
+
+---
+
+## Estado actual (Mayo 2026)
 
 **Stack:**
 - React 19 + Vite 7 + React Router DOM v7
 - CSS Modules + IBM Plex Sans
 - Firebase Auth (Google Sign-In)
 - Firestore (datos por usuario + catálogo)
-- OpenRouter API (gateway IA gratuito)
+- OpenRouter API (gateway IA gratuito + enriquecimiento de fichas)
 - Vercel (deploy + edge functions)
 
-**7 módulos funcionales + landing page + autenticación + modo oscuro.**
+**7 módulos funcionales + landing page + autenticación + modo oscuro + enriquecimiento IA en fichas técnicas.**
 
 **Próximos pasos planificados:**
 - Migrar catálogo de Firestore a Supabase (problemas con límites de Firestore)
 - Mantener Firebase solo para OAuth
 - Actualizar catálogo con datos reales completos
+- Caché de resultados IA por producto (para evitar re-consultas)
 
 ---
 

@@ -134,7 +134,7 @@ Ecosistema de herramientas web para automatización industrial y logística, des
 | Ruta | Módulo | Descripción |
 |------|--------|-------------|
 | `/login` | **Login** | Autenticación con Google |
-| `/fichas` | **Fichas Técnicas** | Catálogo de productos con navegación jerárquica |
+| `/fichas` | **Fichas Técnicas** | Catálogo de productos con navegación jerárquica + enriquecimiento IA |
 | `/almacen` | **Simulador Almacén** | Simulación de ciclo completo de pedido |
 | `/incidencias` | **Dashboard Incidencias** | Registro y diagnóstico de fallos industriales |
 | `/kpi` | **KPI Logístico** | 6 KPIs con semáforo e informe ejecutivo |
@@ -162,7 +162,7 @@ proyecto-pfc-iago-duran/
 │   │   ├── data/                 # Catálogo, jerarquía, logos
 │   │   ├── hooks/                # Custom hooks (uno por módulo)
 │   │   ├── pages/                # LandingPage
-│   │   ├── services/             # API services
+│   │   ├── services/             # API services (anthropicService.js: callAnthropicAI, parseAIJsonResponse, sanitizeUrl, formatAIResponse)
 │   │   ├── styles/               # Variables CSS, animaciones
 │   │   ├── tools/                # 7 módulos (componentes de página)
 │   │   ├── App.jsx               # Router + rutas protegidas
@@ -220,6 +220,14 @@ El proyecto usa un sistema de diseño personalizado con variables CSS. **Nunca u
 - CSS Modules con estilos scoped (`import styles from './MiComponente.module.css'`)
 - Custom hooks por módulo (`hooks/useFichas.js`)
 - Context Pattern para estado global (`AuthContext`, `ThemeContext`, `ToastContext`)
+
+### Patrón de Enriquecimiento IA
+
+- `useNavegacionFichas.js` expone `aiFicha` (datos parseados) y `aiCargando` (estado de carga)
+- `cargarInfoIA(ficha)` es una función compartida dentro del hook que llama a `callAnthropicAI` y parsea con `parseAIJsonResponse`
+- Se dispara desde dos caminos: `seleccionarReferencia` (navegación jerárquica) y `buscarReferenciaDirecta` (búsqueda por referencia)
+- El system prompt fuerza JSON estricto — no necesita validator
+- `sanitizeUrl()` de `anthropicService` sanitiza la URL del manual antes de renderizar
 
 ### Patrones de Datos
 

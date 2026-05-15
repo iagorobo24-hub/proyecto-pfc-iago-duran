@@ -7,6 +7,7 @@ import { FULL_CATEGORY_INFO } from '../data/categoryMapping'
 import { MARCAS } from '../data/marcasLogos'
 import { getBrandLogo, getBrandColor, getBrandLogoData } from '../services/brandLogoService'
 import Button from '../components/ui/Button'
+import { sanitizeUrl } from '../services/anthropicService'
 import Input from '../components/ui/Input'
 import {
   CircleCenter,
@@ -455,7 +456,7 @@ export default function FichasTecnicas() {
                 {aiFicha.url_manual && (
                   <div className={styles.aiInfo__block}>
                     <h3 className={styles.aiInfo__title}>Manual / Documentación</h3>
-                    <a href={aiFicha.url_manual} target="_blank" rel="noopener noreferrer" className={styles.aiInfo__link}>
+                    <a href={sanitizeUrl(aiFicha.url_manual)} target="_blank" rel="noopener noreferrer" className={styles.aiInfo__link}>
                       {aiFicha.url_manual}
                     </a>
                   </div>

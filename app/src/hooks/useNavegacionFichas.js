@@ -22,10 +22,44 @@ export default function useNavegacionFichas() {
  const [error, setError] = useState(null)
  const [historial, setHistorial] = useState([])
 
- const [aiFicha, setAiFicha] = useState(null)
- const [aiCargando, setAiCargando] = useState(false)
+const [aiFicha, setAiFicha] = useState(null)
+const [aiCargando, setAiCargando] = useState(false)
 
- useEffect(() => {
+async function cargarInfoIA(ficha) {
+  setAiCargando(true)
+  const nombreProd = ficha.name || ficha.nombre || ''
+  const marcaProd = ficha.marca || ''
+  const refProd = ficha.ref_fabricante || ficha.ref || ''
+
+  try {
+    const { text } = await callAnthropicAI({
+      model: 'anthropic/claude-3.5-haiku',
+      max_tokens: 1000,
+      system: `Eres un técnico especialista en material eléctrico e industrial.
+Dado un producto con su nombre, marca y referencia, busca mentalmente en tu conocimiento técnico y responde ÚNICAMENTE con este JSON (sin markdown ni backticks):
+{
+  "caracteristicas": ["característica técnica 1", "característica técnica 2", "característica técnica 3", "característica técnica 4", "característica técnica 5"],
+  "aplicaciones": ["aplicación 1", "aplicación 2", "aplicación 3"],
+  "normas": ["norma 1", "norma 2"],
+  "url_manual": "URL donde encontrar el manual si la conoces, o cadena vacía",
+  "consejo_tecnico": "consejo práctico de instalación, selección o mantenimiento en 1-2 frases"
+}`,
+      messages: [
+        { role: 'user', content: `Producto: ${nombreProd}\nMarca: ${marcaProd}\nReferencia: ${refProd}\n\nProporciona las características técnicas, aplicaciones, normas y consejo técnico.` }
+      ],
+    })
+
+    const parsed = parseAIJsonResponse(text)
+    if (!parsed.error) {
+      setAiFicha(parsed.data)
+    }
+  } catch (e) {
+    console.warn('No se pudieron obtener datos por IA:', e)
+  }
+  setAiCargando(false)
+}
+
+useEffect(() => {
   async function load() {
    setCargando(true)
    try {
@@ -153,59 +187,27 @@ export default function useNavegacionFichas() {
  }, [])
 
  const seleccionarReferencia = useCallback(async (producto) => {
-  setCargando(true)
-  setError(null)
-  setAiFicha(null)
-  try {
-   let ficha = producto
-   if (typeof producto === 'string' || typeof producto === 'number') {
-    ficha = await catalogService.getProductoPorRef(producto)
-   }
-   if (ficha) {
-    setReferencia(ficha)
-    setPaso('ficha')
-    setHistorial(prev => [...prev, { paso: 'referencias' }])
-
-    // Buscar información técnica por IA
-    setAiCargando(true)
-    const nombreProd = ficha.name || ficha.nombre || ''
-    const marcaProd = ficha.marca || ''
-    const refProd = ficha.ref_fabricante || ficha.ref || ''
-    
-    try {
-     const { text } = await callAnthropicAI({
-      model: 'anthropic/claude-3.5-haiku',
-      max_tokens: 1000,
-      system: `Eres un técnico especialista en material eléctrico e industrial.
-Dado un producto con su nombre, marca y referencia, busca mentalmente en tu conocimiento técnico y responde ÚNICAMENTE con este JSON (sin markdown ni backticks):
-{
-  "caracteristicas": ["característica técnica 1", "característica técnica 2", "característica técnica 3", "característica técnica 4", "característica técnica 5"],
-  "aplicaciones": ["aplicación 1", "aplicación 2", "aplicación 3"],
-  "normas": ["norma 1", "norma 2"],
-  "url_manual": "URL donde encontrar el manual si la conoces, o cadena vacía",
-  "consejo_tecnico": "consejo práctico de instalación, selección o mantenimiento en 1-2 frases"
-}`,
-      messages: [
-        { role: 'user', content: `Producto: ${nombreProd}\nMarca: ${marcaProd}\nReferencia: ${refProd}\n\nProporciona las características técnicas, aplicaciones, normas y consejo técnico.` }
-      ],
-     })
-     
-     const parsed = parseAIJsonResponse(text, (p) => p.caracteristicas || p.aplicaciones)
-     if (!parsed.error) {
-      setAiFicha(parsed.data)
-     }
-    } catch (e) {
-     console.warn('No se pudieron obtener datos por IA:', e)
+   setCargando(true)
+   setError(null)
+   setAiFicha(null)
+   try {
+    let ficha = producto
+    if (typeof producto === 'string' || typeof producto === 'number') {
+     ficha = await catalogService.getProductoPorRef(producto)
     }
-    setAiCargando(false)
+    if (ficha) {
+     setReferencia(ficha)
+     setPaso('ficha')
+     setHistorial(prev => [...prev, { paso: 'referencias' }])
+     cargarInfoIA(ficha)
+    }
+   } catch (err) {
+    console.error('Error cargando ficha:', err)
+    setError('Error al cargar ficha')
+   } finally {
+    setCargando(false)
    }
-  } catch (err) {
-   console.error('Error cargando ficha:', err)
-   setError('Error al cargar ficha')
-  } finally {
-   setCargando(false)
-  }
- }, [])
+  }, [])
 
  const volver = useCallback(() => {
   const nuevoHistorial = [...historial]
@@ -227,27 +229,29 @@ Dado un producto con su nombre, marca y referencia, busca mentalmente en tu cono
  }, [])
 
  const buscarReferenciaDirecta = useCallback(async (refId) => {
-  if (!refId) return false
-  setCargando(true)
-  setAiFicha(null)
-  try {
-   const ficha = await catalogService.getProductoPorRef(refId)
-   if (ficha) {
-    setCategoria(ficha.familia || ficha.category)
-    setMarca(ficha.marca || ficha.brand)
-    setGama(ficha.gama || ficha.subfamily)
-    setTipo(ficha.tipo || ficha.type)
-    setReferencia(ficha)
-    setPaso('ficha')
-    setHistorial(prev => [...prev, { paso: 'categorias' }])
-    return true
+   if (!refId) return false
+   setCargando(true)
+   setAiFicha(null)
+   try {
+    const ficha = await catalogService.getProductoPorRef(refId)
+    if (ficha) {
+     setCategoria(ficha.familia || ficha.category)
+     setMarca(ficha.marca || ficha.brand)
+     setGama(ficha.gama || ficha.subfamily)
+     setTipo(ficha.tipo || ficha.type)
+     setReferencia(ficha)
+     setPaso('ficha')
+     setHistorial(prev => [...prev, { paso: 'categorias' }])
+     setCargando(false)
+     cargarInfoIA(ficha)
+     return true
+    }
+   } catch (e) {
+    console.error('Error en búsqueda directa:', e)
    }
-  } catch (e) {
-   console.error('Error en búsqueda directa:', e)
-  }
-  setCargando(false)
-  return false
- }, [])
+   setCargando(false)
+   return false
+  }, [])
 
  const breadcrumb = useMemo(() => {
   const b = []

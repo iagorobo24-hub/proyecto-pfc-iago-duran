@@ -56,9 +56,9 @@ export default function useFichasTecnicas() {
             messages: [{ role: 'user', content: 'Dame las características técnicas de este producto' }],
           })
           
-          const parsed = parseAIJsonResponse(text, (p) => p.caracteristicas || p.aplicaciones)
+          const parsed = parseAIJsonResponse(text)
           if (!parsed.error) {
-            Object.assign(fichaReal, parsed)
+            Object.assign(fichaReal, parsed.data)
           }
         } catch (e) {
           console.warn('No se pudieron obtener características:', e)
@@ -90,11 +90,15 @@ export default function useFichasTecnicas() {
         messages: [{ role: 'user', content: q }],
       })
 
-      const parsed = parseAIJsonResponse(text, (p) => p.error || (p.nombre && p.referencia))
-      if (parsed.error) {
-        setError(parsed)
+      const parsed = parseAIJsonResponse(text)
+      if (!parsed.error) {
+        if (parsed.data.error) {
+          setError(parsed.data)
+        } else {
+          setResultado(parsed.data)
+        }
       } else {
-        setResultado(parsed)
+        setError(parsed)
       }
     } catch (err) {
       setError({ error: true, mensaje: err.message || 'Error al procesar la respuesta.', sugerencias: [] })

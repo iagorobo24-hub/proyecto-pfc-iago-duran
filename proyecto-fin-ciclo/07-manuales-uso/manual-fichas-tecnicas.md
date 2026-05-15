@@ -141,6 +141,59 @@ Desde cualquier producto:
 
 ---
 
+## Información técnica por IA
+
+Al abrir la ficha de un producto, el sistema busca automáticamente información técnica adicional mediante inteligencia artificial. Esta información se muestra debajo de la ficha del producto.
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│  INFORMACIÓN TÉCNICA (IA)                                   │
+│                                                             │
+│  CARACTERÍSTICAS TÉCNICAS                                   │
+│  • Potencia: 10W                                            │
+│  • Tensión: 220-240V                                        │
+│  • Flujo luminoso: 806 lm                                   │
+│  • Temperatura color: 4000K                                 │
+│  • Casquillo: E27                                           │
+│                                                             │
+│  APLICACIONES                                               │
+│  • Iluminación general interior                             │
+│  • Sustitución de bombillas incandescentes                  │
+│  • Instalaciones domésticas y comerciales                   │
+│                                                             │
+│  NORMAS                                                     │
+│  • CE                                                        │
+│  • RoHS                                                     │
+│                                                             │
+│  MANUAL / DOCUMENTACIÓN                                     │
+│  https://www.ejemplo.com/manual-producto.pdf                │
+│                                                             │
+│  💡 Consejo técnico:                                        │
+│  Para máximo rendimiento, usa con regulador compatible LED. │
+└─────────────────────────────────────────────────────────────┘
+```
+
+### Funcionamiento
+
+| Estado | Qué ves |
+|--------|---------|
+| **Cargando** | Mensaje "Buscando información técnica..." |
+| **Completado** | Datos organizados en bloques (características, aplicaciones, normas, manual, consejo) |
+| **Sin datos** | Se muestra la descripción básica del producto |
+| **Error de IA** | Fallback silencioso — solo ves la ficha sin datos extra |
+
+### Campos que puede incluir
+
+- **Características técnicas**: especificaciones detalladas del producto
+- **Aplicaciones**: usos recomendados
+- **Normas**: certificaciones y normativas que cumple
+- **Manual**: enlace a documentación del fabricante
+- **Consejo técnico**: recomendación práctica de instalación o mantenimiento
+
+> La información IA se genera en el momento y es orientativa. Siempre verifica los datos con la documentación oficial del fabricante.
+
+---
+
 ## Logos de marcas
 
 El sistema incluye logos de las principales marcas:

@@ -1,54 +1,80 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { CheckCircle2, Circle, Loader2 } from 'lucide-react';
+import { ROADMAP_PHASES, ROADMAP_CATEGORIES } from '../../data/roadmapData';
 import styles from './styles/Roadmap.module.css';
 
-const Roadmap = () => {
-  const phases = [
-    {
-      version: 'v1.0.0',
-      title: 'Cimientos de la Suite',
-      status: 'done',
-      items: ['AppShell con Topbar y Sidebar', 'Router con 7 rutas protegidas', 'Sistema de diseño (variables CSS)', 'Tipografía IBM Plex Sans global']
-    },
-    {
-      version: 'v2.0.0',
-      title: 'Rediseño Completo',
-      status: 'done',
-      items: ['Componentes UI (Button, Badge, Input)', 'Fichas Técnicas reescrito', '6 herramientas estandarizadas', 'SONEX con IA + flujo integrado']
-    },
-    {
-      version: 'v3.0.0',
-      title: 'Auth y Producción',
-      status: 'done',
-      items: ['Firebase Auth (Google Sign-In)', 'Responsive con hamburguesa ARIA', '14 tests E2E con Playwright', 'Deploy en Vercel + Edge Functions']
-    },
-    {
-      version: 'Actual',
-      title: 'Migración a Firestore',
-      status: 'progress',
-      items: ['Catálogo 64k+ referencias reales', 'Jerarquía 4 niveles por marca', 'Code splitting (React.lazy)', 'Cache 3 niveles + Skeletons']
-    },
-    {
-      version: 'Próximo',
-      title: 'Landing y Accesibilidad',
-      status: 'pending',
-      items: ['Hero Section con secciones nuevas', 'WCAG 2.2 completo', 'Sync masiva Firestore completa', 'Eliminación catálogo estático']
-    }
-  ];
+const statusConfig = {
+  done: { icon: CheckCircle2, label: 'Completado', className: 'done' },
+  progress: { icon: Loader2, label: 'En progreso', className: 'progress' },
+  pending: { icon: Circle, label: 'Pendiente', className: 'pending' },
+}
 
-  const container = {
-    hidden: { opacity: 0 },
-    show: {
-      opacity: 1,
-      transition: { staggerChildren: 0.1 }
-    }
-  };
+function PhaseCard({ phase, index }) {
+  const StatusIcon = statusConfig[phase.status].icon
+  const cat = ROADMAP_CATEGORIES[phase.category]
+  const catColor = `var(${cat.color})`
 
-  const item = {
-    hidden: { opacity: 0, x: -20 },
-    show: { opacity: 1, x: 0, transition: { duration: 0.5, ease: 'easeOut' } }
-  };
+  return (
+    <motion.div
+      className={styles.phaseCard}
+      variants={item}
+      style={{ '--cat-color': catColor }}
+    >
+      <div className={styles.phaseHeader}>
+        <div className={styles.phaseIcon} style={{ color: catColor, borderColor: catColor }}>
+          <StatusIcon size={20} className={phase.status === 'progress' ? styles.spinning : ''} />
+        </div>
+        <div className={styles.phaseInfo}>
+          <div className={styles.phaseMeta}>
+            <span className={styles.phaseLabel}>{phase.version}</span>
+            <span className={styles.phaseDate}>{phase.date}</span>
+          </div>
+          <h3 className={styles.phaseTitle}>{phase.title}</h3>
+        </div>
+        <span className={`${styles.statusBadge} ${styles[phase.status]}`}>
+          {statusConfig[phase.status].label}
+        </span>
+      </div>
+      <ul className={styles.itemsList}>
+        {phase.items.map((item, j) => (
+          <li key={j} className={styles.item}>
+            {phase.status === 'done' && <CheckCircle2 size={12} />}
+            {phase.status === 'progress' && <span className={styles.dot} />}
+            {phase.status === 'pending' && <span className={`${styles.dot} ${styles.dotPending}`} />}
+            {item}
+          </li>
+        ))}
+      </ul>
+    </motion.div>
+  )
+}
+
+const container = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: { staggerChildren: 0.08 },
+  },
+}
+
+const item = {
+  hidden: { opacity: 0, x: -20 },
+  show: { opacity: 1, x: 0, transition: { duration: 0.5, ease: 'easeOut' } },
+}
+
+export default function Roadmap() {
+  const categories = Object.entries(ROADMAP_CATEGORIES)
+    .sort(([, a], [, b]) => a.order - b.order)
+    .map(([key, cat]) => ({
+      key,
+      ...cat,
+      phases: ROADMAP_PHASES.filter(p => p.category === key),
+    }))
+    .filter(c => c.phases.length > 0)
+
+  const doneCount = ROADMAP_PHASES.filter(p => p.status === 'done').length
+  const totalCount = ROADMAP_PHASES.length
 
   return (
     <section className={styles.section}>
@@ -63,51 +89,38 @@ const Roadmap = () => {
           <span className={styles.badge}>Evolución del proyecto</span>
           <h2 className={styles.title}>Roadmap</h2>
           <p className={styles.subtitle}>
-            De los cimientos a la producción. Cada fase añade capacidades nuevas.
+            {doneCount} de {totalCount} fases completadas. Cada fase suma capacidades nuevas al ecosistema.
           </p>
+          <div className={styles.progressBar}>
+            <div
+              className={styles.progressFill}
+              style={{ width: `${(doneCount / totalCount) * 100}%` }}
+            />
+          </div>
         </motion.header>
 
-        <motion.div
-          className={styles.timeline}
-          variants={container}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true }}
-        >
-          {phases.map((p, i) => (
-            <motion.div key={i} className={styles.phaseCard} variants={item}>
-              <div className={styles.phaseHeader}>
-                <div className={styles.phaseIcon}>
-                  {p.status === 'done' && <CheckCircle2 size={20} />}
-                  {p.status === 'progress' && <Loader2 size={20} className={styles.spinning} />}
-                  {p.status === 'pending' && <Circle size={20} />}
-                </div>
-                <div className={styles.phaseInfo}>
-                  <span className={styles.phaseLabel}>{p.version}</span>
-                  <h3 className={styles.phaseTitle}>{p.title}</h3>
-                </div>
-                <span className={`${styles.statusBadge} ${styles[p.status]}`}>
-                  {p.status === 'done' && 'Completado'}
-                  {p.status === 'progress' && 'En progreso'}
-                  {p.status === 'pending' && 'Pendiente'}
-                </span>
-              </div>
-              <ul className={styles.itemsList}>
-                {p.items.map((item, j) => (
-                  <li key={j} className={styles.item}>
-                    {p.status === 'done' && <CheckCircle2 size={12} />}
-                    {p.status === 'progress' && <span className={styles.dot} />}
-                    {p.status === 'pending' && <span className={`${styles.dot} ${styles.dotPending}`} />}
-                    {item}
-                  </li>
-                ))}
-              </ul>
+        {categories.map(cat => (
+          <div key={cat.key} className={styles.categoryGroup}>
+            <div className={styles.categoryHeader} style={{ '--cat-color': `var(${cat.color})` }}>
+              <span className={styles.categoryIcon}>{cat.icon}</span>
+              <h3 className={styles.categoryTitle}>{cat.label}</h3>
+              <span className={styles.categoryCount}>{cat.phases.length} fases</span>
+            </div>
+
+            <motion.div
+              className={styles.timeline}
+              variants={container}
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true }}
+            >
+              {cat.phases.map((phase, i) => (
+                <PhaseCard key={phase.id} phase={phase} index={i} />
+              ))}
             </motion.div>
-          ))}
-        </motion.div>
+          </div>
+        ))}
       </div>
     </section>
-  );
-};
-
-export default Roadmap;
+  )
+}

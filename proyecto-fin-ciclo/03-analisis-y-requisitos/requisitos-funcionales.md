@@ -70,6 +70,14 @@ Esto es lo que la aplicación tiene que poder hacer, visto desde el punto de vis
 - Referencia del fabricante
 - Enlace a web del fabricante
 
+### RF-02.6
+> El sistema debe enriquecer la ficha con información técnica generada por IA
+
+- Al seleccionar un producto, se consulta automáticamente a la IA
+- Se muestran: características técnicas, aplicaciones, normas, URL del manual y consejo técnico
+- La información IA es adicional — la ficha base se muestra siempre
+- Si la IA falla o tarda, la ficha se muestra sin datos extra
+
 ---
 
 ## RF-03: Simulador de almacén
