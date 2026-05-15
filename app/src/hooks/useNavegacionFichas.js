@@ -161,14 +161,19 @@ export default function useNavegacionFichas() {
   setHistorial(prev => [...prev, { paso: 'tipos' }])
  }, [])
 
- const seleccionarReferencia = useCallback(async (refId) => {
+ const seleccionarReferencia = useCallback(async (producto) => {
   setCargando(true)
   setError(null)
   try {
-   const ficha = await catalogService.getProductoPorRef(refId)
-   setReferencia(ficha)
-   setPaso('ficha')
-   setHistorial(prev => [...prev, { paso: 'referencias' }])
+   let ficha = producto
+   if (typeof producto === 'string' || typeof producto === 'number') {
+    ficha = await catalogService.getProductoPorRef(producto)
+   }
+   if (ficha) {
+    setReferencia(ficha)
+    setPaso('ficha')
+    setHistorial(prev => [...prev, { paso: 'referencias' }])
+   }
   } catch (err) {
    console.error('Error cargando ficha:', err)
    setError('Error al cargar ficha')
