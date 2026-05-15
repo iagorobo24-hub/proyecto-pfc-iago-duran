@@ -18,6 +18,18 @@
   --color-brand-soft: rgba(0, 48, 135, 0.08);
   --color-brand-border: rgba(0, 48, 135, 0.2);
   --color-shell: #1f2937;
+
+  /* ── Color surface / bg / text ── */
+  --color-surface: #ffffff;
+  --color-bg: #f4f6fb;
+  --color-bg-alt: #f0f2f8;
+  --color-border: #e2e5ef;
+  --color-border-light: #eef0f6;
+  --color-text: #0a0e1a;
+  --color-text-secondary: #5c6488;
+  --color-text-tertiary: #8b92b0;
+  --color-error: #e04050;
+  --color-error-soft: rgba(224, 64, 80, 0.08);
   --blue-900: #0f172a;
   --blue-800: #003087;
   --blue-700: #0044b3;
@@ -164,6 +176,17 @@
   --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.3);
   --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.3);
   --shadow-xl: 0 16px 32px rgba(0, 0, 0, 0.3);
+
+  --color-surface: #141828;
+  --color-bg: #0f1117;
+  --color-bg-alt: #1a2035;
+  --color-border: #1e293b;
+  --color-border-light: #1a2035;
+  --color-text: #f1f5f9;
+  --color-text-secondary: #94a3b8;
+  --color-text-tertiary: #475569;
+  --color-error: #f87171;
+  --color-error-soft: rgba(248, 113, 113, 0.1);
 }
 
 /* ═══════════════════════════════════════════════════════
