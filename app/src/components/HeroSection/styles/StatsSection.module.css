@@ -23,6 +23,8 @@
   font-size: var(--text-3xl);
   font-weight: var(--font-bold);
   color: var(--brand-blue);
+  width: 100%;
+  text-align: center;
 }
 
 .statLabel {
@@ -32,6 +34,7 @@
   text-transform: uppercase;
   letter-spacing: 0.1em;
   text-align: left;
+  width: 100%;
 }
 
 @media (max-width: 1024px) {

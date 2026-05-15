@@ -87,7 +87,9 @@ export async function getCategorias() {
     const { data, error } = await supabase
       .from('products')
       .select('familia')
-      .not('familia', 'is', null);
+      .not('familia', 'is', null)
+      .order('id')
+      .limit(5000);
     
     if (error) {
       console.error('❌ Error:', error);
@@ -275,7 +277,7 @@ export async function getProductosPorFiltro(familia, marca, gama, tipo) {
     
     let query = supabase
       .from('products')
-      .select('id, ref_fabricante, name, imagen, marca, familia, subfamilia, tipo')
+      .select('id, ref_fabricante, name, imagen, marca, familia, subfamilia, tipo, precio')
       .eq('familia', familia)
       .eq('subfamilia', gama)
       .eq('tipo', tipo)
@@ -306,7 +308,7 @@ export async function getProductoPorRef(ref) {
       .from('products')
       .select('*')
       .eq('ref_fabricante', ref)
-      .single();
+      .maybeSingle();
     
     if (error) throw error;
     return data;

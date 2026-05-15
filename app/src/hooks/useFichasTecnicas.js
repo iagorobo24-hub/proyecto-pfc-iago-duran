@@ -113,7 +113,7 @@ export default function useFichasTecnicas() {
     precio_orientativo: p.precio ? `${p.precio} €` : 'Consultar',
     precio: p.precio,
     descripcion: p.name || p.nombre,
-    pdf_url: p.pdf || p.pdfUrl,
+    pdf_url: p.pdf_url || p.pdf || p.pdfUrl,
     esReal: true
   })
 

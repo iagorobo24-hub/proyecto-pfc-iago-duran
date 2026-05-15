@@ -354,12 +354,12 @@ export default function FichasTecnicas() {
               <>
                 <OrbitRow>
                   {referenciasDisponibles.slice(0, 2).map(p => (
-                    <div key={p.ref} role="listitem">
+                    <div key={p.ref_fabricante} role="listitem">
                       <RefCard
-                        code={p.ref}
-                        desc={p.desc}
+                        code={p.ref_fabricante}
+                        desc={p.name}
                         price={p.precio}
-                        onClick={() => seleccionarReferencia(p.ref)}
+                        onClick={() => seleccionarReferencia(p.ref_fabricante)}
                       />
                     </div>
                   ))}
@@ -367,12 +367,12 @@ export default function FichasTecnicas() {
                 {referenciasDisponibles.length > 2 && (
                   <OrbitRow>
                     {referenciasDisponibles.slice(2, 6).map(p => (
-                      <div key={p.ref} role="listitem">
+                      <div key={p.ref_fabricante} role="listitem">
                         <RefCard
-                          code={p.ref}
-                          desc={p.desc}
+                          code={p.ref_fabricante}
+                          desc={p.name}
                           price={p.precio}
-                          onClick={() => seleccionarReferencia(p.ref)}
+                          onClick={() => seleccionarReferencia(p.ref_fabricante)}
                         />
                       </div>
                     ))}
