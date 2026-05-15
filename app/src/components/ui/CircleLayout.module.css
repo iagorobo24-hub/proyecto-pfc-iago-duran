@@ -190,7 +190,8 @@
   transition: all 0.25s var(--ease-out);
   width: 100%;
   max-width: 500px;
-  min-width: 300px;
+  min-width: 280px;
+  box-sizing: border-box;
 }
 
 .gamaCard:hover {
@@ -234,7 +235,13 @@
   transition: all 0.25s var(--ease-out);
   width: 100%;
   max-width: 560px;
-  min-width: 300px;
+  min-width: 280px;
+  box-sizing: border-box;
+}
+
+.refCard__info {
+  flex: 1;
+  min-width: 0;
 }
 
 .refCard:hover {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Linkedin, AppWindow, ChevronDown, BarChart3, Wrench, FileText, Bot, GraduationCap, Target, Cpu, FileSpreadsheet } from 'lucide-react';
@@ -15,6 +15,22 @@ const SECTION_LINKS = [
 
 const HeroHeader = () => {
   const [sectionsOpen, setSectionsOpen] = useState(false);
+  const wrapperRef = React.useRef(null);
+
+  useEffect(() => {
+    if (!sectionsOpen) return;
+    const handler = (e) => {
+      if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
+        setSectionsOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handler);
+    document.addEventListener('touchstart', handler);
+    return () => {
+      document.removeEventListener('mousedown', handler);
+      document.removeEventListener('touchstart', handler);
+    };
+  }, [sectionsOpen]);
 
   const scrollToSection = (id) => {
     const el = document.getElementById(id);
@@ -44,10 +60,15 @@ const HeroHeader = () => {
           {/* Secciones dropdown */}
           <div
             className={styles.sectionsWrapper}
+            ref={wrapperRef}
             onMouseEnter={() => setSectionsOpen(true)}
             onMouseLeave={() => setSectionsOpen(false)}
           >
-            <button className={styles.sectionsBtn} aria-expanded={sectionsOpen}>
+            <button
+              className={styles.sectionsBtn}
+              aria-expanded={sectionsOpen}
+              onClick={() => setSectionsOpen(v => !v)}
+            >
               <span>Secciones</span>
               <ChevronDown size={14} className={`${styles.chevron} ${sectionsOpen ? styles.chevronOpen : ''}`} />
             </button>

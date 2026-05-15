@@ -218,6 +218,7 @@
   width: 100%;
   max-width: 500px;
   min-width: 280px;
+  box-sizing: border-box;
 }
 
 .tipoCard:hover {
