@@ -1,15 +1,11 @@
-/**
- * Hook para navegación jerárquica conectado a Supabase
- * Flujo: Categoría → Marca → Gama → Tipo → Referencia
- */
 import { useState, useCallback, useMemo, useEffect } from 'react'
 import catalogService from '../services/catalogService'
 import { useToast } from '../contexts/ToastContext'
+import { callAnthropicAI, parseAIJsonResponse } from '../services/anthropicService'
 
 export default function useNavegacionFichas() {
  const { toast } = useToast()
  
- // Estados
  const [paso, setPaso] = useState('categorias')
  const [categorias, setCategorias] = useState([])
  const [categoria, setCategoria] = useState(null)
@@ -26,15 +22,14 @@ export default function useNavegacionFichas() {
  const [error, setError] = useState(null)
  const [historial, setHistorial] = useState([])
 
- // Cargar categorías al montar
+ const [aiFicha, setAiFicha] = useState(null)
+ const [aiCargando, setAiCargando] = useState(false)
+
  useEffect(() => {
   async function load() {
    setCargando(true)
    try {
-    // Inicializar catálogo primero
     await catalogService.initCatalog()
-    
-    // Luego cargar categorías
     const cats = await catalogService.getCategorias()
     setCategorias(cats)
    } catch (err) {
@@ -47,7 +42,6 @@ export default function useNavegacionFichas() {
   load()
  }, [])
 
- // Cargar marcas al seleccionar categoría
  useEffect(() => {
   if (!categoria) return;
   async function load() {
@@ -56,9 +50,6 @@ export default function useNavegacionFichas() {
    try {
     const data = await catalogService.getMarcasPorCategoria(categoria)
     setMarcasDisponibles(data)
-    if (data.length === 0) {
-     console.log('ℹ️', categoria, 'no tiene marcas')
-    }
    } catch (err) {
     console.error('Error cargando marcas:', err)
     setError('Error al cargar marcas')
@@ -69,7 +60,6 @@ export default function useNavegacionFichas() {
   load()
  }, [categoria])
 
- // Cargar gamas al seleccionar marca
  useEffect(() => {
   if (!categoria || !marca) return;
   async function load() {
@@ -88,7 +78,6 @@ export default function useNavegacionFichas() {
   load()
  }, [categoria, marca])
 
- // Cargar tipos al seleccionar gama
  useEffect(() => {
   if (!categoria || !marca || !gama) return;
   async function load() {
@@ -107,7 +96,6 @@ export default function useNavegacionFichas() {
   load()
  }, [categoria, marca, gama])
 
- // Cargar productos al seleccionar tipo
  useEffect(() => {
   if (!categoria || !marca || !gama || !tipo) return;
   async function load() {
@@ -126,13 +114,13 @@ export default function useNavegacionFichas() {
   load()
  }, [categoria, marca, gama, tipo])
 
- // Funciones de navegación
  const seleccionarCategoria = useCallback((catId) => {
   setCategoria(catId)
   setMarca(null)
   setGama(null)
   setTipo(null)
   setReferencia(null)
+  setAiFicha(null)
   setPaso('marcas')
   setHistorial(prev => [...prev, { paso: 'categorias' }])
  }, [])
@@ -142,6 +130,7 @@ export default function useNavegacionFichas() {
   setGama(null)
   setTipo(null)
   setReferencia(null)
+  setAiFicha(null)
   setPaso('gamas')
   setHistorial(prev => [...prev, { paso: 'marcas' }])
  }, [])
@@ -150,6 +139,7 @@ export default function useNavegacionFichas() {
   setGama(gamaNombre)
   setTipo(null)
   setReferencia(null)
+  setAiFicha(null)
   setPaso('tipos')
   setHistorial(prev => [...prev, { paso: 'gamas' }])
  }, [])
@@ -157,6 +147,7 @@ export default function useNavegacionFichas() {
  const seleccionarTipo = useCallback((tipoNombre) => {
   setTipo(tipoNombre)
   setReferencia(null)
+  setAiFicha(null)
   setPaso('referencias')
   setHistorial(prev => [...prev, { paso: 'tipos' }])
  }, [])
@@ -164,6 +155,7 @@ export default function useNavegacionFichas() {
  const seleccionarReferencia = useCallback(async (producto) => {
   setCargando(true)
   setError(null)
+  setAiFicha(null)
   try {
    let ficha = producto
    if (typeof producto === 'string' || typeof producto === 'number') {
@@ -173,6 +165,39 @@ export default function useNavegacionFichas() {
     setReferencia(ficha)
     setPaso('ficha')
     setHistorial(prev => [...prev, { paso: 'referencias' }])
+
+    // Buscar información técnica por IA
+    setAiCargando(true)
+    const nombreProd = ficha.name || ficha.nombre || ''
+    const marcaProd = ficha.marca || ''
+    const refProd = ficha.ref_fabricante || ficha.ref || ''
+    
+    try {
+     const { text } = await callAnthropicAI({
+      model: 'anthropic/claude-3.5-haiku',
+      max_tokens: 1000,
+      system: `Eres un técnico especialista en material eléctrico e industrial.
+Dado un producto con su nombre, marca y referencia, busca mentalmente en tu conocimiento técnico y responde ÚNICAMENTE con este JSON (sin markdown ni backticks):
+{
+  "caracteristicas": ["característica técnica 1", "característica técnica 2", "característica técnica 3", "característica técnica 4", "característica técnica 5"],
+  "aplicaciones": ["aplicación 1", "aplicación 2", "aplicación 3"],
+  "normas": ["norma 1", "norma 2"],
+  "url_manual": "URL donde encontrar el manual si la conoces, o cadena vacía",
+  "consejo_tecnico": "consejo práctico de instalación, selección o mantenimiento en 1-2 frases"
+}`,
+      messages: [
+        { role: 'user', content: `Producto: ${nombreProd}\nMarca: ${marcaProd}\nReferencia: ${refProd}\n\nProporciona las características técnicas, aplicaciones, normas y consejo técnico.` }
+      ],
+     })
+     
+     const parsed = parseAIJsonResponse(text, (p) => p.caracteristicas || p.aplicaciones)
+     if (!parsed.error) {
+      setAiFicha(parsed.data)
+     }
+    } catch (e) {
+     console.warn('No se pudieron obtener datos por IA:', e)
+    }
+    setAiCargando(false)
    }
   } catch (err) {
    console.error('Error cargando ficha:', err)
@@ -197,12 +222,14 @@ export default function useNavegacionFichas() {
   setGama(null)
   setTipo(null)
   setReferencia(null)
+  setAiFicha(null)
   setHistorial([])
  }, [])
 
  const buscarReferenciaDirecta = useCallback(async (refId) => {
   if (!refId) return false
   setCargando(true)
+  setAiFicha(null)
   try {
    const ficha = await catalogService.getProductoPorRef(refId)
    if (ficha) {
@@ -235,6 +262,7 @@ export default function useNavegacionFichas() {
   paso, categoria, marca, gama, tipo, referencia, historial, cargando, error,
   categorias, marcasDisponibles, gamasDisponibles, tiposDisponibles, referenciasDisponibles,
   breadcrumb, seleccionarCategoria, seleccionarMarca, seleccionarGama, seleccionarTipo,
-  seleccionarReferencia, volver, reiniciar, buscarReferenciaDirecta
+  seleccionarReferencia, volver, reiniciar, buscarReferenciaDirecta,
+  aiFicha, aiCargando
  }
 }
