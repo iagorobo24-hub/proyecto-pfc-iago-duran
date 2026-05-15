@@ -214,6 +214,16 @@
 }
 
 /* ── Hamburguesa (mobile) ── */
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
 .menuBtn {
   display: none;
   align-items: center;
@@ -262,6 +272,8 @@
     padding: var(--space-2);
     z-index: var(--z-dropdown);
     animation: slideDown 0.3s var(--ease-out) both;
+    max-height: calc(100vh - var(--topbar-h));
+    overflow-y: auto;
   }
 
   .dropdownItem {
@@ -297,6 +309,47 @@
 
   .userName {
     max-width: 80px;
+  }
+}
+
+@media (max-width: 640px) {
+  .topbar {
+    padding: 0 var(--space-4);
+    padding-left: calc(var(--space-4) + var(--safe-left));
+    padding-right: calc(var(--space-4) + var(--safe-right));
+  }
+
+  .homeBtn {
+    width: 40px;
+    height: 40px;
+  }
+
+  .menuBtn {
+    width: 40px;
+    height: 40px;
+  }
+
+  .dropdownItem {
+    padding: var(--space-4);
+    min-height: var(--touch-target);
+    display: flex;
+    align-items: center;
+  }
+
+  .themeToggle span:last-child {
+    display: none;
+  }
+
+  .themeToggle {
+    padding: var(--space-2);
+    width: 40px;
+    height: 40px;
+    justify-content: center;
+  }
+
+  .logoutBtn {
+    width: 40px;
+    height: 40px;
   }
 }
 

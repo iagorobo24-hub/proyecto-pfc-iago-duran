@@ -23,10 +23,23 @@
 }
 
 @media (max-width: 1024px) {
+  .heroContainer {
+    padding-top: calc(var(--topbar-h) + var(--space-4));
+  }
   .mainWrapper {
     grid-template-columns: 1fr;
-    gap: var(--space-16);
-    padding: var(--space-12) var(--space-6);
+    gap: var(--space-8);
+    padding: var(--space-8) var(--space-6);
     text-align: center;
+  }
+}
+
+@media (max-width: 640px) {
+  .heroContainer {
+    padding-top: calc(var(--topbar-h) + var(--space-2));
+  }
+  .mainWrapper {
+    padding: var(--space-4) var(--space-4);
+    gap: var(--space-4);
   }
 }

@@ -13,3 +13,9 @@
   background: var(--brand-blue);
   filter: blur(1px);
 }
+
+@media (max-width: 640px) {
+  .particlesContainer {
+    display: none;
+  }
+}

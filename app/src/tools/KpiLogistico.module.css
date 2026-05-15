@@ -218,3 +218,47 @@
 .emptyState__text { font-size: var(--text-md); color: var(--gray-400); max-width: 360px; line-height: 1.6; }
 
 @media (max-width: 768px) { .main__content { padding: var(--space-6); } .kpiGrid { grid-template-columns: repeat(2, 1fr); } }
+
+@media (max-width: 640px) {
+  .main__content { padding: var(--space-4); }
+
+  .pageTitle {
+    font-size: var(--text-xl);
+  }
+
+  .formGrid {
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
+  }
+
+  .formWrapper {
+    max-width: 100%;
+  }
+
+  .kpiGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-3);
+  }
+
+  .kpiCard {
+    padding: var(--space-4);
+  }
+
+  .kpiCard__value {
+    font-size: var(--text-xl);
+  }
+
+  .informeCard {
+    padding: var(--space-4);
+  }
+
+  .historialItem {
+    padding: var(--space-3) var(--space-4);
+  }
+
+  .historialItem__header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-1);
+  }
+}

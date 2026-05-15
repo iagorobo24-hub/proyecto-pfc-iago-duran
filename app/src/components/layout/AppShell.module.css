@@ -3,10 +3,12 @@
   grid-template-rows: var(--topbar-h) 1fr;
   grid-template-columns: var(--sidebar-w) 1fr;
   height: 100vh;
+  height: 100dvh;
   overflow: hidden;
   font-family: var(--font-sans);
   background: var(--color-bg);
   transition: grid-template-columns var(--duration-normal) var(--ease-out);
+  padding-bottom: var(--safe-bottom);
 }
 
 .topbar {
@@ -60,6 +62,12 @@
   overflow: hidden;
 }
 
+@media (pointer: coarse) {
+  .collapseBtn {
+    min-height: var(--touch-target);
+  }
+}
+
 /* ============================================================
    RESPONSIVE: Tablet y Mobile (≤1024px)
    ============================================================ */
@@ -70,5 +78,11 @@
 
   .main {
     grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 640px) {
+  .main {
+    padding-bottom: var(--safe-bottom);
   }
 }

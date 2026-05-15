@@ -58,9 +58,9 @@
   --text-md: 0.875rem;
   --text-lg: 1rem;
   --text-xl: 1.25rem;
-  --text-2xl: 1.5rem;
-  --text-3xl: 1.75rem;
-  --text-4xl: 2.25rem;
+  --text-2xl: clamp(1.125rem, 3.5vw, 1.5rem);
+  --text-3xl: clamp(1.25rem, 4.5vw, 1.75rem);
+  --text-4xl: clamp(1.5rem, 6vw, 2.25rem);
 
   --font-light: 300;
   --font-normal: 400;
@@ -103,6 +103,15 @@
   --topbar-h: 64px;
   --sidebar-w: 300px;
   --main-max: 1200px;
+
+  /* ── Responsive ─ */
+  --bp-mobile: 640px;
+  --bp-tablet: 1024px;
+  --touch-target: 44px;
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
 
   /* ── Transiciones ── */
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
@@ -250,3 +259,34 @@ img { max-width: 100%; height: auto; display: block; }
 
 /* Selection */
 ::selection { background: var(--blue-50); color: var(--blue-800); }
+
+/* ── Responsive utilities ── */
+@media (max-width: 1024px) {
+  :root { --topbar-h: 56px; }
+}
+@media (max-width: 640px) {
+  :root { --topbar-h: 48px; }
+  html { font-size: 15px; }
+}
+
+/* Touch targets mínimos WCAG */
+@media (pointer: coarse) {
+  button, a, input, select, textarea, [role="button"] {
+    min-height: var(--touch-target);
+  }
+}
+
+/* Reducir animaciones si el usuario lo prefiere */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Safe area padding para notches */
+@supports (padding: env(safe-area-inset-bottom)) {
+  .safe-bottom { padding-bottom: var(--safe-bottom); }
+  .safe-top { padding-top: var(--safe-top); }
+}

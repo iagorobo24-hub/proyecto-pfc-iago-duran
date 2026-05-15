@@ -138,4 +138,31 @@
   .section {
     padding: var(--space-12) var(--space-4);
   }
+
+  .header {
+    margin-bottom: var(--space-8);
+  }
+
+  .title {
+    font-size: var(--text-2xl);
+  }
+
+  .stepCard {
+    padding: var(--space-6);
+  }
+
+  .stepNumber {
+    font-size: var(--text-2xl);
+    top: var(--space-3);
+    right: var(--space-4);
+  }
+
+  .stepIcon {
+    width: 44px;
+    height: 44px;
+  }
+
+  .stepTitle {
+    font-size: var(--text-md);
+  }
 }

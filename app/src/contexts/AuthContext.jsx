@@ -14,6 +14,12 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
+    // Soporte para E2E tests con Playwright
+    if (window.__PW_MOCK_USER__) {
+      setUser(window.__PW_MOCK_USER__)
+      setLoading(false)
+      return
+    }
     // Verificar sesión existente en Supabase
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null)

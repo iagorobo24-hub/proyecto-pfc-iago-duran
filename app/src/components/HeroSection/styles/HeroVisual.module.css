@@ -303,3 +303,7 @@
   .card1, .card2, .card3 { display: none; }
   .visualContainer { padding: var(--space-4) 0; }
 }
+
+@media (max-width: 640px) {
+  .visualContainer { display: none; }
+}

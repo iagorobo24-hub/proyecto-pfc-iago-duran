@@ -40,3 +40,15 @@
     padding: var(--space-8) var(--space-4);
   }
 }
+
+@media (max-width: 640px) {
+  .statsWrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-6);
+    padding: var(--space-6) var(--space-4);
+  }
+  .statValue {
+    font-size: clamp(1.25rem, 5vw, var(--text-3xl));
+  }
+}

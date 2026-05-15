@@ -123,8 +123,29 @@
     padding: var(--space-12) var(--space-4);
   }
 
+  .header {
+    margin-bottom: var(--space-8);
+  }
+
+  .title {
+    font-size: var(--text-2xl);
+  }
+
+  .subtitle {
+    font-size: var(--text-sm);
+  }
+
   .toolsGrid {
     grid-template-columns: 1fr;
     gap: var(--space-4);
+  }
+
+  .toolCard {
+    padding: var(--space-4);
+  }
+
+  .toolIcon {
+    width: 40px;
+    height: 40px;
   }
 }

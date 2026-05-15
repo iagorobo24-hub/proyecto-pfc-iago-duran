@@ -406,3 +406,53 @@
     padding: var(--space-6);
   }
 }
+
+@media (max-width: 640px) {
+  .main__content {
+    padding: var(--space-4);
+  }
+
+  .pageTitle {
+    font-size: var(--text-xl);
+  }
+
+  .pageHeader {
+    margin-bottom: var(--space-4);
+  }
+
+  .searchBar {
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .tipoCard {
+    padding: var(--space-4);
+    min-width: unset;
+  }
+
+  .tipoCard__name {
+    font-size: var(--text-sm);
+  }
+
+  .circleLayout {
+    padding: var(--space-4) 0;
+    gap: var(--space-6);
+  }
+
+  .aiCard {
+    padding: var(--space-4);
+  }
+
+  .aiCard__name {
+    font-size: var(--text-lg);
+  }
+
+  .quickAccess__wrap {
+    gap: var(--space-1);
+  }
+
+  .quickAccess__btn {
+    padding: var(--space-1) var(--space-2);
+    font-size: var(--text-xs);
+  }
+}

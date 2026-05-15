@@ -84,4 +84,20 @@
   .section {
     padding: var(--space-12) var(--space-4);
   }
+
+  .header {
+    margin-bottom: var(--space-6);
+  }
+
+  .techGrid {
+    gap: var(--space-2);
+  }
+
+  .techBadge {
+    padding: var(--space-1) var(--space-3);
+  }
+
+  .techName {
+    font-size: var(--text-xs);
+  }
 }

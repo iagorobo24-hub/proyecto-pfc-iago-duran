@@ -461,3 +461,65 @@
   .layout { grid-template-columns: 1fr; }
   .panelBusqueda { display: none; }
 }
+
+@media (max-width: 640px) {
+  .chatMessages {
+    padding: var(--space-4);
+  }
+
+  .chatInput {
+    padding: var(--space-3) var(--space-4);
+  }
+
+  .message__content {
+    max-width: 85%;
+  }
+
+  .message__bubble {
+    padding: var(--space-2) var(--space-3);
+    font-size: var(--text-sm);
+  }
+
+  .emptyChatTitle {
+    font-size: var(--text-xl);
+  }
+
+  .emptyChat {
+    padding: var(--space-6);
+  }
+
+  .emptyChatSuggestions {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .sonexHeader {
+    padding: var(--space-3) var(--space-4);
+  }
+
+  .sonexIcon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .sonexIconLetter {
+    font-size: var(--text-md);
+  }
+
+  .sonexName {
+    font-size: var(--text-md);
+  }
+
+  .chatInputContainer {
+    gap: var(--space-2);
+  }
+
+  .chatInputField {
+    font-size: var(--text-sm);
+  }
+
+  .chatSendBtn {
+    width: 44px;
+    height: 44px;
+  }
+}
