@@ -4,6 +4,8 @@
 
 El proyecto pasó por 12 fases en 3 meses. Algunas duraron un día, otras una semana. Esto es lo que pasó en cada una, ordenado tal y como ocurrió.
 
+<img src="../../docs/diagrams/fases_desarrollo.svg" alt="Fases de desarrollo" width="900"/>
+
 ---
 
 ## Fase 0 — Artefactos individuales (7 mar 2026)
@@ -262,3 +264,11 @@ En progreso. Ver `app/supabase/` y scripts en `app/scripts/`.
 
 *Fases de desarrollo documentadas: Mayo 2026*
 *Ver también: EVOLUCION.md del repositorio principal*
+
+---
+
+## Flujo de trabajo con IA
+
+El desarrollo siguió un ciclo iterativo constante: prompt → código → validación → refinación. Este diagrama muestra el patrón que se repitió en cada fase:
+
+<img src="../../docs/diagrams/flujo_desarrollo_ia.svg" alt="Flujo de desarrollo con IA" width="900"/>

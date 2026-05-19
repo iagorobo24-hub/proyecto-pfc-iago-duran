@@ -8,6 +8,8 @@ Aquí van los números. No es que me guste especialmente medir todo, pero para u
 
 ## Métricas del proyecto
 
+<img src="../../docs/diagrams/resultados_cuantitativos.svg" alt="Resultados cuantitativos" width="900"/>
+
 ### Desarrollo
 
 | Métrica | Valor |

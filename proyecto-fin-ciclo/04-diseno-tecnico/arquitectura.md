@@ -8,32 +8,18 @@
 
 ## Diagramas del sistema
 
-En vez de esquemas eléctricos (que no tocan aquí), el proyecto tiene diagramas visuales que explican cómo está montado todo. Están hechos con Excalidraw y guardados como SVG en la carpeta `diagramas/`.
+En vez de esquemas eléctricos (que no tocan aquí), el proyecto tiene diagramas visuales que explican cómo está montado todo. Están hechos con Excalidraw y guardados como SVG en la carpeta `docs/diagrams/`.
 
-### Diagrama de arquitectura general
-
-<img src="../../diagramas/arquitectura_sistema.svg" alt="Arquitectura del sistema" width="900"/>
-
-### Otros diagramas disponibles
-
-En la carpeta `diagramas/` hay más esquemas que ayudan a entender el proyecto:
+### Diagramas del sistema
 
 | Archivo | Muestra |
 |---------|---------|
-| `arquitectura_sistema.svg` | Cómo se conectan frontend, Firebase, Vercel y la IA |
-| `modelo_datos.svg` | Estructura de las colecciones en Firestore |
 | `modulos_funcionales.svg` | Los 7 módulos y cómo se relacionan entre sí |
-| `seguridad_capas.svg` | Las 4 capas de seguridad (auth, datos, red, API) |
-| `flujo_desarrollo_ia.svg` | Cómo se usó la IA durante el desarrollo |
-| `fases_desarrollo.svg` | Las 12 fases del proyecto en orden cronológico |
-| `comparativa_herramientas_ia.svg` | Comparación visual de las herramientas IA usadas |
-| `resultados_cuantitativos.svg` | Gráficos con los resultados numéricos del proyecto |
+| `seguridad_capas.svg` | Las 5 capas de seguridad (defense-in-depth) |
 
-<img src="../../diagramas/modulos_funcionales.svg" alt="Módulos funcionales" width="700"/>
+<img src="../../docs/diagrams/modulos_funcionales.svg" alt="Módulos funcionales" width="700"/>
 
-<img src="../../diagramas/seguridad_capas.svg" alt="Capas de seguridad" width="700"/>
-
-<img src="../../diagramas/flujo_desarrollo_ia.svg" alt="Flujo de desarrollo con IA" width="700"/>
+<img src="../../docs/diagrams/seguridad_capas.svg" alt="Capas de seguridad" width="700"/>
 
 ---
 
@@ -167,4 +153,4 @@ En la carpeta `diagramas/` hay más esquemas que ayudan a entender el proyecto:
 *Ver también:*
 - `listado-componentes.md` — Inventario completo de rutas, componentes, hooks y APIs
 - `EVOLUCION.md` — Cronología de decisiones técnicas
-- `diagramas/` — Esquemas visuales del sistema*
+- `docs/diagrams/` — Esquemas visuales del sistema*

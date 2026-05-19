@@ -226,7 +226,7 @@ Guía didáctica para que docentes repliquen la metodología.
 1. Empieza por `00-README.md` para entender la estructura
 2. Usa las fichas de herramientas (06) como referencia
 3. Consulta `EVOLUCION.md` del repo principal para cronología real
-4. Los diagramas SVG en `/diagramas/` sirven como esquemas del sistema
+4. Los diagramas SVG en `docs/diagrams/` sirven como esquemas del sistema
 
 ### Para crear la presentación
 
