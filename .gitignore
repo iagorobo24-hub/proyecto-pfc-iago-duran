@@ -72,4 +72,6 @@ scraper-data/
 # Test results
 e2e/results/
 e2e/screenshots/
+app/test-results/
+test-results/
 
