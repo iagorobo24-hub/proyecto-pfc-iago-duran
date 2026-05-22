@@ -421,15 +421,87 @@ export default function Presupuestos() {
           </div>
 
           {/* Datos cliente */}
-          <div className={styles.formCard} style={{ maxWidth: 700, margin: '0 auto 24px' }}>
-            <h3 style={{ fontSize: '0.875rem', fontWeight: 600, marginBottom: '16px' }}>Datos del cliente</h3>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-              {['nombre', 'cif', 'contacto', 'email', 'telefono', 'direccion', 'poblacion', 'cp'].map(key => (
-                <div key={key} className={styles.formCard__group}>
-                  <label className={styles.formCard__label}>{key.toUpperCase()}</label>
-                  <input className={styles.formCard__input} value={datosCliente[key] || ''} onChange={e => setDatosCliente(p => ({ ...p, [key]: e.target.value }))} />
-                </div>
-              ))}
+          <div className={styles.formCard}>
+            <div className={styles.formCard__header}>
+              <div className={styles.formCard__icon} aria-hidden="true">👤</div>
+              <h2 className={styles.formCard__title}>Datos del cliente</h2>
+              <p className={styles.formCard__subtitle}>Información para la cabecera del presupuesto</p>
+            </div>
+            <div className={styles.formCard__grid}>
+              <div className={styles.formCard__group}>
+                <label className={styles.formCard__label}>Nombre / Razón social</label>
+                <input className={styles.formCard__input} value={datosCliente.nombre || ''} onChange={e => setDatosCliente(p => ({ ...p, nombre: e.target.value }))} placeholder="Ej: Electro Industrial SL" />
+              </div>
+              <div className={styles.formCard__group}>
+                <label className={styles.formCard__label}>CIF / NIF</label>
+                <input className={styles.formCard__input} value={datosCliente.cif || ''} onChange={e => setDatosCliente(p => ({ ...p, cif: e.target.value }))} placeholder="B-12345678" />
+              </div>
+              <div className={styles.formCard__group}>
+                <label className={styles.formCard__label}>Persona de contacto</label>
+                <input className={styles.formCard__input} value={datosCliente.contacto || ''} onChange={e => setDatosCliente(p => ({ ...p, contacto: e.target.value }))} placeholder="Nombre del contacto" />
+              </div>
+              <div className={styles.formCard__group}>
+                <label className={styles.formCard__label}>Email</label>
+                <input className={styles.formCard__input} type="email" value={datosCliente.email || ''} onChange={e => setDatosCliente(p => ({ ...p, email: e.target.value }))} placeholder="cliente@empresa.com" />
+              </div>
+              <div className={styles.formCard__group}>
+                <label className={styles.formCard__label}>Teléfono</label>
+                <input className={styles.formCard__input} type="tel" value={datosCliente.telefono || ''} onChange={e => setDatosCliente(p => ({ ...p, telefono: e.target.value }))} placeholder="666 777 888" />
+              </div>
+              <div className={styles.formCard__group}>
+                <label className={styles.formCard__label}>Provincia</label>
+                <input className={styles.formCard__input} value={datosCliente.provincia || ''} onChange={e => setDatosCliente(p => ({ ...p, provincia: e.target.value }))} placeholder="A Coruña" />
+              </div>
+              <div className={styles.formCard__group}>
+                <label className={styles.formCard__label}>Dirección</label>
+                <input className={styles.formCard__input} value={datosCliente.direccion || ''} onChange={e => setDatosCliente(p => ({ ...p, direccion: e.target.value }))} placeholder="Calle Mayor 123" />
+              </div>
+              <div className={styles.formCard__group}>
+                <label className={styles.formCard__label}>Población</label>
+                <input className={styles.formCard__input} value={datosCliente.poblacion || ''} onChange={e => setDatosCliente(p => ({ ...p, poblacion: e.target.value }))} placeholder="Santiago de Compostela" />
+              </div>
+              <div className={styles.formCard__group}>
+                <label className={styles.formCard__label}>Código postal</label>
+                <input className={styles.formCard__input} value={datosCliente.cp || ''} onChange={e => setDatosCliente(p => ({ ...p, cp: e.target.value }))} placeholder="15701" />
+              </div>
+              <div className={styles.formCard__group}>
+                <label className={styles.formCard__label}>País</label>
+                <input className={styles.formCard__input} value={datosCliente.pais || ''} onChange={e => setDatosCliente(p => ({ ...p, pais: e.target.value }))} placeholder="España" />
+              </div>
+              <div className={styles.formCard__group}>
+                <label className={styles.formCard__label}>IVA (%)</label>
+                <input className={styles.formCard__input} type="number" value={datosCliente.iva} onChange={e => setDatosCliente(p => ({ ...p, iva: parseFloat(e.target.value) || 0 }))} />
+              </div>
+              <div className={styles.formCard__group}>
+                <label className={styles.formCard__label}>Forma de pago</label>
+                <select className={styles.formCard__select} value={datosCliente.forma_pago} onChange={e => setDatosCliente(p => ({ ...p, forma_pago: e.target.value }))}>
+                  <option>Transferencia</option>
+                  <option>Efectivo</option>
+                  <option>Tarjeta</option>
+                  <option>Cheque</option>
+                  <option>PayPal</option>
+                </select>
+              </div>
+              <div className={styles.formCard__group}>
+                <label className={styles.formCard__label}>Plazo de entrega</label>
+                <select className={styles.formCard__select} value={datosCliente.plazo_entrega} onChange={e => setDatosCliente(p => ({ ...p, plazo_entrega: e.target.value }))}>
+                  <option>Inmediato</option>
+                  <option>5 días</option>
+                  <option>10 días</option>
+                  <option>15 días</option>
+                  <option>30 días</option>
+                  <option>60 días</option>
+                </select>
+              </div>
+              <div className={styles.formCard__group}>
+                <label className={styles.formCard__label}>Validez del presupuesto</label>
+                <select className={styles.formCard__select} value={datosCliente.validez} onChange={e => setDatosCliente(p => ({ ...p, validez: e.target.value }))}>
+                  <option>15 días</option>
+                  <option>30 días</option>
+                  <option>60 días</option>
+                  <option>90 días</option>
+                </select>
+              </div>
             </div>
           </div>
 
