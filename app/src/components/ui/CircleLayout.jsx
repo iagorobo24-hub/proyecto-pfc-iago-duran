@@ -66,21 +66,34 @@ export function GamaCard({ name, meta, onClick, className = '' }) {
   )
 }
 
-export function RefCard({ code, desc, price, onClick, className = '' }) {
+export function RefCard({ code, desc, price, onClick, image, className = '' }) {
   return (
     <button className={`${styles.refCard} ${className}`} onClick={onClick}>
-      <div>
+      {image && (
+        <div className={styles.refCard__imageWrap}>
+          <img src={image} alt={code} className={styles.refCard__image} />
+        </div>
+      )}
+      <div className={styles.refCard__info}>
         <div className={styles.refCard__code}>{code}</div>
         {desc && <div className={styles.refCard__desc}>{desc}</div>}
       </div>
-      {price && <div className={styles.refCard__price}>{price}€</div>}
+      {price !== undefined && price !== null && (
+        <div className={styles.refCard__price}>{price}€</div>
+      )}
     </button>
   )
 }
 
-export function FichaCard({ refCode, desc, price, specs, actions, className = '' }) {
+export function FichaCard({ refCode, desc, price, specs, actions, image, className = '' }) {
   return (
     <div className={`${styles.fichaCard} ${className}`}>
+      {image && (
+        <div className={styles.fichaCard__imageWrap}>
+          <img src={image} alt={refCode || desc} className={styles.fichaCard__image} />
+        </div>
+      )}
+
       <div className={styles.fichaCard__header}>
         <div>
           <span className={`${styles.label} ${styles['label--brand']}`}>REFERENCIA</span>
@@ -135,6 +148,11 @@ export function Breadcrumb({ items, className = '' }) {
       {items.map((item, i) => (
         <React.Fragment key={i}>
           {i > 0 && <span className={styles.breadcrumb__sep}>›</span>}
+          {item.image && (
+            <span className={styles.breadcrumb__imageWrap}>
+              <img src={item.image} alt={item.label} className={styles.breadcrumb__image} />
+            </span>
+          )}
           {item.onClick ? (
             <button className={styles.breadcrumb__btn} onClick={item.onClick}>{item.label}</button>
           ) : (

@@ -359,6 +359,7 @@ export default function FichasTecnicas() {
                         code={p.ref_fabricante}
                         desc={p.name}
                         price={p.precio}
+                        image={p.imagen}
                         onClick={() => seleccionarReferencia(p)}
                       />
                     </div>
@@ -372,6 +373,7 @@ export default function FichasTecnicas() {
                           code={p.ref_fabricante}
                           desc={p.name}
                           price={p.precio}
+                          image={p.imagen}
                           onClick={() => seleccionarReferencia(p)}
                         />
                       </div>
@@ -399,6 +401,7 @@ export default function FichasTecnicas() {
               refCode={referencia.ref_fabricante || referencia.ref}
               desc={fichaDesc}
               price={referencia.precio}
+              image={referencia.imagen}
               specs={[
                 ['Marca', referencia.marca],
                 ['Familia', referencia.familia],
@@ -544,20 +547,27 @@ export default function FichasTecnicas() {
       <main className={styles.main} id="main-content">
         <div className={styles.main__content}>
 
-          {/* Breadcrumb con navegación semántica */}
-          {breadcrumb.length > 0 && (
-            <nav aria-label="Breadcrumb">
-              <Breadcrumb
-                items={[
-                  ...breadcrumb.map((label, i) => ({
-                    label,
-                    onClick: i < breadcrumb.length - 1 ? volver : undefined,
-                    current: i === breadcrumb.length - 1,
-                  })),
-                ]}
-              />
-            </nav>
-          )}
+      {/* Breadcrumb con navegación semántica */}
+      {breadcrumb.length > 0 && (
+        <nav aria-label="Breadcrumb">
+          <Breadcrumb
+            items={[
+              ...breadcrumb.map((item, i) => {
+                const isLast = i === breadcrumb.length - 1
+                const label = typeof item === 'string' ? item : item.label
+                const image = typeof item === 'object' ? item.imagen : undefined
+                const isReferencia = paso === 'ficha' && isLast && typeof item === 'object'
+                return {
+                  label: isReferencia ? referencia.ref_fabricante || referencia.ref : label,
+                  image: isReferencia ? referencia.imagen : image,
+                  onClick: i < breadcrumb.length - 1 ? volver : undefined,
+                  current: isLast,
+                }
+              }),
+            ]}
+          />
+        </nav>
+      )}
 
           {/* Header */}
           <div className={styles.pageHeader}>

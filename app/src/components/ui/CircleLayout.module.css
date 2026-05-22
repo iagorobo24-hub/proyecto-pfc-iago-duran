@@ -240,6 +240,27 @@
   max-width: 560px;
   min-width: 280px;
   box-sizing: border-box;
+  gap: var(--space-4);
+}
+
+.refCard__imageWrap {
+  flex-shrink: 0;
+  width: 56px;
+  height: 56px;
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  background: var(--gray-50);
+  border: 1px solid var(--gray-100);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.refCard__image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
 }
 
 .refCard__info {
@@ -280,6 +301,29 @@
   padding: var(--space-8);
   margin-top: var(--space-6);
   box-shadow: var(--shadow-sm);
+  width: 100%;
+  max-width: 640px;
+}
+
+.fichaCard__imageWrap {
+  margin-bottom: var(--space-6);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--gray-50);
+  border: 1px solid var(--gray-100);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 180px;
+  max-height: 280px;
+}
+
+.fichaCard__image {
+  width: 100%;
+  height: auto;
+  max-height: 280px;
+  object-fit: contain;
+  object-position: center;
 }
 
 .fichaCard__header {
@@ -491,6 +535,26 @@
 .breadcrumb__current {
   color: var(--gray-700);
   font-weight: 600;
+}
+
+.breadcrumb__imageWrap {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: var(--gray-50);
+  border: 1px solid var(--gray-100);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.breadcrumb__image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
 }
 
 .viewToggle {

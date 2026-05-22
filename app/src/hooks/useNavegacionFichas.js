@@ -253,14 +253,15 @@ useEffect(() => {
    return false
   }, [])
 
- const breadcrumb = useMemo(() => {
+const breadcrumb = useMemo(() => {
   const b = []
   if (categoria) b.push(categoria)
   if (marca) b.push(marca)
   if (gama) b.push(gama)
   if (tipo) b.push(tipo)
+  if (referencia) b.push({ label: referencia.ref_fabricante || referencia.ref, imagen: referencia.imagen })
   return b
- }, [categoria, marca, gama, tipo])
+}, [categoria, marca, gama, tipo, referencia])
 
  return {
   paso, categoria, marca, gama, tipo, referencia, historial, cargando, error,
