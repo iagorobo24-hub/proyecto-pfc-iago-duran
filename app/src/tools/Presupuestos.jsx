@@ -1,9 +1,10 @@
-import { useState, useEffect, useReducer } from "react";
+import { useState, useEffect, useReducer, useMemo, useCallback } from "react";
 import React from "react";
 import { useSearchParams } from 'react-router-dom'
 import { FULL_CATEGORY_INFO } from '../data/categoryMapping'
 import Button from '../components/ui/Button'
 import { useToast } from '../contexts/ToastContext'
+import catalogService from '../services/catalogService'
 import styles from './Presupuestos.module.css'
 
 const CATEGORIAS = Object.keys(FULL_CATEGORY_INFO).map(key => ({
@@ -11,90 +12,6 @@ const CATEGORIAS = Object.keys(FULL_CATEGORY_INFO).map(key => ({
   label: key,
   icon: FULL_CATEGORY_INFO[key].icon
 }));
-
-/* Catálogo de referencias por categoría — se reemplazará con datos scrapeados */
-const CATALOGO = {
-  "AUTOMATIZACION": [
-    { ref: "ATV320U22M2B", desc: "Variador ATV320 2.2kW 200-240V monofásico", precio: 310, uso: "muy_alto" },
-    { ref: "ATV320U40M2", desc: "Variador ATV320 4kW 200-240V monofásico", precio: 445, uso: "alto" },
-    { ref: "ATV320U75N4", desc: "Variador ATV320 7.5kW 380-480V trifásico", precio: 590, uso: "medio" },
-    { ref: "LC1D09M7", desc: "Contactor TeSys D 9A 220V AC-3 1NO+1NC", precio: 28, uso: "muy_alto" },
-    { ref: "LC1D12M7", desc: "Contactor TeSys D 12A 220V AC-3 1NO+1NC", precio: 34, uso: "alto" },
-    { ref: "LC1D25M7", desc: "Contactor TeSys D 25A 220V AC-3 1NO+1NC", precio: 52, uso: "medio" },
-    { ref: "LRD08", desc: "Relé térmico TeSys 2.5-4A", precio: 22, uso: "alto" },
-    { ref: "XPSAV3111", desc: "Relé de seguridad Preventa 24V AC/DC", precio: 145, uso: "medio" },
-    { ref: "XB5RW84M5", desc: "Pulsador luminoso Harmony XB5 22mm", precio: 18, uso: "medio" },
-    { ref: "ABL8REM24030", desc: "Fuente alimentación 24V 3A Phaseo", precio: 65, uso: "alto" },
-    { ref: "TM221CE24R", desc: "PLC Modicon M221 24 E/S 16ent/8sal relé", precio: 185, uso: "medio" },
-    { ref: "RSL1PVUL", desc: "Relé interfaz Zelio 24V AC 1C/O", precio: 12, uso: "alto" },
-  ],
-  "ILUMINACION": [
-    { ref: "BN5021L", desc: "Regleta LED Philips 1200mm 4000K 4000lm", precio: 35, uso: "muy_alto" },
-    { ref: "BN5031L", desc: "Regleta LED Philips 1500mm 4000K 5000lm", precio: 42, uso: "alto" },
-    { ref: "RC120B LED40", desc: "Downlight LED CoreLine 4000K 4000lm", precio: 28, uso: "alto" },
-    { ref: "RC140B LED26", desc: "Downlight empotrable LED 26W 4000K", precio: 32, uso: "medio" },
-    { ref: "BVP162 LED70", desc: "Proyector LED BVP 70W 4000K IP65", precio: 85, uso: "medio" },
-    { ref: "BVP162 LED130", desc: "Proyector LED BVP 130W 4000K IP65", precio: 145, uso: "medio" },
-    { ref: "911401825991", desc: "Panel LED CoreLine 600x600 4000K 4000lm", precio: 55, uso: "alto" },
-    { ref: "911401826001", desc: "Panel LED CoreLine 625x625 4000K 4400lm", precio: 58, uso: "alto" },
-    { ref: "ST801M EM 4FT", desc: "Kit emergencia LED 4FT 3h", precio: 22, uso: "medio" },
-    { ref: "CSG100-4K", desc: "Sensor crepuscular 1-10V IP65", precio: 45, uso: "medio" },
-  ],
-  "SEGURIDAD": [
-    { ref: "A9C30216", desc: "Interruptor diferencial ID 40A 30mA A", precio: 68, uso: "muy_alto" },
-    { ref: "A9F74163", desc: "Disyuntor iC60N 1P 6A curva C", precio: 14, uso: "muy_alto" },
-    { ref: "A9F74110", desc: "Disyuntor iC60N 1P 10A curva C", precio: 14, uso: "muy_alto" },
-    { ref: "A9F74116", desc: "Disyuntor iC60N 1P 16A curva C", precio: 14, uso: "alto" },
-    { ref: "A9F74125", desc: "Disyuntor iC60N 1P 25A curva C", precio: 16, uso: "alto" },
-    { ref: "A9N26920", desc: "Interruptor automático C120N 3P 40A", precio: 165, uso: "medio" },
-    { ref: "A9C20842", desc: "Contactor modular iCT 40A 2NO 230V", precio: 42, uso: "alto" },
-    { ref: "A9L16686", desc: "Protector sobretensiones iPRF1 1P+N 40kA", precio: 95, uso: "medio" },
-    { ref: "A9MEM1520", desc: "Contador energía iEM3050 MID 3F 63A", precio: 280, uso: "bajo" },
-    { ref: "A9C41116", desc: "Bornas de conexión Quick 4mm²", precio: 3, uso: "muy_alto" },
-  ],
-  "DISTRIBUCION": [
-    { ref: "NSX100F", desc: "Interruptor caja moldeada NSX 100F 100A 3P", precio: 320, uso: "medio" },
-    { ref: "NSX160F", desc: "Interruptor caja moldeada NSX 160F 160A 3P", precio: 445, uso: "medio" },
-    { ref: "NSX250N", desc: "Interruptor caja moldeada NSX 250N 250A 3P", precio: 680, uso: "bajo" },
-    { ref: "VW3A3614", desc: "Módulo comunicación Modbus NSX", precio: 125, uso: "bajo" },
-    { ref: "GV2ME08", desc: "Interruptor motor GV2 2.5-4A", precio: 38, uso: "alto" },
-    { ref: "GV2ME14", desc: "Interruptor motor GV2 6-10A", precio: 42, uso: "alto" },
-    { ref: "GV2ME16", desc: "Interruptor motor GV2 9-14A", precio: 45, uso: "medio" },
-    { ref: "VW3A1111", desc: "Tarjeta comunicación CANopen ATV320", precio: 75, uso: "bajo" },
-    { ref: "XS618B1PAL10", desc: "Sensor inductivo M18 NPN NO 18mm", precio: 28, uso: "alto" },
-    { ref: "XS7C1A1DAL10", desc: "Sensor inductivo M30 PNP NO 18mm", precio: 35, uso: "medio" },
-  ],
-  "ENERGIA SOLAR": [
-    { ref: "ABL8BPS24200", desc: "Fuente Phaseo 24V 20A 480W", precio: 185, uso: "medio" },
-    { ref: "A9MEM3255", desc: "Contador iEM3255 RS485 3F 55A", precio: 320, uso: "medio" },
-    { ref: "A9MEM3265", desc: "Contador iEM3265 Ethernet 3F 65A", precio: 480, uso: "bajo" },
-    { ref: "A9C22814", desc: "Contacto iCT 16A 1NO 230V", precio: 18, uso: "alto" },
-    { ref: "A9F74120", desc: "Disyuntor iC60N 1P 20A curva C", precio: 14, uso: "alto" },
-    { ref: "A9F74325", desc: "Disyuntor iC60N 3P 25A curva C", precio: 48, uso: "medio" },
-    { ref: "A9L16694", desc: "Protector sobretensiones iPRF2 3P+N 40kA", precio: 165, uso: "medio" },
-    { ref: "A9N26951", desc: "Interruptor C120N 3P 63A", precio: 195, uso: "bajo" },
-  ],
-  "CLIMA": [
-    { ref: "A9C20842", desc: "Contactor modular 40A 2NO 230V", precio: 42, uso: "alto" },
-    { ref: "A9C20734", desc: "Contactor modular 25A 2NC 230V", precio: 38, uso: "medio" },
-    { ref: "A9MEM1520", desc: "Contador energía iEM3050 3F 63A", precio: 280, uso: "medio" },
-    { ref: "A9C22816", desc: "Contacto iCT 25A 2NO 230V", precio: 24, uso: "alto" },
-    { ref: "A9F74116", desc: "Disyuntor iC60N 1P 16A curva C", precio: 14, uso: "alto" },
-    { ref: "A9F74125", desc: "Disyuntor iC60N 1P 25A curva C", precio: 16, uso: "alto" },
-    { ref: "ABL8REM24030", desc: "Fuente alimentación 24V 3A", precio: 65, uso: "medio" },
-    { ref: "CSG100-4K", desc: "Sensor crepuscular 1-10V", precio: 45, uso: "medio" },
-  ],
-  "VEHICULO ELECTRICO": [
-    { ref: "EV22S22AC4", desc: "Wallbox EVlink Pro AC 22kW Tipo 2", precio: 890, uso: "alto" },
-    { ref: "EV22S7AC22", desc: "Cable carga EV Tipo 2 7m 32A", precio: 185, uso: "alto" },
-    { ref: "EV22S7AC22", desc: "Cable carga EV Tipo 2 4m 16A", precio: 125, uso: "medio" },
-    { ref: "A9C20842", desc: "Contactor modular 40A 2NO 230V", precio: 42, uso: "alto" },
-    { ref: "A9F74132", desc: "Disyuntor iC60N 1P 32A curva C", precio: 18, uso: "alto" },
-    { ref: "A9F74140", desc: "Disyuntor iC60N 1P 40A curva C", precio: 22, uso: "medio" },
-    { ref: "A9L16686", desc: "Protector sobretensiones 1P+N 40kA", precio: 95, uso: "medio" },
-    { ref: "A9MEM1520", desc: "Contador energía iEM3050 3F 63A", precio: 280, uso: "medio" },
-  ],
-};
 
 const genNum = () => { const d = new Date(); return `SNP-${d.getFullYear()}${String(d.getMonth()+1).padStart(2,"0")}-${String(Math.floor(Math.random()*900)+100)}`; };
 
@@ -113,6 +30,9 @@ export default function Presupuestos() {
   const [searchParams] = useSearchParams();
   const { toast } = useToast();
   const [categoria, setCategoria] = useState("");
+  const [marca, setMarca] = useState(null);
+  const [gama, setGama] = useState(null);
+  const [tipo, setTipo] = useState(null);
   const [partidas, dispatchPartidas] = useReducer(partidasReducer, []);
   const [datosCliente, setDatosCliente] = useState({ nombre: "", cif: "", contacto: "", email: "", telefono: "", direccion: "", poblacion: "", cp: "", provincia: "", pais: "España", iva: 21, forma_pago: "Transferencia", plazo_entrega: "15 días", validez: "30 días" });
   const [vista, setVista] = useState("wizard");
@@ -122,27 +42,76 @@ export default function Presupuestos() {
   const [filtroCatalogo, setFiltroCatalogo] = useState("");
   const [añadidos, setAñadidos] = useState({});
 
+  const [marcasDisponibles, setMarcasDisponibles] = useState([]);
+  const [gamasDisponibles, setGamasDisponibles] = useState([]);
+  const [tiposDisponibles, setTiposDisponibles] = useState([]);
+  const [productosDisponibles, setProductosDisponibles] = useState([]);
+  const [pasoCatalogo, setPasoCatalogo] = useState("marcas");
+  const [cargandoCatalogo, setCargandoCatalogo] = useState(false);
+
   useEffect(() => { try { const h = localStorage.getItem("pfc_presupuestos_historial"); if (h) setHistorial(JSON.parse(h)); } catch {} }, []);
   useEffect(() => {
     const producto = searchParams.get('producto');
     const referencia = searchParams.get('referencia');
+    const precio = searchParams.get('precio');
     if (producto && referencia) {
-      dispatchPartidas({ type: "ADD_FROM_CATALOG", ref: referencia, desc: producto, precio: 0 });
+      dispatchPartidas({ type: "ADD_FROM_CATALOG", ref: referencia, desc: producto, precio: parseFloat(precio) || 0 });
       setVista("editor");
     }
   }, [searchParams]);
 
+  useEffect(() => {
+    if (vista !== "seleccion" || !categoria) return;
+    setCargandoCatalogo(true);
+    catalogService.getMarcasPorCategoria(categoria).then(data => {
+      setMarcasDisponibles(data);
+      setPasoCatalogo("marcas");
+      setCargandoCatalogo(false);
+    });
+  }, [vista, categoria]);
+
+  useEffect(() => {
+    if (!categoria || !marca) return;
+    setCargandoCatalogo(true);
+    catalogService.getGamasPorMarcaYCategoria(marca, categoria).then(data => {
+      setGamasDisponibles(data.map(g => g.nombre));
+      setCargandoCatalogo(false);
+    });
+  }, [categoria, marca]);
+
+  useEffect(() => {
+    if (!categoria || !marca || !gama) return;
+    setCargandoCatalogo(true);
+    catalogService.getTiposPorGamaMarcaYFamilia(gama, marca, categoria).then(data => {
+      setTiposDisponibles(data);
+      setCargandoCatalogo(false);
+    });
+  }, [categoria, marca, gama]);
+
+  useEffect(() => {
+    if (!categoria || !marca || !gama || !tipo) return;
+    setCargandoCatalogo(true);
+    catalogService.getProductosPorFiltro(categoria, marca, gama, tipo).then(data => {
+      setProductosDisponibles(data);
+      setCargandoCatalogo(false);
+    });
+  }, [categoria, marca, gama, tipo]);
+
   const continuarASleccion = () => {
     if (!categoria) { toast.show("Selecciona una categoría primero"); return; }
-    setVista("seleccion");
+    setMarca(null);
+    setGama(null);
+    setTipo(null);
+    setProductosDisponibles([]);
     setAñadidos({});
+    setVista("seleccion");
   };
 
   const añadirProducto = (prod) => {
-    const key = prod.ref;
-    dispatchPartidas({ type: "ADD_FROM_CATALOG", ref: prod.ref, desc: prod.desc, precio: prod.precio });
+    const key = prod.ref_fabricante || prod.ref;
+    dispatchPartidas({ type: "ADD_FROM_CATALOG", ref: key, desc: prod.name || prod.desc, precio: prod.precio });
     setAñadidos(prev => ({ ...prev, [key]: (prev[key] || 0) + 1 }));
-    toast.show(`${prod.ref} añadido al presupuesto`, "success");
+    toast.show(`${key} añadido al presupuesto`, "success");
   };
 
   const irAEditor = () => {
@@ -164,15 +133,14 @@ export default function Presupuestos() {
   const ivaAmount = totalBase * (datosCliente.iva / 100);
   const totalFinal = totalBase + ivaAmount;
 
-  /* Catálogo filtrado y ordenado por uso */
-  const catalogoFiltrado = React.useMemo(() => {
-    const items = CATALOGO[categoria] || [];
-    const filtrado = filtroCatalogo
-      ? items.filter(p => p.ref.toLowerCase().includes(filtroCatalogo.toLowerCase()) || p.desc.toLowerCase().includes(filtroCatalogo.toLowerCase()))
-      : items;
-    const ordenUso = { muy_alto: 0, alto: 1, medio: 2, bajo: 3 };
-    return filtrado.sort((a, b) => (ordenUso[a.uso] || 2) - (ordenUso[b.uso] || 2));
-  }, [categoria, filtroCatalogo]);
+  const breadcrumbItems = useMemo(() => {
+    const items = [];
+    items.push({ label: CATEGORIAS.find(c => c.id === categoria)?.label || 'Seleccionar', onClick: () => { setMarca(null); setGama(null); setTipo(null); setProductosDisponibles([]); setPasoCatalogo("marcas"); } });
+    if (marca) items.push({ label: marca, onClick: () => { setGama(null); setTipo(null); setProductosDisponibles([]); setPasoCatalogo("gamas"); } });
+    if (gama) items.push({ label: gama, onClick: () => { setTipo(null); setProductosDisponibles([]); setPasoCatalogo("tipos"); } });
+    if (tipo) items.push({ label: tipo, current: true });
+    return items;
+  }, [categoria, marca, gama, tipo]);
 
   /* ── WIZARD: Selección de categoría ── */
   if (vista === "wizard") {
@@ -229,8 +197,25 @@ export default function Presupuestos() {
     );
   }
 
-  /* ── SELECCIÓN: Catálogo de productos ── */
+  /* ── SELECCIÓN: Navegación jerárquica del catálogo ── */
   if (vista === "seleccion") {
+    const renderBreadcrumb = () => (
+      <div className={styles.breadcrumb}>
+        {breadcrumbItems.map((item, i) => (
+          <React.Fragment key={i}>
+            {i > 0 && <span className={styles.breadcrumb__sep}>›</span>}
+            {item.onClick ? (
+              <button className={styles.breadcrumb__link} onClick={item.onClick}>{item.label}</button>
+            ) : (
+              <span className={styles.breadcrumb__current}>{item.label}</span>
+            )}
+          </React.Fragment>
+        ))}
+      </div>
+    );
+
+    const catLabel = CATEGORIAS.find(c => c.id === categoria)?.label || '';
+
     return (
       <div className={styles.layout}>
         <main className={styles.main}>
@@ -238,56 +223,162 @@ export default function Presupuestos() {
             <div className={styles.pageHeader}>
               <h1 className={styles.pageTitle}>
                 <span aria-hidden="true">{CATEGORIAS.find(c => c.id === categoria)?.icon}</span>
-                {' '}{CATEGORIAS.find(c => c.id === categoria)?.label}
+                {' '}{catLabel}
               </h1>
-              <p className={styles.pageSubtitle}>Haz clic en un producto para añadirlo al presupuesto</p>
+              <p className={styles.pageSubtitle}>Selecciona marca, gama y tipo para encontrar productos</p>
             </div>
 
-            {/* Breadcrumb */}
-            <div className={styles.breadcrumb}>
-              <button className={styles.breadcrumb__link} onClick={() => setVista("wizard")}>Categorías</button>
-              <span className={styles.breadcrumb__sep}>›</span>
-              <span className={styles.breadcrumb__current}>{CATEGORIAS.find(c => c.id === categoria)?.label}</span>
-            </div>
+            {renderBreadcrumb()}
 
-            {/* Buscador dentro del catálogo */}
-            <div className={styles.catalogSearch}>
-              <input
-                className={styles.catalogSearch__input}
-                placeholder="Filtrar por referencia o descripción..."
-                value={filtroCatalogo}
-                onChange={e => setFiltroCatalogo(e.target.value)}
-              />
-            </div>
+            {cargandoCatalogo && (
+              <div style={{ textAlign: 'center', padding: '40px', color: 'var(--gray-500)' }}>
+                Cargando catálogo...
+              </div>
+            )}
 
-            {/* Lista de productos */}
-            <div className={styles.catalogGrid}>
-              {catalogoFiltrado.map(prod => {
-                const esPopular = prod.uso === 'muy_alto';
-                const vecesAñadido = añadidos[prod.ref] || 0;
-                return (
-                  <button
-                    key={prod.ref}
-                    className={`${styles.productCard} ${esPopular ? styles['productCard--popular'] : ''}`}
-                    onClick={() => añadirProducto(prod)}
-                  >
-                    {esPopular && <span className={styles.productCard__badge}>Popular</span>}
-                    <div className={styles.productCard__ref}>{prod.ref}</div>
-                    <div className={styles.productCard__desc}>{prod.desc}</div>
-                    <div className={styles.productCard__price}>{prod.precio.toFixed(2)} €</div>
-                    {vecesAñadido > 0 && (
-                      <span className={styles.productCard__added}>✓ ×{vecesAñadido}</span>
-                    )}
-                  </button>
-                );
-              })}
-            </div>
+            {!cargandoCatalogo && pasoCatalogo === "marcas" && (
+              <div style={{ marginTop: '24px' }}>
+                <h3 style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--gray-500)', marginBottom: '12px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Selecciona una marca</h3>
+                <div className={styles.catalogGrid}>
+                  {marcasDisponibles.map(m => (
+                    <button
+                      key={m.nombre}
+                      className={`${styles.productCard}`}
+                      onClick={() => { setMarca(m.nombre); setPasoCatalogo("gamas"); }}
+                    >
+                      <div className={styles.productCard__ref}>{m.nombre}</div>
+                      <div className={styles.productCard__desc}>Ver gamas disponibles</div>
+                    </button>
+                  ))}
+                  {marcasDisponibles.length === 0 && (
+                    <div className={styles.emptyState}>
+                      <div className={styles.emptyState__icon}>📭</div>
+                      <div className={styles.emptyState__title}>Sin marcas</div>
+                      <div className={styles.emptyState__text}>No hay marcas disponibles en esta categoría</div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
 
-            {catalogoFiltrado.length === 0 && (
-              <div className={styles.emptyState}>
-                <div className={styles.emptyState__icon}>🔍</div>
-                <div className={styles.emptyState__title}>Sin resultados</div>
-                <div className={styles.emptyState__text}>No se encontraron productos con ese filtro</div>
+            {!cargandoCatalogo && pasoCatalogo === "gamas" && (
+              <div style={{ marginTop: '24px' }}>
+                <h3 style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--gray-500)', marginBottom: '12px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Selecciona una gama</h3>
+                <div className={styles.catalogGrid}>
+                  {gamasDisponibles.map(g => (
+                    <button
+                      key={g}
+                      className={`${styles.productCard}`}
+                      onClick={() => { setGama(g); setPasoCatalogo("tipos"); }}
+                    >
+                      <div className={styles.productCard__ref}>{g}</div>
+                      <div className={styles.productCard__desc}>Ver tipos de producto</div>
+                    </button>
+                  ))}
+                  {gamasDisponibles.length === 0 && (
+                    <div className={styles.emptyState}>
+                      <div className={styles.emptyState__icon}>📭</div>
+                      <div className={styles.emptyState__title}>Sin gamas</div>
+                      <div className={styles.emptyState__text}>No hay gamas disponibles para esta marca</div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {!cargandoCatalogo && pasoCatalogo === "tipos" && (
+              <div style={{ marginTop: '24px' }}>
+                <h3 style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--gray-500)', marginBottom: '12px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Selecciona un tipo</h3>
+                <div className={styles.catalogGrid}>
+                  {tiposDisponibles.map(t => (
+                    <button
+                      key={t}
+                      className={`${styles.productCard}`}
+                      onClick={() => { setTipo(t); setPasoCatalogo("productos"); }}
+                    >
+                      <div className={styles.productCard__ref}>{t}</div>
+                      <div className={styles.productCard__desc}>Ver productos</div>
+                    </button>
+                  ))}
+                  {tiposDisponibles.length === 0 && (
+                    <div className={styles.emptyState}>
+                      <div className={styles.emptyState__icon}>📭</div>
+                      <div className={styles.emptyState__title}>Sin tipos</div>
+                      <div className={styles.emptyState__text}>No hay tipos disponibles para esta gama</div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {!cargandoCatalogo && pasoCatalogo === "productos" && (
+              <div style={{ marginTop: '24px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+                  <h3 style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--gray-500)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                    {productosDisponibles.length} producto{productosDisponibles.length !== 1 ? 's' : ''}
+                  </h3>
+                  <div className={styles.catalogSearch} style={{ maxWidth: '300px' }}>
+                    <input
+                      className={styles.catalogSearch__input}
+                      placeholder="Filtrar productos..."
+                      value={filtroCatalogo}
+                      onChange={e => setFiltroCatalogo(e.target.value)}
+                    />
+                  </div>
+                </div>
+                <div className={styles.catalogGrid}>
+                  {(filtroCatalogo
+                    ? productosDisponibles.filter(p =>
+                        (p.ref_fabricante || '').toLowerCase().includes(filtroCatalogo.toLowerCase()) ||
+                        (p.name || '').toLowerCase().includes(filtroCatalogo.toLowerCase())
+                      )
+                    : productosDisponibles
+                  ).map(prod => {
+                    const key = prod.ref_fabricante || prod.ref;
+                    const vecesAñadido = añadidos[key] || 0;
+                    return (
+                      <button
+                        key={prod.id || key}
+                        className={`${styles.productCard} ${vecesAñadido > 0 ? styles['productCard--popular'] : ''}`}
+                        onClick={() => añadirProducto(prod)}
+                      >
+                        <div className={styles.productCard__ref}>{key}</div>
+                        <div className={styles.productCard__desc}>{prod.name || ''}</div>
+                        <div className={styles.productCard__price}>{prod.precio ? `${prod.precio.toFixed(2)} €` : '—'}</div>
+                        {vecesAñadido > 0 && (
+                          <span className={styles.productCard__added}>✓ ×{vecesAñadido}</span>
+                        )}
+                        {prod.imagen && (
+                          <img
+                            src={prod.imagen}
+                            alt={key}
+                            style={{ width: '40px', height: '40px', objectFit: 'contain', borderRadius: '4px', marginTop: '8px', alignSelf: 'center' }}
+                          />
+                        )}
+                      </button>
+                    );
+                  })}
+                  {productosDisponibles.length === 0 && (
+                    <div className={styles.emptyState}>
+                      <div className={styles.emptyState__icon}>📭</div>
+                      <div className={styles.emptyState__title}>Sin productos</div>
+                      <div className={styles.emptyState__text}>No hay productos disponibles para esta selección</div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Botón volver */}
+            {pasoCatalogo !== "marcas" && (
+              <div style={{ textAlign: 'center', marginTop: '24px' }}>
+                <Button variant="ghost" size="sm" onClick={() => {
+                  if (pasoCatalogo === "productos") { setTipo(null); setProductosDisponibles([]); setPasoCatalogo("tipos"); }
+                  else if (pasoCatalogo === "tipos") { setGama(null); setProductosDisponibles([]); setPasoCatalogo("gamas"); }
+                  else if (pasoCatalogo === "gamas") { setMarca(null); setProductosDisponibles([]); setPasoCatalogo("marcas"); }
+                }}>
+                  ← Volver
+                </Button>
               </div>
             )}
 

@@ -74,9 +74,13 @@ export default function FichasTecnicas() {
 
   const añadirPresupuesto = (ficha) => {
     if (!ficha) return
-    const params = new URLSearchParams({ producto: ficha.desc || ficha.nombre, referencia: ficha.ref })
-    navigate(`/presupuestos?${params.toString()}`)
-    toast.show(`${ficha.ref} añadido al presupuesto (${ficha.precio}€ con IVA)`, 'success')
+    const params = new URLSearchParams({
+      producto: ficha.name || ficha.desc || ficha.nombre || '',
+      referencia: ficha.ref_fabricante || ficha.ref || '',
+      precio: ficha.precio || '0',
+    })
+    navigate(`/app/presupuestos?${params.toString()}`)
+    toast.show(`${ficha.ref_fabricante || ficha.ref} añadido al presupuesto`, 'success')
   }
 
   const abrirPDF = (url) => {
