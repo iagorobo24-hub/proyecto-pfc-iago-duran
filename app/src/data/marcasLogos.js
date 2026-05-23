@@ -79,4 +79,9 @@ export const MARCAS = {
     color: "#0051A5",
     logo: "",
   },
+  "Legrand": {
+    nombre: "Legrand",
+    color: "#E0001A",
+    logo: "/logos/legrand.png",
+  },
 };

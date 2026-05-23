@@ -364,36 +364,19 @@ export default function FichasTecnicas() {
           ) : (
             <div className={styles.orbitRows} role="list" aria-label="Listado de referencias">
               {referenciasDisponibles.length > 0 ? (
-                <>
-                  <OrbitRow>
-                    {referenciasDisponibles.slice(0, 2).map(p => (
-                      <div key={p.id} role="listitem">
-                        <RefCard
-                          code={p.ref_fabricante}
-                          desc={p.name}
-                          price={p.precio}
-                          image={p.imagen}
-                          onClick={() => seleccionarReferencia(p)}
-                        />
-                      </div>
-                    ))}
-                  </OrbitRow>
-                  {referenciasDisponibles.length > 2 && (
-                    <OrbitRow>
-                      {referenciasDisponibles.slice(2, 6).map(p => (
-                        <div key={p.id} role="listitem">
-                          <RefCard
-                            code={p.ref_fabricante}
-                            desc={p.name}
-                            price={p.precio}
-                            image={p.imagen}
-                            onClick={() => seleccionarReferencia(p)}
-                          />
-                        </div>
-                      ))}
-                    </OrbitRow>
-                  )}
-                </>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '12px', width: '100%', padding: '12px' }}>
+                  {referenciasDisponibles.map(p => (
+                    <div key={p.id} role="listitem">
+                      <RefCard
+                        code={p.ref_fabricante}
+                        desc={p.name}
+                        price={p.precio}
+                        image={p.imagen}
+                        onClick={() => seleccionarReferencia(p)}
+                      />
+                    </div>
+                  ))}
+                </div>
               ) : (
                 <OrbitRow>
                   <p style={{ color: 'var(--gray-600)', fontSize: '0.875rem' }}>No hay referencias.</p>

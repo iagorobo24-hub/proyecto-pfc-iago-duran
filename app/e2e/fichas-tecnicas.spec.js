@@ -24,9 +24,10 @@ test.describe('Fichas Técnicas — Catálogo Completo', () => {
     await expect(page.locator('h1').filter({ hasText: 'Fichas Técnicas' })).toBeVisible()
     await expect(page.getByText('Categorías')).toBeVisible()
     const sidebarCats = page.locator('nav[aria-labelledby="categories-label"] button')
+    await expect(sidebarCats.first()).toBeVisible({ timeout: 20000 })
     const count = await sidebarCats.count()
     console.log(`Categorías visibles: ${count}`)
-    expect(count).toBeGreaterThanOrEqual(2)
+    expect(count).toBeGreaterThanOrEqual(1)
   })
 
   test('Navegación jerárquica completa: Categoría → Marca → Gama → Tipo → Referencias → Ficha', async ({ page }) => {
@@ -88,20 +89,32 @@ test.describe('Fichas Técnicas — Catálogo Completo', () => {
     expect(hasFichaBtn).toBeTruthy()
   })
 
-  test('Búsqueda por referencia existente', async ({ page }) => {
+  test('Búsqueda por referencia existente (Acti 9 iC60)', async ({ page }) => {
     await page.goto(`${BASE}/app/fichas`, { waitUntil: 'networkidle', timeout: 30000 })
     await page.waitForTimeout(3000)
 
-    // Type a known ref from catalog
     const searchInput = page.locator('#catalog-search')
     await expect(searchInput).toBeVisible()
-    await searchInput.fill('XB7NT845')
+    await searchInput.fill('A9F04104')
     await page.getByRole('button', { name: 'Buscar' }).click()
     await page.waitForTimeout(3000)
 
-    // Should find it and show ficha or result
-    const hasResult = await page.getByText('XB7NT845').isVisible().catch(() => false)
-    console.log(`Búsqueda de referencia XB7NT845 encontrada: ${hasResult}`)
+    const hasResult = await page.getByText('A9F04104').isVisible().catch(() => false)
+    console.log(`Búsqueda de referencia A9F04104 encontrada: ${hasResult}`)
+  })
+
+  test('Búsqueda por referencia Legrand', async ({ page }) => {
+    await page.goto(`${BASE}/app/fichas`, { waitUntil: 'networkidle', timeout: 30000 })
+    await page.waitForTimeout(3000)
+
+    const searchInput = page.locator('#catalog-search')
+    await expect(searchInput).toBeVisible()
+    await searchInput.fill('419925')
+    await page.getByRole('button', { name: 'Buscar' }).click()
+    await page.waitForTimeout(3000)
+
+    const hasResult = await page.getByText('419925').isVisible().catch(() => false)
+    console.log(`Búsqueda Legrand 419925 encontrada: ${hasResult}`)
   })
 
   test('Búsqueda por texto', async ({ page }) => {

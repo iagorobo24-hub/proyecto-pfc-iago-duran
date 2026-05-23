@@ -7,19 +7,22 @@ const MAGNETOTERMICO_GAMAS = [
   'C60 UL CSA IEC',
   'ComPacT NSX',
   'Resi9',
+  'RX³ Magnetotermico',
+  'TX³ Magnetotermico',
+  'Mosaic',
 ]
 
 export function supportsTableView(products) {
   if (!products || products.length === 0) return false
   const allSame = products.every(
-    p => p.subfamilia === 'Interruptor Magnetotérmico'
+    p => (p.subfamilia || '').trim() === 'Interruptor Magnetotérmico'
   )
   if (!allSame) return false
-  const gama = products[0]?.Gama
+  const gama = products[0]?.Gama || products[0]?.gama || ''
   return MAGNETOTERMICO_GAMAS.includes(gama)
 }
 
-function extractPoles(name) {
+export function extractPoles(name) {
   if (!name) return '?'
   const m = name.match(/(\d+)\s*P\s*\+\s*N/i)
   if (m) return m[1] + 'P+N'
@@ -34,7 +37,7 @@ function extractPoles(name) {
   return '?'
 }
 
-function extractAmps(name) {
+export function extractAmps(name) {
   if (!name) return 0
   const m = name.match(/([\d.]+)\s*A\b/)
   if (m) return parseFloat(m[1])
@@ -45,7 +48,7 @@ function extractAmps(name) {
   return 0
 }
 
-function extractCurve(name) {
+export function extractCurve(name) {
   if (!name) return '?'
   const m = name.match(/curva\s+([A-Z]+)/i)
   if (m) return m[1].toUpperCase()
@@ -60,7 +63,7 @@ function extractCurve(name) {
   return '?'
 }
 
-function ampToStandard(amp) {
+export function ampToStandard(amp) {
   let closest = AMP_STEPS[0]
   for (const s of AMP_STEPS) {
     if (s >= amp) { closest = s; break }

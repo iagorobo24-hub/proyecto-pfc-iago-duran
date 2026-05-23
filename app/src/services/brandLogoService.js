@@ -41,7 +41,7 @@ const LOCAL_LOGOS = {
   "SMA Solar": "/logos/sma.png",
   "Pylontech": "/logos/pylontech.png",
   // Brands with real products but fallback to gradient
-  "LEGRAND": null,
+  "LEGRAND": "/logos/legrand.png",
   "SIMON": null,
   "NEXANS": null,
   "BTICINO": null,
