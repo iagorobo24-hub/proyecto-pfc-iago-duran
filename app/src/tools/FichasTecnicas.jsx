@@ -21,6 +21,7 @@ import {
   Breadcrumb,
   ViewToggle
 } from '../components/ui/CircleLayout'
+import ProductTable from '../components/ui/ProductTable'
 import styles from './FichasTecnicas.module.css'
 
 /* Componente Skeleton con atributos de accesibilidad */
@@ -346,6 +347,9 @@ export default function FichasTecnicas() {
 
     /* Referencias */
     if (paso === 'referencias') {
+      const esMagnetotermico = tipo === 'Interruptor Magnetotérmico' ||
+        referenciasDisponibles.some(p => p.subfamilia === 'Interruptor Magnetotérmico')
+
       return (
         <div className={styles.circleLayout}>
           <div className={styles.sectionHeader} role="status">
@@ -353,25 +357,17 @@ export default function FichasTecnicas() {
             <h2 className={styles.sectionTitle}>{gama} — {tipo}</h2>
           </div>
 
-          <div className={styles.orbitRows} role="list" aria-label="Listado de referencias">
-            {referenciasDisponibles.length > 0 ? (
-              <>
-                <OrbitRow>
-                  {referenciasDisponibles.slice(0, 2).map(p => (
-                    <div key={p.id} role="listitem">
-                      <RefCard
-                        code={p.ref_fabricante}
-                        desc={p.name}
-                        price={p.precio}
-                        image={p.imagen}
-                        onClick={() => seleccionarReferencia(p)}
-                      />
-                    </div>
-                  ))}
-                </OrbitRow>
-                {referenciasDisponibles.length > 2 && (
+          {esMagnetotermico ? (
+            <ProductTable
+              products={referenciasDisponibles}
+              onSelect={seleccionarReferencia}
+            />
+          ) : (
+            <div className={styles.orbitRows} role="list" aria-label="Listado de referencias">
+              {referenciasDisponibles.length > 0 ? (
+                <>
                   <OrbitRow>
-                    {referenciasDisponibles.slice(2, 6).map(p => (
+                    {referenciasDisponibles.slice(0, 2).map(p => (
                       <div key={p.id} role="listitem">
                         <RefCard
                           code={p.ref_fabricante}
@@ -383,14 +379,29 @@ export default function FichasTecnicas() {
                       </div>
                     ))}
                   </OrbitRow>
-                )}
-              </>
-            ) : (
-              <OrbitRow>
-                <p style={{ color: 'var(--gray-600)', fontSize: '0.875rem' }}>No hay referencias.</p>
-              </OrbitRow>
-            )}
-          </div>
+                  {referenciasDisponibles.length > 2 && (
+                    <OrbitRow>
+                      {referenciasDisponibles.slice(2, 6).map(p => (
+                        <div key={p.id} role="listitem">
+                          <RefCard
+                            code={p.ref_fabricante}
+                            desc={p.name}
+                            price={p.precio}
+                            image={p.imagen}
+                            onClick={() => seleccionarReferencia(p)}
+                          />
+                        </div>
+                      ))}
+                    </OrbitRow>
+                  )}
+                </>
+              ) : (
+                <OrbitRow>
+                  <p style={{ color: 'var(--gray-600)', fontSize: '0.875rem' }}>No hay referencias.</p>
+                </OrbitRow>
+              )}
+            </div>
+          )}
         </div>
       )
     }
