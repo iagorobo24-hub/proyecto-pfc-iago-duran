@@ -51,7 +51,23 @@ export const FULL_CATEGORY_INFO = {
   }
 }
 
-// Mapeo amigable para los IDs de categoría usados en la URL/Navegación
+export const SUBCATEGORY_LABELS = {
+  'Interruptor Magnetotérmico': 'Interruptor Magnetotérmico',
+  'Interruptor Diferencial': 'Interruptor Diferencial',
+  'Contactor': 'Contactor',
+  'Elemento de Control': 'Elemento de Control',
+  'Proteccion Sobretension': 'Protección Sobretensión',
+  'Interruptor Seccionador': 'Interruptor Seccionador',
+  'Rearmador': 'Rearmador Diferencial',
+  'Accesorio': 'Accesorio',
+}
+
+export const TYPE_LABELS = {
+  'CARRIL DIN': 'Carril DIN',
+  'CAJA MOLDEADA': 'Caja Moldeada',
+  'Piloto luminoso': 'Piloto Luminoso',
+  'Contador eléctrico': 'Contador Eléctrico',
+}
 export const CATEGORY_IDS = {
   "cables": "CABLES",
   "potencia": "DISTRIBUCION DE POTENCIA",

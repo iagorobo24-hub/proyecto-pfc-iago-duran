@@ -11,6 +11,10 @@ const MAGNETOTERMICO_GAMAS = [
 
 export function supportsTableView(products) {
   if (!products || products.length === 0) return false
+  const allSame = products.every(
+    p => p.subfamilia === 'Interruptor Magnetotérmico'
+  )
+  if (!allSame) return false
   const gama = products[0]?.Gama
   return MAGNETOTERMICO_GAMAS.includes(gama)
 }
