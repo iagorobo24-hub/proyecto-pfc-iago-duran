@@ -23,54 +23,30 @@ import path from 'path';
 
 // ─── Configuración de gamas ─────────────────────────
 const GAMAS = {
-  ic60: {
-    name: 'Acti 9 iC60',
-    rangeId: '7556',
-    subfamilia: 'CARRIL DIN',
-  },
-  nsx: {
-    name: 'ComPacT NSX',
-    rangeId: '39910531',
-    subfamilia: 'CAJA MOLDEADA',
-  },
-  vigi: {
-    name: 'Acti 9 Vigi para iC60',
-    rangeId: '7558',
-    subfamilia: 'CARRIL DIN',
-  },
-  iid: {
-    name: 'Interruptor diferencial Acti 9 iID',
-    rangeId: '7559',
-    subfamilia: 'CARRIL DIN',
-  },
-  isw: {
-    name: 'iSW',
-    rangeId: '7566',
-    subfamilia: 'CARRIL DIN',
-  },
-  ict: {
-    name: 'Acti 9 iCT',
-    rangeId: '7563',
-    subfamilia: 'CARRIL DIN',
-  },
-  icv40: {
-    name: 'Acti9 iCV40',
-    rangeId: '65400',
-    subfamilia: 'CARRIL DIN',
-  },
-  c60ul: {
-    name: 'C60 UL CSA IEC',
-    rangeId: '1104',
-    subfamilia: 'CARRIL DIN',
-  },
-  iprc: {
-    name: 'iPRC - iPRI',
-    rangeId: '61709',
-    subfamilia: 'CARRIL DIN',
-  },
-  // NOTA: iDPN no disponible en web española de Schneider
-  // NOTA: MTZ (63545) existe range page pero API devuelve 0 productos (Mayo 2026)
-  // NOTA: iARC (61532) existe pero API devuelve 0 productos
+  // VERIFICADOS Mayo 2026 — IDs confirmados via /ranges/{id}/products API
+  ic60:     { name: 'Acti 9 iC60',                        rangeId: '7556' },
+  vigi:     { name: 'Acti 9 Vigi para iC60',               rangeId: '7558' },
+  iid:      { name: 'Interruptor diferencial Acti 9 iID',  rangeId: '7559' },
+  id:       { name: 'iD',                                  rangeId: '7560' },  // A9Z (ID K differential)
+  iprc:     { name: 'iPRC - iPRI',                        rangeId: '7562' },  // A9L (iPF surge)
+  ict:      { name: 'Acti 9 iCT',                         rangeId: '7563' },  // A9C (contactors)
+  itl:      { name: 'iTL',                                rangeId: '7564' },  // A9C (timers/telerruptors)
+  isw:      { name: 'iSW',                                rangeId: '7566' },  // A9S (switches)
+  c60ul:    { name: 'C60 UL CSA IEC',                     rangeId: '1104' },
+  icv40:    { name: 'Acti9 iCV40',                        rangeId: '65400' },
+  nsx:      { name: 'ComPacT NSX',                        rangeId: '39910531' },
+  resi9:    { name: 'Resi9',                              rangeId: '61364' },  // R9F/R9P residential
+  c60h_dc:  { name: 'Acti 9 C60H-DC y C60PV-DC',          rangeId: '61095' }, // A9N DC breakers
+  iprd_dc:  { name: 'Limitador sobretensiones iPRD-DC',   rangeId: '61710' }, // A9L DC surge
+  rearmador:{ name: 'Rearmador diferencial',               rangeId: '61712' }, // A9C ARA reclosers
+
+  // RANGES NO ENCONTRADOS (Mayo 2026):
+  // iC40 — No existe como rango separado (CT iC40 está dentro de iCT)
+  // iAT — No encontrado; buscar en IDs > 100000
+  // iPR iCR — No encontrado en rango IDs accesibles
+  // Int.Seccionador — No encontrado; ID 61053 = M8650 power monitors
+  // iDPN — No disponible en web española
+  // MTZ (63545), iARC (61532), iK60 (7569) — existen pero API devuelve 0
 };
 
 const FAMILIA = 'DISTRIBUCION DE POTENCIA';
@@ -137,6 +113,11 @@ function extractGamaSubgama(name) {
     return { Gama: 'Acti 9 Vigi para iC60', Subgama: 'Vigi' };
   }
   
+  // iD (Acti9 ID K differential — check BEFORE iID since names contain RCCB/INTERRUPTOR DIFERENCIAL)
+  if (n.includes('ID K') || n.includes('ID-K') || n.includes('ACTI9 ID') || n.includes('ACTI 9 ID')) {
+    return { Gama: 'iD', Subgama: 'iD' };
+  }
+  
   // Acti 9 iC60
   if (n.includes('IC60') || n.includes('IC 60')) {
     if (n.includes('IC60L') || n.includes('IC60 L')) return { Gama: 'Acti 9 iC60', Subgama: 'iC60L' };
@@ -152,8 +133,13 @@ function extractGamaSubgama(name) {
     return { Gama: 'Interruptor diferencial Acti 9 iID', Subgama: 'iID' };
   }
   
+  // Resi9 (check BEFORE iSW — Resi9 names contain "INTERRUPTOR")
+  if (n.includes('RESI9') || n.includes('RESI 9')) {
+    return { Gama: 'Resi9', Subgama: 'Resi9' };
+  }
+  
   // iSW
-  if (n.includes('ISW') || n.includes('INTERRUPTOR EN CARGA') || (n.includes('INTERRUPTOR') && !n.includes('AUTOMATICO') && !n.includes('DIFERENCIAL'))) {
+  if (n.includes('ISW') || n.includes('INTERRUPTOR EN CARGA') || (n.includes('INTERRUPTOR') && !n.includes('AUTOMATICO') && !n.includes('DIFERENCIAL') && !n.includes('SECCIONADOR'))) {
     if (n.includes('PILOTO')) return { Gama: 'iSW', Subgama: 'iSW con piloto' };
     if (n.includes('100A') || n.includes('125A')) return { Gama: 'iSW', Subgama: 'iSW 100-125A' };
     if (n.includes('40A')) return { Gama: 'iSW', Subgama: 'iSW 40A' };
@@ -190,7 +176,83 @@ function extractGamaSubgama(name) {
     return { Gama: 'C60 UL CSA IEC', Subgama: 'C60' };
   }
   
+  // iC40
+  if (n.includes('IC40') || n.includes('IC 40')) {
+    return { Gama: 'iC40', Subgama: 'iC40' };
+  }
+  
+  // iPR iCR
+  if (n.includes('ICR') || n.includes('IPR') || (n.includes('CONTROLADOR DE POTENCIA'))) {
+    return { Gama: 'iPR iCR', Subgama: n.includes('ICR') ? 'iCR' : 'iPR' };
+  }
+  
+  // Resi9
+  if (n.includes('RESI9')) {
+    return { Gama: 'Resi9', Subgama: 'Resi9' };
+  }
+  
+  // iPRD-DC (limitador sobretensiones DC)
+  if (n.includes('IPRD') || n.includes('IPRD-DC')) {
+    return { Gama: 'Limitador sobretensiones iPRD-DC', Subgama: 'iPRD-DC' };
+  }
+  
+  // Rearmador diferencial
+  if (n.includes('REARMADOR') || n.includes('REARM') || n.includes('INTELIGENTE DIFERENCIAL')) {
+    return { Gama: 'Rearmador diferencial', Subgama: 'Rearmador' };
+  }
+  
+  // iAT (transferencia automática)
+  if (n.includes('IAT') || n.includes('INTERRUPTOR DE TRANSFERENCIA') || n.includes('TRANSFERENCIA AUTOMATICA')) {
+    return { Gama: 'iAT', Subgama: 'iAT' };
+  }
+  
+  // Interruptor-seccionador
+  if (n.includes('SECCIONADOR')) {
+    if (n.includes('INTERRUPTOR-SECCIONADOR') || n.includes('INTERRUPTOR SECCIONADOR')) return { Gama: 'Interruptor-seccionador', Subgama: 'Interruptor-seccionador' };
+    return { Gama: 'Interruptor-seccionador', Subgama: 'Seccionador' };
+  }
+  
+  // iTL (telerruptor, temporizador)
+  if (n.includes('ITL') || n.includes('TL40') || n.includes('TLI')) {
+    if (n.includes('TL40')) return { Gama: 'iTL', Subgama: 'TL40' };
+    if (n.includes('TLI')) return { Gama: 'iTL', Subgama: 'TLI' };
+    if (n.includes('ITLS')) return { Gama: 'iTL', Subgama: 'iTLs' };
+    if (n.includes('ITLC')) return { Gama: 'iTL', Subgama: 'iTLc' };
+    if (n.includes('ITLM')) return { Gama: 'iTL', Subgama: 'iTLm' };
+    if (n.includes('ITLI')) return { Gama: 'iTL', Subgama: 'iTLi' };
+    return { Gama: 'iTL', Subgama: 'iTL' };
+  }
+  
+  // iPRC - iPRI (fallback - limitadores sobretensiones)
+  if (n.includes('IPRC') || n.includes('IPF') || n.includes('PRC')) {
+    if (n.includes('IPF')) return { Gama: 'iPRC - iPRI', Subgama: 'iPF' };
+    return { Gama: 'iPRC - iPRI', Subgama: 'iPRC' };
+  }
+  
+  // iD (fallback)
+  if (n.includes('ID ') || n.includes(' IID')) {
+    return { Gama: 'iD', Subgama: 'iD' };
+  }
+  
   return { Gama: null, Subgama: null };
+}
+
+// ─── Determinar subfamilia según Gama ──────────────────────────────────
+function extractSubfamilia(Gama) {
+  if (!Gama) return 'Interruptor Magnetotérmico';
+  
+  // Elementos de CONTROL (NO son interruptores magnetotérmicos)
+  if (Gama === 'Acti 9 iCT') return 'Contactor';
+  if (Gama === 'iTL') return 'Elemento de Control';
+  if (Gama === 'Acti9 iCV40') return 'Contactor';
+  
+  // Accesorios (NO son interruptores magnetotérmicos)
+  if (Gama === '(sin Gama)' || !Gama) {
+    return 'Accesorio';
+  }
+  
+  // Por defecto: interruptores magnetotérmicos
+  return 'Interruptor Magnetotérmico';
 }
 
 // ─── Determinar tipo (subfamilia física) ──────────────────────────
@@ -231,9 +293,10 @@ async function getProductData(ref, gamaConfig) {
       d.documentType === 'Product Data Sheet' || d.title?.includes('Hoja de datos')
     );
     
-    // 3. Extract Gama, Subgama, tipo from name
+    // 3. Extract Gama, Subgama, tipo, subfamilia from name
     const { Gama, Subgama } = extractGamaSubgama(pageData.name);
     const tipo = extractTipo(pageData.name);
+    const subfamilia = extractSubfamilia(Gama);
     
     return {
       ref_fabricante: pageData.ref_fabricante,
@@ -241,7 +304,7 @@ async function getProductData(ref, gamaConfig) {
       marca: MARCA,
       brand_id: 456,
       familia: FAMILIA,
-      subfamilia: 'Interruptor Magnetotérmico',
+      subfamilia: subfamilia,
       tipo: tipo,
       Gama: Gama,
       Subgama: Subgama,

@@ -21,7 +21,7 @@ import {
   Breadcrumb,
   ViewToggle
 } from '../components/ui/CircleLayout'
-import ProductTable from '../components/ui/ProductTable'
+import ProductTable, { supportsTableView } from '../components/ui/ProductTable'
 import styles from './FichasTecnicas.module.css'
 
 /* Componente Skeleton con atributos de accesibilidad */
@@ -347,8 +347,7 @@ export default function FichasTecnicas() {
 
     /* Referencias */
     if (paso === 'referencias') {
-      const esMagnetotermico = tipo === 'Interruptor Magnetotérmico' ||
-        referenciasDisponibles.some(p => p.subfamilia === 'Interruptor Magnetotérmico')
+      const esMagnetotermico = supportsTableView(referenciasDisponibles)
 
       return (
         <div className={styles.circleLayout}>

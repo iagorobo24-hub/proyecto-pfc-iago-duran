@@ -1,6 +1,8 @@
 import React from 'react'
 import styles from './ProductTable.module.css'
-import { groupByTable } from '../../hooks/useProductTable'
+import { groupByTable, supportsTableView } from '../../hooks/useProductTable'
+
+export { supportsTableView }
 
 export default function ProductTable({ products, onSelect }) {
   const table = groupByTable(products)

@@ -1,12 +1,12 @@
 {
-  "total": 62,
-  "saved": 62,
+  "total": 11,
+  "saved": 11,
   "skipped": 0,
   "errors": 0,
   "byGama": {
-    "icv40": {
-      "total": 62,
-      "saved": 62,
+    "id": {
+      "total": 11,
+      "saved": 11,
       "skipped": 0,
       "errors": 0
     }
