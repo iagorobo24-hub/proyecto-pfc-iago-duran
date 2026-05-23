@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { supportsTableView, groupByTable, extractPoles, extractAmps, extractCurve, ampToStandard } from '../hooks/useProductTable'
+import { supportsTableView, groupByTable, extractPoles, extractAmps, extractCurve, extractSensitivity, ampToStandard } from '../hooks/useProductTable'
 
 describe('extractPoles', () => {
   it('parses "1P" format', () => {
@@ -301,5 +301,150 @@ describe('groupByTable', () => {
     const table = groupByTable(products)
     expect(table).not.toBeNull()
     expect(table.curvas).toContain('TMD')
+  })
+})
+
+describe('extractSensitivity', () => {
+  it('parses "30mA" from product name', () => {
+    expect(extractSensitivity('Diferencial RX³ - 2P - 230V~ - 30mA- 25A - Tipo AC')).toBe(30)
+  })
+  it('parses "30 mA" with space', () => {
+    expect(extractSensitivity('Acti 9 iID - RCCB - 4P - 63A - 230 V - 30 mA - type A')).toBe(30)
+  })
+  it('parses "300mA" from product name', () => {
+    expect(extractSensitivity('Acti9 iID - 2P - 25A - 300mA - tipo B-SI')).toBe(300)
+  })
+  it('parses "500mA" from iID name', () => {
+    expect(extractSensitivity('iID 4P 40A 500mA-S AC')).toBe(500)
+  })
+  it('parses "10mA" from Mosaic product', () => {
+    expect(extractSensitivity('Interruptor automático diferencial Mosaic - 1P+N - 10A - 30mA')).toBe(30)
+  })
+  it('parses "1000mA" from product', () => {
+    expect(extractSensitivity('Diferencial - 2P - 25A - 1000mA - tipo AC')).toBe(1000)
+  })
+  it('returns 0 for null/undefined', () => {
+    expect(extractSensitivity(null)).toBe(0)
+    expect(extractSensitivity(undefined)).toBe(0)
+  })
+  it('returns 0 for names without mA', () => {
+    expect(extractSensitivity('Magnetotérmico 1P 10A Curva C')).toBe(0)
+  })
+})
+
+describe('supportsTableView — Diferenciales', () => {
+  it('returns true for Schneider Acti 9 iID differentials', () => {
+    const products = [
+      { subfamilia: 'Interruptor Diferencial', Gama: 'Interruptor diferencial Acti 9 iID' },
+      { subfamilia: 'Interruptor Diferencial', Gama: 'Interruptor diferencial Acti 9 iID' },
+    ]
+    expect(supportsTableView(products)).toBe(true)
+  })
+
+  it('returns true for Schneider iD differentials', () => {
+    const products = [
+      { subfamilia: 'Interruptor Diferencial', Gama: 'iD' },
+    ]
+    expect(supportsTableView(products)).toBe(true)
+  })
+
+  it('returns true for Schneider Vigi differentials', () => {
+    const products = [
+      { subfamilia: 'Interruptor Diferencial', Gama: 'Acti 9 Vigi para iC60' },
+    ]
+    expect(supportsTableView(products)).toBe(true)
+  })
+
+  it('returns true for Legrand RX³ Diferencial', () => {
+    const products = [
+      { subfamilia: 'Interruptor Diferencial', Gama: 'RX³ Diferencial' },
+    ]
+    expect(supportsTableView(products)).toBe(true)
+  })
+
+  it('returns true for Legrand TX³ Diferencial', () => {
+    const products = [
+      { subfamilia: 'Interruptor Diferencial', Gama: 'TX³ Diferencial' },
+    ]
+    expect(supportsTableView(products)).toBe(true)
+  })
+
+  it('returns true for Mosaic differentials', () => {
+    const products = [
+      { subfamilia: 'Interruptor Diferencial', Gama: 'Mosaic' },
+    ]
+    expect(supportsTableView(products)).toBe(true)
+  })
+
+  it('returns false for mixed subfamilias (magnetotérmico + diferencial)', () => {
+    const products = [
+      { subfamilia: 'Interruptor Magnetotérmico', Gama: 'Acti 9 iC60' },
+      { subfamilia: 'Interruptor Diferencial', Gama: 'Interruptor diferencial Acti 9 iID' },
+    ]
+    expect(supportsTableView(products)).toBe(false)
+  })
+
+  it('returns false for unknown differential Gama', () => {
+    const products = [
+      { subfamilia: 'Interruptor Diferencial', Gama: 'Unknown Gama' },
+    ]
+    expect(supportsTableView(products)).toBe(false)
+  })
+
+  it('returns false for empty/null/undefined', () => {
+    expect(supportsTableView(null)).toBe(false)
+    expect(supportsTableView(undefined)).toBe(false)
+    expect(supportsTableView([])).toBe(false)
+  })
+})
+
+describe('groupByTable — Diferenciales', () => {
+  it('groups Schneider Acti 9 iID products by sensitivity × poles × amperage', () => {
+    const products = [
+      { subfamilia: 'Interruptor Diferencial', Gama: 'Interruptor diferencial Acti 9 iID', name: 'Acti9 iID - 4P - 25A - 300mA - tipo AC' },
+      { subfamilia: 'Interruptor Diferencial', Gama: 'Interruptor diferencial Acti 9 iID', name: 'Acti9 iID - 4P - 40A - 300mA - tipo AC' },
+      { subfamilia: 'Interruptor Diferencial', Gama: 'Interruptor diferencial Acti 9 iID', name: 'Acti9 iID - 2P - 25A - 30mA - tipo AC' },
+      { subfamilia: 'Interruptor Diferencial', Gama: 'Interruptor diferencial Acti 9 iID', name: 'Acti9 iID - 2P - 40A - 30mA - tipo AC' },
+    ]
+    const table = groupByTable(products)
+    expect(table).not.toBeNull()
+    expect(table.type).toBe('diferencial')
+    expect(table.sensitivities).toEqual([30, 300])
+    expect(table.polas).toEqual(['2P', '4P'])
+    expect(table.calibres).toContain(25)
+    expect(table.calibres).toContain(40)
+    expect(table.curvas).toBeUndefined()
+  })
+
+  it('groups Legrand RX³ Diferencial products', () => {
+    const products = [
+      { subfamilia: 'Interruptor Diferencial', Gama: 'RX³ Diferencial', name: 'Diferencial RX³ - 2P - 230V~ - 30mA- 25A - Tipo AC' },
+      { subfamilia: 'Interruptor Diferencial', Gama: 'RX³ Diferencial', name: 'Diferencial RX³ - 2P - 230V~ - 30mA- 40A - Tipo AC' },
+      { subfamilia: 'Interruptor Diferencial', Gama: 'RX³ Diferencial', name: 'Diferencial RX³ - 2P - 230V~ - 30mA- 25A - Tipo A' },
+    ]
+    const table = groupByTable(products)
+    expect(table).not.toBeNull()
+    expect(table.type).toBe('diferencial')
+    expect(table.sensitivities).toEqual([30])
+    expect(table.polas).toEqual(['2P'])
+    expect(table.calibres).toContain(25)
+    expect(table.calibres).toContain(40)
+  })
+
+  it('returns null for non-diferencial products', () => {
+    const products = [
+      { subfamilia: 'Interruptor Diferencial', Gama: 'Unknown Gama', name: 'Diferencial 2P 25A 30mA' },
+    ]
+    expect(groupByTable(products)).toBeNull()
+  })
+
+  it('still works for magnetotérmicos (regression check)', () => {
+    const products = [
+      { subfamilia: 'Interruptor Magnetotérmico', Gama: 'Acti 9 iC60', name: 'Magnetotérmico, Acti9 iC60N, 1P, 10 A, C curva' },
+    ]
+    const table = groupByTable(products)
+    expect(table).not.toBeNull()
+    expect(table.type).toBe('magnetotermico')
+    expect(table.curvas).toContain('C')
   })
 })

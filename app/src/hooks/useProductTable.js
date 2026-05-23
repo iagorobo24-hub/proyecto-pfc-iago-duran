@@ -12,14 +12,42 @@ const MAGNETOTERMICO_GAMAS = [
   'Mosaic',
 ]
 
+const DIFERENCIAL_GAMAS = [
+  'Interruptor diferencial Acti 9 iID',
+  'iD',
+  'Acti 9 Vigi para iC60',
+  'RX³ Diferencial',
+  'TX³ Diferencial',
+  'Mosaic',
+]
+
+const SENSITIVITY_ORDER = [10, 30, 100, 300, 500, 1000]
+
 export function supportsTableView(products) {
   if (!products || products.length === 0) return false
-  const allSame = products.every(
+
+  const allMagnetotermico = products.every(
     p => (p.subfamilia || '').trim() === 'Interruptor Magnetotérmico'
   )
-  if (!allSame) return false
+  const allDiferencial = products.every(
+    p => (p.subfamilia || '').trim() === 'Interruptor Diferencial'
+  )
+
+  if (!allMagnetotermico && !allDiferencial) return false
+
   const gama = products[0]?.Gama || products[0]?.gama || ''
-  return MAGNETOTERMICO_GAMAS.includes(gama)
+
+  if (allMagnetotermico) return MAGNETOTERMICO_GAMAS.includes(gama)
+  if (allDiferencial) return DIFERENCIAL_GAMAS.includes(gama)
+
+  return false
+}
+
+export function extractSensitivity(name) {
+  if (!name) return 0
+  const m = name.match(/(\d+)\s*mA/)
+  if (m) return parseInt(m[1], 10)
+  return 0
 }
 
 export function extractPoles(name) {
@@ -77,6 +105,54 @@ export function groupByTable(products) {
   if (!products || products.length === 0) return null
   if (!supportsTableView(products)) return null
 
+  const subfamilia = (products[0]?.subfamilia || '').trim()
+
+  if (subfamilia === 'Interruptor Diferencial') {
+    return groupByTableDiferencial(products)
+  }
+
+  return groupByTableMagnetotermico(products)
+}
+
+function groupByTableDiferencial(products) {
+  const rows = {}
+  let calibreMin = Infinity
+  let calibreMax = -Infinity
+
+  products.forEach(p => {
+    const pola = extractPoles(p.name)
+    if (pola === '?' || !POLA_ORDER.includes(pola)) return
+
+    const rawAmp = extractAmps(p.name)
+    if (rawAmp === 0) return
+    const amp = ampToStandard(rawAmp)
+
+    const sens = extractSensitivity(p.name)
+    if (sens === 0) return
+
+    const key = sens + '-' + pola
+    if (!rows[key]) rows[key] = {}
+    if (!rows[key][amp]) rows[key][amp] = []
+    rows[key][amp].push(p)
+
+    if (amp < calibreMin) calibreMin = amp
+    if (amp > calibreMax) calibreMax = amp
+  })
+
+  const sensitivities = [...new Set(Object.keys(rows).map(k => parseInt(k.split('-')[0])))]
+    .filter(s => SENSITIVITY_ORDER.includes(s))
+    .sort((a, b) => SENSITIVITY_ORDER.indexOf(a) - SENSITIVITY_ORDER.indexOf(b))
+
+  const polas = [...new Set(Object.keys(rows).map(k => k.split('-')[1]))]
+    .filter(p => POLA_ORDER.includes(p))
+    .sort((a, b) => POLA_ORDER.indexOf(a) - POLA_ORDER.indexOf(b))
+
+  const sortedAmps = AMP_STEPS.filter(a => a >= calibreMin && a <= calibreMax)
+
+  return { rows, sensitivities, polas, calibres: sortedAmps, type: 'diferencial' }
+}
+
+function groupByTableMagnetotermico(products) {
   const rows = {}
   let calibreMin = Infinity
   let calibreMax = -Infinity
@@ -120,5 +196,5 @@ export function groupByTable(products) {
 
   const sortedAmps = AMP_STEPS.filter(a => a >= calibreMin && a <= calibreMax)
 
-  return { rows, curvas, polas, calibres: sortedAmps }
+  return { rows, curvas, polas, calibres: sortedAmps, type: 'magnetotermico' }
 }

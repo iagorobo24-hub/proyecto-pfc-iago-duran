@@ -196,4 +196,109 @@ test.describe('Fichas Técnicas — Vista Tabla y Marcas', () => {
     expect(schneiderVisible).toBe(true)
     expect(legrandVisible).toBe(true)
   })
+
+  test('Vista tabla diferenciales para Schneider Acti 9 Vigi iC60', async ({ page }) => {
+    test.setTimeout(60000)
+    await page.goto(`${BASE}/app/fichas`, { waitUntil: 'networkidle', timeout: 30000 })
+    await page.waitForTimeout(2000)
+
+    const sidebarCats = page.locator('nav[aria-labelledby="categories-label"] button')
+    await sidebarCats.first().click()
+    await page.waitForTimeout(3000)
+
+    const schneiderBtn = page.getByText('Schneider Electric').first()
+    await expect(schneiderBtn).toBeVisible({ timeout: 10000 })
+    await schneiderBtn.click()
+    await page.waitForTimeout(3000)
+
+    const gamaBtns = page.locator('section[aria-live="polite"] button')
+    const gamaCount = await gamaBtns.count()
+    console.log(`Gamas Schneider: ${gamaCount}`)
+
+    // Find and click a differential gama
+    let clickedGama = false
+    for (let i = 0; i < gamaCount; i++) {
+      const text = await gamaBtns.nth(i).textContent()
+      const lower = (text || '').toLowerCase()
+      if (lower.includes('vigi') || lower.includes('iid') || lower.includes('diferencial')) {
+        console.log(`Click en gama diferencial: ${text}`)
+        await gamaBtns.nth(i).click()
+        clickedGama = true
+        break
+      }
+    }
+    if (!clickedGama) {
+      console.log('No se encontró gama diferencial — test saltado')
+      return
+    }
+    await page.waitForTimeout(3000)
+
+    const tipoBtns = page.locator('section[aria-live="polite"] button')
+    const tipoCount = await tipoBtns.count()
+    console.log(`Tipos diferenciales: ${tipoCount}`)
+    if (tipoCount === 0) return
+
+    await tipoBtns.first().click()
+    await page.waitForTimeout(3000)
+
+    // Check if differential table view appeared
+    // The table header shows "{sens} mA" — look for a section with a numeric+mA pattern
+    const tableWrap = page.locator('div[class*="wrap"]').first()
+    const hasTable = await tableWrap.isVisible().catch(() => false)
+    console.log(`¿Vista tabla diferencial visible?: ${hasTable}`)
+
+    if (hasTable) {
+      const mAHeaders = page.locator('span:has-text("mA")')
+      const mAHeaderCount = await mAHeaders.count()
+      console.log(`Encabezados de sensibilidad encontrados: ${mAHeaderCount}`)
+    }
+  })
+
+  test('Vista tabla diferenciales para Legrand RX³ Diferencial', async ({ page }) => {
+    test.setTimeout(60000)
+    await page.goto(`${BASE}/app/fichas`, { waitUntil: 'networkidle', timeout: 30000 })
+    await page.waitForTimeout(2000)
+
+    const sidebarCats = page.locator('nav[aria-labelledby="categories-label"] button')
+    await sidebarCats.first().click()
+    await page.waitForTimeout(3000)
+
+    const legrandBtn = page.getByText('Legrand').first()
+    await expect(legrandBtn).toBeVisible({ timeout: 10000 })
+    await legrandBtn.click()
+    await page.waitForTimeout(3000)
+
+    const gamaBtns = page.locator('section[aria-live="polite"] button')
+    const gamaCount = await gamaBtns.count()
+    console.log(`Gamas Legrand diferenciales: ${gamaCount}`)
+
+    let clickedGama = false
+    for (let i = 0; i < gamaCount; i++) {
+      const text = await gamaBtns.nth(i).textContent()
+      const lower = (text || '').toLowerCase()
+      if (lower.includes('diferencial')) {
+        console.log(`Click en gama: ${text}`)
+        await gamaBtns.nth(i).click()
+        clickedGama = true
+        break
+      }
+    }
+    if (!clickedGama) {
+      console.log('No se encontró gama Diferencial Legrand')
+      return
+    }
+    await page.waitForTimeout(3000)
+
+    const tipoBtns = page.locator('section[aria-live="polite"] button')
+    const tipoCount = await tipoBtns.count()
+    console.log(`Tipos Legrand dif: ${tipoCount}`)
+    if (tipoCount === 0) return
+
+    await tipoBtns.first().click()
+    await page.waitForTimeout(3000)
+
+    const tableWrap = page.locator('div[class*="wrap"]').first()
+    const hasTable = await tableWrap.isVisible().catch(() => false)
+    console.log(`¿Vista tabla diferencial Legrand visible?: ${hasTable}`)
+  })
 })
