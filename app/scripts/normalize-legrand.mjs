@@ -10,7 +10,7 @@
  */
 
 const SONEX_URL = 'https://fncmzrnmzmuhlullkrud.supabase.co'
-const SONEX_KEY = process.env.SONEX_SUPABASE_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZuY216cm5tem11aGx1bGxrcnVkIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MzM2MDY5NSwiZXhwIjoyMDg4OTM2Njk1fQ.3DfYKquAUFFNx_c8NdMWmic7pVVckWsXEZWOJTuC5wg'
+const SONEX_KEY = process.env.SONEX_SUPABASE_KEY || ''
 
 const HEADERS = {
   'apikey': SONEX_KEY,

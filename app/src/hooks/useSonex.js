@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { safeGetJSON, safeSetJSON, safeRemoveItem } from '../utils/storage';
 
 const STORAGE_KEY = 'pfc_sonex_sessions';
 
@@ -45,11 +46,7 @@ export function useSonex() {
   const messagesEndRef = useRef(null);
 
   const persistSessions = useCallback((updatedSessions) => {
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedSessions));
-    } catch (e) {
-      console.warn('Error saving sessions:', e);
-    }
+    safeSetJSON(STORAGE_KEY, updatedSessions);
   }, []);
 
   const getActiveSession = useCallback(() => {
@@ -71,11 +68,11 @@ export function useSonex() {
 
   useEffect(() => {
     try {
-      const oldData = localStorage.getItem('pfc_sonex_historial');
-      const stored = localStorage.getItem(STORAGE_KEY);
+      const oldData = safeGetJSON('pfc_sonex_historial');
+      const stored = safeGetJSON(STORAGE_KEY);
 
       if (stored) {
-        const parsed = JSON.parse(stored);
+        const parsed = stored;
         setSessions(parsed);
         if (parsed.length > 0) {
           const last = parsed[parsed.length - 1];
@@ -88,13 +85,13 @@ export function useSonex() {
           persistSessions([session]);
         }
       } else if (oldData) {
-        const oldMessages = normalizarMensajes(JSON.parse(oldData));
+        const oldMessages = normalizarMensajes(oldData);
         const session = createSessionObj(oldMessages);
         setSessions([session]);
         setActiveSessionId(session.id);
         setMessages(oldMessages);
         persistSessions([session]);
-        try { localStorage.removeItem('pfc_sonex_historial'); } catch {}
+        safeRemoveItem('pfc_sonex_historial');
       } else {
         const session = createSessionObj([]);
         setSessions([session]);

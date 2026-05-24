@@ -49,11 +49,11 @@ export default function FichasTecnicas() {
     referencia,
     categorias, marcasDisponibles, gamasDisponibles,
     tiposDisponibles, referenciasDisponibles,
-    breadcrumb, cargando: navegacionCargando,
+    breadcrumb, cargando: navegacionCargando, sugerenciasBusqueda, busquedaCargando,
     seleccionarCategoria, seleccionarMarca, seleccionarGama,
     seleccionarTipo, seleccionarCategoriaGrupo, seleccionarSubcategoria,
     seleccionarReferencia, volver, reiniciar,
-    buscarReferenciaDirecta, aiFicha, aiCargando,
+    buscarReferenciaDirecta, buscarPorNombre, aiFicha, aiCargando,
   } = useNavegacionFichas()
 
   const {
@@ -67,6 +67,15 @@ export default function FichasTecnicas() {
   } = useFichasTecnicas()
 
   const [modo, setModo] = React.useState('navegacion')
+  const debounceRef = React.useRef(null)
+
+  React.useEffect(() => {
+    if (debounceRef.current) clearTimeout(debounceRef.current)
+    if (consulta.trim().length >= 2) {
+      debounceRef.current = setTimeout(() => buscarPorNombre(consulta), 250)
+    }
+    return () => { if (debounceRef.current) clearTimeout(debounceRef.current) }
+  }, [consulta, buscarPorNombre])
   
   const catInfo = FULL_CATEGORY_INFO[categoria] || {}
   const isCargando = navegacionCargando || busquedaIACargando
@@ -117,7 +126,7 @@ export default function FichasTecnicas() {
   /* ── Sidebar ─ */
   const renderSidebar = () => (
     <aside className={styles.sidebar} aria-label="Categorías de productos">
-      {/* Buscador compacto en sidebar */}
+      {/* Buscador con sugerencias */}
       <div className={styles.sidebar__search} role="search">
         <input
           id="catalog-search"
@@ -131,8 +140,33 @@ export default function FichasTecnicas() {
               })
             }
           }}
-          placeholder="Buscar referencia..."
+          placeholder="Buscar referencia o nombre..."
+          aria-label="Buscar producto por referencia o nombre comercial"
+          aria-autocomplete="list"
+          autoComplete="off"
         />
+        {sugerenciasBusqueda.length > 0 && (
+          <ul className={styles.sugerencias} role="listbox" aria-label="Sugerencias de búsqueda">
+            {sugerenciasBusqueda.map(p => (
+              <li
+                key={p.id}
+                className={styles.sugerenciaItem}
+                role="option"
+                tabIndex={0}
+                onClick={() => {
+                  seleccionarReferencia(p)
+                  setConsulta('')
+                }}
+                onKeyDown={e => { if (e.key === 'Enter') { seleccionarReferencia(p); setConsulta('') } }}
+              >
+                <span className={styles.sugerenciaRef}>{p.ref_fabricante}</span>
+                <span className={styles.sugerenciaName}>{p.name}</span>
+                <span className={styles.sugerenciaMarca}>{p.marca}</span>
+              </li>
+            ))}
+          </ul>
+        )}
+        {busquedaCargando && <div className={styles.busquedaCargando}>Buscando...</div>}
         <Button
           variant="primary"
           size="sm"

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { safeGetJSON, safeSetJSON } from '../utils/storage'
 
 /**
  * Hook de sincronización SIMPLIFICADO - solo localStorage (sin Firebase)
@@ -13,30 +14,20 @@ export default function useFirestoreSync(collectionPath, docId = 'default', init
 
   // Cargar datos del localStorage al iniciar
   useEffect(() => {
-    try {
-      const stored = localStorage.getItem(storageKey)
-      if (stored) {
-        setData(JSON.parse(stored))
-        setSyncStatus('synced')
-      } else {
-        setSyncStatus('synced')
-      }
-    } catch (e) {
-      console.warn('Error loading from localStorage:', e)
-      setSyncStatus('error')
+    const stored = safeGetJSON(storageKey)
+    if (stored) {
+      setData(stored)
+      setSyncStatus('synced')
+    } else {
+      setSyncStatus('synced')
     }
   }, [storageKey])
 
   // Guardar datos en localStorage
   const saveData = (newData) => {
-    try {
-      setData(newData)
-      localStorage.setItem(storageKey, JSON.stringify(newData))
-      setSyncStatus('synced')
-    } catch (e) {
-      console.error('Error saving to localStorage:', e)
-      setSyncStatus('error')
-    }
+    setData(newData)
+    const ok = safeSetJSON(storageKey, newData)
+    setSyncStatus(ok ? 'synced' : 'error')
   }
 
   return {

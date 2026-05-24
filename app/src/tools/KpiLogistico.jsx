@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { TrendingUp } from 'lucide-react';
+import { safeGetJSON, safeSetJSON } from '../utils/storage'
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, ReferenceLine } from "recharts";
 import Button from '../components/ui/Button'
 import Input from '../components/ui/Input'
@@ -43,9 +44,9 @@ export default function KPILogistico() {
     toast.show("Datos de ejemplo cargados", "success");
   };
 
-  useEffect(() => { try { const h = localStorage.getItem("pfc_kpi_historial"); if (h) setHistorial(JSON.parse(h)); } catch {} }, []);
+  useEffect(() => { const h = safeGetJSON("pfc_kpi_historial"); if (h) setHistorial(h); }, []);
 
-  const guardarHistorial = (entrada) => { const nuevo = [entrada, ...historial].slice(0, 30); setHistorial(nuevo); try { localStorage.setItem("pfc_kpi_historial", JSON.stringify(nuevo)); } catch {} };
+  const guardarHistorial = (entrada) => { const nuevo = [entrada, ...historial].slice(0, 30); setHistorial(nuevo); safeSetJSON("pfc_kpi_historial", nuevo) };
 
   const calcularKPIs = () => {
     const d = datos;

@@ -46,6 +46,8 @@ export default function useNavegacionFichas() {
 
 const [aiFicha, setAiFicha] = useState(null)
 const [aiCargando, setAiCargando] = useState(false)
+const [sugerenciasBusqueda, setSugerenciasBusqueda] = useState([])
+const [busquedaCargando, setBusquedaCargando] = useState(false)
 
 async function cargarInfoIA(ficha) {
   setAiCargando(true)
@@ -320,11 +322,47 @@ useEffect(() => {
      cargarInfoIA(ficha)
      return true
     }
+    const porNombre = await catalogService.buscarProductos(refId)
+    if (porNombre && porNombre.length > 0) {
+     if (porNombre.length === 1) {
+      const f = porNombre[0]
+      setCategoria(f.familia || f.category)
+      setMarca(f.marca || f.brand)
+      setGama(f.subfamilia || f.gama)
+      setTipo(f.tipo || f.type)
+      setReferencia(f)
+      setPaso('ficha')
+      setHistorial(prev => [...prev, { paso: 'categorias' }])
+      setCargando(false)
+      cargarInfoIA(f)
+      return true
+     }
+     setReferenciasDisponibles(porNombre)
+     setPaso('referencias')
+     setHistorial(prev => [...prev, { paso: 'categorias' }])
+     setCargando(false)
+     return true
+    }
    } catch (e) {
     console.error('Error en búsqueda directa:', e)
    }
    setCargando(false)
    return false
+  }, [])
+
+ const buscarPorNombre = useCallback(async (termino) => {
+   if (!termino || termino.trim().length < 2) {
+    setSugerenciasBusqueda([])
+    return
+   }
+   setBusquedaCargando(true)
+   try {
+    const results = await catalogService.buscarProductosConLimite(termino, 5)
+    setSugerenciasBusqueda(results)
+   } catch {
+    setSugerenciasBusqueda([])
+   }
+   setBusquedaCargando(false)
   }, [])
 
 const breadcrumb = useMemo(() => {
@@ -346,10 +384,10 @@ const breadcrumb = useMemo(() => {
   paso, categoria, marca, gama, tipo, categoriaGrupo, subcategoria, grupos,
   referencia, historial, cargando, error,
   categorias, marcasDisponibles, gamasDisponibles, tiposDisponibles, referenciasDisponibles,
-  breadcrumb,
+  breadcrumb, sugerenciasBusqueda, busquedaCargando,
   seleccionarCategoria, seleccionarMarca, seleccionarCategoriaGrupo, seleccionarSubcategoria,
   seleccionarGama, seleccionarTipo,
-  seleccionarReferencia, volver, reiniciar, buscarReferenciaDirecta,
+  seleccionarReferencia, volver, reiniciar, buscarReferenciaDirecta, buscarPorNombre,
   aiFicha, aiCargando
  }
 }

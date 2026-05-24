@@ -4,6 +4,7 @@ import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
 import { useToast } from '../contexts/ToastContext';
 import { Label, TipCard } from '../components/ui/CircleLayout';
+import { safeGetJSON, safeSetJSON } from '../utils/storage';
 import styles from './DashboardIncidencias.module.css';
 
 const SEVERIDADES = ["Crítica", "Alta", "Media", "Baja"];
@@ -56,10 +57,10 @@ export default function DashboardIncidencias() {
 
   useEffect(() => { const t = setInterval(() => setAhora(Date.now()), 30000); return () => clearInterval(t); }, []);
   useEffect(() => {
-    try { const saved = localStorage.getItem("pfc_incidencias"); setIncidencias(saved ? JSON.parse(saved) : DEMOS()); } catch { setIncidencias(DEMOS()); }
+    try { const saved = safeGetJSON("pfc_incidencias"); setIncidencias(saved || DEMOS()); } catch { setIncidencias(DEMOS()); }
   }, []);
 
-  const guardar = (data) => { setIncidencias(data); try { localStorage.setItem("pfc_incidencias", JSON.stringify(data)); } catch {} };
+  const guardar = (data) => { setIncidencias(data); safeSetJSON("pfc_incidencias", data) };
   const kpis = {
     criticas: incidencias.filter(i => i.severidad === "Crítica" && i.estado !== "Resuelta").length,
     abiertas: incidencias.filter(i => i.estado === "Abierta").length,

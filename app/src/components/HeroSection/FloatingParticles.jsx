@@ -4,14 +4,14 @@ import styles from './styles/FloatingParticles.module.css';
 
 const FloatingParticles = () => {
   const particles = useMemo(() => {
-    return Array.from({ length: 30 }, (_, i) => ({
+    return Array.from({ length: 50 }, (_, i) => ({
       id: i,
       left: Math.random() * 100,
-      delay: Math.random() * 10,
-      duration: 8 + Math.random() * 12,
-      size: 2 + Math.random() * 4,
-      opacity: 0.1 + Math.random() * 0.3,
-      xOffset: Math.random() > 0.5 ? 30 : -30
+      delay: Math.random() * 8,
+      duration: 6 + Math.random() * 8,
+      size: 3 + Math.random() * 5,
+      opacity: 0.25 + Math.random() * 0.4,
+      xOffset: Math.random() > 0.5 ? 40 : -40
     }));
   }, []);
 
@@ -28,7 +28,7 @@ const FloatingParticles = () => {
             opacity: p.opacity
           }}
           animate={{
-            y: [-20, -120, -20],
+            y: [-20, -180, -20],
             x: [0, p.xOffset, 0],
             opacity: [0, p.opacity, 0]
           }}

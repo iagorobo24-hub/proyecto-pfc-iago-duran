@@ -1,27 +1,20 @@
 import { createContext, useContext, useState, useEffect } from 'react'
 import { flushSync } from 'react-dom'
+import { safeGetItem, safeSetItem } from '../utils/storage'
 
 const ThemeContext = createContext()
 
 export function ThemeProvider({ children }) {
   const [dark, setDark] = useState(() => {
-    try {
-      const saved = localStorage.getItem('Proyectos PFC_theme')
-      if (saved) return saved === 'dark'
-      return false
-    } catch {
-      return false
-    }
+    const saved = safeGetItem('Proyectos PFC_theme')
+    if (saved) return saved === 'dark'
+    return false
   })
 
   // Sincronizar el atributo data-theme en el html
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light')
-    try {
-      localStorage.setItem('Proyectos PFC_theme', dark ? 'dark' : 'light')
-    } catch (e) {
-      console.error('Error saving theme:', e)
-    }
+    safeSetItem('Proyectos PFC_theme', dark ? 'dark' : 'light')
   }, [dark])
 
   const toggle = (event) => {

@@ -74,6 +74,7 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
+  position: relative;
 }
 
 .sidebar__searchInput {
@@ -520,4 +521,62 @@
   color: var(--brand-primary);
   text-decoration: underline;
   word-break: break-all;
+}
+
+/* ── Sugerencias de búsqueda ─ */
+.sugerencias {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  background: var(--white);
+  border: 1.5px solid var(--gray-200);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  max-height: 240px;
+  overflow-y: auto;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: var(--z-dropdown);
+}
+
+.sugerenciaItem {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: var(--space-2) var(--space-3);
+  cursor: pointer;
+  border-bottom: 1px solid var(--gray-100);
+  transition: background 0.15s var(--ease-out);
+}
+
+.sugerenciaItem:last-child { border-bottom: none; }
+.sugerenciaItem:hover, .sugerenciaItem:focus { background: var(--blue-50); }
+
+.sugerenciaRef {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--blue-700);
+  font-weight: 600;
+}
+
+.sugerenciaName {
+  font-size: var(--text-sm);
+  color: var(--gray-700);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sugerenciaMarca {
+  font-size: var(--text-xs);
+  color: var(--gray-400);
+}
+
+.busquedaCargando {
+  font-size: var(--text-xs);
+  color: var(--gray-400);
+  text-align: center;
+  padding: var(--space-1);
 }

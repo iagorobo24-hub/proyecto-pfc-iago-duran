@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Warehouse } from 'lucide-react';
 import Button from '../components/ui/Button'
 import { Label, TipCard, Breadcrumb, ViewToggle } from '../components/ui/CircleLayout'
+import { safeGetJSON, safeSetJSON, safeSetItem } from '../utils/storage'
 import styles from './SimuladorAlmacen.module.css'
 
 // ── Paleta corporativa Proyectos PFC ───────────────────────────────────────────────
@@ -122,10 +123,10 @@ export default function SimuladorAlmacen() {
   const inicioEtapaRef = useRef(null);
 
   useEffect(() => {
-    try { const p = localStorage.getItem("pfc_sim_perfil"); if (p) setOperario(JSON.parse(p)); const h = localStorage.getItem("pfc_simulaciones_v3"); if (h) setHistorial(JSON.parse(h)); } catch {}
+    const p = safeGetJSON("pfc_sim_perfil"); if (p) setOperario(p); const h = safeGetJSON("pfc_simulaciones_v3"); if (h) setHistorial(h);
   }, []);
 
-  const guardarPerfil = () => { if (!operario.nombre.trim()) return; try { localStorage.setItem("pfc_sim_perfil", JSON.stringify(operario)); } catch {}; setPantalla("onboarding"); };
+  const guardarPerfil = () => { if (!operario.nombre.trim()) return; safeSetItem("pfc_sim_perfil", JSON.stringify(operario)); setPantalla("onboarding"); };
   const showToast = (msg) => { setToast(msg); setTimeout(() => setToast(""), 2500); };
 
   useEffect(() => {
@@ -186,7 +187,7 @@ export default function SimuladorAlmacen() {
     const nuevaEntrada = { fecha: new Date().toISOString(), pedido: pedidoActivo, tiempos: todosTiempos, puntuacion: punt, incResueltas, operario: operario.nombre, modo: modoSim };
     const nuevoHistorial = [nuevaEntrada, ...historial].slice(0, 20);
     setHistorial(nuevoHistorial);
-    try { localStorage.setItem("pfc_simulaciones_v3", JSON.stringify(nuevoHistorial)); } catch {}
+    safeSetJSON("pfc_simulaciones_v3", nuevoHistorial)
     setPantalla("resultado");
     if (cargando) return;
     setCargando(true);

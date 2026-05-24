@@ -2,6 +2,7 @@ import { useState, useEffect, useReducer, useMemo, useCallback } from "react";
 import React from "react";
 import { useSearchParams } from 'react-router-dom'
 import { FULL_CATEGORY_INFO } from '../data/categoryMapping'
+import { safeGetJSON, safeSetJSON } from '../utils/storage'
 import Button from '../components/ui/Button'
 import { useToast } from '../contexts/ToastContext'
 import catalogService from '../services/catalogService'
@@ -49,7 +50,7 @@ export default function Presupuestos() {
   const [pasoCatalogo, setPasoCatalogo] = useState("marcas");
   const [cargandoCatalogo, setCargandoCatalogo] = useState(false);
 
-  useEffect(() => { try { const h = localStorage.getItem("pfc_presupuestos_historial"); if (h) setHistorial(JSON.parse(h)); } catch {} }, []);
+  useEffect(() => { const h = safeGetJSON("pfc_presupuestos_historial"); if (h) setHistorial(h); }, []);
   useEffect(() => {
     const producto = searchParams.get('producto');
     const referencia = searchParams.get('referencia');
@@ -124,7 +125,7 @@ export default function Presupuestos() {
     const presupuesto = { numero: numPresupuesto, fecha: new Date().toISOString(), cliente: datosCliente, partidas, categoria, total: partidas.reduce((s, p) => s + p.precio_total, 0) };
     const nuevo = [presupuesto, ...historial].slice(0, 20);
     setHistorial(nuevo);
-    try { localStorage.setItem("pfc_presupuestos_historial", JSON.stringify(nuevo)); } catch {}
+    safeSetJSON("pfc_presupuestos_historial", nuevo)
     setGuardando(false);
     toast.show("Presupuesto guardado", "success");
   };

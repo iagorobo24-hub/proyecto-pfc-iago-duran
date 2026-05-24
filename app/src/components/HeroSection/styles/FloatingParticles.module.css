@@ -11,7 +11,7 @@
   bottom: -10px;
   border-radius: 50%;
   background: var(--brand-blue);
-  filter: blur(1px);
+  filter: blur(1.5px);
 }
 
 @media (max-width: 640px) {

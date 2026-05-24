@@ -3,6 +3,7 @@ import { GraduationCap } from 'lucide-react'
 import Button from '../components/ui/Button'
 import Input from '../components/ui/Input'
 import { useToast } from '../contexts/ToastContext'
+import { safeGetJSON, safeSetJSON } from '../utils/storage'
 import styles from './FormacionInterna.module.css'
 
 const AREAS = ["Almacén", "Comercial", "Técnico", "Seguridad", "Sistemas"];
@@ -45,12 +46,12 @@ export default function FormacionInterna() {
 
   useEffect(() => {
     try {
-      const emp = localStorage.getItem("pfc_formacion_empleados");
-      const prg = localStorage.getItem("pfc_formacion_progresos");
-      const fec = localStorage.getItem("pfc_formacion_fechas");
-      const emps = emp ? JSON.parse(emp) : EMPLEADOS_INIT();
-      const prgs = prg ? JSON.parse(prg) : {};
-      const fecs = fec ? JSON.parse(fec) : {};
+      const emp = safeGetJSON("pfc_formacion_empleados");
+      const prg = safeGetJSON("pfc_formacion_progresos");
+      const fec = safeGetJSON("pfc_formacion_fechas");
+      const emps = emp || EMPLEADOS_INIT();
+      const prgs = prg || {};
+      const fecs = fec || {};
       const prgsCompleto = {};
       emps.forEach(e => { prgsCompleto[e.id] = {}; MODULOS_INIT.forEach(m => { prgsCompleto[e.id][m.id] = prgs[e.id]?.[m.id] || "pendiente"; }); });
       setEmpleados(emps); setProgresos(prgsCompleto); setFechasCompletado(fecs);
@@ -63,7 +64,7 @@ export default function FormacionInterna() {
   }, []);
 
   const guardar = (emps, prgs, fecs) => {
-    try { localStorage.setItem("pfc_formacion_empleados", JSON.stringify(emps)); localStorage.setItem("pfc_formacion_progresos", JSON.stringify(prgs)); localStorage.setItem("pfc_formacion_fechas", JSON.stringify(fecs)); } catch {}
+    safeSetJSON("pfc_formacion_empleados", emps); safeSetJSON("pfc_formacion_progresos", prgs); safeSetJSON("pfc_formacion_fechas", fecs)
   };
 
   const cambiarProgreso = (empId, modId, nuevoEstado) => {

@@ -19,7 +19,6 @@ import {
   limit,
   getDocs,
   deleteDoc,
-  serverTimestamp
 } from 'firebase/firestore';
 import { db } from '../firebase/firebaseConfig';
 
@@ -132,97 +131,7 @@ export async function deleteUserDoc(uid, collectionPath, docId = 'default') {
   }
 }
 
-/**
- * Actualiza el timestamp de migración en el perfil del usuario
- */
-export async function markMigrationComplete(uid) {
-  try {
-    const profileRef = doc(db, 'users', uid, 'profile', 'default')
-    await setDoc(profileRef, {
-      migratedAt: serverTimestamp(),
-      migrationVersion: '1.0.0',
-    }, { merge: true })
-    return true
-  } catch (error) {
-    console.error('Error marking migration complete:', error)
-    return false
-  }
-}
 
-/**
- * Verifica si el usuario ya ha sido migrado
- */
-export async function isUserMigrated(uid) {
-  try {
-    const profileRef = doc(db, 'users', uid, 'profile', 'default')
-    const docSnap = await getDoc(profileRef)
-    if (docSnap.exists()) {
-      return !!docSnap.data().migratedAt
-    }
-    return false
-  } catch (error) {
-    console.error('Error checking migration status:', error)
-    return false
-  }
-}
-
-/**
- * Migra datos desde localStorage a Firestore
- */
-export async function migrateLocalStorageToFirestore(uid, localStorageData) {
-  const results = {
-    success: [],
-    failed: [],
-    total: 0,
-  }
-
-  for (const [key, value] of Object.entries(localStorageData)) {
-    results.total++
-    try {
-      let parsedValue
-      try {
-        parsedValue = typeof value === 'string' ? JSON.parse(value) : value
-      } catch {
-        parsedValue = value
-      }
-
-      let docRef
-      if (key === 'pfc_fichas_historial') {
-        docRef = doc(db, 'users', uid, 'fichas', 'history', 'default')
-      } else if (key === 'pfc_presupuestos_historial') {
-        docRef = doc(db, 'users', uid, 'budgets', 'default')
-      } else if (key === 'pfc_incidencias') {
-        docRef = doc(db, 'users', uid, 'incidents', 'default')
-      } else if (key === 'pfc_kpi_historial') {
-        docRef = doc(db, 'users', uid, 'kpi', 'entries', 'default')
-      } else if (key.startsWith('pfc_sim_')) {
-        const simId = key.replace('pfc_sim_', '')
-        docRef = doc(db, 'users', uid, 'simulator', simId)
-      } else if (key.startsWith('pfc_formacion_')) {
-        const formId = key.replace('pfc_formacion_', '')
-        docRef = doc(db, 'users', uid, 'training', formId)
-      } else if (key === 'pfc_theme') {
-        docRef = doc(db, 'users', uid, 'preferences', 'theme')
-      } else if (key === 'sidebar_collapsed') {
-        docRef = doc(db, 'users', uid, 'preferences', 'sidebar')
-      } else {
-        results.failed.push({ key, reason: 'Unknown key mapping' })
-        continue
-      }
-
-      await setDoc(docRef, { data: parsedValue, sourceKey: key }, { merge: true })
-      results.success.push(key)
-    } catch (error) {
-      results.failed.push({ key, error: error.message })
-    }
-  }
-
-  if (results.success.length > 0) {
-    await markMigrationComplete(uid)
-  }
-
-  return results
-}
 
 export default {
   saveUserDoc,
@@ -230,7 +139,4 @@ export default {
   subscribeToUserDoc,
   getUserCollection,
   deleteUserDoc,
-  markMigrationComplete,
-  isUserMigrated,
-  migrateLocalStorageToFirestore,
 }

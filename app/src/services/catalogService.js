@@ -4,9 +4,10 @@
  * para obtener familias, marcas, gamas y tipos únicos.
  */
 import { createClient } from '@supabase/supabase-js';
+import { validateProduct, validateBrand } from '../utils/validate';
 
 const supabaseUrl = 'https://fncmzrnmzmuhlullkrud.supabase.co';
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZuY216cm5tem11aGx1bGxrcnVkIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MzM2MDY5NSwiZXhwIjoyMDg4OTM2Njk1fQ.3DfYKquAUFFNx_c8NdMWmic7pVVckWsXEZWOJTuC5wg';
+const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
 
 const supabase = createClient(supabaseUrl, supabaseKey);
 
@@ -74,7 +75,7 @@ async function cargarMarcas() {
   }
   
   marcasCache = new Map();
-  data?.forEach(b => marcasCache.set(b.id, b.name));
+  data?.forEach(b => { const valid = validateBrand(b); if (valid && valid.id) marcasCache.set(valid.id, valid.name); });
   console.log('✅ Marcas cargadas:', marcasCache.size);
   return marcasCache;
 }
@@ -307,7 +308,7 @@ export async function getProductosPorFiltro(familia, marca, gama, tipo) {
     }
     
     console.log(`✅ Productos encontrados: ${data?.length || 0}`);
-    return data || [];
+    return (data || []).map(p => validateProduct(p));
   } catch (error) {
     console.error('❌ Error getProductosPorFiltro:', error);
     return [];
@@ -385,7 +386,7 @@ export async function getProductosPorSubcategoria(familia, marca, filtros) {
       console.error('❌ Error getProductosPorSubcategoria:', error);
       return [];
     }
-    return data || [];
+    return (data || []).map(p => validateProduct(p));
   } catch (error) {
     console.error('❌ Error getProductosPorSubcategoria:', error);
     return [];
@@ -401,7 +402,7 @@ export async function getProductoPorRef(ref) {
       .maybeSingle();
     
     if (error) throw error;
-    return data;
+    return data ? validateProduct(data) : null;
   } catch (error) {
     console.error('❌ Error getProductoPorRef:', error);
     return null;
@@ -410,16 +411,34 @@ export async function getProductoPorRef(ref) {
 
 export async function buscarProductos(termino) {
   try {
+    const t = termino.trim()
     const { data, error } = await supabase
       .from('products')
-      .select('id, ref_fabricante, name, imagen, marca')
-      .ilike('name', `%${termino}%`)
-      .limit(10);
+      .select('id, ref_fabricante, name, imagen, marca, familia, subfamilia, tipo, precio')
+      .or(`name.ilike.%${t}%,ref_fabricante.ilike.%${t}%`)
+      .limit(20);
     
     if (error) throw error;
-    return data || [];
+    return (data || []).map(p => validateProduct(p));
   } catch (error) {
     console.error('❌ Error buscarProductos:', error);
+    return [];
+  }
+}
+
+export async function buscarProductosConLimite(termino, limite = 5) {
+  try {
+    const t = termino.trim()
+    const { data, error } = await supabase
+      .from('products')
+      .select('id, ref_fabricante, name, imagen, marca, familia, subfamilia, tipo, precio')
+      .or(`name.ilike.%${t}%,ref_fabricante.ilike.%${t}%`)
+      .limit(limite);
+    
+    if (error) throw error;
+    return (data || []).map(p => validateProduct(p));
+  } catch (error) {
+    console.error('❌ Error buscarProductosConLimite:', error);
     return [];
   }
 }
@@ -454,5 +473,6 @@ export default {
   getProductosPorFiltro,
   getProductoPorRef,
   buscarProductos,
+  buscarProductosConLimite,
   getCatalogStats
 };

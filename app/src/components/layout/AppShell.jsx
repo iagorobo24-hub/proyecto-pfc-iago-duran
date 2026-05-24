@@ -3,6 +3,7 @@ import { Outlet, useLocation } from 'react-router-dom'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import Topbar from './Topbar'
 import Sidebar from './Sidebar'
+import { safeGetItem, safeSetItem } from '../../utils/storage'
 import styles from './AppShell.module.css'
 
 /* Hook para detectar si estamos en mobile/tablet */
@@ -21,13 +22,11 @@ export default function AppShell() {
   const location = useLocation()
   const isMobile = useMobile()
   const [collapsed, setCollapsed] = useState(() => {
-    try { return localStorage.getItem('Proyectos PFC_sidebar_collapsed') === 'true' }
-    catch { return false }
+    return safeGetItem('Proyectos PFC_sidebar_collapsed') === 'true'
   })
 
   useEffect(() => {
-    try { localStorage.setItem('Proyectos PFC_sidebar_collapsed', collapsed) }
-    catch {}
+    safeSetItem('Proyectos PFC_sidebar_collapsed', collapsed)
   }, [collapsed])
 
   return (
