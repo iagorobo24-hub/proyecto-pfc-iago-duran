@@ -6,9 +6,9 @@ const TechStack = () => {
   const technologies = [
     { name: 'React 19', color: '#61dafb' },
     { name: 'Vite 7', color: '#646cff' },
-    { name: 'Firebase', color: '#ffca28' },
+    { name: 'Supabase', color: '#3ecf8e' },
     { name: 'Vercel', color: '#ffffff' },
-    { name: 'Claude API', color: '#a855f7' },
+    { name: 'OpenRouter', color: '#a855f7' },
     { name: 'Framer Motion', color: '#f0a030' },
     { name: 'Recharts', color: '#10b981' },
     { name: 'React Router', color: '#f44236' },

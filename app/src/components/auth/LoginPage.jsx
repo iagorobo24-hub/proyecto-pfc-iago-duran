@@ -20,7 +20,7 @@ export default function LoginPage() {
     try {
       await loginWithGoogle()
     } catch (err) {
-      if (err.code === 'auth/popup-closed-by-user') return
+      if (err.code?.includes('popup_closed') || err.code === 'auth/popup-closed-by-user') return
       
       // Log detallado para debugging
       console.error('=== LOGIN ERROR ===')

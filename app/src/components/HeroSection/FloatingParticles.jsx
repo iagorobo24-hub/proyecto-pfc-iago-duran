@@ -3,7 +3,6 @@ import { motion } from 'framer-motion';
 import styles from './styles/FloatingParticles.module.css';
 
 const FloatingParticles = () => {
-  // Generar partículas con posiciones aleatorias (memoizado para no regenerar en re-renders)
   const particles = useMemo(() => {
     return Array.from({ length: 30 }, (_, i) => ({
       id: i,
@@ -11,7 +10,8 @@ const FloatingParticles = () => {
       delay: Math.random() * 10,
       duration: 8 + Math.random() * 12,
       size: 2 + Math.random() * 4,
-      opacity: 0.1 + Math.random() * 0.3
+      opacity: 0.1 + Math.random() * 0.3,
+      xOffset: Math.random() > 0.5 ? 30 : -30
     }));
   }, []);
 
@@ -29,7 +29,7 @@ const FloatingParticles = () => {
           }}
           animate={{
             y: [-20, -120, -20],
-            x: [0, Math.random() > 0.5 ? 30 : -30, 0],
+            x: [0, p.xOffset, 0],
             opacity: [0, p.opacity, 0]
           }}
           transition={{

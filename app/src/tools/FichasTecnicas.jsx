@@ -4,6 +4,7 @@ import { useToast } from '../contexts/ToastContext'
 import useFichasTecnicas from '../hooks/useFichasTecnicas'
 import useNavegacionFichas from '../hooks/useNavegacionFichas'
 import { FULL_CATEGORY_INFO } from '../data/categoryMapping'
+import { getEtiquetaSubcategoria } from '../data/etiquetasSubcategoria'
 import { MARCAS } from '../data/marcasLogos'
 import { getBrandLogo, getBrandColor, getBrandLogoData } from '../services/brandLogoService'
 import Button from '../components/ui/Button'
@@ -44,12 +45,14 @@ export default function FichasTecnicas() {
   const { toast } = useToast()
 
   const {
-    paso, categoria, marca, gama, tipo, referencia,
+    paso, categoria, marca, gama, tipo, categoriaGrupo, subcategoria, grupos,
+    referencia,
     categorias, marcasDisponibles, gamasDisponibles,
     tiposDisponibles, referenciasDisponibles,
     breadcrumb, cargando: navegacionCargando,
     seleccionarCategoria, seleccionarMarca, seleccionarGama,
-    seleccionarTipo, seleccionarReferencia, volver, reiniciar,
+    seleccionarTipo, seleccionarCategoriaGrupo, seleccionarSubcategoria,
+    seleccionarReferencia, volver, reiniciar,
     buscarReferenciaDirecta, aiFicha, aiCargando,
   } = useNavegacionFichas()
 
@@ -280,6 +283,74 @@ export default function FichasTecnicas() {
                <OrbitRow>
                  <p style={{ color: 'var(--gray-600)', fontSize: '0.875rem' }}>No hay marcas disponibles.</p>
                </OrbitRow>
+            )}
+          </div>
+        </div>
+      )
+    }
+
+    /* Categorías agrupadas (DP flow) */
+    if (paso === 'categorias_grupo') {
+      const categoriasList = Object.entries(grupos)
+      return (
+        <div className={styles.circleLayout}>
+          <CircleCenter
+            icon={catInfo.icon}
+            title="Elige categoría"
+            desc={marca}
+          />
+          <div className={styles.orbitRows} role="list" aria-label="Categorías de producto">
+            {categoriasList.map(([cat, info]) => (
+              <OrbitRow key={cat} role="listitem">
+                <button
+                  className={styles.tipoCard}
+                  onClick={() => seleccionarCategoriaGrupo(cat)}
+                  aria-label={`Seleccionar categoría ${cat}`}
+                >
+                  <span aria-hidden="true" style={{ fontSize: '1.25rem', marginRight: '8px' }}>{info.icon}</span>
+                  <span className={styles.tipoCard__name}>{cat}</span>
+                  <span className={styles.tipoCard__arrow} aria-hidden="true">›</span>
+                </button>
+              </OrbitRow>
+            ))}
+            {categoriasList.length === 0 && (
+              <OrbitRow>
+                <p style={{ color: 'var(--gray-600)', fontSize: '0.875rem' }}>No hay categorías disponibles.</p>
+              </OrbitRow>
+            )}
+          </div>
+        </div>
+      )
+    }
+
+    /* Subcategorías (DP flow) */
+    if (paso === 'subcategorias' && categoriaGrupo && grupos[categoriaGrupo]) {
+      const subcats = Object.entries(grupos[categoriaGrupo].subcategorias)
+      return (
+        <div className={styles.circleLayout}>
+          <CircleCenter
+            icon={grupos[categoriaGrupo]?.icon}
+            title={categoriaGrupo}
+            desc="Selecciona tipo de producto"
+          />
+          <div className={styles.orbitRows} role="list" aria-label="Subcategorías">
+            {subcats.map(([subcat, filtros]) => (
+              <OrbitRow key={subcat} role="listitem">
+                <button
+                  className={styles.tipoCard}
+                  onClick={() => seleccionarSubcategoria(subcat)}
+                  aria-label={`Seleccionar ${getEtiquetaSubcategoria(subcat)}`}
+                >
+                  <span className={styles.tipoCard__name}>{getEtiquetaSubcategoria(subcat)}</span>
+                  <span className={styles.tipoCard__count}>{filtros.length} filtro{filtros.length !== 1 ? 's' : ''}</span>
+                  <span className={styles.tipoCard__arrow} aria-hidden="true">›</span>
+                </button>
+              </OrbitRow>
+            ))}
+            {subcats.length === 0 && (
+              <OrbitRow>
+                <p style={{ color: 'var(--gray-600)', fontSize: '0.875rem' }}>No hay subcategorías disponibles.</p>
+              </OrbitRow>
             )}
           </div>
         </div>

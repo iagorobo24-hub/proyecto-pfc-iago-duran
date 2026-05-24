@@ -70,7 +70,7 @@ const HeroContent = () => {
        animate={{ opacity: 1 }}
        transition={{ duration: 0.6, delay: 0.3 }}
       >
-       Desarrollado por <span style={{ color: 'var(--Proyectos PFC-blue)', fontWeight: 'bold' }}>Iago Durán</span> en CIFP Universidad Laboral
+       Desarrollado por <span style={{ color: 'var(--brand-blue)', fontWeight: 'bold' }}>Iago Durán</span> en CIFP Universidad Laboral
       </motion.div>
       <motion.div 
         className={styles.actions}

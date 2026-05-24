@@ -5,7 +5,7 @@ import {
   Calculator, 
   Cpu, 
   FileSpreadsheet, 
-  GraduationCap, 
+  Package, 
   Database,
   FileDown,
   Zap
@@ -37,11 +37,11 @@ const FeaturesMini = () => {
     {
       title: "Simulador de Almacén",
       desc: "Gestión interactiva de invento y espacio de almacén.",
-      icon: <GraduationCap size={20} />
+      icon: <Package size={20} />
     },
     {
       title: "Base de Datos Cloud",
-      desc: "Firestore con sincronización asíncrona y caché inteligente de 3 niveles.",
+      desc: "PostgreSQL en Supabase con sincronización en tiempo real y RLS.",
       icon: <Database size={20} />
     },
     {

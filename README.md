@@ -2,7 +2,7 @@
 
 > **Ecosistema de herramientas web para automatización industrial y logística.**
 
-Aplicación SPA con **7 módulos funcionales**, autenticación con Google, diseño responsive y asistente técnico impulsado por IA.
+Aplicación SPA con **7 módulos funcionales**, autenticación con Google (Supabase OAuth), diseño responsive y asistente técnico impulsado por IA (OpenRouter).
 
 **Demo:** [proyecto-pfc-iago-duran.vercel.app](https://proyecto-pfc-iago-duran.vercel.app)
 
@@ -12,8 +12,8 @@ Aplicación SPA con **7 módulos funcionales**, autenticación con Google, dise�
 
 | Ruta | Módulo | Descripción |
 |------|--------|-------------|
-| `/login` | **Login** | Autenticación con Google (Firebase Auth) |
-| `/fichas` | **Fichas Técnicas** | Catálogo de productos con navegación jerárquica |
+| `/login` | **Login** | Autenticación con Google (Supabase OAuth) |
+| `/fichas` | **Fichas Técnicas** | Catálogo de productos con navegación jerárquica (dual mode: agrupado por categoría DP / legacy) |
 | `/almacen` | **Simulador Almacén** | Simulación de ciclo completo de pedido |
 | `/incidencias` | **Dashboard Incidencias** | Registro y diagnóstico de fallos industriales |
 | `/kpi` | **KPI Logístico** | 6 KPIs con semáforo e informe ejecutivo |
@@ -27,19 +27,23 @@ Aplicación SPA con **7 módulos funcionales**, autenticación con Google, dise�
 
 ### Frontend
 - **React 19** + **Vite 7**
-- **React Router DOM v7** — Routing anidado
+- **React Router DOM v7** — Routing anidado + lazy loading
 - **CSS Modules** — Estilos scoped por componente
+- **Framer Motion** — Animaciones
 - **Recharts** — Visualización de datos
 - **lucide-react** — Iconografía
 - **Tipografía:** IBM Plex Sans
 
-### Autenticación y Backend
-- **Firebase Auth** — Google Sign-In
-- **Firestore** — Base de datos (datos por usuario)
-- **OpenRouter API** — Gateway IA gratuito (Claude 3.5 Haiku, DeepSeek, Qwen) via Vercel Functions
+### Backend y Base de Datos
+- **Supabase (PostgreSQL)** — Catálogo de productos (`products` + `brands`)
+- **Supabase Auth** — Google Sign-In OAuth
+- **Firestore (legacy)** — Datos de usuario (fichas, presupuestos, incidencias, kpis, formación)
+- **OpenRouter API** — Gateway IA (Claude 3.5 Haiku, DeepSeek R1, Qwen 2.5 72B, Gemini Flash 1.5 8B)
 
-### Deploy
-- **Vercel** — Build automático + Serverless Functions
+### Testing y Deploy
+- **Vitest** — Tests unitarios (~119 tests)
+- **Playwright** — Tests E2E (7 specs + responsive audit)
+- **Vercel** — Build automático + Serverless Functions + SPA
 
 ---
 
@@ -49,44 +53,41 @@ Aplicación SPA con **7 módulos funcionales**, autenticación con Google, dise�
 proyecto-pfc-iago-duran/
 ├── app/
 │   ├── api/
-│   │   └── ai.js                  # Vercel Function — gateway IA (OpenRouter/Groq)
+│   │   └── ai.js                  # Vercel Function — gateway IA (OpenRouter/Groq/Gemini)
 │   ├── src/
+│   │   ├── __tests__/             # Tests unitarios (Vitest)
 │   │   ├── components/
 │   │   │   ├── auth/              # LoginPage, ProtectedRoute
 │   │   │   ├── HeroSection/       # Landing page (14 componentes + estilos)
 │   │   │   ├── layout/            # AppShell, Topbar, Sidebar (responsive)
 │   │   │   ├── fichas/            # TarjetaFicha
-│   │   │   └── ui/                # Button, Badge, Input, Card, Spinner...
-│   │   ├── contexts/
-│   │   │   ├── AuthContext.jsx    # Estado de autenticación
-│   │   │   ├── ThemeContext.jsx   # Modo claro/oscuro
-│   │   │   └── ToastContext.jsx   # Notificaciones
-│   │   ├── firebase/
-│   │   │   └── firebaseConfig.js  # Inicialización Firebase
-│   │   ├── data/                  # Catálogo, jerarquía, logos
-│   │   ├── hooks/                 # 10 custom hooks (uno por módulo)
+│   │   │   └── ui/                # Button, Badge, Input, Card, CircleLayout, ProductTable...
+│   │   ├── config/                # firestorePaths, tools
+│   │   ├── contexts/              # AuthContext (Supabase), ThemeContext, ToastContext
+│   │   ├── data/                  # categoriaMapping, categoryMapping, etiquetasSubcategoria, familiaMapping, hierarchy.json, marcasLogos
+│   │   ├── firebase/              # Firebase config (legacy — solo datos usuario)
+│   │   ├── hooks/                 # 11 custom hooks (useNavegacionFichas, useSonex, usePresupuestos...)
 │   │   ├── pages/                 # LandingPage
-│   │   ├── services/              # anthropicService, brandLogoService, catalogService, firestoreService
-│   │   ├── styles/                # Variables CSS, animaciones
-│   │   ├── tools/                 # 7 módulos (componentes de página)
+│   │   ├── services/              # catalogService (Supabase), anthropicService, brandLogoService, firestoreService (legacy)
+│   │   ├── styles/                # variables.css, animations.css, circleLayout.css
+│   │   ├── supabase/              # supabaseClient.js (activo)
+│   │   ├── tools/                 # 7 módulos página (FichasTecnicas, Presupuestos, Sonex...)
 │   │   ├── App.jsx                # Router + rutas protegidas
 │   │   └── main.jsx               # Entry point + providers
-│   ├── scripts/
-│   │   └── sync-catalog-enhanced.mjs  # Script de sincronización de catálogo a Firestore
+│   ├── scripts/                   # 8 scripts DB (migrate-columns, normalize-*, setup-schneider...)
+│   ├── e2e/                       # Tests E2E Playwright (7 specs + helpers + screenshots)
+│   ├── tests/                     # Tests adicionales (visual-verification, fichas-navigation)
 │   ├── public/
-│   │   ├── logos/                  # Logos de 14 fabricantes
-│   │   └── screenshots/           # Capturas para la landing page
-│   ├── eslint.config.js
-│   ├── firestore.rules            # Reglas de seguridad Firestore
-│   ├── firebase.json
+│   │   ├── logos/                 # Logos de 15 fabricantes
+│   │   └── screenshots/           # Capturas para landing page + E2E
 │   ├── playwright.config.js
-│   ├── vercel.json                # Configuración de deploy
+│   ├── vercel.json
 │   ├── vite.config.js
 │   └── package.json
-├── CLAUDE.md                      # Índice de skills para agentes IA
-├── EVOLUCION.md                   # Guía cronológica de la evolución del proyecto
+├── proyecto-fin-ciclo/            # Documentación académica (50 archivos, 10 capítulos)
+├── diagramas/                     # Diagramas SVG
+├── DB_TAXONOMY.md                 # Taxonomía maestra de la base de datos
 ├── LICENSE                        # MIT
-├── .gitignore
 └── README.md
 ```
 
@@ -95,8 +96,8 @@ proyecto-pfc-iago-duran/
 ## Inicio Rápido
 
 ### Prerrequisitos
-- Node.js (último LTS)
-- Variables de entorno (ver sección [Configuración](#configuración))
+- Node.js 20.19+ o 22.12+
+- Variables de entorno (ver sección Configuración)
 
 ### Desarrollo local
 
@@ -106,7 +107,7 @@ npm install
 npm run dev
 ```
 
-La app estará disponible en `http://localhost:5173`.
+La app estará disponible en `http://localhost:5173`. El proxy `/api` redirige a `localhost:3001`.
 
 ### Build de producción
 
@@ -134,14 +135,12 @@ OPENROUTER_API_KEY=sk-or-...
 
 Obtén una API key gratuita en [openrouter.ai](https://openrouter.ai/).
 
-Las credenciales de Firebase están en `app/src/firebase/firebaseConfig.js` y son **públicas por diseño** (las Firebase API keys no son secretas). La seguridad real se gestiona con las **Firebase Security Rules** (`app/firestore.rules`).
+### Supabase
 
-### Firebase Console
-
-1. Crear proyecto en [Firebase Console](https://console.firebase.google.com/)
-2. **Authentication → Sign-in method** → Activar **Google**
-3. **Firestore Database** → Crear base de datos
-4. Añadir `localhost` y `proyecto-pfc-iago-duran.vercel.app` como **Authorized Domains**
+El proyecto usa **Supabase** como backend principal:
+- **Autenticación**: Google OAuth configurado en Supabase Dashboard
+- **Base de datos**: PostgreSQL con tablas `products` y `brands`
+- Las credenciales públicas están en `app/src/supabase/supabaseClient.js`
 
 ### Vercel
 
@@ -151,68 +150,27 @@ Las credenciales de Firebase están en `app/src/firebase/firebaseConfig.js` y so
 
 ---
 
-## Responsive Design
-
-| Breakpoint | Comportamiento |
-|------------|----------------|
-| **> 1024px** (Desktop) | Navegación inline en topbar + sidebar lateral visible |
-| **≤ 1024px** (Tablet/Mobile) | Botón hamburguesa con dropdown + sidebar oculto |
-
-El menú hamburguesa incluye:
-- Atributos ARIA (`aria-expanded`, `aria-haspopup`, `aria-label`)
-- Cierre con tecla Escape
-- Navegación por teclado compatible
-
----
-
-## Autenticación
-
-- **Google Sign-In** vía Firebase Auth
-- **Rutas protegidas:** Todo el AppShell requiere autenticación
-- **Página de login:** Pantalla dedicada fuera del layout principal
-- **Estado de usuario:** Avatar con foto o iniciales, nombre/email, botón logout
-- **Feedback de errores:** Toast notifications en login/logout
-
----
-
-## Sincronización del Catálogo
-
-El script `app/scripts/sync-catalog-enhanced.mjs` sincroniza productos desde un JSON (generado por scraping) a Firestore:
+## Testing
 
 ```bash
-cd app
-node scripts/sync-catalog-enhanced.mjs
+# Tests unitarios (Vitest)
+npm run test              # ~119 tests, 3 suites
+
+# Tests E2E (Playwright)
+npx playwright test       # Headless
+npm run test:ui           # UI mode
 ```
 
-Requiere:
-- `service-account.json` (Firebase Admin SDK)
-- `Proyectos PFC-catalog-scraper/catalogo-final-v12.json` (datos del catálogo)
+---
+
+## Documentación
+
+- **[DB_TAXONOMY.md](./DB_TAXONOMY.md)** — Estructura completa de la base de datos y taxonomía de productos
+- **[CLAUDE.md](./CLAUDE.md)** — Guía del proyecto para agentes IA
+- **[EVOLUCION.md](./EVOLUCION.md)** — Historial cronológico del proyecto
 
 ---
 
-## Historial de Versiones
-
-### v3.0.0 (Abril 2026)
-- Autenticación con Google (Firebase Auth)
-- Menú hamburguesa responsive (tablet + mobile)
-- Avatar con iniciales cuando no hay foto
-- Spinner de carga durante autenticación
-- Accesibilidad ARIA en menú hamburguesa
-
-### v2.0.0 (Marzo 2026)
-- Rediseño completo en 5 fases (F1–F5)
-- Catálogo unificado de 65+ referencias
-- SONEX con procesamiento de markdown
-- Sidebar dinámico con iconos lucide-react
-
-### v1.0.0 (Marzo 2026)
-- 7 herramientas como artefactos React independientes
-- Integración inicial con Claude API
-
----
-
-Para una guía detallada de la evolución del proyecto, ver [EVOLUCION.md](./EVOLUCION.md).
-
----
+## Licencia
 
 © 2024–2026 **iagorobo24-hub** · MIT License

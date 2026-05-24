@@ -107,11 +107,11 @@ Son los archivos que se encargan de hablar con otras aplicaciones o bases de dat
 
 | Servicio | ¿Qué hace? |
 |----------|------------|
-| `firebaseConfig.js` | Configura la conexión con Firebase (es como enchufar el aparato) |
-| `firestoreService.js` | Función para leer y escribir datos en la base de datos |
-| `catalogService.js` | Funciones para buscar productos en el catálogo |
-| `brandLogoService.js` | Carga los logos de las marcas de los productos |
-| `anthropicService.js` | Antigua conexión con la IA (ahora usa OpenRouter) |
+| `catalogService.js` | **Activo.** Consulta el catálogo en Supabase (PostgreSQL). 10 métodos: `getCategorias`, `getMarcasPorCategoria`, `getGamasPorMarcaYCategoria`, `getSubfamiliasConTipos`, `getProductosPorSubcategoria`, `getProductosPorFiltro`, `getProductoPorRef`, `buscarProductos`... |
+| `firestoreService.js` | **Legacy.** Lee/escribe datos de usuario en Firestore (fichas guardadas, presupuestos, incidencias, KPIs, formación) |
+| `firebaseConfig.js` | **Legacy.** Config Firebase con claves demo — ya no se usa para auth ni catálogo |
+| `brandLogoService.js` | Carga logos de marcas desde `public/logos/` o genera initials/gradients como fallback |
+| `anthropicService.js` | Cliente auxiliar para llamadas a la IA (contiene `callAnthropicAI`, `parseAIJsonResponse`, `sanitizeUrl`, `formatAIResponse`) |
 
 ---
 
@@ -125,13 +125,20 @@ Son las funciones que se ejecutan en el servidor (no en el navegador del usuario
 
 ---
 
-## 6. Colecciones en Firestore (la base de datos)
+## 6. Bases de datos
 
-Aquí se guarda todo. Cada usuario tiene sus propios datos.
+### Supabase (PostgreSQL) — Catálogo de productos
+
+| Tabla | ¿Qué guarda? |
+|-------|--------------|
+| `products` | ~2.400 productos con columnas: ref_fabricante, name, familia, subfamilia, tipo, marca, brand_id, precio, Gama, Subgama, pdf_url, documentos (jsonb) |
+| `brands` | Marcas/fabricantes: id, name, website_url |
+
+### Firestore (legacy) — Datos de usuario
 
 | Colección | ¿Qué guarda? |
 |-----------|--------------|
-| `users/{userId}/fichas/` | Productos del catálogo (solo lectura para el usuario) |
+| `users/{userId}/fichas/` | Fichas técnicas guardadas por el usuario |
 | `users/{userId}/presupuestos/` | Presupuestos que ha creado el usuario |
 | `users/{userId}/incidencias/` | Incidencias que ha registrado el usuario |
 | `users/{userId}/kpis/` | Datos históricos de los indicadores |
@@ -148,8 +155,9 @@ ENTRADAS (inputs)                    PROCESO (código)                    SALIDA
 ─────────────────                   ────────────────                    ─────────────────
 • Click del usuario       ───→      • React Router (rutas)      ───→    • Pantalla renderizada
 • Texto escrito           ───→      • Hooks (lógica)            ───→    • Componentes UI
-• Google login            ───→      • AuthContext (sesión)      ───→    • Avatar + nombre
-• Datos de Firestore      ───→      • Servicios (firestore)     ───→    • Tarjetas, listas, tablas
+• Google login            ───→      • AuthContext (Supabase)    ───→    • Avatar + nombre
+• Datos de Supabase       ───→      • catalogService            ───→    • Tarjetas, listas, tablas
+• Datos de Firestore      ───→      • firestoreService          ───→    • Historial, presupuestos
 • Pregunta al asistente   ───→      • API ai.js → OpenRouter    ───→    • Respuesta de IA
 • Tema claro/oscuro       ───→      • ThemeContext               ───→    • Colores cambiados
 ```

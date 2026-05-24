@@ -1,5 +1,5 @@
 import React from 'react';
-import { Github, Linkedin, ExternalLink } from 'lucide-react';
+import { Github, Linkedin } from 'lucide-react';
 import styles from './styles/SimpleFooter.module.css';
 
 const SimpleFooter = () => {
@@ -16,7 +16,7 @@ const SimpleFooter = () => {
             Desarrollado por <strong>Iago Durán</strong> · 2026 · CIFP Universidad Laboral
           </p>
           <p className={styles.stack}>
-            React · Vite · Firebase · Vercel · Claude API
+            React · Vite · Supabase · Vercel · OpenRouter
           </p>
         </div>
 

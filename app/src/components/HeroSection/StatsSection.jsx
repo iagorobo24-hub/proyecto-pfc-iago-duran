@@ -23,10 +23,10 @@ const Counter = ({ value, suffix = "" }) => {
 
 const StatsSection = () => {
   const [stats, setStats] = useState({
-    totalProducts: 64,
+    totalProducts: 2.4,
     totalTools: 7,
-    totalFamilies: 3,
-    totalBrands: 400
+    totalFamilies: 7,
+    totalBrands: 0
   });
 
   useEffect(() => {
@@ -34,15 +34,16 @@ const StatsSection = () => {
       try {
         const data = await catalogService.getCatalogStats();
         if (data.totalProducts) {
+          const brands = await catalogService.getMarcasPorCategoria('DISTRIBUCION DE POTENCIA');
           setStats({
-            totalProducts: Math.round(data.totalProducts / 1000),
+            totalProducts: parseFloat((data.totalProducts / 1000).toFixed(1)),
             totalTools: 7,
-            totalFamilies: data.totalFamilies || 3,
-            totalBrands: Math.round((data.totalBrands || 400) / 10) * 10
+            totalFamilies: 7,
+            totalBrands: brands.length
           });
         }
       } catch {
-        // Fallback si Firestore no está disponible
+        // Fallback silencioso
       }
     };
     fetchStats();
@@ -51,7 +52,7 @@ const StatsSection = () => {
   const statsData = [
     { label: "Referencias en Catálogo", value: stats.totalProducts, suffix: "k+" },
     { label: "Herramientas Integradas", value: stats.totalTools, suffix: "" },
-    { label: "Familias Clasificadas", value: stats.totalFamilies, suffix: "" },
+    { label: "Familias en DB", value: stats.totalFamilies, suffix: "" },
     { label: "Marcas Disponibles", value: stats.totalBrands, suffix: "+" }
   ];
 

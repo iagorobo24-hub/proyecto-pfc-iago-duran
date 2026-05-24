@@ -7,7 +7,7 @@ import {
   BarChart3,
   Calculator,
   FileSpreadsheet,
-  GraduationCap,
+  AlertTriangle,
   BookOpen,
   ArrowUpRight
 } from 'lucide-react';
@@ -20,7 +20,7 @@ const ToolsShowcase = () => {
       desc: 'Catálogo de +64.000 referencias con filtros por familia, marca y categoría.',
       icon: <FileText size={22} />,
       href: '/app/fichas',
-      color: 'var(--Proyectos PFC-blue)'
+      color: 'var(--brand-blue)'
     },
     {
       name: 'Asistente SONEX',
@@ -53,7 +53,7 @@ const ToolsShowcase = () => {
     {
       name: 'Incidencias',
       desc: 'Dashboard de seguimiento y gestión de incidencias del almacén.',
-      icon: <GraduationCap size={22} />,
+      icon: <AlertTriangle size={22} />,
       href: '/app/incidencias',
       color: '#0891b2'
     },

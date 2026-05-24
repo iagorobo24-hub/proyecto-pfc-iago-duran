@@ -25,7 +25,11 @@ const etiquetasFamilias = {
   'AUTOMATISMOS': 'Automatismos',
   'CONTROL Y AUTOMATIZACION INDUSTRIAL': 'Automatismos',
   'AUTOMATIZACION INDUSTRIAL': 'Automatismos',
+  'AUTOMATIZACION': 'Automatización',
   'AUTOMATIZACION DE EDIFICIOS': 'Domótica',
+  'FOTOVOLTAICA': 'Fotovoltaica',
+  'INSTALACION': 'Instalación',
+  'VEHICULOS_ELECTRICOS': 'Vehículos Eléctricos',
   'ILUMINACION': 'Iluminación',
   'LUMINARIAS': 'Iluminación',
   'CLIMATIZACION': 'Climatización',
@@ -83,35 +87,44 @@ export async function getCategorias() {
   try {
     console.log('📂 Cargando familias desde products...');
     
-    // Obtener familias únicas con count
-    const { data, error } = await supabase
-      .from('products')
-      .select('familia')
-      .not('familia', 'is', null)
-      .order('id')
-      .limit(5000);
+    const familiasUnicas = new Set();
+    let from = 0;
+    const pageSize = 1000;
     
-    if (error) {
-      console.error('❌ Error:', error);
-      return [];
+    while (true) {
+      const { data, error } = await supabase
+        .from('products')
+        .select('familia')
+        .not('familia', 'is', null)
+        .order('id')
+        .range(from, from + pageSize - 1);
+      
+      if (error) {
+        console.error('❌ Error:', error);
+        break;
+      }
+      
+      if (!data || data.length === 0) break;
+      
+      data.forEach(p => {
+        if (p.familia) familiasUnicas.add(p.familia.trim());
+      });
+      
+      if (data.length < pageSize) break;
+      from += pageSize;
     }
     
-    // Limpiar y obtener únicas
-    const familiasRaw = data?.map(p => p.familia?.trim()).filter(Boolean) || [];
-    const familiasUnicas = [...new Set(familiasRaw)];
+    const familiasArray = [...familiasUnicas];
+    console.log('📂 Familias únicas encontradas:', familiasArray.length);
+    console.log('📂 Familias:', familiasArray);
     
-    console.log('📂 Familias únicas encontradas:', familiasUnicas.length);
-    console.log('📂 Sample:', familiasUnicas.slice(0, 5));
-    
-    // Mapear a formato de categoría
-    const categorias = familiasUnicas.map(familia => ({
+    const categorias = familiasArray.map(familia => ({
       id: familia,
       label: etiquetasFamilias[familia] || familia,
       icon: '📁',
       color: '#3b82f6'
     }));
     
-    // Ordenar por label
     categorias.sort((a, b) => a.label.localeCompare(b.label));
     
     console.log('📂 Categorías procesadas:', categorias.length);
@@ -301,6 +314,84 @@ export async function getProductosPorFiltro(familia, marca, gama, tipo) {
   }
 }
 
+/**
+ * Obtiene pares (subfamilia, tipo) únicos para una marca + familia
+ */
+export async function getSubfamiliasConTipos(marca, familia) {
+  try {
+    const marcasMap = await cargarMarcas();
+    let brandId = null;
+    for (const [id, name] of marcasMap.entries()) {
+      if (name.trim() === marca.trim()) { brandId = id; break; }
+    }
+    if (!brandId) return [];
+
+    const { data, error } = await supabase
+      .from('products')
+      .select('subfamilia, tipo')
+      .eq('familia', familia)
+      .eq('brand_id', brandId)
+      .not('subfamilia', 'is', null)
+      .limit(5000);
+
+    if (error) {
+      console.error('❌ Error getSubfamiliasConTipos:', error);
+      return [];
+    }
+
+    const pares = new Map();
+    data?.forEach(p => {
+      if (p.subfamilia && p.tipo) {
+        const key = `${p.subfamilia}|${p.tipo}`;
+        if (!pares.has(key)) {
+          pares.set(key, { subfamilia: p.subfamilia.trim(), tipo: p.tipo.trim() });
+        }
+      }
+    });
+
+    return [...pares.values()];
+  } catch (error) {
+    console.error('❌ Error getSubfamiliasConTipos:', error);
+    return [];
+  }
+}
+
+/**
+ * Obtiene productos filtrados por varios pares (subfamilia, tipo) para DP
+ * filtros = [{ subfamilia, tipo? }, ...]
+ */
+export async function getProductosPorSubcategoria(familia, marca, filtros) {
+  try {
+    const marcasMap = await cargarMarcas();
+    let brandId = null;
+    for (const [id, name] of marcasMap.entries()) {
+      if (name.trim() === marca.trim()) { brandId = id; break; }
+    }
+    if (!brandId) return [];
+
+    const conditions = filtros.map(f => {
+      if (f.tipo) return `and(subfamilia.eq.${f.subfamilia},tipo.eq.${f.tipo})`;
+      return `subfamilia.eq.${f.subfamilia}`;
+    });
+
+    const { data, error } = await supabase
+      .from('products')
+      .select('id, ref_fabricante, name, imagen, marca, familia, subfamilia, tipo, precio, Gama, pdf_url')
+      .eq('familia', familia)
+      .eq('brand_id', brandId)
+      .or(conditions.join(','));
+
+    if (error) {
+      console.error('❌ Error getProductosPorSubcategoria:', error);
+      return [];
+    }
+    return data || [];
+  } catch (error) {
+    console.error('❌ Error getProductosPorSubcategoria:', error);
+    return [];
+  }
+}
+
 export async function getProductoPorRef(ref) {
   try {
     const { data, error } = await supabase
@@ -358,6 +449,8 @@ export default {
   getMarcasPorCategoria,
   getGamasPorMarcaYCategoria,
   getTiposPorGamaMarcaYFamilia,
+  getSubfamiliasConTipos,
+  getProductosPorSubcategoria,
   getProductosPorFiltro,
   getProductoPorRef,
   buscarProductos,

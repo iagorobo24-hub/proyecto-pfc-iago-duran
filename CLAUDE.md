@@ -115,6 +115,8 @@ Optimize for search engine visibility and ranking. Use when asked to "improve SE
 
 # Proyecto PFC — Guía del Proyecto
 
+> 📖 **Referencia DB**: Antes de modificar consultas de catálogo, leer [DB_TAXONOMY.md](./DB_TAXONOMY.md) — documento maestro de la taxonomía de productos.
+
 ## Resumen del Proyecto
 
 Ecosistema de herramientas web para automatización industrial y logística, desarrollado como Proyecto Fin de Ciclo.
@@ -122,18 +124,19 @@ Ecosistema de herramientas web para automatización industrial y logística, des
 ### Stack Tecnológico
 
 - **Frontend:** React 19 + Vite 7 + React Router DOM v7
-- **Estilos:** CSS Modules + Variables CSS personalizadas
-- **Autenticación:** Firebase Auth (Google Sign-In)
-- **Base de datos:** Firestore (datos por usuario)
-- **IA:** OpenRouter API (Claude 3.5 Haiku, DeepSeek, Qwen)
-- **Deploy:** Vercel (Serverless Functions)
-- **Testing:** Playwright (e2e tests)
+- **Estilos:** CSS Modules + Variables CSS personalizadas (+ Framer Motion)
+- **Autenticación:** Supabase Auth (Google Sign-In, OAuth)
+- **Base de datos:** Supabase (PostgreSQL) — tabla `products` + `brands`
+- **Datos de usuario:** Firestore (legacy, en migración) — `users/{userId}/...`
+- **IA:** OpenRouter API (Claude 3.5 Haiku, DeepSeek, Qwen) via Vercel Functions
+- **Testing:** Playwright (e2e) + Vitest (unit)
+- **Deploy:** Vercel (Serverless Functions + SPA)
 
 ### Módulos Funcionales
 
 | Ruta | Módulo | Descripción |
 |------|--------|-------------|
-| `/login` | **Login** | Autenticación con Google |
+| `/login` | **Login** | Autenticación con Google (Supabase OAuth) |
 | `/fichas` | **Fichas Técnicas** | Catálogo de productos con navegación jerárquica + enriquecimiento IA |
 | `/almacen` | **Simulador Almacén** | Simulación de ciclo completo de pedido |
 | `/incidencias` | **Dashboard Incidencias** | Registro y diagnóstico de fallos industriales |
@@ -146,40 +149,53 @@ Ecosistema de herramientas web para automatización industrial y logística, des
 
 ```
 proyecto-pfc-iago-duran/
-├── app/                          # Aplicación React
-│   ├── api/                      # Vercel Functions
-│   │   └── ai.js                 # Gateway IA (OpenRouter)
+├── app/                              # Aplicación React
+│   ├── api/
+│   │   └── ai.js                     # Vercel Function — gateway IA (OpenRouter/Groq/Gemini)
 │   ├── src/
-│   │   ├── components/           # Componentes React
-│   │   │   ├── auth/             # LoginPage, ProtectedRoute
-│   │   │   ├── layout/           # AppShell, Topbar, Sidebar
-│   │   │   └── ui/               # Button, Badge, Input, Card...
-│   │   ├── contexts/             # React Contexts
-│   │   │   ├── AuthContext.jsx
-│   │   │   ├── ThemeContext.jsx
-│   │   │   └── ToastContext.jsx
-│   │   ├── firebase/             # Firebase config
-│   │   ├── data/                 # Catálogo, jerarquía, logos
-│   │   ├── hooks/                # Custom hooks (uno por módulo)
-│   │   ├── pages/                # LandingPage
-│   │   ├── services/             # API services (anthropicService.js: callAnthropicAI, parseAIJsonResponse, sanitizeUrl, formatAIResponse)
-│   │   ├── styles/               # Variables CSS, animaciones
-│   │   ├── tools/                # 7 módulos (componentes de página)
-│   │   ├── App.jsx               # Router + rutas protegidas
-│   │   └── main.jsx              # Entry point + providers
-│   ├── scripts/                  # Scripts de utilidad
-│   │   └── sync-catalog-enhanced.mjs
-│   ├── public/                   # Assets estáticos
-│   ├── firestore.rules           # Reglas de seguridad Firestore
-│   ├── firebase.json
+│   │   ├── __tests__/                # Tests unitarios (Vitest)
+│   │   ├── components/
+│   │   │   ├── auth/                 # LoginPage, ProtectedRoute
+│   │   │   ├── fichas/               # TarjetaFicha
+│   │   │   ├── HeroSection/          # Landing page (~14 componentes)
+│   │   │   ├── layout/               # AppShell, Topbar, Sidebar
+│   │   │   └── ui/                   # Button, Badge, Input, Card, CircleLayout, ProductTable...
+│   │   ├── config/                   # firestorePaths, tools
+│   │   ├── contexts/                 # AuthContext, ThemeContext, ToastContext
+│   │   ├── data/                     # categoriaMapping, categoryMapping, etiquetasSubcategoria,
+│   │   │                             # familiaMapping, hierarchy.json, marcasLogos, roadmapData
+│   │   ├── firebase/                 # Firebase config (legacy — solo para datos de usuario)
+│   │   ├── hooks/                    # 11 custom hooks (useNavegacionFichas, useFichasTecnicas,
+│   │   │                             # usePresupuestos, useSonex, useSimuladorAlmacen...)
+│   │   ├── pages/                    # LandingPage
+│   │   ├── services/                 # catalogService (Supabase), anthropicService,
+│   │   │                             # brandLogoService, firestoreService (legacy), errorHandler
+│   │   ├── styles/                   # variables.css, animations.css, circleLayout.css
+│   │   ├── supabase/                 # supabaseClient.js (activo)
+│   │   ├── utils/                    # normalizarCategoria.js
+│   │   ├── tools/                    # 7 módulos página (FichasTecnicas, Presupuestos, Sonex...)
+│   │   ├── App.jsx                   # Router + rutas protegidas
+│   │   └── main.jsx                  # Entry point + providers (BrowserRouter, ThemeProvider,
+│   │                                 # AuthProvider, ToastProvider)
+│   ├── scripts/                      # 8 scripts DB (migrate-columns, fix-migration, normalize-*...)
+│   ├── e2e/                          # Tests E2E Playwright (7 specs + helpers)
+│   ├── tests/                        # Tests adicionales (visual-verification, fichas-navigation)
+│   ├── public/
+│   │   ├── logos/                    # 15 logos de fabricantes (PNG/JPG)
+│   │   └── screenshots/              # Capturas para landing page + E2E
+│   ├── firestore.rules               # Reglas de seguridad Firestore (legacy)
+│   ├── firebase.json                 # Config Firebase (legacy)
 │   ├── playwright.config.js
 │   ├── vercel.json
+│   ├── vite.config.js
 │   └── package.json
-├── proyecto-fin-ciclo/           # Documentación académica (10 capítulos)
-├── diagramas/                    # Diagramas SVG del proyecto
-├── EVOLUCION.md                  # Guía cronológica de evolución
-├── README.md                     # Documentación principal
-└── CLAUDE.md                     # Este archivo
+├── proyecto-fin-ciclo/               # Documentación académica (10 capítulos, 50+ archivos)
+├── diagramas/                        # Diagramas SVG del proyecto
+├── DB_TAXONOMY.md                    # ← Taxonomía maestra de la base de datos
+├── EVOLUCION.md                      # Guía cronológica de evolución
+├── README.md
+├── CLAUDE.md                         # Este archivo
+└── LICENSE                           # MIT
 ```
 
 ---
@@ -221,18 +237,44 @@ El proyecto usa un sistema de diseño personalizado con variables CSS. **Nunca u
 - Custom hooks por módulo (`hooks/useFichas.js`)
 - Context Pattern para estado global (`AuthContext`, `ThemeContext`, `ToastContext`)
 
+### Patrón de Navegación Fichas Técnicas (Dual Mode)
+
+La navegación del catálogo tiene dos modos según la familia:
+
+**Modo DP agrupado** (DISTRIBUCION DE POTENCIA):
+```
+Sidebar → Marca → Categoría (Protección/Seccionamiento/Accesorios/Control Motor)
+         → Subcategoría (Magnetotérmico modular/Diferencial/etc.)
+         → Referencias → Ficha + IA
+```
+
+**Modo Legacy** (resto de familias):
+```
+Sidebar → Marca → Gama (subfamilia) → Tipo → Referencias → Ficha + IA
+```
+
+Ver `categoriaMapping.js` y `etiquetasSubcategoria.js` en `app/src/data/`.
+
 ### Patrón de Enriquecimiento IA
 
 - `useNavegacionFichas.js` expone `aiFicha` (datos parseados) y `aiCargando` (estado de carga)
-- `cargarInfoIA(ficha)` es una función compartida dentro del hook que llama a `callAnthropicAI` y parsea con `parseAIJsonResponse`
-- Se dispara desde dos caminos: `seleccionarReferencia` (navegación jerárquica) y `buscarReferenciaDirecta` (búsqueda por referencia)
-- El system prompt fuerza JSON estricto — no necesita validator
-- `sanitizeUrl()` de `anthropicService` sanitiza la URL del manual antes de renderizar
+- `cargarInfoIA(ficha)` llama a `callAnthropicAI` y parsea con `parseAIJsonResponse`
+- Se dispara desde: `seleccionarReferencia` (navegación) y `buscarReferenciaDirecta` (búsqueda)
+- System prompt fuerza JSON estricto — no necesita validator
+- `sanitizeUrl()` sanitiza URL del manual antes de renderizar
 
-### Patrones de Datos
+### Patrón de Datos
 
-- LocalStorage: prefijo `pfc_` en todas las keys
-- Firestore: `users/{userId}/{collection}/{docId}` (fichas, presupuestos, incidencias, kpis, formacion)
+- **Catálogo**: Supabase (PostgreSQL) — tabla `products` + `brands` + servicios en `catalogService.js`
+- **Datos de usuario**: Firestore — `users/{userId}/{collection}/{docId}` (fichas, presupuestos, incidencias, kpis, formacion) via `firestoreService.js`
+- **LocalStorage**: prefijo `pfc_` en todas las keys
+
+### Patrón de Categorización (categoriaMapping)
+
+Para DISTRIBUCION DE POTENCIA, el mapeo `subfamilia+tipo → (categoria, subcategoria)` está en `categoriaMapping.js`:
+- 4 categorías: `Protección`, `Seccionamiento`, `Accesorios`, `Control Motor`
+- 23 subcategorías: `Magnetotérmico modular`, `Diferencial`, `Sobretensión`, etc.
+- `/api/ai` gateway unifica 3 providers (OpenRouter, Groq, Gemini)
 
 ---
 
@@ -240,10 +282,11 @@ El proyecto usa un sistema de diseño personalizado con variables CSS. **Nunca u
 
 1. **Sin referencias a terceros** — NO usar nombres de empresas o marcas específicas. Usar "la empresa", "industrial", "catálogo de productos"
 2. **Sistema de diseño** — Siempre usar variables CSS, no colores hardcodeados
-3. **Autenticación** — Todas las rutas excepto `/login` requieren `ProtectedRoute`
+3. **Autenticación** — Todas las rutas excepto `/login` requieren `ProtectedRoute`. Auth via Supabase OAuth
 4. **IA** — Prompts genéricos sin referencias a empresas. OpenRouter API vía Vercel Functions
-5. **Testing** — Tests e2e con Playwright, Page Object Model, responsive design
+5. **Testing** — Tests e2e con Playwright + tests unitarios con Vitest
 6. **Git** — `main` para producción, feature branches, conventional commits
+7. **DB Taxonomy** — Leer [DB_TAXONOMY.md](./DB_TAXONOMY.md) antes de tocar consultas de catálogo
 
 ---
 
@@ -252,15 +295,18 @@ El proyecto usa un sistema de diseño personalizado con variables CSS. **Nunca u
 ```bash
 # Desarrollo
 cd app && npm install
-npm run dev
-npm run build
+npm run dev           # Dev server en :5173 (proxy /api → :3001)
+npm run build          # Build producción
 
 # Testing
-npm run test
-npm run test:ui
+npm run test           # Tests unitarios (Vitest) — ~119 tests, 3 suites
+npm run test:ui        # E2E (Playwright UI mode)
+npx playwright test    # E2E headless
 
-# Scripts
-node scripts/sync-catalog-enhanced.mjs
+# Migraciones DB
+node scripts/migrate-columns.mjs
+node scripts/normalize-taxonomy.mjs
+node scripts/normalize-legrand.mjs
 ```
 
 ---
@@ -283,9 +329,10 @@ node scripts/sync-catalog-enhanced.mjs
 
 ## Enlaces Útiles
 
+- [DB_TAXONOMY.md](./DB_TAXONOMY.md) — Taxonomía maestra de la base de datos
 - [React 19 Docs](https://react.dev/)
+- [Supabase Docs](https://supabase.com/docs)
 - [Vite Docs](https://vitejs.dev/)
-- [Firebase Docs](https://firebase.google.com/docs)
 - [Playwright Docs](https://playwright.dev/)
 - [OpenRouter Docs](https://openrouter.ai/docs)
 - [GitHub Repo](https://github.com/iagorobo24-hub/proyecto-pfc-iago-duran)

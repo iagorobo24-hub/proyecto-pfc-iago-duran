@@ -5,62 +5,83 @@
 El modelo de datos fue cambiando según evolucionaba el proyecto:
 
 1. **Al principio:** Los datos estaban en archivos JavaScript dentro de la propia web. Había unos 120 productos de prueba. Funcionaba para hacer pruebas pero no valía para producción.
-2. **Después:** Migré todo a Firestore (una base de datos en la nube de Google). Ahí están los 400.000+ productos del catálogo real.
-3. **Ahora:** Estoy migrando a Supabase (PostgreSQL) porque Firestore tiene limitaciones para según qué cosas.
+2. **Después:** Migré todo a Firestore (una base de datos NoSQL de Google). Ahí estaban los 400.000+ productos del catálogo real y los datos de usuario.
+3. **Ahora:** El **catálogo** está en **Supabase (PostgreSQL)** — tablas `products` y `brands`. Los **datos de usuario** (fichas guardadas, presupuestos, incidencias, KPIs, formación) siguen en **Firestore** (colecciones por usuario).
 
-Este documento explica cómo está organizado todo ahora mismo en Firestore.
+Este documento explica cómo está organizado todo en la versión actual.
 
 ---
 
-## Las colecciones (las "tablas" de la base de datos)
+## Supabase: el catálogo de productos
 
-En Firestore los datos se guardan en **colecciones** (como las tablas de una base de datos normal, pero más flexibles).
+El catálogo vive en PostgreSQL. Dos tablas principales:
 
-### La colección grande: `productos`
-
-Aquí están todos los productos del catálogo. Cada producto tiene esta pinta:
+### Tabla `products`
 
 ```
-ref_fabricante: "ABC123456"         ← Referencia del fabricante
-name: "Interruptor automático 10A"  ← Nombre del producto
-familia: "Protecciones"             ← Familia (ej: Iluminación, Cableado...)
-subfamilia: "Interruptores"         ← Subfamilia o gama
-tipo: "magnetotérmico"              ← Tipo específico
-marca: "Schneider"                  ← Marca
-desc: "Descripción técnica..."      ← Descripción
-precio: null                        ← Precio (casi siempre vacío, hay que pedirlo)
-image: "https://..."                ← Foto del producto
-url: "https://..."                  ← Enlace a la web del distribuidor
-keywords: ["interruptor", "10a"]   ← Palabras clave para buscar
+id: 1                          ← Autonumérico (PK)
+ref_fabricante: "A9F74110"     ← Referencia del fabricante (única, NOT NULL)
+name: "Magnetotérmico, Acti9 iC60N, 1P, 6A, C curva"  ← Nombre completo
+familia: "DISTRIBUCION DE POTENCIA"  ← Categoría principal (MAYÚSCULAS con _)
+Gama: "Acti 9 iC60"            ← Gama comercial del fabricante (sin normalizar)
+Subgama: "iC60N"               ← Subgama dentro de la gama
+subfamilia: "Interruptor Magnetotérmico"  ← Tipo funcional (Capitalizado)
+tipo: "CARRIL DIN"              ← Formato físico (MAYÚSCULAS)
+marca: "Schneider Electric"     ← Nombre del fabricante
+brand_id: 456                   ← FK → brands.id
+precio: 14.50                   ← Precio unitario (puede ser null)
+imagen: "https://..."           ← URL de imagen del producto
+pdf_url: "https://..."          ← URL de ficha técnica PDF
+documentos: [{"nombre": "...", "url": "..."}]  ← JSONB con enlaces adicionales
 ```
 
-**Para buscar rápido:** La base de datos tiene índices para buscar por familia, por marca, o por palabras clave.
-
-### La colección `usuarios`
-
-Cuando alguien inicia sesión con Google, se crea automáticamente un perfil:
+### Tabla `brands`
 
 ```
-uid: "google_123456789"           ← ID único
-email: "usuario@gmail.com"        ← Su correo
-displayName: "Juan Pérez"         ← Su nombre
-photoURL: "https://..."           ← Su foto de perfil
-role: "user"                      ← user / admin (de momento todos users)
-preferencias: {
-    tema: "dark",                 ← dark / light
-    idioma: "es"
-}
+id: 456                         ← PK
+name: "Schneider Electric"      ← Nombre de la marca
+website_url: "https://www.se.com"  ← Web de la marca
 ```
 
-### La colección `presupuestos`
+### Acceso a los datos
 
-Los presupuestos que va creando cada usuario:
+La comunicación con Supabase se hace desde el frontend directamente (client-side) usando `@supabase/supabase-js`. Las consultas van con la **anon key** pública — la seguridad se gestiona con Row Level Security (RLS) en las tablas.
 
+Servicio principal: `app/src/services/catalogService.js`
+- `getCategorias()` — Familias únicas con productos
+- `getMarcasPorCategoria(familia)` — Marcas que tienen productos en una familia
+- `getGamasPorMarcaYCategoria(marca, familia)` — Gamas/subfamilias para legacy
+- `getSubfamiliasConTipos(marca, familia)` — Pares (subfamilia, tipo) para DP agrupado
+- `getProductosPorSubcategoria(familia, marca, filtros)` — Productos por subcategoría
+- `getProductosPorFiltro(familia, marca, gama, tipo)` — Productos por filtro exacto
+- `getProductoPorRef(ref)` — Producto por referencia única
+- `buscarProductos(termino)` — Búsqueda por nombre
+
+### Categorización en frontend (`categoriaMapping.js`)
+
+Para DISTRIBUCION DE POTENCIA, el mapeo `subfamilia+tipo → (categoria, subcategoria)` está en el frontend:
+
+| Categoría | Subcategorías | Icono |
+|-----------|---------------|-------|
+| **Protección** | Magnetotérmico modular, MCCB, Diferencial, Sobretensión, Fusibles | 🛡️ |
+| **Seccionamiento** | Seccionador, Seccionador CC, Interruptor CC | 🔌 |
+| **Accesorios** | Rearme, Control aislamiento, Cajas, Pilotaje, Medida, Distribución, Conmutación, Tomas, Fuentes, Señalización | 🔧 |
+| **Control Motor** | Contactor, Relés y control, Pulsadores | ⚙️ |
+
+---
+
+## Firestore: datos de usuario (legado)
+
+Los datos que genera cada usuario al usar las herramientas siguen en Firestore. La estructura es:
+
+### Colección `users/{userId}/fichas`
+Fichas técnicas guardadas por el usuario.
+
+### Colección `users/{userId}/presupuestos`
+Presupuestos creados:
 ```
-usuario_id: "google_123456789"
 items: [
-    { ref: "ABC123", name: "Interruptor...", cantidad: 5, precio: 25.50 },
-    { ref: "DEF456", name: "Cable...", cantidad: 20, precio: 3.20 }
+    { ref: "A9F74110", name: "Interruptor...", cantidad: 5, precio: 25.50 }
 ]
 subtotal: 127.50
 iva: 21
@@ -68,12 +89,8 @@ total: 154.28
 estado: "borrador"              ← borrador / enviado / aceptado
 ```
 
-Cada usuario solo ve sus propios presupuestos (esto lo controlan las reglas de seguridad).
-
-### La colección `incidencias`
-
-Cada incidencia que se registra:
-
+### Colección `users/{userId}/incidencias`
+Incidencias registradas:
 ```
 titulo: "Producto defectuoso"
 descripcion: "El producto llegó dañado..."
@@ -82,93 +99,54 @@ severidad: "alto"                ← bajo / medio / alto / critico
 estado: "abierta"                ← abierta / en_proceso / resuelta
 ```
 
-### La colección `formacion`
+### Colección `users/{userId}/kpis`
+Configuración de KPIs y valores guardados por el usuario.
 
-Aquí se guarda qué formación tiene cada empleado y qué cursos ha hecho:
+### Colección `users/{userId}/formacion`
+Matriz de competencias y planes de formación.
 
-```
-empleado: "Juan Pérez"
-curso: "Normativa eléctrica 2026"
-estado: "completado"             ← no_iniciado / en_curso / completado
-nota: 85
-```
+Cada usuario solo ve sus propios datos (controlado por `firestore.rules`).
 
 ---
 
-## Datos que NO están en la nube
+## Autenticación
 
-No todo está en Firestore. Algunos datos clave están en archivos locales dentro de la aplicación:
+**Supabase Auth** con Google OAuth:
 
-### La jerarquía de navegación
-
-Para navegar por el catálogo (familia → marca → gama), uso un archivo JSON local con la estructura. Es mucho más rápido tenerlo en el navegador que pedírselo a la base de datos cada vez.
-
-```
-familias: [
-    {
-        nombre: "Iluminación",
-        marcas: [
-            {
-                nombre: "Philips",
-                gamas: ["LED", "Convencional", "Decorativa"]
-            }
-        ]
-    }
-]
+```js
+supabase.auth.signInWithOAuth({
+  provider: 'google',
+  options: { redirectTo: window.location.origin }
+})
 ```
 
-### Los datos de prueba
-
-Al principio del proyecto, cuando aún no había base de datos, los productos estaban en un archivo JavaScript con 120 productos de ejemplo. Ese archivo ya no se usa en producción, pero lo mantengo por si alguien quiere probar la app sin conexión.
+El estado de sesión se gestiona en `AuthContext.jsx` mediante:
+- `supabase.auth.getSession()` — Recuperar sesión al cargar
+- `supabase.auth.onAuthStateChange()` — Escuchar cambios en tiempo real
+- `supabase.auth.signOut()` — Cerrar sesión
 
 ---
 
-## El futuro: migración a Supabase
+## Datos locales (frontend)
 
-Firestore ha funcionado, pero tiene limitaciones:
-- Solo 50.000 escrituras al día en el plan gratis
-- Las búsquedas por texto son limitadas
-- No se pueden hacer "uniones" entre colecciones
-
-Por eso estoy migrando a **Supabase**, que usa PostgreSQL. La estructura será muy parecida, pero con tablas normales y corrientes:
-
-```
-Tabla: products
-    id (autonumérico)
-    ref_fabricante (único)
-    nombre
-    familia
-    marca
-    keywords (para búsqueda)
-
-Tabla: brands (marcas)
-    id (autonumérico)
-    nombre
-    logo_url
-
-Tabla: profiles (usuarios)
-    id (referencia a auth.users)
-    email
-    nombre
-    rol
-```
-
-La ventaja de PostgreSQL es que las búsquedas por texto son mucho mejores y no tengo límite de escrituras diarias.
+Algunos datos están directamente en el código del frontend:
+- **categoriaMapping.js** — Mapeo subfamilia → categoria/subcategoria
+- **categoryMapping.js** — Metadatos de familias (iconos, tips)
+- **marcasLogos.js** — URLs de logos de fabricantes
+- **hierarchy.json** — Árbol de navegación (legacy, ya no usado en producción)
 
 ---
 
-## Comparativa rápida: Firestore vs Supabase
+## Comparativa rápida
 
-| Aspecto | Firestore (actual) | Supabase (futuro) |
-|---------|-------------------|-------------------|
-| **Tipo** | NoSQL (como un JSON gigante) | SQL (tablas normales) |
-| **Flexibilidad** | Mucha | Menos, pero más ordenada |
-| **Búsqueda** | Limitada | Búsqueda por texto completa |
-| **Límite gratis** | 50K escrituras/día | 500 MB de almacenamiento |
-| **Precio** | 0€ | 0€ |
-
-**Conclusión:** Firestore está bien para empezar. Supabase es mejor para cuando el proyecto crece.
+| Aspecto | Catálogo (Supabase) | Datos usuario (Firestore) |
+|---------|--------------------|---------------------------|
+| **Tipo** | SQL (PostgreSQL) | NoSQL |
+| **Tablas** | products, brands | users/{uid}/colecciones |
+| **Búsqueda** | ilike + OR conditions | Limitada |
+| **Auth** | Supabase OAuth | — |
+| **Estado** | ✅ Producción | ⏳ Legacy (pendiente migrar) |
 
 ---
 
-*Si quieres ver los scripts que mueven los datos, están en `app/scripts/`*
+*Para más detalle técnico, ver [DB_TAXONOMY.md](../../DB_TAXONOMY.md).*

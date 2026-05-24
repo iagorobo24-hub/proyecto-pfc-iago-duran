@@ -30,6 +30,12 @@
   --color-text-tertiary: #8b92b0;
   --color-error: #e04050;
   --color-error-soft: rgba(224, 64, 80, 0.08);
+
+  /* ── Extended colors ── */
+  --purple-500: #a855f7;
+  --green-500: #10b981;
+  --amber-500: #f59e0b;
+
   --blue-900: #0f172a;
   --blue-800: #003087;
   --blue-700: #0044b3;
@@ -150,14 +156,18 @@
 
 /* ── Tema Oscuro ── */
 [data-theme="dark"] {
-  --blue-800: #f59e0b;
-  --blue-700: #d97706;
-  --blue-500: #fbbf24;
-  --blue-200: rgba(245, 158, 11, 0.3);
-  --blue-100: rgba(245, 158, 11, 0.15);
-  --blue-50: rgba(245, 158, 11, 0.08);
-  --brand-blue: #fbbf24;
-  --brand-blue-dark: #f59e0b;
+  --purple-500: #c084fc;
+  --green-500: #34d399;
+  --amber-500: #fbbf24;
+
+  --blue-800: #1e3a5f;
+  --blue-700: #2563eb;
+  --blue-500: #60a5fa;
+  --blue-200: rgba(96, 165, 250, 0.3);
+  --blue-100: rgba(96, 165, 250, 0.15);
+  --blue-50: rgba(96, 165, 250, 0.08);
+  --brand-blue: #60a5fa;
+  --brand-blue-dark: #3b82f6;
 
   --gray-900: #f1f5f9;
   --gray-800: #e2e8f0;

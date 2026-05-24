@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Linkedin, AppWindow, ChevronDown, BarChart3, Wrench, FileText, Bot, GraduationCap, Target, Cpu, FileSpreadsheet } from 'lucide-react';
+import { Linkedin, AppWindow, ChevronDown, BarChart3, Wrench, FileText, Target, Cpu, FileSpreadsheet } from 'lucide-react';
 import styles from './styles/HeroHeader.module.css';
 
 const SECTION_LINKS = [

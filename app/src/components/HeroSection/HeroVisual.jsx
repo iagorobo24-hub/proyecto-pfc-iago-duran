@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Layout, Zap, ShieldCheck, Database, Cpu, BarChart3, Calculator } from 'lucide-react';
+import { Database, Cpu, Calculator } from 'lucide-react';
 import catalogService from '../../services/catalogService';
 import styles from './styles/HeroVisual.module.css';
 
@@ -34,22 +34,14 @@ const HeroVisual = () => {
       try {
         const data = await catalogService.getCatalogStats();
         if (data.totalProducts) {
-          // Calcular familias y marcas desde la jerarquía
-          const tree = await catalogService.getHierarchy();
-          const families = Object.keys(tree).length;
-          let brands = new Set();
-          Object.values(tree).forEach(fam => {
-            Object.keys(fam).forEach(brand => brands.add(brand));
-          });
-
           setStats({
             totalProducts: data.totalProducts,
-            totalFamilies: families,
-            totalBrands: brands.size
+            totalFamilies: 7,
+            totalBrands: 0
           });
         }
       } catch {
-        // Fallback si Firestore no está disponible
+        // Fallback silencioso
       }
     };
     fetchStats();
@@ -86,7 +78,7 @@ const HeroVisual = () => {
               <span className={styles.dot} />
               <span className={styles.dot} />
             </div>
-            <div className={styles.addressBar}>Proyectos PFC-tools.app{SCREENSHOTS[currentIndex].href.replace('/app', '')}</div>
+            <div className={styles.addressBar}>proyecto-pfc.vercel.app{SCREENSHOTS[currentIndex].href.replace('/app', '')}</div>
           </div>
 
           {/* Mockup clickeable - link a la herramienta */}
@@ -133,7 +125,7 @@ const HeroVisual = () => {
             transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
           >
             <div className={styles.cardHeader}>
-              <div className={styles.iconBox} style={{ color: 'var(--Proyectos PFC-blue)', background: 'var(--blue-50)' }}>
+              <div className={styles.iconBox} style={{ color: 'var(--brand-blue)', background: 'var(--blue-50)' }}>
                 <Cpu size={14} />
               </div>
               <span className={styles.cardTitle}>Asistente SONEX</span>
@@ -141,8 +133,8 @@ const HeroVisual = () => {
             <div className={styles.cardBody}>
               <span className={styles.pulseText}>Consultor de material eléctrico IA</span>
               <div className={styles.pulseIndicator}>
-                <span className={styles.pulse} style={{ backgroundColor: '#10b981' }} />
-                <span className={styles.pulseText} style={{ color: '#10b981', fontWeight: 'bold' }}>Online</span>
+                <span className={styles.pulse} style={{ backgroundColor: 'var(--success)' }} />
+                <span className={styles.pulseText} style={{ color: 'var(--success)', fontWeight: 'bold' }}>Online</span>
               </div>
             </div>
           </motion.div>
@@ -154,7 +146,7 @@ const HeroVisual = () => {
             transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
           >
             <div className={styles.cardHeader}>
-              <div className={styles.iconBox} style={{ color: '#d97706', background: 'rgba(217, 119, 6, 0.1)' }}>
+              <div className={styles.iconBox} style={{ color: 'var(--warning)', background: 'var(--warning-soft)' }}>
                 <Calculator size={14} />
               </div>
               <span className={styles.cardTitle}>Presupuestos</span>
@@ -162,30 +154,30 @@ const HeroVisual = () => {
             <div className={styles.cardBody}>
               <span className={styles.pulseText}>Cotizaciones profesionales</span>
               <div className={styles.statusLine}>
-                <span className={styles.statusValue} style={{ color: '#d97706' }}>Módulo Activo</span>
+                <span className={styles.statusValue} style={{ color: 'var(--warning)' }}>Módulo Activo</span>
               </div>
             </div>
           </motion.div>
 
-          {/* Card 3: Catálogo Firestore */}
+          {/* Card 3: Catálogo Supabase */}
           <motion.div
             className={styles.floatingCard}
             animate={{ y: [0, -8, 0] }}
             transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 1 }}
           >
             <div className={styles.cardHeader}>
-              <div className={styles.iconBox} style={{ color: '#f0a030', background: 'rgba(240, 160, 48, 0.1)' }}>
+              <div className={styles.iconBox} style={{ color: 'var(--warning)', background: 'var(--warning-soft)' }}>
                 <Database size={14} />
               </div>
-              <span className={styles.cardTitle}>Catálogo Live</span>
+              <span className={styles.cardTitle}>Catálogo</span>
             </div>
             <div className={styles.cardBody}>
-              <span className={styles.pulseText}>Sincronizado con Firestore</span>
+              <span className={styles.pulseText}>Sincronizado con Supabase</span>
               <div className={styles.statusLine}>
-                <span className={styles.statusValue} style={{ color: '#f0a030' }}>{formatRefs(stats.totalProducts)} refs</span>
+                <span className={styles.statusValue} style={{ color: 'var(--warning)' }}>{formatRefs(stats.totalProducts)} refs</span>
               </div>
               <div className={styles.statusLine}>
-                <span className={styles.pulseText}>{stats.totalFamilies} familias · {stats.totalBrands} marcas</span>
+                <span className={styles.pulseText}>7 familias· 5+ marcas</span>
               </div>
             </div>
           </motion.div>

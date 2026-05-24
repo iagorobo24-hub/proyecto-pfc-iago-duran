@@ -1,4 +1,14 @@
 export const FULL_CATEGORY_INFO = {
+  "AUTOMATIZACION": {
+    icon: '⚙️',
+    desc: 'Contactores, relés térmicos, interruptores horarios y control modular para automatización industrial.',
+    tip: 'Verifica la intensidad de empleo (A) y la tensión de la bobina del contactor.'
+  },
+  "AUTOMATIZACION DE EDIFICIOS": {
+    icon: '🏘️',
+    desc: 'Domótica, sistemas KNX, videoporteros y mecanismos de control inteligente.',
+    tip: 'Asegura la compatibilidad entre dispositivos y el protocolo de control (cableado o inalámbrico).'
+  },
   "CABLES": {
     icon: '🧶',
     desc: 'Cables de baja, media y alta tensión, mangueras y conductores especiales.',
@@ -9,45 +19,25 @@ export const FULL_CATEGORY_INFO = {
     desc: 'Aparamenta modular, envolventes, cuadros eléctricos y sistemas de gestión de cableado.',
     tip: 'Verifica la intensidad nominal (A), el poder de corte (kA) y el número de polos necesario.'
   },
-  "CONTROL Y AUTOMATIZACION INDUSTRIAL": {
-    icon: '⚙️',
-    desc: 'Variadores de frecuencia, contactores, guardamotores, PLCs y sensores industriales.',
-    tip: 'Dimensiona según la potencia del motor (kW), el tipo de carga y los protocolos de comunicación.'
-  },
-  "AUTOMATIZACION DE EDIFICIOS": {
-    icon: '🏘️',
-    desc: 'Domótica, sistemas KNX, videoporteros y mecanismos de control inteligente.',
-    tip: 'Asegura la compatibilidad entre dispositivos y el protocolo de control (cableado o inalámbrico).'
+  "FOTOVOLTAICA": {
+    icon: '☀️',
+    desc: 'Paneles solares, inversores, baterías y puntos de recarga para vehículo eléctrico.',
+    tip: 'Dimensiona el campo fotovoltaico según el consumo anual y la superficie disponible en cubierta.'
   },
   "ILUMINACION": {
     icon: '💡',
     desc: 'Luminarias LED para interior, exterior, industrial, decorativa y alumbrado de emergencia.',
     tip: 'Calcula el nivel de iluminación requerido (lux) y elige la temperatura de color adecuada (K).'
   },
-  "HVAC": {
-    icon: '❄️',
-    desc: 'Sistemas de climatización, ventilación, calefacción y aire acondicionado.',
-    tip: 'Calcula las frigorías o calorías necesarias según el volumen de la estancia y su aislamiento.'
+  "INSTALACION": {
+    icon: '📏',
+    desc: 'Canalizaciones, bandejas portacables, minicanales y sistemas de instalación.',
+    tip: 'Elige el tipo de canal según el número y sección de los conductores.'
   },
-  "SEGURIDAD Y HERRAMIENTAS": {
-    icon: '🛡️',
-    desc: 'Equipos de protección individual (EPIs), herramientas manuales, eléctricas y de medida.',
-    tip: 'Usa herramientas con certificación VDE (1000V) para trabajos en tensión y EPIs homologados.'
-  },
-  "FONTANERIA": {
-    icon: '🚿',
-    desc: 'Sistemas de conducción de agua, sanitarios, grifería y accesorios de conexión.',
-    tip: 'Verifica el material (cobre, multicapa, PVC) y el diámetro de las roscas o conexiones.'
-  },
-  "ENERGIAS RENOVABLES": {
-    icon: '☀️',
-    desc: 'Paneles solares, inversores, baterías y puntos de recarga para vehículo eléctrico.',
-    tip: 'Dimensiona el campo fotovoltaico según el consumo anual y la superficie disponible en cubierta.'
-  },
-  "SERVICIOS": {
-    icon: '🚚',
-    desc: 'Gestión de bobinas, palets, portes y otros servicios logísticos especializados.',
-    tip: 'Consulta las condiciones de retorno de envases y los plazos de entrega especiales.'
+  "VEHICULOS_ELECTRICOS": {
+    icon: '🚗',
+    desc: 'Puntos de recarga, accesorios y equipos para movilidad eléctrica.',
+    tip: 'Verifica la potencia de carga (kW) y el tipo de conector (Tipo 2, CCS, etc.).'
   }
 }
 
@@ -60,6 +50,9 @@ export const SUBCATEGORY_LABELS = {
   'Interruptor Seccionador': 'Interruptor Seccionador',
   'Rearmador': 'Rearmador Diferencial',
   'Accesorio': 'Accesorio',
+  'Bloque Mando Osmoz': 'Bloque Mando Osmoz',
+  'Pulsador Osmoz': 'Pulsador Osmoz',
+  'Fuente Alimentacion': 'Fuente Alimentación',
 }
 
 export const TYPE_LABELS = {
@@ -71,12 +64,10 @@ export const TYPE_LABELS = {
 export const CATEGORY_IDS = {
   "cables": "CABLES",
   "potencia": "DISTRIBUCION DE POTENCIA",
-  "control": "CONTROL Y AUTOMATIZACION INDUSTRIAL",
+  "automatizacion": "AUTOMATIZACION",
   "domotica": "AUTOMATIZACION DE EDIFICIOS",
+  "fotovoltaica": "FOTOVOLTAICA",
   "iluminacion": "ILUMINACION",
-  "clima": "HVAC",
-  "seguridad": "SEGURIDAD Y HERRAMIENTAS",
-  "fontaneria": "FONTANERIA",
-  "solar": "ENERGIAS RENOVABLES",
-  "servicios": "SERVICIOS"
+  "instalacion": "INSTALACION",
+  "vehiculos": "VEHICULOS_ELECTRICOS",
 }

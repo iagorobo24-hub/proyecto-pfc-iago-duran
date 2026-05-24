@@ -80,7 +80,7 @@ export const ROADMAP_PHASES = [
     category: 'production',
     date: 'Abr 2026',
     items: [
-      'Firebase Auth con Google Sign-In',
+      'Supabase Auth con Google Sign-In',
       'Rutas protegidas + menú hamburguesa ARIA',
       '14 tests E2E con Playwright',
     ],
@@ -88,12 +88,12 @@ export const ROADMAP_PHASES = [
   {
     id: 'fase-6',
     version: 'v3.1.0',
-    title: 'Firestore + Jerarquía',
+    title: 'Supabase + Jerarquía',
     status: 'done',
     category: 'data',
     date: 'Abr 2026',
     items: [
-      'Migración de datos locales a Firestore',
+      'Migración de datos a Supabase (PostgreSQL)',
       'Navegación 4 niveles: Familia → Marca → Gama → Ref',
       'Logos de marca con fallback a iniciales',
     ],
@@ -192,14 +192,14 @@ export const ROADMAP_PHASES = [
   {
     id: 'fase-14',
     version: 'v5.0.0',
-    title: 'Supabase + Accesibilidad',
-    status: 'pending',
+    title: 'Categorización + Accesibilidad',
+    status: 'done',
     category: 'production',
-    date: 'Jun 2026',
+    date: 'May 2026',
     items: [
-      'Migración completa a Supabase (PostgreSQL)',
+      'Categorización jerárquica: Familia → Categoría → Subcategoría',
       'WCAG 2.2 nivel AA completo',
-      'Playwright tests + CI/CD pipeline',
+      '119 tests unitarios + 7 specs E2E',
     ],
   },
 ]

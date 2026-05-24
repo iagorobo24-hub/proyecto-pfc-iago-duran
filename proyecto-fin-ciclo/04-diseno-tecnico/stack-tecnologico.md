@@ -65,7 +65,28 @@ Firebase es de Google y te da dos cosas muy útiles: **inicio de sesión con Goo
 - **Supabase** — Más potencia, más escalable. De hecho, estoy migrando a esto ahora
 - **MongoDB** — También gratis pero más lioso de montar
 
-**Mi opinión:** Firebase está muy bien para empezar. Es como conducir un coche automático: llegas rápido a todos sitios. Pero cuando quieres hacer cosas más avanzadas, te chocas con limitaciones. Por eso estoy migrando a Supabase.
+**Mi opinión:** Firebase está muy bien para empezar. Es como conducir un coche automático: llegas rápido a todos sitios. Pero cuando quieres hacer cosas más avanzadas, te chocas con limitaciones. Por eso migré el catálogo a Supabase.
+
+### Supabase (PostgreSQL + Auth)
+
+**Estado actual:** Es el backend principal del proyecto. Gestiona el catálogo de productos y la autenticación.
+
+| Decisión | Por qué |
+|----------|---------|
+| **PostgreSQL** | Consultas flexibles con `ilike`, `.or()`, joins — imposible en Firestore |
+| **Supabase Auth** | OAuth unificado con Google, sesión gestionada automáticamente |
+| **Client-side SDK** | Consultas directas desde el frontend con anon key y RLS |
+
+**Cómo funciona:**
+- `catalogService.js` (en el frontend) hace consultas directas a Supabase desde el navegador
+- Las queries usan la anon key (pública) — la seguridad la da Row Level Security
+- Para DISTRIBUCION DE POTENCIA, el frontend agrupa productos en categorías y subcategorías mediante `categoriaMapping.js`
+- Para el resto de familias, se usa navegación legacy (gama → tipo)
+
+**Ventajas sobre Firestore:**
+- Sin límite de escrituras diarias
+- Consultas complejas con múltiples filtros
+- Los datos de usuario siguen en Firestore (por ahora)
 
 ### La API de IA
 
@@ -127,13 +148,14 @@ Hay herramientas parecidas pero Playwright es la más moderna y la que mejor fun
 
 ```
 Lo que ve el usuario:     React 19 + Vite 7
-Estilos:                  CSS Modules + variables CSS
-Login:                    Firebase Auth (Google)
-Base de datos:            Firestore (migrando a Supabase)
-IA:                       OpenRouter (Claude, DeepSeek)
+Estilos:                  CSS Modules + variables CSS (+ Framer Motion)
+Login:                    Supabase Auth (Google OAuth)
+Base de datos:            Supabase (PostgreSQL) — catálogo
+                          Firestore (legacy) — datos de usuario
+IA:                       OpenRouter (Claude 3.5 Haiku, DeepSeek, Qwen, Gemini)
 Servidor:                 Vercel Functions
 Publicación:              Vercel
-Tests:                    Playwright
+Tests:                    Playwright + Vitest
 Control de versiones:     GitHub
 ```
 
@@ -151,13 +173,24 @@ Control de versiones:     GitHub
 
 ---
 
-## Migraciones en curso
+## Migraciones completadas y pendientes
 
-### Firebase → Supabase
+### ✅ Firebase Auth → Supabase Auth (completada)
 
-Firestore es fácil pero tiene límites. Supabase usa PostgreSQL (como las bases de datos de toda la vida) y da más por el mismo precio (gratis).
+La autenticación ahora usa Supabase OAuth con Google. El cambio fue directo:
+- Antes: `firebase.auth().signInWithPopup(provider)` + manejo de tokens Firebase
+- Ahora: `supabase.auth.signInWithOAuth({ provider: 'google' })` + sesión gestionada por Supabase
+- Beneficio: auth unificado con la base de datos, sin depender de dos servicios distintos
 
-**Estado:** Los scripts para migrar están hechos, solo falta ejecutarlos cuando toque.
+### ✅ Firestore → Supabase (catálogo — completada)
+
+Los 2.400+ productos del catálogo están en PostgreSQL (tablas `products` y `brands`).
+La estructura pasó de colecciones NoSQL flexibles a un esquema SQL fijo con columnas tipadas.
+
+### ⏳ Firestore → Supabase (datos de usuario — pendiente)
+
+Los datos de usuario (fichas guardadas, presupuestos, incidencias, KPIs, formación) siguen en Firestore.
+Migrarlos requiere crear tablas relacionales y actualizar `firestoreService.js`.
 
 ---
 

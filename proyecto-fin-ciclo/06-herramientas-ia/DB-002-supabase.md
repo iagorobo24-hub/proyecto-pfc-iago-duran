@@ -1,21 +1,23 @@
 ---
 tool_id: DB-002
 nombre: Supabase
-version_observada: 2025-2026 (migración en curso desde Firestore)
-rol_principal: Base de datos PostgreSQL (futura migración)
+version_observada: 2025-2026 (migración completada)
+rol_principal: Base de datos PostgreSQL (catálogo de productos) + Autenticación
 url: https://supabase.com
 ---
-Supabase es como Firebase pero con bases de datos de verdad (PostgreSQL). Es open-source, tienes SQL de verdad con búsqueda de texto completo y los límites del plan gratis son más generosos. Estaba migrando el proyecto de Firestore a esto.
-
-## ¿Qué es?
-
 Supabase es una plataforma open-source que proporciona una API sobre PostgreSQL. Incluye autenticación, base de datos, storage, edge functions y más. Es similar a Firebase pero con base de datos relacional en lugar de NoSQL.
 
 ## ¿Para qué lo usé?
 
-### Plan de migración desde Firestore
+Supabase es el **backend principal** del proyecto en su versión actual:
 
-Según el roadmap del proyecto, se planeaba migrar el catálogo de Firestore a Supabase:
+1. **Base de datos PostgreSQL** — Catálogo de productos en tablas `products` y `brands`
+2. **Autenticación** — Google OAuth (reemplazó a Firebase Auth)
+3. **API REST** — Cliente `@supabase/supabase-js` desde el frontend con anon key
+
+### Migración desde Firestore
+
+El catálogo se migró de Firestore a Supabase por estas razones:
 
 1. **Problemas con Firestore:**
    - Límite de 50K escrituras/día (insuficiente para catálogo de 75K productos)
@@ -23,31 +25,55 @@ Según el roadmap del proyecto, se planeaba migrar el catálogo de Firestore a S
    - Queries limitadas (no hay joins ni queries complejas)
 
 2. **Ventajas de Supabase para este proyecto:**
-   - PostgreSQL con búsqueda full-text nativa (`tsvector`, `tsquery`)
+   - PostgreSQL con consultas flexibles (`ilike`, `.or()`, joins)
    - Límites más generosos en plan gratuito (500MB DB, 1GB storage)
    - SQL permite queries complejas
    - Row Level Security (RLS) similar a Firebase Rules
 
 ## Estado actual
 
-### Instalado pero no conectado
+### ✅ Migración completada
 
-- ✅ `@supabase/supabase-js` está en `package.json`
-- ✅ Scripts de prueba creados en `/scripts/`
-  - `verify-data.mjs` — Ver productos en Supabase
-  - `debug-supabase.mjs` — Análisis de esquema
-  - `supabase-analyze.mjs` — Análisis de rendimiento
-  - `sync-catalog-to-supabase.mjs` — Script de sincronización
-  - `apply-schema.mjs` — Creación de tablas
+- ✅ Catálogo en Supabase: tablas `products` (~2.400 productos) y `brands`
+- ✅ Autenticación: Supabase Auth con Google OAuth
+- ✅ Frontend conectado: `catalogService.js` usa `@supabase/supabase-js`
+- ✅ Dual navigation: agrupación por categoría (categoriaMapping.js) para DP
+- ❌ Datos de usuario: siguen en Firestore (pendiente migrar)
 
-- ❌ La aplicación aún usa Firestore para el catálogo
-- ❌ La API del frontend no está configurada para Supabase
+### Tablas en Supabase
 
-## ¿Cómo se configuraría?
+**products** — Catálogo de productos:
+| Columna | Tipo | Uso |
+|---------|------|-----|
+| `id` | serial | PK |
+| `ref_fabricante` | text | Referencia única |
+| `name` | text | Nombre del producto |
+| `familia` | text | Categoría principal |
+| `subfamilia` | text | Tipo funcional |
+| `tipo` | text | Formato físico |
+| `marca` | text | Fabricante |
+| `brand_id` | int4 | FK → brands |
+| `precio` | numeric | Precio |
+| `Gama` / `Subgama` | text | Gama comercial |
 
-### 1. Crear proyecto en Supabase
+**brands** — Marcas/fabricantes:
+| Columna | Tipo |
+|---------|------|
+| `id` | int4 (PK) |
+| `name` | text |
+| `website_url` | text |
 
-1. Ir a supabase.com
+### Servicio frontend
+
+`app/src/services/catalogService.js` — 10 métodos:
+- `getCategorias()` — Familias únicas con paginación
+- `getMarcasPorCategoria(familia)` — Marcas por familia
+- `getGamasPorMarcaYCategoria(marca, familia)` — Gamas (legacy)
+- `getSubfamiliasConTipos(marca, familia)` — Pares (subfamilia,tipo) para DP
+- `getProductosPorSubcategoria(familia, marca, filtros)` — Productos por subcategoría
+- `getProductosPorFiltro(familia, marca, gama, tipo)` — Productos por filtro exacto
+- `getProductoPorRef(ref)` — Producto por referencia
+- `buscarProductos(termino)` — Búsqueda por nombre
 2. Crear nuevo proyecto
 3. Obtener URL y anon key
 

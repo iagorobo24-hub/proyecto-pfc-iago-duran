@@ -2,6 +2,24 @@ import { useState, useCallback, useMemo, useEffect } from 'react'
 import catalogService from '../services/catalogService'
 import { useToast } from '../contexts/ToastContext'
 import { callAnthropicAI, parseAIJsonResponse } from '../services/anthropicService'
+import { getCategoria, CATEGORIA_ICONOS } from '../data/categoriaMapping'
+
+function construirGrupos(subfamiliasConTipos) {
+  const grupos = {}
+  for (const { subfamilia, tipo } of subfamiliasConTipos) {
+    const mapping = getCategoria(subfamilia, tipo)
+    if (!mapping) continue
+    const { categoria, subcategoria } = mapping
+    if (!grupos[categoria]) {
+      grupos[categoria] = { icon: CATEGORIA_ICONOS[categoria] || '📁', subcategorias: {} }
+    }
+    if (!grupos[categoria].subcategorias[subcategoria]) {
+      grupos[categoria].subcategorias[subcategoria] = []
+    }
+    grupos[categoria].subcategorias[subcategoria].push({ subfamilia, tipo })
+  }
+  return grupos
+}
 
 export default function useNavegacionFichas() {
  const { toast } = useToast()
@@ -13,6 +31,10 @@ export default function useNavegacionFichas() {
  const [gama, setGama] = useState(null)
  const [tipo, setTipo] = useState(null)
  const [referencia, setReferencia] = useState(null)
+
+ const [categoriaGrupo, setCategoriaGrupo] = useState(null)
+ const [subcategoria, setSubcategoria] = useState(null)
+ const [grupos, setGrupos] = useState({})
 
  const [marcasDisponibles, setMarcasDisponibles] = useState([])
  const [gamasDisponibles, setGamasDisponibles] = useState([])
@@ -100,8 +122,24 @@ useEffect(() => {
    setCargando(true)
    setError(null)
    try {
-    const data = await catalogService.getGamasPorMarcaYCategoria(marca, categoria)
-    setGamasDisponibles(data.map(g => g.nombre))
+    const pares = await catalogService.getSubfamiliasConTipos(marca, categoria)
+    const g = construirGrupos(pares)
+
+    if (Object.keys(g).length > 0) {
+      setGrupos(g)
+      setCategoriaGrupo(null)
+      setSubcategoria(null)
+      setGamasDisponibles([])
+      setTiposDisponibles([])
+      setPaso('categorias_grupo')
+      setHistorial(prev => [...prev, { paso: 'marcas' }])
+    } else {
+      const data = await catalogService.getGamasPorMarcaYCategoria(marca, categoria)
+      setGamasDisponibles(data.map(g => g.nombre))
+      setGrupos({})
+      setCategoriaGrupo(null)
+      setSubcategoria(null)
+    }
    } catch (err) {
     console.error('Error cargando gamas:', err)
     setError('Error al cargar gamas')
@@ -153,6 +191,9 @@ useEffect(() => {
   setMarca(null)
   setGama(null)
   setTipo(null)
+  setCategoriaGrupo(null)
+  setSubcategoria(null)
+  setGrupos({})
   setReferencia(null)
   setAiFicha(null)
   setPaso('marcas')
@@ -168,6 +209,36 @@ useEffect(() => {
   setPaso('gamas')
   setHistorial(prev => [...prev, { paso: 'marcas' }])
  }, [])
+
+ const seleccionarCategoriaGrupo = useCallback((cat) => {
+  setCategoriaGrupo(cat)
+  setSubcategoria(null)
+  setReferencia(null)
+  setAiFicha(null)
+  setPaso('subcategorias')
+  setHistorial(prev => [...prev, { paso: 'categorias_grupo' }])
+ }, [])
+
+ const seleccionarSubcategoria = useCallback(async (subcat) => {
+  if (!categoriaGrupo || !grupos[categoriaGrupo]) return
+  const filtros = grupos[categoriaGrupo].subcategorias[subcat]
+  if (!filtros) return
+  setCargando(true)
+  setSubcategoria(subcat)
+  setReferencia(null)
+  setAiFicha(null)
+  setError(null)
+  try {
+    const products = await catalogService.getProductosPorSubcategoria(categoria, marca, filtros)
+    setReferenciasDisponibles(products)
+    setPaso('referencias')
+    setHistorial(prev => [...prev, { paso: 'subcategorias' }])
+  } catch (err) {
+    console.error('Error cargando productos:', err)
+    setError('Error al cargar productos')
+  }
+  setCargando(false)
+ }, [categoria, marca, categoriaGrupo, grupos])
 
  const seleccionarGama = useCallback((gamaNombre) => {
   setGama(gamaNombre)
@@ -223,6 +294,9 @@ useEffect(() => {
   setMarca(null)
   setGama(null)
   setTipo(null)
+  setCategoriaGrupo(null)
+  setSubcategoria(null)
+  setGrupos({})
   setReferencia(null)
   setAiFicha(null)
   setHistorial([])
@@ -257,16 +331,24 @@ const breadcrumb = useMemo(() => {
   const b = []
   if (categoria) b.push(categoria)
   if (marca) b.push(marca)
-  if (gama) b.push(gama)
-  if (tipo) b.push(tipo)
+  if (categoriaGrupo) {
+    b.push(categoriaGrupo)
+    if (subcategoria) b.push(subcategoria)
+  } else {
+    if (gama) b.push(gama)
+    if (tipo) b.push(tipo)
+  }
   if (referencia) b.push({ label: referencia.ref_fabricante || referencia.ref, imagen: referencia.imagen })
   return b
-}, [categoria, marca, gama, tipo, referencia])
+}, [categoria, marca, gama, tipo, categoriaGrupo, subcategoria, referencia])
 
  return {
-  paso, categoria, marca, gama, tipo, referencia, historial, cargando, error,
+  paso, categoria, marca, gama, tipo, categoriaGrupo, subcategoria, grupos,
+  referencia, historial, cargando, error,
   categorias, marcasDisponibles, gamasDisponibles, tiposDisponibles, referenciasDisponibles,
-  breadcrumb, seleccionarCategoria, seleccionarMarca, seleccionarGama, seleccionarTipo,
+  breadcrumb,
+  seleccionarCategoria, seleccionarMarca, seleccionarCategoriaGrupo, seleccionarSubcategoria,
+  seleccionarGama, seleccionarTipo,
   seleccionarReferencia, volver, reiniciar, buscarReferenciaDirecta,
   aiFicha, aiCargando
  }
