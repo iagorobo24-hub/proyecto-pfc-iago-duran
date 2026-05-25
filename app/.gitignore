@@ -25,3 +25,4 @@ dist-ssr
 sync-limpio-v7.mjs
 .env
 .vercel
+.firecrawl/

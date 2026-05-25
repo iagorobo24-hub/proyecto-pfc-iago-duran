@@ -1,5 +1,6 @@
 import { useState, useEffect, useReducer, useMemo, useCallback } from "react";
 import React from "react";
+import { createPortal } from 'react-dom';
 import { useSearchParams } from 'react-router-dom'
 import { FULL_CATEGORY_INFO } from '../data/categoryMapping'
 import useMemoriaUsuario from '../hooks/useMemoriaUsuario'
@@ -132,6 +133,7 @@ export default function Presupuestos() {
 
   const exportarPDF = () => {
     setVista("pdf");
+    document.body.setAttribute('data-printing', 'pdf');
     setTimeout(() => window.print(), 300);
   };
 
@@ -489,12 +491,12 @@ export default function Presupuestos() {
     );
   }
 
-  /* ── PDF: Vista de impresión ── */
+  /* ── PDF: Vista de impresión (portaled fuera de AppShell) ── */
   if (vista === "pdf") {
-    return (
+    return createPortal(
       <div className={styles.pdfOverlay}>
         <div className={styles.pdfToolbar}>
-          <button className={styles.pdfToolbar__btn} onClick={() => setVista("editor")}>
+          <button className={styles.pdfToolbar__btn} onClick={() => { document.body.removeAttribute('data-printing'); setVista("editor"); }}>
             ← Volver al editor
           </button>
           <button className={styles.pdfToolbar__btn} onClick={() => window.print()}>
@@ -508,7 +510,8 @@ export default function Presupuestos() {
             numPresupuesto={numPresupuesto}
           />
         </div>
-      </div>
+      </div>,
+      document.body
     );
   }
 

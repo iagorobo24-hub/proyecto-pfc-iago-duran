@@ -634,16 +634,25 @@
 }
 
 @media print {
-  .pdfOverlay {
-    position: static;
-    background: white;
-  }
-
-  .pdfToolbar {
+  body[data-printing="pdf"] > #root {
     display: none !important;
   }
 
-  .pdfContainer {
+  body[data-printing="pdf"] {
+    background: white !important;
+  }
+
+  body[data-printing="pdf"] .pdfOverlay {
+    position: static;
+    background: white;
+    z-index: auto;
+  }
+
+  body[data-printing="pdf"] .pdfToolbar {
+    display: none !important;
+  }
+
+  body[data-printing="pdf"] .pdfContainer {
     padding: 0;
     background: white;
   }
