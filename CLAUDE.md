@@ -231,6 +231,54 @@ El proyecto usa un sistema de diseño personalizado con variables CSS. **Nunca u
 --radius-lg: 0.75rem;
 ```
 
+### ⚠️ Reglas del Modo Oscuro (CRÍTICO — No romper)
+
+El sistema de tema se activa con `data-theme="dark"` en `<html>`, manejado por `ThemeContext.jsx`. Las variables globales en `variables.css` se redefinen bajo `[data-theme="dark"]`.
+
+**Reglas obligatorias al escribir o modificar CSS:**
+
+1. **Nunca uses `var(--white)` para fondos** — Usa `var(--color-surface)` para fondos de cards/paneles y `var(--color-bg)` para fondos de página. `var(--white)` en dark mode se vuelve `#1c2439` (gris oscuro), pero `var(--color-surface)` ya está correctamente definido para ambos modos.
+
+2. **Nunca uses `background: white` ni colores CSS hardcodeados** — Siempre variables CSS semánticas.
+
+3. **Usa variables semánticas, no grises por número:**
+   | En vez de | Usar |
+   |-----------|------|
+   | `var(--gray-50)` | `var(--color-bg)` |
+   | `var(--gray-100)` | `var(--color-border)` |
+   | `var(--gray-200)` | `var(--color-border)` |
+   | `var(--gray-500)` | `var(--color-text-secondary)` |
+   | `var(--gray-700)` | `var(--color-text)` |
+   | `var(--gray-900)` | `var(--color-text)` |
+   | `var(--white)` | `var(--color-surface)` |
+   | `#fff` / `white` | `var(--color-surface)` |
+
+4. **Todo componente con `background` necesita selector dark** — Si un componente tiene fondo claro explícito, añadir su contraparte oscura:
+   ```css
+   :global([data-theme="dark"]) .miCard {
+     background: var(--color-surface);
+     border-color: var(--color-border);
+   }
+   ```
+
+5. **Selectores dark al final de cada CSS Module** — Colocar todos los `:global([data-theme="dark"])` al final del archivo, justo antes de los media queries.
+
+6. **El footer de la landing (SimpleFooter) es excepción** — Su fondo `--gray-900` invierte en dark mode (se vuelve claro). Usar fondo fijo `#070a10` en el selector dark para mantenerlo oscuro.
+
+7. **`var(--white)` solo para color de texto sobre fondo de color** — Es correcto usarlo para texto sobre `--brand-primary` (botones), avatar gradients, etc. Nunca para fondos.
+
+8. **Gradientes que usen `var(--white)` o `var(--blue-50)`** — Reemplazar con `var(--color-surface)` y `var(--blue-100)` respectivamente. En dark mode, `--blue-50` es casi negro.
+
+**Variables definidas en `variables.css` que sí cambian automáticamente:**
+- `--color-surface` → fondo cards (blanco/gris oscuro)
+- `--color-bg` → fondo página (gris claro/casi negro)
+- `--color-bg-alt` → fondo alternativo
+- `--color-border` → bordes
+- `--color-text` → texto principal
+- `--color-text-secondary` → texto secundario
+- `--color-text-tertiary` → texto terciario
+- `--color-brand` → color de acento (azul/ámbar)
+
 ### Patrones de Componentes
 
 - CSS Modules con estilos scoped (`import styles from './MiComponente.module.css'`)
@@ -281,7 +329,7 @@ Para DISTRIBUCION DE POTENCIA, el mapeo `subfamilia+tipo → (categoria, subcate
 ## Reglas Específicas
 
 1. **Sin referencias a terceros** — NO usar nombres de empresas o marcas específicas. Usar "la empresa", "industrial", "catálogo de productos"
-2. **Sistema de diseño** — Siempre usar variables CSS, no colores hardcodeados
+2. **Sistema de diseño** — Siempre usar variables CSS, no colores hardcodeados. Leer las reglas de modo oscuro en la sección ⚠️ Reglas del Modo Oscuro
 3. **Autenticación** — Todas las rutas excepto `/login` requieren `ProtectedRoute`. Auth via Supabase OAuth
 4. **IA** — Prompts genéricos sin referencias a empresas. OpenRouter API vía Vercel Functions
 5. **Testing** — Tests e2e con Playwright + tests unitarios con Vitest
@@ -324,6 +372,7 @@ node scripts/normalize-legrand.mjs
 - **Tipografía:** IBM Plex Sans
 - **Espaciado:** xs: 4px, sm: 8px, md: 16px, lg: 24px, xl: 32px
 - **Bordes:** sm: 4px, md: 8px, lg: 12px
+- **Modo oscuro predefinido:** No. El tema claro es el default. El usuario puede activar modo oscuro con el botón ☾ en la Topbar.
 
 ---
 
