@@ -23,6 +23,7 @@ import {
   ViewToggle
 } from '../components/ui/CircleLayout'
 import ProductTable, { supportsTableView } from '../components/ui/ProductTable'
+import { extractCurve, extractAmps } from '../hooks/useProductTable'
 import styles from './FichasTecnicas.module.css'
 
 /* Componente Skeleton con atributos de accesibilidad */
@@ -519,13 +520,31 @@ export default function FichasTecnicas() {
 
     /* Referencias */
     if (paso === 'referencias') {
-      const esMagnetotermico = supportsTableView(referenciasDisponibles)
+      const soportaVistaAgrupada = supportsTableView(referenciasDisponibles)
+      const esMagnetotermico = soportaVistaAgrupada && referenciasDisponibles.every(
+        p => (p.subfamilia || '').trim() === 'Interruptor Magnetotérmico'
+      )
       const filteredRefs = refFilter
         ? referenciasDisponibles.filter(p =>
             (p.ref_fabricante || '').toLowerCase().includes(refFilter.toLowerCase()) ||
             (p.name || '').toLowerCase().includes(refFilter.toLowerCase())
           )
         : referenciasDisponibles
+
+      const CURVE_ORDER = ['B', 'C', 'D', 'K', 'MA', 'TMD', 'Z']
+      const curveGroups = esMagnetotermico ? (() => {
+        const groups = {}
+        for (const p of referenciasDisponibles) {
+          const curve = extractCurve(p.name || '') || '?'
+          const amp = extractAmps(p.name || '')
+          if (!groups[curve]) groups[curve] = []
+          groups[curve].push({ ...p, _amp: amp })
+        }
+        for (const c of Object.keys(groups)) {
+          groups[c].sort((a, b) => a._amp - b._amp || (a.ref_fabricante || '').localeCompare(b.ref_fabricante || ''))
+        }
+        return groups
+      })() : null
 
       return (
         <div className={styles.circleLayout}>
@@ -536,7 +555,7 @@ export default function FichasTecnicas() {
             <h2 className={styles.sectionTitle}>{gamaComercial ? `${gamaComercial}${subgama ? ` — ${subgama}` : ''}` : subgama || (gama && tipo ? `${gama} — ${tipo}` : '')}</h2>
           </div>
 
-          {!esMagnetotermico && referenciasDisponibles.length > 12 && (
+          {referenciasDisponibles.length > 12 && (
             <div style={{ padding: '0 16px 8px', maxWidth: '400px' }}>
               <input
                 type="text"
@@ -554,6 +573,41 @@ export default function FichasTecnicas() {
           )}
 
           {esMagnetotermico ? (
+            <div className={styles.refsScroll}>
+              {Object.keys(curveGroups).length > 0 ? (
+                Object.keys(curveGroups)
+                  .sort((a, b) => {
+                    const ia = CURVE_ORDER.indexOf(a)
+                    const ib = CURVE_ORDER.indexOf(b)
+                    return (ia === -1 ? 99 : ia) - (ib === -1 ? 99 : ib)
+                  })
+                  .map(curve => (
+                    <div key={curve} className={styles.curveSection}>
+                      <div className={styles.curveHeader}>
+                        <span className={styles.curveBadge}>Curva {curve}</span>
+                        <span className={styles.curveCount}>{curveGroups[curve].length} ref.</span>
+                      </div>
+                      <div className={styles.curveGrid}>
+                        {curveGroups[curve].map(p => (
+                          <RefCard
+                            key={p.id}
+                            code={p.ref_fabricante}
+                            desc={p.name}
+                            price={p.precio}
+                            image={p.imagen}
+                            onClick={() => seleccionarReferencia(p)}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  ))
+              ) : (
+                <div style={{ textAlign: 'center', padding: '40px', color: 'var(--gray-400)' }}>
+                  No hay referencias disponibles
+                </div>
+              )}
+            </div>
+          ) : soportaVistaAgrupada ? (
             <ProductTable
               products={referenciasDisponibles}
               onSelect={seleccionarReferencia}
