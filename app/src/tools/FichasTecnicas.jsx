@@ -45,14 +45,14 @@ export default function FichasTecnicas() {
   const { toast } = useToast()
 
   const {
-    paso, categoria, marca, gama, tipo, categoriaGrupo, subcategoria, grupos,
+    paso, categoria, marca, subgama, gama, tipo, categoriaGrupo, subcategoria, grupos,
     referencia,
     categorias, marcasDisponibles, gamasDisponibles,
-    tiposDisponibles, referenciasDisponibles,
+    tiposDisponibles, subgamasDisponibles, referenciasDisponibles,
     breadcrumb, cargando: navegacionCargando, sugerenciasBusqueda, busquedaCargando,
     seleccionarCategoria, seleccionarMarca, seleccionarGama,
-    seleccionarTipo, seleccionarCategoriaGrupo, seleccionarSubcategoria,
-    seleccionarReferencia, volver, reiniciar,
+    seleccionarTipo, seleccionarCategoriaGrupo, seleccionarSubcategoria, seleccionarSubgama,
+    seleccionarReferencia, volver, irAPaso, reiniciar,
     buscarReferenciaDirecta, buscarPorNombre, aiFicha, aiCargando,
   } = useNavegacionFichas()
 
@@ -392,6 +392,39 @@ export default function FichasTecnicas() {
       )
     }
 
+    /* Subgamas */
+    if (paso === 'subgamas') {
+      return (
+        <div className={styles.circleLayout}>
+          <CircleCenter
+            icon={catInfo.icon}
+            title="Elige subgama"
+            desc={categoriaGrupo ? `${marca} › ${categoriaGrupo} › ${getEtiquetaSubcategoria(subcategoria)}` : `${marca} › ${gama} › ${tipo}`}
+          />
+          <div className={styles.orbitRows} role="list" aria-label="Subgamas disponibles">
+            {subgamasDisponibles.length > 0 ? (
+              subgamasDisponibles.map(sg => (
+                <OrbitRow key={sg} role="listitem">
+                  <button
+                    className={styles.tipoCard}
+                    onClick={() => seleccionarSubgama(sg)}
+                    aria-label={`Seleccionar subgama ${sg}`}
+                  >
+                    <span className={styles.tipoCard__name}>{sg}</span>
+                    <span className={styles.tipoCard__arrow} aria-hidden="true">›</span>
+                  </button>
+                </OrbitRow>
+              ))
+            ) : (
+              <OrbitRow>
+                <p style={{ color: 'var(--gray-600)', fontSize: '0.875rem' }}>Cargando subgamas...</p>
+              </OrbitRow>
+            )}
+          </div>
+        </div>
+      )
+    }
+
     /* Gamas */
     if (paso === 'gamas') {
       return (
@@ -467,7 +500,7 @@ export default function FichasTecnicas() {
             <span className={`${styles.label} ${styles['label--brand']}`}>
               {filteredRefs.length} / {referenciasDisponibles.length} referencias
             </span>
-            <h2 className={styles.sectionTitle}>{gama} — {tipo}</h2>
+            <h2 className={styles.sectionTitle}>{subgama || (gama && tipo ? `${gama} — ${tipo}` : '')}</h2>
           </div>
 
           {!esMagnetotermico && referenciasDisponibles.length > 12 && (
@@ -688,7 +721,7 @@ export default function FichasTecnicas() {
                 return {
                   label: isReferencia ? referencia.ref_fabricante || referencia.ref : label,
                   image: isReferencia ? referencia.imagen : image,
-                  onClick: i < breadcrumb.length - 1 ? volver : undefined,
+                  onClick: i < breadcrumb.length - 1 ? () => irAPaso(i) : undefined,
                   current: isLast,
                 }
               }),

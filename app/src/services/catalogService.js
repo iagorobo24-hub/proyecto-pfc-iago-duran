@@ -276,9 +276,9 @@ export async function getTiposPorGamaMarcaYFamilia(gama, marca, familia) {
 /**
  * Obtiene los productos filtrados
  */
-export async function getProductosPorFiltro(familia, marca, gama, tipo) {
+export async function getProductosPorFiltro(familia, marca, gama, tipo, subgama) {
   try {
-    console.log(`📋 Cargando productos: ${familia} > ${marca} > ${gama} > ${tipo}`);
+    console.log(`📋 Cargando productos: ${familia} > ${marca} > ${gama} > ${tipo}${subgama ? ` > ${subgama}` : ''}`);
     
     const marcasMap = await cargarMarcas();
     let brandId = null;
@@ -291,13 +291,16 @@ export async function getProductosPorFiltro(familia, marca, gama, tipo) {
     
     let query = supabase
       .from('products')
-      .select('id, ref_fabricante, name, imagen, marca, familia, subfamilia, tipo, precio, Gama, pdf_url')
+      .select('id, ref_fabricante, name, imagen, marca, familia, subfamilia, tipo, precio, Gama, Subgama, pdf_url')
       .eq('familia', familia)
       .eq('subfamilia', gama)
       .eq('tipo', tipo)
     
     if (brandId) {
       query = query.eq('brand_id', brandId);
+    }
+    if (subgama) {
+      query = query.eq('Subgama', subgama);
     }
     
     const { data, error } = await query;
@@ -311,6 +314,42 @@ export async function getProductosPorFiltro(familia, marca, gama, tipo) {
     return (data || []).map(p => validateProduct(p));
   } catch (error) {
     console.error('❌ Error getProductosPorFiltro:', error);
+    return [];
+  }
+}
+
+/**
+ * Obtiene Subgamas únicos para una marca + familia en modo legacy (gama + tipo)
+ */
+export async function getSubgamasPorFiltro(familia, marca, gama, tipo) {
+  try {
+    const marcasMap = await cargarMarcas();
+    let brandId = null;
+    for (const [id, name] of marcasMap.entries()) {
+      if (name.trim() === marca.trim()) { brandId = id; break; }
+    }
+    if (!brandId) return [];
+
+    let query = supabase
+      .from('products')
+      .select('Subgama')
+      .eq('familia', familia)
+      .eq('subfamilia', gama)
+      .eq('tipo', tipo)
+      .eq('brand_id', brandId)
+      .not('Subgama', 'is', null)
+      .limit(5000);
+
+    const { data, error } = await query;
+    if (error) {
+      console.error('❌ Error getSubgamasPorFiltro:', error);
+      return [];
+    }
+
+    const unique = [...new Set(data?.map(p => p.Subgama?.trim()).filter(Boolean))];
+    return unique.sort();
+  } catch (error) {
+    console.error('❌ Error getSubgamasPorFiltro:', error);
     return [];
   }
 }
@@ -361,7 +400,48 @@ export async function getSubfamiliasConTipos(marca, familia) {
  * Obtiene productos filtrados por varios pares (subfamilia, tipo) para DP
  * filtros = [{ subfamilia, tipo? }, ...]
  */
-export async function getProductosPorSubcategoria(familia, marca, filtros) {
+export async function getProductosPorSubcategoria(familia, marca, filtros, subgama) {
+  try {
+    const marcasMap = await cargarMarcas();
+    let brandId = null;
+    for (const [id, name] of marcasMap.entries()) {
+      if (name.trim() === marca.trim()) { brandId = id; break; }
+    }
+    if (!brandId) return [];
+
+    const conditions = filtros.map(f => {
+      if (f.tipo) return `and(subfamilia.eq.${f.subfamilia},tipo.eq.${f.tipo})`;
+      return `subfamilia.eq.${f.subfamilia}`;
+    });
+
+    let query = supabase
+      .from('products')
+      .select('id, ref_fabricante, name, imagen, marca, familia, subfamilia, tipo, precio, Gama, Subgama, pdf_url')
+      .eq('familia', familia)
+      .eq('brand_id', brandId)
+      .or(conditions.join(','));
+
+    if (subgama) {
+      query = query.eq('Subgama', subgama);
+    }
+
+    const { data, error } = await query;
+    if (error) {
+      console.error('❌ Error getProductosPorSubcategoria:', error);
+      return [];
+    }
+    return (data || []).map(p => validateProduct(p));
+  } catch (error) {
+    console.error('❌ Error getProductosPorSubcategoria:', error);
+    return [];
+  }
+}
+
+/**
+ * Obtiene Subgamas únicos para una marca + familia en DP mode (subcategoria)
+ * filtros = [{ subfamilia, tipo? }, ...]
+ */
+export async function getSubgamasPorSubcategoria(familia, marca, filtros) {
   try {
     const marcasMap = await cargarMarcas();
     let brandId = null;
@@ -377,18 +457,22 @@ export async function getProductosPorSubcategoria(familia, marca, filtros) {
 
     const { data, error } = await supabase
       .from('products')
-      .select('id, ref_fabricante, name, imagen, marca, familia, subfamilia, tipo, precio, Gama, pdf_url')
+      .select('Subgama')
       .eq('familia', familia)
       .eq('brand_id', brandId)
-      .or(conditions.join(','));
+      .not('Subgama', 'is', null)
+      .or(conditions.join(','))
+      .limit(5000);
 
     if (error) {
-      console.error('❌ Error getProductosPorSubcategoria:', error);
+      console.error('❌ Error getSubgamasPorSubcategoria:', error);
       return [];
     }
-    return (data || []).map(p => validateProduct(p));
+
+    const unique = [...new Set(data?.map(p => p.Subgama?.trim()).filter(Boolean))];
+    return unique.sort();
   } catch (error) {
-    console.error('❌ Error getProductosPorSubcategoria:', error);
+    console.error('❌ Error getSubgamasPorSubcategoria:', error);
     return [];
   }
 }
@@ -470,7 +554,9 @@ export default {
   getTiposPorGamaMarcaYFamilia,
   getSubfamiliasConTipos,
   getProductosPorSubcategoria,
+  getSubgamasPorSubcategoria,
   getProductosPorFiltro,
+  getSubgamasPorFiltro,
   getProductoPorRef,
   buscarProductos,
   buscarProductosConLimite,

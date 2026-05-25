@@ -22,6 +22,64 @@ function construirGrupos(subfamiliasConTipos) {
   return grupos
 }
 
+function clearStatesAfter(paso, setters) {
+  switch(paso) {
+    case 'categorias':
+      setters.setMarca(null)
+      setters.setGama(null)
+      setters.setTipo(null)
+      setters.setCategoriaGrupo(null)
+      setters.setSubcategoria(null)
+      setters.setSubgama(null)
+      setters.setSubgamasDisponibles([])
+      setters.setReferencia(null)
+      setters.setReferenciasDisponibles([])
+      setters.setGrupos({})
+      break
+    case 'marcas':
+      setters.setGama(null)
+      setters.setTipo(null)
+      setters.setCategoriaGrupo(null)
+      setters.setSubcategoria(null)
+      setters.setSubgama(null)
+      setters.setSubgamasDisponibles([])
+      setters.setReferencia(null)
+      setters.setReferenciasDisponibles([])
+      setters.setGrupos({})
+      break
+    case 'categorias_grupo':
+      setters.setSubcategoria(null)
+      setters.setSubgama(null)
+      setters.setSubgamasDisponibles([])
+      setters.setReferencia(null)
+      setters.setReferenciasDisponibles([])
+      break
+    case 'subcategorias':
+      setters.setSubgama(null)
+      setters.setSubgamasDisponibles([])
+      setters.setReferencia(null)
+      setters.setReferenciasDisponibles([])
+      break
+    case 'gamas':
+      setters.setTipo(null)
+      setters.setSubgama(null)
+      setters.setSubgamasDisponibles([])
+      setters.setReferencia(null)
+      setters.setReferenciasDisponibles([])
+      break
+    case 'tipos':
+      setters.setSubgama(null)
+      setters.setSubgamasDisponibles([])
+      setters.setReferencia(null)
+      setters.setReferenciasDisponibles([])
+      break
+    case 'subgamas':
+      setters.setReferencia(null)
+      setters.setReferenciasDisponibles([])
+      break
+  }
+}
+
 export default function useNavegacionFichas() {
  const { toast } = useToast()
  const memoria = useMemoriaUsuario()
@@ -30,6 +88,7 @@ export default function useNavegacionFichas() {
  const [categorias, setCategorias] = useState([])
  const [categoria, setCategoria] = useState(null)
  const [marca, setMarca] = useState(null)
+ const [subgama, setSubgama] = useState(null)
  const [gama, setGama] = useState(null)
  const [tipo, setTipo] = useState(null)
  const [referencia, setReferencia] = useState(null)
@@ -41,6 +100,7 @@ export default function useNavegacionFichas() {
  const [marcasDisponibles, setMarcasDisponibles] = useState([])
  const [gamasDisponibles, setGamasDisponibles] = useState([])
  const [tiposDisponibles, setTiposDisponibles] = useState([])
+ const [subgamasDisponibles, setSubgamasDisponibles] = useState([])
  const [referenciasDisponibles, setReferenciasDisponibles] = useState([])
  const [cargando, setCargando] = useState(false)
  const [error, setError] = useState(null)
@@ -143,6 +203,8 @@ useEffect(() => {
       setGrupos(g)
       setCategoriaGrupo(null)
       setSubcategoria(null)
+      setSubgama(null)
+      setSubgamasDisponibles([])
       setGamasDisponibles([])
       setTiposDisponibles([])
       setPaso('categorias_grupo')
@@ -182,7 +244,7 @@ useEffect(() => {
   load()
  }, [categoria, marca, gama])
 
- useEffect(() => {
+  useEffect(() => {
   if (!categoria || !marca || !gama || !tipo) return;
   async function load() {
    setCargando(true)
@@ -199,6 +261,45 @@ useEffect(() => {
   }
   load()
  }, [categoria, marca, gama, tipo])
+
+ useEffect(() => {
+  if (paso !== 'subgamas') return
+  if (!categoria || !marca) return
+
+  async function load() {
+   setCargando(true)
+   setError(null)
+   try {
+    let subgamas = []
+    if (categoriaGrupo && subcategoria) {
+      const filtros = grupos[categoriaGrupo]?.subcategorias[subcategoria]
+      if (filtros) subgamas = await catalogService.getSubgamasPorSubcategoria(categoria, marca, filtros)
+    } else if (gama && tipo) {
+      subgamas = await catalogService.getSubgamasPorFiltro(categoria, marca, gama, tipo)
+    }
+    setSubgamasDisponibles(subgamas)
+
+    if (subgamas.length === 0) {
+      let products = []
+      if (categoriaGrupo && subcategoria) {
+        const filtros = grupos[categoriaGrupo]?.subcategorias[subcategoria]
+        if (filtros) products = await catalogService.getProductosPorSubcategoria(categoria, marca, filtros)
+      } else if (gama && tipo) {
+        products = await catalogService.getProductosPorFiltro(categoria, marca, gama, tipo)
+      }
+      setReferenciasDisponibles(products)
+      setPaso('referencias')
+      setHistorial(prev => [...prev, { paso: 'subgamas' }])
+    }
+   } catch (err) {
+    console.error('Error cargando subgamas:', err)
+    setError('Error al cargar subgamas')
+   } finally {
+    setCargando(false)
+   }
+  }
+  load()
+ }, [paso, categoria, marca, categoriaGrupo, subcategoria, gama, tipo, grupos])
 
  const seleccionarCategoria = useCallback((catId) => {
   setCategoria(catId)
@@ -225,34 +326,32 @@ useEffect(() => {
  const seleccionarCategoriaGrupo = useCallback((cat) => {
   setCategoriaGrupo(cat)
   setSubcategoria(null)
+  setSubgama(null)
+  setSubgamasDisponibles([])
   setReferencia(null)
   setPaso('subcategorias')
   setHistorial(prev => [...prev, { paso: 'categorias_grupo' }])
  }, [])
 
- const seleccionarSubcategoria = useCallback(async (subcat) => {
+ const seleccionarSubcategoria = useCallback((subcat) => {
   if (!categoriaGrupo || !grupos[categoriaGrupo]) return
   const filtros = grupos[categoriaGrupo].subcategorias[subcat]
   if (!filtros) return
-  setCargando(true)
   setSubcategoria(subcat)
+  setSubgama(null)
+  setSubgamasDisponibles([])
   setReferencia(null)
+  setReferenciasDisponibles([])
   setError(null)
-  try {
-    const products = await catalogService.getProductosPorSubcategoria(categoria, marca, filtros)
-    setReferenciasDisponibles(products)
-    setPaso('referencias')
-    setHistorial(prev => [...prev, { paso: 'subcategorias' }])
-  } catch (err) {
-    console.error('Error cargando productos:', err)
-    setError('Error al cargar productos')
-  }
-  setCargando(false)
- }, [categoria, marca, categoriaGrupo, grupos])
+  setPaso('subgamas')
+  setHistorial(prev => [...prev, { paso: 'subcategorias' }])
+ }, [categoriaGrupo, grupos])
 
  const seleccionarGama = useCallback((gamaNombre) => {
   setGama(gamaNombre)
   setTipo(null)
+  setSubgama(null)
+  setSubgamasDisponibles([])
   setReferencia(null)
   setPaso('tipos')
   setHistorial(prev => [...prev, { paso: 'gamas' }])
@@ -260,10 +359,37 @@ useEffect(() => {
 
  const seleccionarTipo = useCallback((tipoNombre) => {
   setTipo(tipoNombre)
+  setSubgama(null)
+  setSubgamasDisponibles([])
   setReferencia(null)
-  setPaso('referencias')
+  setReferenciasDisponibles([])
+  setPaso('subgamas')
   setHistorial(prev => [...prev, { paso: 'tipos' }])
  }, [])
+
+ const seleccionarSubgama = useCallback(async (sg) => {
+  setSubgama(sg)
+  setReferencia(null)
+  setReferenciasDisponibles([])
+  setCargando(true)
+  setError(null)
+  try {
+    let products = []
+    if (categoriaGrupo && subcategoria) {
+      const filtros = grupos[categoriaGrupo]?.subcategorias[subcategoria]
+      if (filtros) products = await catalogService.getProductosPorSubcategoria(categoria, marca, filtros, sg)
+    } else if (gama && tipo) {
+      products = await catalogService.getProductosPorFiltro(categoria, marca, gama, tipo, sg)
+    }
+    setReferenciasDisponibles(products)
+    setPaso('referencias')
+    setHistorial(prev => [...prev, { paso: 'subgamas' }])
+  } catch (err) {
+    console.error('Error cargando productos por subgama:', err)
+    setError('Error al cargar productos')
+  }
+  setCargando(false)
+ }, [categoria, marca, categoriaGrupo, subcategoria, gama, tipo, grupos])
 
  const seleccionarReferencia = useCallback(async (producto) => {
    setCargando(true)
@@ -288,72 +414,94 @@ useEffect(() => {
    }
   }, [])
 
+ const clearAfter = useCallback((restoredPaso) => {
+  clearStatesAfter(restoredPaso, {
+    setMarca, setGama, setTipo, setCategoriaGrupo,
+    setSubcategoria, setSubgama, setSubgamasDisponibles,
+    setReferencia, setReferenciasDisponibles, setGrupos
+  })
+ }, [])
+
  const volver = useCallback(() => {
   const nuevoHistorial = [...historial]
   const anterior = nuevoHistorial.pop()
   if (!anterior) { reiniciar(); return; }
   setPaso(anterior.paso)
   setHistorial(nuevoHistorial)
- }, [historial])
+  clearAfter(anterior.paso)
+ }, [historial, clearAfter])
+
+ const irAPaso = useCallback((breadcrumbIndex) => {
+  if (breadcrumbIndex >= historial.length) return
+  const targetEntry = historial[breadcrumbIndex]
+  setPaso(targetEntry.paso)
+  setHistorial(historial.slice(0, breadcrumbIndex))
+  clearAfter(targetEntry.paso)
+ }, [historial, clearAfter])
 
  const reiniciar = useCallback(() => {
   setPaso('categorias')
   setCategoria(null)
   setMarca(null)
+  setSubgama(null)
   setGama(null)
   setTipo(null)
   setCategoriaGrupo(null)
   setSubcategoria(null)
+  setSubgamasDisponibles([])
   setGrupos({})
   setReferencia(null)
+  setReferenciasDisponibles([])
   setHistorial([])
  }, [])
 
- const buscarReferenciaDirecta = useCallback(async (refId) => {
-   if (!refId) return false
-   setCargando(true)
+  const buscarReferenciaDirecta = useCallback(async (refId) => {
+    if (!refId) return false
+    setCargando(true)
 
-   try {
-    const ficha = await catalogService.getProductoPorRef(refId)
-    if (ficha) {
-     setCategoria(ficha.familia || ficha.category)
-     setMarca(ficha.marca || ficha.brand)
-     setGama(ficha.gama || ficha.subfamily)
-     setTipo(ficha.tipo || ficha.type)
-     setReferencia(ficha)
-     setPaso('ficha')
-     setHistorial(prev => [...prev, { paso: 'categorias' }])
-     setCargando(false)
-     cargarInfoIA(ficha)
-     return true
-    }
-    const porNombre = await catalogService.buscarProductos(refId)
-    if (porNombre && porNombre.length > 0) {
-     if (porNombre.length === 1) {
-      const f = porNombre[0]
-      setCategoria(f.familia || f.category)
-      setMarca(f.marca || f.brand)
-      setGama(f.subfamilia || f.gama)
-      setTipo(f.tipo || f.type)
-      setReferencia(f)
+    try {
+     const ficha = await catalogService.getProductoPorRef(refId)
+     if (ficha) {
+      setCategoria(ficha.familia || ficha.category)
+      setMarca(ficha.marca || ficha.brand)
+      setSubgama(ficha.Subgama || null)
+      setGama(ficha.gama || ficha.subfamily)
+      setTipo(ficha.tipo || ficha.type)
+      setReferencia(ficha)
       setPaso('ficha')
       setHistorial(prev => [...prev, { paso: 'categorias' }])
       setCargando(false)
-      cargarInfoIA(f)
+      cargarInfoIA(ficha)
       return true
      }
-     setReferenciasDisponibles(porNombre)
-     setPaso('referencias')
-     setHistorial(prev => [...prev, { paso: 'categorias' }])
-     setCargando(false)
-     return true
+     const porNombre = await catalogService.buscarProductos(refId)
+     if (porNombre && porNombre.length > 0) {
+      if (porNombre.length === 1) {
+       const f = porNombre[0]
+       setCategoria(f.familia || f.category)
+       setMarca(f.marca || f.brand)
+       setSubgama(f.Subgama || null)
+       setGama(f.subfamilia || f.gama)
+       setTipo(f.tipo || f.type)
+       setReferencia(f)
+       setPaso('ficha')
+       setHistorial(prev => [...prev, { paso: 'categorias' }])
+       setCargando(false)
+       cargarInfoIA(f)
+       return true
+      }
+      setReferenciasDisponibles(porNombre)
+      setPaso('referencias')
+      setHistorial(prev => [...prev, { paso: 'categorias' }])
+      setCargando(false)
+      return true
+     }
+    } catch (e) {
+     console.error('Error en búsqueda directa:', e)
     }
-   } catch (e) {
-    console.error('Error en búsqueda directa:', e)
-   }
-   setCargando(false)
-   return false
-  }, [])
+    setCargando(false)
+    return false
+   }, [])
 
  const buscarPorNombre = useCallback(async (termino) => {
    if (!termino || termino.trim().length < 2) {
@@ -381,18 +529,19 @@ const breadcrumb = useMemo(() => {
     if (gama) b.push(gama)
     if (tipo) b.push(tipo)
   }
+  if (subgama) b.push(subgama)
   if (referencia) b.push({ label: referencia.ref_fabricante || referencia.ref, imagen: referencia.imagen })
   return b
-}, [categoria, marca, gama, tipo, categoriaGrupo, subcategoria, referencia])
+}, [categoria, marca, gama, tipo, categoriaGrupo, subcategoria, subgama, referencia])
 
  return {
-  paso, categoria, marca, gama, tipo, categoriaGrupo, subcategoria, grupos,
+  paso, categoria, marca, subgama, gama, tipo, categoriaGrupo, subcategoria, grupos,
   referencia, historial, cargando, error,
-  categorias, marcasDisponibles, gamasDisponibles, tiposDisponibles, referenciasDisponibles,
+  categorias, marcasDisponibles, gamasDisponibles, tiposDisponibles, subgamasDisponibles, referenciasDisponibles,
   breadcrumb, sugerenciasBusqueda, busquedaCargando,
   seleccionarCategoria, seleccionarMarca, seleccionarCategoriaGrupo, seleccionarSubcategoria,
-  seleccionarGama, seleccionarTipo,
-  seleccionarReferencia, volver, reiniciar, buscarReferenciaDirecta, buscarPorNombre,
+  seleccionarGama, seleccionarTipo, seleccionarSubgama,
+  seleccionarReferencia, volver, irAPaso, reiniciar, buscarReferenciaDirecta, buscarPorNombre,
   aiFicha, aiCargando
  }
 }
