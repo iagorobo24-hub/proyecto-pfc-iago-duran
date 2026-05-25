@@ -40,13 +40,16 @@ const GAMAS = {
   iprd_dc:  { name: 'Limitador sobretensiones iPRD-DC',   rangeId: '61710' }, // A9L DC surge
   rearmador:{ name: 'Rearmador diferencial',               rangeId: '61712' }, // A9C ARA reclosers
 
-  // RANGES NO ENCONTRADOS (Mayo 2026):
+  // RANGES NO DISPONIBLES en la API pública (Mayo 2026):
   // iC40 — No existe como rango separado (CT iC40 está dentro de iCT)
   // iAT — No encontrado; buscar en IDs > 100000
   // iPR iCR — No encontrado en rango IDs accesibles
   // Int.Seccionador — No encontrado; ID 61053 = M8650 power monitors
   // iDPN — No disponible en web española
-  // MTZ (63545), iARC (61532), iK60 (7569) — existen pero API devuelve 0
+  // MTZ (63545), iARC (61532) — existen pero API devuelve 0
+  //
+  // iK60 — Range ID real: 7557 (NO 7569). Bloqueado por Akamai WAF.
+  //        Usar scrape-schneider-ik60.mjs (generación de referencias).
 };
 
 const FAMILIA = 'DISTRIBUCION DE POTENCIA';
@@ -232,6 +235,12 @@ function extractGamaSubgama(name) {
   // iD (fallback)
   if (n.includes('ID ') || n.includes(' IID')) {
     return { Gama: 'iD', Subgama: 'iD' };
+  }
+  
+  // iK60 (check before returning null — IK60 might appear in names)
+  if (n.includes('IK60') || n.includes('IK 60') || n.includes('K60N') || n.includes('K60H')) {
+    if (n.includes('K60H') || n.includes('IK60H') || n.includes('IK 60H')) return { Gama: 'Acti 9 iK60', Subgama: 'iK60H' };
+    return { Gama: 'Acti 9 iK60', Subgama: 'iK60N' };
   }
   
   return { Gama: null, Subgama: null };

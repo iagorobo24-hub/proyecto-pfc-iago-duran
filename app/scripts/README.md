@@ -108,7 +108,9 @@ node scripts/scrape-schneider.mjs --gama=ic60 --max=20 --delay=500
 | `c60ul` | C60 UL CSA IEC | 1104 | CARRIL DIN |
 | `iprc` | iPRC - iPRI | 61709 | CARRIL DIN |
 
-> **Nota:** Las gamas `iDPN`, `MTZ` e `iARC` NO están disponibles en la web española de Schneider (Mayo 2026).
+> **Nota:** Las gamas `iDPN`, `MTZ` e `iARC` NO están disponibles en la web española de Schneider.
+> **iK60:** NO disponible en se.com/es/es (Range API bloqueada por Akamai).
+> Usar `scrape-schneider-ik60.mjs` (scraper alternativo con generación de referencias).
 
 ### Qué extrae de cada producto
 
@@ -281,11 +283,75 @@ node scripts/migrate-columns.mjs
 
 # 5. Verificar con el catálogo web (localhost:5173)
 ```
+---
+
+## 🕷️ scrape-schneider-ik60.mjs
+
+**Scraper específico para Acti9 iK60 (gama NO disponible en Range API pública).**
+
+### Problema
+
+La gama iK60 usa `rangeId = 7557` (NO 7569), pero el endpoint `/ranges/{id}/products` de se.com está bloqueado por Akamai WAF para este rango en todos los países. La web española no comercializa iK60.
+
+### Solución: Generación de referencias + APIs auxiliares
+
+El scraper genera las **180 referencias A9K** a partir del patrón estandarizado:
+
+```
+A9K[X][PP][AA]
+  X  = subgama: 0=iK60N (6kA), 1=iK60H (10kA)
+  PP = polo+curva: 11-14/16 (B) o 21-24/26 (C)
+  AA = amperaje: 06, 10, 16, 20, 25, 32, 40, 50, 63
+```
+
+Ejemplo: `A9K02116` → `X=0` (K60N), `PP=21` (1P/C), `AA=16` (16A)
+
+### Fuentes de datos
+
+| Dato | Origen | Funciona |
+|------|--------|----------|
+| Nombre | Generado del patrón A9K | ✅ Siempre |
+| PDF | `products-card/secondary` API (ES locale) | ✅ ~50% |
+| Imagen | `shop-sg.se.com` (Magento catalog) | ✅ ~100% |
+| Precio | No disponible | ❌ |
+
+### Referencias generadas
+
+| Subgama | kA | Poles | Ref. totales |
+|---------|----|-------|-------------|
+| iK60N | 6kA | 1P/2P/3P/4P + 1P+N | ~90 |
+| iK60H | 10kA | 1P/2P/3P/4P | ~90 |
+
+### Uso
+
+```bash
+# Todas las referencias
+node scripts/scrape-schneider-ik60.mjs
+
+# Dry-run (prueba sin guardar)
+node scripts/scrape-schneider-ik60.mjs --dry-run
+
+# Limitar cantidad (ej: 20)
+node scripts/scrape-schneider-ik60.mjs --max=20
+
+# Guardar lista de referencias como JSON
+node scripts/scrape-schneider-ik60.mjs --save-refs
+```
+
+### Clasificación automática
+
+| Campo | Valor |
+|-------|-------|
+| `familia` | DISTRIBUCION DE POTENCIA |
+| `subfamilia` | Interruptor Magnetotérmico |
+| `tipo` | CARRIL DIN |
+| `Gama` | Acti 9 iK60 |
+| `Subgama` | iK60N / iK60H |
+| `marca` | Schneider Electric |
 
 ---
 
 ## 🔄 Sincronización incremental
-
 El scraper **`checkRefExists(ref)`** antes de insertar, así que puedes ejecutar el mismo comando múltiples veces sin duplicados:
 
 - Productos ya existentes → se saltan (`⏭️`)
@@ -319,15 +385,20 @@ Esto permite sincronización incremental: ejecutar el scraper periódicamente pa
 
 ```
 app/scripts/
-├── README.md              ← Este archivo
-├── scrape-schneider.mjs  ← Scraper principal
-├── scrape-schneider.log  ← Log de ejecución (ignorado)
-├── scrape-schneider-report.json ← Último reporte
-├── migrate-columns.mjs   ← Migración de columnas
-├── fix-migration.mjs     ← Corrección de migración
-├── setup-schneider-brand.mjs ← Setup de marca
+├── README.md                       ← Este archivo
+├── scrape-schneider.mjs           ← Scraper principal (14 gamas)
+├── scrape-schneider-ik60.mjs      ← Scraper iK60 (generación refs)
+├── scrape-schneider.log           ← Log de ejecución (ignorado)
+├── scrape-schneider-report.json   ← Último reporte
+├── referencias-ik60.json          ← Lista generada de refs A9K
+├── migrate-columns.mjs            ← Migración de columnas
+├── fix-migration.mjs              ← Corrección de migración
+├── setup-schneider-brand.mjs      ← Setup de marca
+├── normalize-legrand.mjs          ← Normalizador Legrand
+├── normalize-taxonomy.mjs         ← Normalizador taxonomía DB
+├── fetch-legrand-images.mjs       ← Scraper imágenes Legrand (Firecrawl)
 └── lib/
-    └── supabase-sonex.js ← Cliente API Supabase
+    └── supabase-sonex.js          ← Cliente API Supabase
 ```
 
 ## ❌ Script eliminado: sync-catalog-enhanced.mjs

@@ -65,6 +65,8 @@ scraper-data/
 *progreso*.json
 *productos*.json
 *subfamilias*.json
+referencias-*.json
+*report.json
 
 # Binary docs (use markdown instead)
 *.docx

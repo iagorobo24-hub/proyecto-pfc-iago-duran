@@ -12,7 +12,7 @@
 .main {
   flex: 1;
   overflow-y: auto;
-  background: var(--white);
+  background: var(--color-surface);
 }
 
 .main__content {
@@ -55,8 +55,8 @@
 /* ── Form Card (perfil) ─ */
 .formCard {
   padding: var(--space-6);
-  background: var(--white);
-  border: 1.5px solid var(--gray-100);
+  background: var(--color-surface);
+  border: 1.5px solid var(--color-border);
   border-radius: var(--radius-xl);
   max-width: 500px;
   width: 100%;
@@ -81,8 +81,8 @@
   font-family: var(--font-body);
   font-size: var(--text-base);
   color: var(--gray-800);
-  background: var(--gray-50);
-  border: 1.5px solid var(--gray-100);
+  background: var(--color-bg);
+  border: 1.5px solid var(--color-border);
   border-radius: var(--radius-md);
   outline: none;
   transition: all 0.2s var(--ease-out);
@@ -102,8 +102,8 @@
   font-family: var(--font-body);
   font-size: var(--text-base);
   color: var(--gray-800);
-  background: var(--gray-50);
-  border: 1.5px solid var(--gray-100);
+  background: var(--color-bg);
+  border: 1.5px solid var(--color-border);
   border-radius: var(--radius-md);
   outline: none;
   transition: all 0.2s var(--ease-out);
@@ -164,8 +164,8 @@
   align-items: center;
   gap: var(--space-3);
   padding: var(--space-6) var(--space-5);
-  background: var(--white);
-  border: 1.5px solid var(--gray-100);
+  background: var(--color-surface);
+  border: 1.5px solid var(--color-border);
   border-radius: var(--radius-xl);
   cursor: pointer;
   transition: all 0.3s var(--ease-spring);
@@ -220,8 +220,8 @@
   align-items: center;
   justify-content: space-between;
   padding: var(--space-5) var(--space-6);
-  background: var(--white);
-  border: 1.5px solid var(--gray-100);
+  background: var(--color-surface);
+  border: 1.5px solid var(--color-border);
   border-radius: var(--radius-lg);
   cursor: pointer;
   transition: all 0.25s var(--ease-out);
@@ -250,7 +250,7 @@
 
 .pedidoCard__cliente {
   font-size: var(--text-sm);
-  color: var(--gray-500);
+  color: var(--color-text-secondary);
 }
 
 .pedidoCard__badge {
@@ -296,7 +296,7 @@
 /* ── Incidencia ─ */
 .incidenciaCard {
   padding: var(--space-6);
-  background: var(--white);
+  background: var(--color-surface);
   border: 1.5px solid var(--warning);
   border-radius: var(--radius-xl);
   max-width: 600px;
@@ -313,7 +313,7 @@
 
 .incidenciaCard__desc {
   font-size: var(--text-md);
-  color: var(--gray-500);
+  color: var(--color-text-secondary);
   line-height: 1.6;
   margin-bottom: var(--space-4);
 }
@@ -326,8 +326,8 @@
 
 .incidenciaCard__opcion {
   padding: var(--space-4) var(--space-5);
-  background: var(--gray-50);
-  border: 1.5px solid var(--gray-100);
+  background: var(--color-bg);
+  border: 1.5px solid var(--color-border);
   border-radius: var(--radius-md);
   cursor: pointer;
   text-align: left;
@@ -364,8 +364,8 @@
 /* ── Results ─ */
 .resultsCard {
   padding: var(--space-8);
-  background: var(--white);
-  border: 1.5px solid var(--gray-100);
+  background: var(--color-surface);
+  border: 1.5px solid var(--color-border);
   border-radius: var(--radius-xl);
   max-width: 600px;
   width: 100%;
@@ -469,3 +469,12 @@
 :global([data-theme="dark"]) .main {
   background: var(--color-bg);
 }
+:global([data-theme="dark"]) .ubicacionCard { background: var(--color-surface); border-color: var(--color-border); }
+:global([data-theme="dark"]) .ubicacionCard:hover { border-color: var(--color-brand-border); }
+:global([data-theme="dark"]) .panelCard { background: var(--color-surface); border-color: var(--color-border); }
+:global([data-theme="dark"]) .productoCard { background: var(--color-surface); border-color: var(--color-border); }
+:global([data-theme="dark"]) .resultsCard { background: var(--color-surface); border-color: var(--color-border); }
+:global([data-theme="dark"]) .incidenciaCard { background: var(--color-surface); border-color: var(--color-border); }
+:global([data-theme="dark"]) .incidenciaCard:hover { border-color: var(--color-brand-border); }
+:global([data-theme="dark"]) .pageTitle { color: var(--color-text); }
+:global([data-theme="dark"]) .pageSubtitle { color: var(--color-text-secondary); }

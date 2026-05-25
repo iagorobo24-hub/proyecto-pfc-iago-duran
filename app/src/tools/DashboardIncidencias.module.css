@@ -12,7 +12,7 @@
 .main {
   flex: 1;
   overflow-y: auto;
-  background: var(--white);
+  background: var(--color-surface);
 }
 
 .main__content {
@@ -35,8 +35,8 @@
 
 .kpiCard {
   padding: var(--space-5);
-  background: var(--white);
-  border: 1.5px solid var(--gray-100);
+  background: var(--color-surface);
+  border: 1.5px solid var(--color-border);
   border-radius: var(--radius-lg);
   text-align: center;
 }
@@ -95,8 +95,8 @@
   align-items: center;
   justify-content: space-between;
   padding: var(--space-5) var(--space-6);
-  background: var(--white);
-  border: 1.5px solid var(--gray-100);
+  background: var(--color-surface);
+  border: 1.5px solid var(--color-border);
   border-radius: var(--radius-lg);
   cursor: pointer;
   transition: all 0.25s var(--ease-out);
@@ -145,8 +145,8 @@
   min-width: 200px;
   max-width: 320px;
   padding: var(--space-4) var(--space-5);
-  background: var(--gray-50);
-  border: 1.5px solid var(--gray-100);
+  background: var(--color-bg);
+  border: 1.5px solid var(--color-border);
   border-radius: var(--radius-lg);
 }
 
@@ -170,9 +170,9 @@
   padding: 6px 14px;
   font-size: var(--text-sm);
   font-weight: 500;
-  color: var(--gray-500);
-  background: var(--gray-50);
-  border: 1.5px solid var(--gray-100);
+  color: var(--color-text-secondary);
+  background: var(--color-bg);
+  border: 1.5px solid var(--color-border);
   border-radius: var(--radius-full);
   cursor: pointer;
   transition: all 0.2s var(--ease-out);
@@ -198,9 +198,9 @@
   padding: var(--space-2) var(--space-4);
   font-size: var(--text-sm);
   font-weight: 500;
-  color: var(--gray-500);
-  background: var(--gray-50);
-  border: 1.5px solid var(--gray-100);
+  color: var(--color-text-secondary);
+  background: var(--color-bg);
+  border: 1.5px solid var(--color-border);
   border-radius: var(--radius-md);
   cursor: pointer;
   transition: all 0.2s var(--ease-out);
@@ -224,8 +224,8 @@
 /* ── Detalle ─ */
 .detalleCard {
   padding: var(--space-6);
-  background: var(--white);
-  border: 1.5px solid var(--gray-100);
+  background: var(--color-surface);
+  border: 1.5px solid var(--color-border);
   border-radius: var(--radius-xl);
   width: 100%;
 }
@@ -328,8 +328,8 @@
 /* ── Form nueva incidencia ─ */
 .formCard {
   padding: var(--space-6);
-  background: var(--white);
-  border: 1.5px solid var(--gray-100);
+  background: var(--color-surface);
+  border: 1.5px solid var(--color-border);
   border-radius: var(--radius-xl);
   max-width: 500px;
   margin: 0 auto;
@@ -353,8 +353,8 @@
   font-family: var(--font-body);
   font-size: var(--text-base);
   color: var(--gray-800);
-  background: var(--gray-50);
-  border: 1.5px solid var(--gray-100);
+  background: var(--color-bg);
+  border: 1.5px solid var(--color-border);
   border-radius: var(--radius-md);
   outline: none;
   transition: all 0.2s var(--ease-out);
@@ -371,8 +371,8 @@
   font-family: var(--font-body);
   font-size: var(--text-base);
   color: var(--gray-800);
-  background: var(--gray-50);
-  border: 1.5px solid var(--gray-100);
+  background: var(--color-bg);
+  border: 1.5px solid var(--color-border);
   border-radius: var(--radius-md);
   outline: none;
   resize: vertical;
@@ -391,8 +391,8 @@
   font-family: var(--font-body);
   font-size: var(--text-base);
   color: var(--gray-800);
-  background: var(--gray-50);
-  border: 1.5px solid var(--gray-100);
+  background: var(--color-bg);
+  border: 1.5px solid var(--color-border);
   border-radius: var(--radius-md);
   outline: none;
   cursor: pointer;
@@ -401,10 +401,10 @@
 /* ── View Toggle ─ */
 .viewToggle {
   display: inline-flex;
-  background: var(--gray-50);
+  background: var(--color-bg);
   border-radius: var(--radius-sm);
   padding: 2px;
-  border: 1px solid var(--gray-100);
+  border: 1px solid var(--color-border);
   margin-bottom: var(--space-6);
 }
 
@@ -421,7 +421,7 @@
 }
 
 .viewToggle__btn--active {
-  background: var(--white);
+  background: var(--color-surface);
   color: var(--gray-800);
   font-weight: 600;
   box-shadow: var(--shadow-xs);
@@ -441,7 +441,7 @@
 .emptyState__icon {
   width: 64px; height: 64px;
   display: flex; align-items: center; justify-content: center;
-  background: var(--gray-50); border-radius: var(--radius-lg);
+  background: var(--color-bg); border-radius: var(--radius-lg);
   color: var(--gray-300); margin-bottom: var(--space-4);
 }
 
@@ -538,3 +538,15 @@
 :global([data-theme="dark"]) .main {
   background: var(--color-bg);
 }
+:global([data-theme="dark"]) .kpiCard { background: var(--color-surface); border-color: var(--color-border); }
+:global([data-theme="dark"]) .incidenciaItem { background: var(--color-surface); border-color: var(--color-border); }
+:global([data-theme="dark"]) .incidenciaItem:hover { border-color: var(--color-brand-border); }
+:global([data-theme="dark"]) .detalleCard { background: var(--color-surface); border-color: var(--color-border); }
+:global([data-theme="dark"]) .formCard { background: var(--color-surface); border-color: var(--color-border); }
+:global([data-theme="dark"]) .diagnosticoCard { background: var(--color-surface); border-color: var(--color-border); }
+:global([data-theme="dark"]) .viewToggle { background: var(--color-bg); border-color: var(--color-border); }
+:global([data-theme="dark"]) .viewToggle__btn--active { background: var(--color-surface); color: var(--color-text); }
+:global([data-theme="dark"]) .pageTitle { color: var(--color-text); }
+:global([data-theme="dark"]) .pageSubtitle { color: var(--color-text-secondary); }
+:global([data-theme="dark"]) .kpiCard__title { color: var(--color-text-secondary); }
+:global([data-theme="dark"]) .kpiCard__value { color: var(--color-text); }
