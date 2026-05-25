@@ -189,7 +189,7 @@
   align-items: center;
   flex-wrap: wrap;
   gap: var(--space-3);
-  box-shadow: 0 -4px 12px rgba(0,0,0,0.04);
+  box-shadow: 0 -4px 12px rgba(0,0,0,0.06);
   border-radius: var(--radius-lg) var(--radius-lg) 0 0;
 }
 
@@ -579,7 +579,7 @@
 
 .gestionItem__delete:hover {
   opacity: 1;
-  background: var(--red-50);
+  background: var(--color-error-soft);
 }
 
 /* ── PDF View ─ */

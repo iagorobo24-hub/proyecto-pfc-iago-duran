@@ -15,7 +15,7 @@
 
 .categoria {
   font-size: 10px;
-  color: var(--color-text-2);
+  color: var(--color-text-secondary);
   letter-spacing: 1.5px;
   text-transform: uppercase;
   margin-bottom: 4px;
@@ -38,7 +38,7 @@
 
 .metaItem {
   font-size: 11px;
-  color: var(--color-text-2);
+  color: var(--color-text-secondary);
 }
 
 .precio {
@@ -68,7 +68,7 @@
 .entregaValor {
   font-size: 12px;
   font-weight: 600;
-  color: var(--color-text-2);
+  color: var(--color-text-secondary);
 }
 
 /* Descripción */

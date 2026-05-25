@@ -653,6 +653,55 @@
   }
 }
 
+:global([data-theme="dark"]) .circleCenter__icon {
+  background: var(--color-brand-soft);
+}
+
+:global([data-theme="dark"]) .circleCenter__tip {
+  background: var(--color-brand-soft);
+  border-color: var(--color-brand-border);
+}
+
+:global([data-theme="dark"]) .circleCenter__tipText {
+  color: var(--color-text-secondary);
+}
+
+:global([data-theme="dark"]) .brandCard {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+}
+
+:global([data-theme="dark"]) .brandCard__name {
+  color: var(--color-text-secondary);
+}
+
+:global([data-theme="dark"]) .refCard {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+}
+
+:global([data-theme="dark"]) .refCard__code {
+  color: var(--color-text);
+}
+
+:global([data-theme="dark"]) .gamaCard {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+}
+
+:global([data-theme="dark"]) .gamaCard__name {
+  color: var(--color-text);
+}
+
+:global([data-theme="dark"]) .circleCenter {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+}
+
+:global([data-theme="dark"]) .brandCard__logoFallback {
+  color: var(--color-on-brand);
+}
+
 /* ── Dark mode overrides ── */
 :global([data-theme="dark"]) .viewToggle {
   background: var(--color-bg-alt);

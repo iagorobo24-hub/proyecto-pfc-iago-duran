@@ -38,7 +38,7 @@
 
 .secondary {
   background: var(--color-shell);
-  color: #ffffff;
+  color: var(--color-on-brand);
 }
 .secondary:hover:not(:disabled) {
   opacity: 0.85;
@@ -55,7 +55,7 @@
 
 .danger {
   background: var(--color-error);
-  color: #ffffff;
+  color: var(--color-on-brand);
   font-weight: 600;
 }
 .danger:hover:not(:disabled) {
