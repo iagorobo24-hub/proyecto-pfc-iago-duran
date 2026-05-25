@@ -27,10 +27,12 @@ function clearStatesAfter(paso, setters) {
     case 'categorias':
       setters.setMarca(null)
       setters.setGama(null)
+      setters.setGamaComercial(null)
       setters.setTipo(null)
       setters.setCategoriaGrupo(null)
       setters.setSubcategoria(null)
       setters.setSubgama(null)
+      setters.setGamasComercialesDisponibles([])
       setters.setSubgamasDisponibles([])
       setters.setReferencia(null)
       setters.setReferenciasDisponibles([])
@@ -38,10 +40,12 @@ function clearStatesAfter(paso, setters) {
       break
     case 'marcas':
       setters.setGama(null)
+      setters.setGamaComercial(null)
       setters.setTipo(null)
       setters.setCategoriaGrupo(null)
       setters.setSubcategoria(null)
       setters.setSubgama(null)
+      setters.setGamasComercialesDisponibles([])
       setters.setSubgamasDisponibles([])
       setters.setReferencia(null)
       setters.setReferenciasDisponibles([])
@@ -49,25 +53,39 @@ function clearStatesAfter(paso, setters) {
       break
     case 'categorias_grupo':
       setters.setSubcategoria(null)
+      setters.setGamaComercial(null)
       setters.setSubgama(null)
+      setters.setGamasComercialesDisponibles([])
       setters.setSubgamasDisponibles([])
       setters.setReferencia(null)
       setters.setReferenciasDisponibles([])
       break
     case 'subcategorias':
+      setters.setGamaComercial(null)
       setters.setSubgama(null)
+      setters.setGamasComercialesDisponibles([])
       setters.setSubgamasDisponibles([])
       setters.setReferencia(null)
       setters.setReferenciasDisponibles([])
       break
     case 'gamas':
       setters.setTipo(null)
+      setters.setGamaComercial(null)
       setters.setSubgama(null)
+      setters.setGamasComercialesDisponibles([])
       setters.setSubgamasDisponibles([])
       setters.setReferencia(null)
       setters.setReferenciasDisponibles([])
       break
     case 'tipos':
+      setters.setGamaComercial(null)
+      setters.setSubgama(null)
+      setters.setGamasComercialesDisponibles([])
+      setters.setSubgamasDisponibles([])
+      setters.setReferencia(null)
+      setters.setReferenciasDisponibles([])
+      break
+    case 'gamas_comerciales':
       setters.setSubgama(null)
       setters.setSubgamasDisponibles([])
       setters.setReferencia(null)
@@ -89,6 +107,7 @@ export default function useNavegacionFichas() {
  const [categoria, setCategoria] = useState(null)
  const [marca, setMarca] = useState(null)
  const [subgama, setSubgama] = useState(null)
+ const [gamaComercial, setGamaComercial] = useState(null)
  const [gama, setGama] = useState(null)
  const [tipo, setTipo] = useState(null)
  const [referencia, setReferencia] = useState(null)
@@ -100,6 +119,7 @@ export default function useNavegacionFichas() {
  const [marcasDisponibles, setMarcasDisponibles] = useState([])
  const [gamasDisponibles, setGamasDisponibles] = useState([])
  const [tiposDisponibles, setTiposDisponibles] = useState([])
+ const [gamasComercialesDisponibles, setGamasComercialesDisponibles] = useState([])
  const [subgamasDisponibles, setSubgamasDisponibles] = useState([])
  const [referenciasDisponibles, setReferenciasDisponibles] = useState([])
  const [cargando, setCargando] = useState(false)
@@ -203,6 +223,8 @@ useEffect(() => {
       setGrupos(g)
       setCategoriaGrupo(null)
       setSubcategoria(null)
+      setGamaComercial(null)
+      setGamasComercialesDisponibles([])
       setSubgama(null)
       setSubgamasDisponibles([])
       setGamasDisponibles([])
@@ -261,6 +283,59 @@ useEffect(() => {
   }
   load()
  }, [categoria, marca, gama, tipo])
+
+ useEffect(() => {
+  if (paso !== 'gamas_comerciales') return
+  if (!categoria || !marca) return
+
+  async function load() {
+   setCargando(true)
+   setError(null)
+   try {
+    let gamas = []
+    if (categoriaGrupo && subcategoria) {
+      const filtros = grupos[categoriaGrupo]?.subcategorias[subcategoria]
+      if (filtros) gamas = await catalogService.getGamasPorSubcategoria(categoria, marca, filtros)
+    } else if (gama && tipo) {
+      gamas = await catalogService.getGamasPorFiltro(categoria, marca, gama, tipo)
+    }
+    setGamasComercialesDisponibles(gamas)
+
+    if (gamas.length === 0) {
+      let subgamas = []
+      if (categoriaGrupo && subcategoria) {
+        const filtros = grupos[categoriaGrupo]?.subcategorias[subcategoria]
+        if (filtros) subgamas = await catalogService.getSubgamasPorSubcategoria(categoria, marca, filtros)
+      } else if (gama && tipo) {
+        subgamas = await catalogService.getSubgamasPorFiltro(categoria, marca, gama, tipo)
+      }
+      setSubgamasDisponibles(subgamas)
+
+      if (subgamas.length === 0) {
+        let products = []
+        if (categoriaGrupo && subcategoria) {
+          const filtros = grupos[categoriaGrupo]?.subcategorias[subcategoria]
+          if (filtros) products = await catalogService.getProductosPorSubcategoria(categoria, marca, filtros)
+        } else if (gama && tipo) {
+          products = await catalogService.getProductosPorFiltro(categoria, marca, gama, tipo)
+        }
+        setReferenciasDisponibles(products)
+        setPaso('referencias')
+        setHistorial(prev => [...prev, { paso: 'gamas_comerciales' }])
+      } else {
+        setPaso('subgamas')
+        setHistorial(prev => [...prev, { paso: 'gamas_comerciales' }])
+      }
+    }
+   } catch (err) {
+    console.error('Error cargando gamas:', err)
+    setError('Error al cargar gamas')
+   } finally {
+    setCargando(false)
+   }
+  }
+  load()
+ }, [paso, categoria, marca, categoriaGrupo, subcategoria, gama, tipo, grupos])
 
  useEffect(() => {
   if (paso !== 'subgamas') return
@@ -338,12 +413,14 @@ useEffect(() => {
   const filtros = grupos[categoriaGrupo].subcategorias[subcat]
   if (!filtros) return
   setSubcategoria(subcat)
+  setGamaComercial(null)
+  setGamasComercialesDisponibles([])
   setSubgama(null)
   setSubgamasDisponibles([])
   setReferencia(null)
   setReferenciasDisponibles([])
   setError(null)
-  setPaso('subgamas')
+  setPaso('gamas_comerciales')
   setHistorial(prev => [...prev, { paso: 'subcategorias' }])
  }, [categoriaGrupo, grupos])
 
@@ -359,12 +436,25 @@ useEffect(() => {
 
  const seleccionarTipo = useCallback((tipoNombre) => {
   setTipo(tipoNombre)
+  setGamaComercial(null)
+  setGamasComercialesDisponibles([])
   setSubgama(null)
   setSubgamasDisponibles([])
   setReferencia(null)
   setReferenciasDisponibles([])
-  setPaso('subgamas')
+  setPaso('gamas_comerciales')
   setHistorial(prev => [...prev, { paso: 'tipos' }])
+ }, [])
+
+ const seleccionarGamaComercial = useCallback((gc) => {
+  setGamaComercial(gc)
+  setSubgama(null)
+  setSubgamasDisponibles([])
+  setReferencia(null)
+  setReferenciasDisponibles([])
+  setError(null)
+  setPaso('subgamas')
+  setHistorial(prev => [...prev, { paso: 'gamas_comerciales' }])
  }, [])
 
  const seleccionarSubgama = useCallback(async (sg) => {
@@ -377,9 +467,9 @@ useEffect(() => {
     let products = []
     if (categoriaGrupo && subcategoria) {
       const filtros = grupos[categoriaGrupo]?.subcategorias[subcategoria]
-      if (filtros) products = await catalogService.getProductosPorSubcategoria(categoria, marca, filtros, sg)
+      if (filtros) products = await catalogService.getProductosPorSubcategoria(categoria, marca, filtros, gamaComercial, sg)
     } else if (gama && tipo) {
-      products = await catalogService.getProductosPorFiltro(categoria, marca, gama, tipo, sg)
+      products = await catalogService.getProductosPorFiltro(categoria, marca, gama, tipo, gamaComercial, sg)
     }
     setReferenciasDisponibles(products)
     setPaso('referencias')
@@ -389,7 +479,7 @@ useEffect(() => {
     setError('Error al cargar productos')
   }
   setCargando(false)
- }, [categoria, marca, categoriaGrupo, subcategoria, gama, tipo, grupos])
+ }, [categoria, marca, categoriaGrupo, subcategoria, gama, tipo, gamaComercial, grupos])
 
  const seleccionarReferencia = useCallback(async (producto) => {
    setCargando(true)
@@ -416,8 +506,9 @@ useEffect(() => {
 
  const clearAfter = useCallback((restoredPaso) => {
   clearStatesAfter(restoredPaso, {
-    setMarca, setGama, setTipo, setCategoriaGrupo,
+    setMarca, setGama, setGamaComercial, setTipo, setCategoriaGrupo,
     setSubcategoria, setSubgama, setSubgamasDisponibles,
+    setGamasComercialesDisponibles,
     setReferencia, setReferenciasDisponibles, setGrupos
   })
  }, [])
@@ -443,11 +534,13 @@ useEffect(() => {
   setPaso('categorias')
   setCategoria(null)
   setMarca(null)
+  setGamaComercial(null)
   setSubgama(null)
   setGama(null)
   setTipo(null)
   setCategoriaGrupo(null)
   setSubcategoria(null)
+  setGamasComercialesDisponibles([])
   setSubgamasDisponibles([])
   setGrupos({})
   setReferencia(null)
@@ -464,6 +557,7 @@ useEffect(() => {
      if (ficha) {
       setCategoria(ficha.familia || ficha.category)
       setMarca(ficha.marca || ficha.brand)
+      setGamaComercial(ficha.Gama || null)
       setSubgama(ficha.Subgama || null)
       setGama(ficha.gama || ficha.subfamily)
       setTipo(ficha.tipo || ficha.type)
@@ -480,6 +574,7 @@ useEffect(() => {
        const f = porNombre[0]
        setCategoria(f.familia || f.category)
        setMarca(f.marca || f.brand)
+       setGamaComercial(f.Gama || null)
        setSubgama(f.Subgama || null)
        setGama(f.subfamilia || f.gama)
        setTipo(f.tipo || f.type)
@@ -529,18 +624,19 @@ const breadcrumb = useMemo(() => {
     if (gama) b.push(gama)
     if (tipo) b.push(tipo)
   }
+  if (gamaComercial) b.push(gamaComercial)
   if (subgama) b.push(subgama)
   if (referencia) b.push({ label: referencia.ref_fabricante || referencia.ref, imagen: referencia.imagen })
   return b
-}, [categoria, marca, gama, tipo, categoriaGrupo, subcategoria, subgama, referencia])
+ }, [categoria, marca, gamaComercial, gama, tipo, categoriaGrupo, subcategoria, subgama, referencia])
 
  return {
-  paso, categoria, marca, subgama, gama, tipo, categoriaGrupo, subcategoria, grupos,
+  paso, categoria, marca, gamaComercial, subgama, gama, tipo, categoriaGrupo, subcategoria, grupos,
   referencia, historial, cargando, error,
-  categorias, marcasDisponibles, gamasDisponibles, tiposDisponibles, subgamasDisponibles, referenciasDisponibles,
+  categorias, marcasDisponibles, gamasDisponibles, tiposDisponibles, gamasComercialesDisponibles, subgamasDisponibles, referenciasDisponibles,
   breadcrumb, sugerenciasBusqueda, busquedaCargando,
   seleccionarCategoria, seleccionarMarca, seleccionarCategoriaGrupo, seleccionarSubcategoria,
-  seleccionarGama, seleccionarTipo, seleccionarSubgama,
+  seleccionarGama, seleccionarTipo, seleccionarGamaComercial, seleccionarSubgama,
   seleccionarReferencia, volver, irAPaso, reiniciar, buscarReferenciaDirecta, buscarPorNombre,
   aiFicha, aiCargando
  }

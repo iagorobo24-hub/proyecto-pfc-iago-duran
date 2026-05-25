@@ -276,9 +276,9 @@ export async function getTiposPorGamaMarcaYFamilia(gama, marca, familia) {
 /**
  * Obtiene los productos filtrados
  */
-export async function getProductosPorFiltro(familia, marca, gama, tipo, subgama) {
+export async function getProductosPorFiltro(familia, marca, gama, tipo, gamaComercial, subgama) {
   try {
-    console.log(`📋 Cargando productos: ${familia} > ${marca} > ${gama} > ${tipo}${subgama ? ` > ${subgama}` : ''}`);
+    console.log(`📋 Cargando productos: ${familia} > ${marca} > ${gama} > ${tipo}${gamaComercial ? ` > ${gamaComercial}` : ''}${subgama ? ` > ${subgama}` : ''}`);
     
     const marcasMap = await cargarMarcas();
     let brandId = null;
@@ -299,6 +299,9 @@ export async function getProductosPorFiltro(familia, marca, gama, tipo, subgama)
     if (brandId) {
       query = query.eq('brand_id', brandId);
     }
+    if (gamaComercial) {
+      query = query.eq('Gama', gamaComercial);
+    }
     if (subgama) {
       query = query.eq('Subgama', subgama);
     }
@@ -314,6 +317,41 @@ export async function getProductosPorFiltro(familia, marca, gama, tipo, subgama)
     return (data || []).map(p => validateProduct(p));
   } catch (error) {
     console.error('❌ Error getProductosPorFiltro:', error);
+    return [];
+  }
+}
+
+/**
+ * Obtiene Gamas únicos para una marca + familia en modo legacy (gama + tipo)
+ */
+export async function getGamasPorFiltro(familia, marca, gamaSubfamilia, tipo) {
+  try {
+    const marcasMap = await cargarMarcas();
+    let brandId = null;
+    for (const [id, name] of marcasMap.entries()) {
+      if (name.trim() === marca.trim()) { brandId = id; break; }
+    }
+    if (!brandId) return [];
+
+    const { data, error } = await supabase
+      .from('products')
+      .select('Gama')
+      .eq('familia', familia)
+      .eq('brand_id', brandId)
+      .eq('subfamilia', gamaSubfamilia)
+      .eq('tipo', tipo)
+      .not('Gama', 'is', null)
+      .limit(5000);
+
+    if (error) {
+      console.error('❌ Error getGamasPorFiltro:', error);
+      return [];
+    }
+
+    const unique = [...new Set(data?.map(p => p.Gama?.trim()).filter(Boolean))];
+    return unique.sort();
+  } catch (error) {
+    console.error('❌ Error getGamasPorFiltro:', error);
     return [];
   }
 }
@@ -400,7 +438,7 @@ export async function getSubfamiliasConTipos(marca, familia) {
  * Obtiene productos filtrados por varios pares (subfamilia, tipo) para DP
  * filtros = [{ subfamilia, tipo? }, ...]
  */
-export async function getProductosPorSubcategoria(familia, marca, filtros, subgama) {
+export async function getProductosPorSubcategoria(familia, marca, filtros, gamaComercial, subgama) {
   try {
     const marcasMap = await cargarMarcas();
     let brandId = null;
@@ -421,6 +459,9 @@ export async function getProductosPorSubcategoria(familia, marca, filtros, subga
       .eq('brand_id', brandId)
       .or(conditions.join(','));
 
+    if (gamaComercial) {
+      query = query.eq('Gama', gamaComercial);
+    }
     if (subgama) {
       query = query.eq('Subgama', subgama);
     }
@@ -473,6 +514,46 @@ export async function getSubgamasPorSubcategoria(familia, marca, filtros) {
     return unique.sort();
   } catch (error) {
     console.error('❌ Error getSubgamasPorSubcategoria:', error);
+    return [];
+  }
+}
+
+/**
+ * Obtiene Gamas únicos para una marca + familia en DP mode (subcategoria)
+ * filtros = [{ subfamilia, tipo? }, ...]
+ */
+export async function getGamasPorSubcategoria(familia, marca, filtros) {
+  try {
+    const marcasMap = await cargarMarcas();
+    let brandId = null;
+    for (const [id, name] of marcasMap.entries()) {
+      if (name.trim() === marca.trim()) { brandId = id; break; }
+    }
+    if (!brandId) return [];
+
+    const conditions = filtros.map(f => {
+      if (f.tipo) return `and(subfamilia.eq.${f.subfamilia},tipo.eq.${f.tipo})`;
+      return `subfamilia.eq.${f.subfamilia}`;
+    });
+
+    const { data, error } = await supabase
+      .from('products')
+      .select('Gama')
+      .eq('familia', familia)
+      .eq('brand_id', brandId)
+      .not('Gama', 'is', null)
+      .or(conditions.join(','))
+      .limit(5000);
+
+    if (error) {
+      console.error('❌ Error getGamasPorSubcategoria:', error);
+      return [];
+    }
+
+    const unique = [...new Set(data?.map(p => p.Gama?.trim()).filter(Boolean))];
+    return unique.sort();
+  } catch (error) {
+    console.error('❌ Error getGamasPorSubcategoria:', error);
     return [];
   }
 }
@@ -554,8 +635,10 @@ export default {
   getTiposPorGamaMarcaYFamilia,
   getSubfamiliasConTipos,
   getProductosPorSubcategoria,
+  getGamasPorSubcategoria,
   getSubgamasPorSubcategoria,
   getProductosPorFiltro,
+  getGamasPorFiltro,
   getSubgamasPorFiltro,
   getProductoPorRef,
   buscarProductos,
