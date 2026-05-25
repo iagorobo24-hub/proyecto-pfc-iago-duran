@@ -359,7 +359,7 @@ export async function getGamasPorFiltro(familia, marca, gamaSubfamilia, tipo) {
 /**
  * Obtiene Subgamas únicos para una marca + familia en modo legacy (gama + tipo)
  */
-export async function getSubgamasPorFiltro(familia, marca, gama, tipo) {
+export async function getSubgamasPorFiltro(familia, marca, gamaSubfamilia, tipo, gamaComercial) {
   try {
     const marcasMap = await cargarMarcas();
     let brandId = null;
@@ -372,11 +372,15 @@ export async function getSubgamasPorFiltro(familia, marca, gama, tipo) {
       .from('products')
       .select('Subgama')
       .eq('familia', familia)
-      .eq('subfamilia', gama)
+      .eq('subfamilia', gamaSubfamilia)
       .eq('tipo', tipo)
       .eq('brand_id', brandId)
       .not('Subgama', 'is', null)
       .limit(5000);
+
+    if (gamaComercial) {
+      query = query.eq('Gama', gamaComercial);
+    }
 
     const { data, error } = await query;
     if (error) {
@@ -482,7 +486,7 @@ export async function getProductosPorSubcategoria(familia, marca, filtros, gamaC
  * Obtiene Subgamas únicos para una marca + familia en DP mode (subcategoria)
  * filtros = [{ subfamilia, tipo? }, ...]
  */
-export async function getSubgamasPorSubcategoria(familia, marca, filtros) {
+export async function getSubgamasPorSubcategoria(familia, marca, filtros, gamaComercial) {
   try {
     const marcasMap = await cargarMarcas();
     let brandId = null;
@@ -496,7 +500,7 @@ export async function getSubgamasPorSubcategoria(familia, marca, filtros) {
       return `subfamilia.eq.${f.subfamilia}`;
     });
 
-    const { data, error } = await supabase
+    let query = supabase
       .from('products')
       .select('Subgama')
       .eq('familia', familia)
@@ -505,6 +509,11 @@ export async function getSubgamasPorSubcategoria(familia, marca, filtros) {
       .or(conditions.join(','))
       .limit(5000);
 
+    if (gamaComercial) {
+      query = query.eq('Gama', gamaComercial);
+    }
+
+    const { data, error } = await query;
     if (error) {
       console.error('❌ Error getSubgamasPorSubcategoria:', error);
       return [];

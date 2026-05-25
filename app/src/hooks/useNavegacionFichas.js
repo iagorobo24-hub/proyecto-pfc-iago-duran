@@ -321,10 +321,8 @@ useEffect(() => {
         }
         setReferenciasDisponibles(products)
         setPaso('referencias')
-        setHistorial(prev => [...prev, { paso: 'gamas_comerciales' }])
       } else {
         setPaso('subgamas')
-        setHistorial(prev => [...prev, { paso: 'gamas_comerciales' }])
       }
     }
    } catch (err) {
@@ -348,9 +346,9 @@ useEffect(() => {
     let subgamas = []
     if (categoriaGrupo && subcategoria) {
       const filtros = grupos[categoriaGrupo]?.subcategorias[subcategoria]
-      if (filtros) subgamas = await catalogService.getSubgamasPorSubcategoria(categoria, marca, filtros)
+      if (filtros) subgamas = await catalogService.getSubgamasPorSubcategoria(categoria, marca, filtros, gamaComercial)
     } else if (gama && tipo) {
-      subgamas = await catalogService.getSubgamasPorFiltro(categoria, marca, gama, tipo)
+      subgamas = await catalogService.getSubgamasPorFiltro(categoria, marca, gama, tipo, gamaComercial)
     }
     setSubgamasDisponibles(subgamas)
 
@@ -358,13 +356,12 @@ useEffect(() => {
       let products = []
       if (categoriaGrupo && subcategoria) {
         const filtros = grupos[categoriaGrupo]?.subcategorias[subcategoria]
-        if (filtros) products = await catalogService.getProductosPorSubcategoria(categoria, marca, filtros)
+        if (filtros) products = await catalogService.getProductosPorSubcategoria(categoria, marca, filtros, gamaComercial)
       } else if (gama && tipo) {
-        products = await catalogService.getProductosPorFiltro(categoria, marca, gama, tipo)
+        products = await catalogService.getProductosPorFiltro(categoria, marca, gama, tipo, gamaComercial)
       }
       setReferenciasDisponibles(products)
       setPaso('referencias')
-      setHistorial(prev => [...prev, { paso: 'subgamas' }])
     }
    } catch (err) {
     console.error('Error cargando subgamas:', err)
@@ -374,7 +371,7 @@ useEffect(() => {
    }
   }
   load()
- }, [paso, categoria, marca, categoriaGrupo, subcategoria, gama, tipo, grupos])
+ }, [paso, categoria, marca, categoriaGrupo, subcategoria, gama, tipo, gamaComercial, grupos])
 
  const seleccionarCategoria = useCallback((catId) => {
   setCategoria(catId)
