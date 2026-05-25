@@ -657,3 +657,7 @@
     background: white;
   }
 }
+
+:global([data-theme="dark"]) .main {
+  background: var(--color-bg);
+}

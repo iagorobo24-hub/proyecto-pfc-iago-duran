@@ -465,3 +465,7 @@
     padding: var(--space-4);
   }
 }
+
+:global([data-theme="dark"]) .main {
+  background: var(--color-bg);
+}

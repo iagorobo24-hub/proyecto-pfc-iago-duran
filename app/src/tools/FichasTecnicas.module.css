@@ -588,3 +588,11 @@
   text-align: center;
   padding: var(--space-1);
 }
+
+:global([data-theme="dark"]) .main {
+  background: var(--color-bg);
+}
+
+:global([data-theme="dark"]) .sidebar {
+  background: var(--color-surface);
+}
