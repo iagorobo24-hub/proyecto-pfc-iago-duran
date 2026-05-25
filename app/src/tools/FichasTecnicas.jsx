@@ -23,7 +23,7 @@ import {
   ViewToggle
 } from '../components/ui/CircleLayout'
 import ProductTable, { supportsTableView } from '../components/ui/ProductTable'
-import { extractCurve, extractAmps } from '../hooks/useProductTable'
+import { extractCurve, extractAmps, extractPoles, POLA_ORDER } from '../hooks/useProductTable'
 import styles from './FichasTecnicas.module.css'
 
 /* Componente Skeleton con atributos de accesibilidad */
@@ -537,11 +537,18 @@ export default function FichasTecnicas() {
         for (const p of referenciasDisponibles) {
           const curve = extractCurve(p.name || '') || '?'
           const amp = extractAmps(p.name || '')
-          if (!groups[curve]) groups[curve] = []
-          groups[curve].push({ ...p, _amp: amp })
+          const poles = extractPoles(p.name || '') || '?'
+          if (!groups[curve]) groups[curve] = { _poles: {} }
+          if (!groups[curve]._poles[poles]) groups[curve]._poles[poles] = []
+          groups[curve]._poles[poles].push({ ...p, _amp: amp })
         }
         for (const c of Object.keys(groups)) {
-          groups[c].sort((a, b) => a._amp - b._amp || (a.ref_fabricante || '').localeCompare(b.ref_fabricante || ''))
+          for (const pole of Object.keys(groups[c]._poles)) {
+            groups[c]._poles[pole].sort(
+              (a, b) => a._amp - b._amp || (a.ref_fabricante || '').localeCompare(b.ref_fabricante || '')
+            )
+          }
+          groups[c]._count = Object.values(groups[c]._poles).reduce((sum, arr) => sum + arr.length, 0)
         }
         return groups
       })() : null
@@ -581,26 +588,44 @@ export default function FichasTecnicas() {
                     const ib = CURVE_ORDER.indexOf(b)
                     return (ia === -1 ? 99 : ia) - (ib === -1 ? 99 : ib)
                   })
-                  .map(curve => (
-                    <div key={curve} className={styles.curveSection}>
-                      <div className={styles.curveHeader}>
-                        <span className={styles.curveBadge}>Curva {curve}</span>
-                        <span className={styles.curveCount}>{curveGroups[curve].length} ref.</span>
-                      </div>
-                      <div className={styles.curveGrid}>
-                        {curveGroups[curve].map(p => (
-                          <RefCard
-                            key={p.id}
-                            code={p.ref_fabricante}
-                            desc={p.name}
-                            price={p.precio}
-                            image={p.imagen}
-                            onClick={() => seleccionarReferencia(p)}
-                          />
+                  .map(curve => {
+                    const curveData = curveGroups[curve]
+                    const poleKeys = Object.keys(curveData._poles).sort(
+                      (a, b) => {
+                        const ia = POLA_ORDER.indexOf(a)
+                        const ib = POLA_ORDER.indexOf(b)
+                        return (ia === -1 ? 99 : ia) - (ib === -1 ? 99 : ib)
+                      }
+                    )
+                    return (
+                      <div key={curve} className={styles.curveSection}>
+                        <div className={styles.curveHeader}>
+                          <span className={styles.curveBadge}>Curva {curve}</span>
+                          <span className={styles.curveCount}>{curveData._count} ref.</span>
+                        </div>
+                        {poleKeys.map(poles => (
+                          <div key={poles} className={styles.poleSection}>
+                            <div className={styles.poleHeader}>
+                              <span className={styles.poleBadge}>{poles}</span>
+                              <span className={styles.poleCount}>{curveData._poles[poles].length} ref.</span>
+                            </div>
+                            <div className={styles.curveGrid}>
+                              {curveData._poles[poles].map(p => (
+                                <RefCard
+                                  key={p.id}
+                                  code={p.ref_fabricante}
+                                  desc={p.name}
+                                  price={p.precio}
+                                  image={p.imagen}
+                                  onClick={() => seleccionarReferencia(p)}
+                                />
+                              ))}
+                            </div>
+                          </div>
                         ))}
                       </div>
-                    </div>
-                  ))
+                    )
+                  })
               ) : (
                 <div style={{ textAlign: 'center', padding: '40px', color: 'var(--gray-400)' }}>
                   No hay referencias disponibles
