@@ -80,6 +80,13 @@
   color: var(--gray-700);
 }
 
+:global([data-theme="dark"]) .title { color: var(--color-text); }
+:global([data-theme="dark"]) .subtitle { color: var(--color-text-secondary); }
+:global([data-theme="dark"]) .badge { background: var(--color-brand-soft); color: var(--color-brand); }
+:global([data-theme="dark"]) .techBadge { background: var(--color-bg); border-color: var(--color-border); }
+:global([data-theme="dark"]) .techBadge:hover { background: var(--color-surface); border-color: var(--color-brand-border); }
+:global([data-theme="dark"]) .techName { color: var(--color-text); }
+
 @media (max-width: 640px) {
   .section {
     padding: var(--space-12) var(--space-4);

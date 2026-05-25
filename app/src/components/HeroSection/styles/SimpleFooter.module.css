@@ -6,6 +6,13 @@
   position: relative;
 }
 
+:global([data-theme="dark"]) .footer { background: #070a10; border-top-color: var(--color-border); }
+:global([data-theme="dark"]) .left .brand:last-child { color: var(--color-text-secondary); }
+:global([data-theme="dark"]) .text { color: var(--color-text-secondary); }
+:global([data-theme="dark"]) .text strong { color: var(--color-text); }
+:global([data-theme="dark"]) .stack { color: var(--color-text-tertiary); }
+:global([data-theme="dark"]) .socialLink { color: var(--color-text-tertiary); }
+
 .container {
   max-width: var(--main-max);
   margin: 0 auto;

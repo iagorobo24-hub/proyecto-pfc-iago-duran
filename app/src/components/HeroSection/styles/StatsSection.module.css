@@ -37,6 +37,10 @@
   width: 100%;
 }
 
+:global([data-theme="dark"]) .statsWrapper { border-top-color: var(--color-border); }
+:global([data-theme="dark"]) .statValue { color: var(--color-brand); }
+:global([data-theme="dark"]) .statLabel { color: var(--color-text-secondary); }
+
 @media (max-width: 1024px) {
   .statsWrapper {
     gap: var(--space-6);

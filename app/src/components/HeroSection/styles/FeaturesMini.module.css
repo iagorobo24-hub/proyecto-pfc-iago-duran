@@ -62,6 +62,12 @@
   }
 }
 
+:global([data-theme="dark"]) .featureCard { background: var(--color-bg); border-color: var(--color-border); }
+:global([data-theme="dark"]) .featureCard:hover { background: var(--color-surface); border-color: var(--color-brand-border); }
+:global([data-theme="dark"]) .iconWrapper { background: var(--color-surface); }
+:global([data-theme="dark"]) .featureTitle { color: var(--color-text); }
+:global([data-theme="dark"]) .featureDesc { color: var(--color-text-secondary); }
+
 @media (max-width: 640px) {
   .featuresWrapper {
     grid-template-columns: 1fr;

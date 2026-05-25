@@ -116,9 +116,9 @@ export default function Topbar() {
           onClick={toggle}
           title={dark ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
           className={`${styles.themeToggle} ${dark ? styles.themeToggleDark : ''}`}
+          aria-label="Cambiar modo oscuro/claro"
         >
-          <span style={{ fontSize: '12px' }}>{dark ? '☀' : '◐'}</span>
-          <span>{dark ? 'Claro' : 'Oscuro'}</span>
+          <span className={styles.themeToggleIcon}>{dark ? '☀️' : '☾'}</span>
         </button>
 
         {/* Usuario autenticado o botón de login */}
