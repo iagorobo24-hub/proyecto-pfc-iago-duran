@@ -21,7 +21,7 @@ test.describe('Verificación Visual Completa', () => {
     await page.goto(`${BASE}/app/fichas`, { waitUntil: 'networkidle' })
     await page.waitForTimeout(2000)
 
-    await expect(page.getByPlaceholder('Buscar referencia...')).toBeVisible({ timeout: 10000 })
+    await expect(page.getByPlaceholder('Buscar referencia o nombre...')).toBeVisible({ timeout: 10000 })
     await expect(page.getByText('Categorías')).toBeVisible()
   })
 

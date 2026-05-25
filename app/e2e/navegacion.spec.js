@@ -15,7 +15,7 @@ test.describe('Navegación entre Herramientas', () => {
     await page.goto(`${BASE}/app/fichas`, { waitUntil: 'domcontentloaded' })
     await page.waitForTimeout(1000)
     await expect(page).toHaveURL(/\/app\/fichas/)
-    await expect(page.getByRole('heading', { name: 'Fichas Técnicas' })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Fichas Técnicas' }).first()).toBeVisible()
 
     await page.getByRole('link', { name: 'Sonex' }).click()
     await page.waitForTimeout(500)
