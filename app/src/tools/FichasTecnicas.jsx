@@ -67,6 +67,7 @@ export default function FichasTecnicas() {
   } = useFichasTecnicas()
 
   const [modo, setModo] = React.useState('navegacion')
+  const [refFilter, setRefFilter] = React.useState('')
   const debounceRef = React.useRef(null)
 
   React.useEffect(() => {
@@ -453,13 +454,38 @@ export default function FichasTecnicas() {
     /* Referencias */
     if (paso === 'referencias') {
       const esMagnetotermico = supportsTableView(referenciasDisponibles)
+      const filteredRefs = refFilter
+        ? referenciasDisponibles.filter(p =>
+            (p.ref_fabricante || '').toLowerCase().includes(refFilter.toLowerCase()) ||
+            (p.name || '').toLowerCase().includes(refFilter.toLowerCase())
+          )
+        : referenciasDisponibles
 
       return (
         <div className={styles.circleLayout}>
           <div className={styles.sectionHeader} role="status">
-            <span className={`${styles.label} ${styles['label--brand']}`}>{referenciasDisponibles.length} referencias</span>
+            <span className={`${styles.label} ${styles['label--brand']}`}>
+              {filteredRefs.length} / {referenciasDisponibles.length} referencias
+            </span>
             <h2 className={styles.sectionTitle}>{gama} — {tipo}</h2>
           </div>
+
+          {!esMagnetotermico && referenciasDisponibles.length > 12 && (
+            <div style={{ padding: '0 16px 8px', maxWidth: '400px' }}>
+              <input
+                type="text"
+                placeholder="Filtrar referencias..."
+                value={refFilter}
+                onChange={e => setRefFilter(e.target.value)}
+                style={{
+                  width: '100%', padding: '8px 12px', borderRadius: '8px',
+                  border: '1.5px solid var(--gray-200)', fontSize: '0.875rem',
+                  outline: 'none', boxSizing: 'border-box',
+                }}
+                aria-label="Filtrar referencias por código o nombre"
+              />
+            </div>
+          )}
 
           {esMagnetotermico ? (
             <ProductTable
@@ -467,11 +493,11 @@ export default function FichasTecnicas() {
               onSelect={seleccionarReferencia}
             />
           ) : (
-            <div className={styles.orbitRows} role="list" aria-label="Listado de referencias">
-              {referenciasDisponibles.length > 0 ? (
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '12px', width: '100%', padding: '12px' }}>
-                  {referenciasDisponibles.map(p => (
-                    <div key={p.id} role="listitem">
+            <div className={styles.refsScroll}>
+              {filteredRefs.length > 0 ? (
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: '16px', width: '100%', padding: '16px' }}>
+                  {filteredRefs.map(p => (
+                    <div key={p.id} role="listitem" style={{ display: 'flex' }}>
                       <RefCard
                         code={p.ref_fabricante}
                         desc={p.name}
@@ -483,9 +509,9 @@ export default function FichasTecnicas() {
                   ))}
                 </div>
               ) : (
-                <OrbitRow>
-                  <p style={{ color: 'var(--gray-600)', fontSize: '0.875rem' }}>No hay referencias.</p>
-                </OrbitRow>
+                <div style={{ textAlign: 'center', padding: '40px', color: 'var(--gray-400)' }}>
+                  {refFilter ? 'No hay referencias que coincidan con el filtro' : 'No hay referencias disponibles'}
+                </div>
               )}
             </div>
           )}

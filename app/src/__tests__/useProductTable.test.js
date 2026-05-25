@@ -230,8 +230,8 @@ describe('groupByTable', () => {
     ]
     const table = groupByTable(products)
     expect(table).not.toBeNull()
-    expect(table.curvas).toContain('C')
-    expect(table.curvas).toContain('B')
+    expect(table.sections.some(s => s.curve === 'C')).toBe(true)
+    expect(table.sections.some(s => s.curve === 'B')).toBe(true)
     expect(table.polas).toContain('1P')
     expect(table.polas).toContain('2P')
     expect(table.calibres).toContain(10)
@@ -246,7 +246,7 @@ describe('groupByTable', () => {
     ]
     const table = groupByTable(products)
     expect(table).not.toBeNull()
-    expect(table.curvas).toContain('C')
+    expect(table.sections.some(s => s.curve === 'C')).toBe(true)
     expect(table.polas).toContain('1P+N')
     expect(table.polas).toContain('2P')
     expect(table.calibres).toContain(10)
@@ -261,7 +261,7 @@ describe('groupByTable', () => {
     ]
     const table = groupByTable(products)
     expect(table).not.toBeNull()
-    expect(table.curvas).toContain('C')
+    expect(table.sections.some(s => s.curve === 'C')).toBe(true)
     expect(table.polas).toContain('1P')
     expect(table.calibres).toContain(6)
     expect(table.calibres).toContain(10)
@@ -274,7 +274,7 @@ describe('groupByTable', () => {
     ]
     const table = groupByTable(products)
     expect(table).not.toBeNull()
-    expect(table.curvas).toContain('C')
+    expect(table.sections.some(s => s.curve === 'C')).toBe(true)
     expect(table.polas).toContain('1P+N')
     expect(table.calibres).toContain(20)
     expect(table.calibres).toContain(25)
@@ -287,7 +287,7 @@ describe('groupByTable', () => {
     ]
     const table = groupByTable(products)
     expect(table).not.toBeNull()
-    expect(table.curvas).toContain('D')
+    expect(table.sections.some(s => s.curve === 'D')).toBe(true)
     expect(table.polas).toContain('4P')
     expect(table.polas).toContain('3P')
     expect(table.calibres).toContain(10)
@@ -300,7 +300,7 @@ describe('groupByTable', () => {
     ]
     const table = groupByTable(products)
     expect(table).not.toBeNull()
-    expect(table.curvas).toContain('TMD')
+    expect(table.sections.some(s => s.curve === 'TMD')).toBe(true)
   })
 })
 
@@ -413,7 +413,7 @@ describe('groupByTable — Diferenciales', () => {
     expect(table.polas).toEqual(['2P', '4P'])
     expect(table.calibres).toContain(25)
     expect(table.calibres).toContain(40)
-    expect(table.curvas).toBeUndefined()
+    expect(table.sensitivities).toBeDefined()
   })
 
   it('groups Legrand RX³ Diferencial products', () => {
@@ -445,6 +445,6 @@ describe('groupByTable — Diferenciales', () => {
     const table = groupByTable(products)
     expect(table).not.toBeNull()
     expect(table.type).toBe('magnetotermico')
-    expect(table.curvas).toContain('C')
+    expect(table.sections.some(s => s.curve === 'C')).toBe(true)
   })
 })

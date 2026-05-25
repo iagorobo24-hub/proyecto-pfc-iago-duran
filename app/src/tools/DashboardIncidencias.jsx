@@ -4,7 +4,7 @@ import Button from '../components/ui/Button';
 import Input from '../components/ui/Input';
 import { useToast } from '../contexts/ToastContext';
 import { Label, TipCard } from '../components/ui/CircleLayout';
-import { safeGetJSON, safeSetJSON } from '../utils/storage';
+import useMemoriaUsuario from '../hooks/useMemoriaUsuario';
 import styles from './DashboardIncidencias.module.css';
 
 const SEVERIDADES = ["Crítica", "Alta", "Media", "Baja"];
@@ -45,7 +45,8 @@ function ObservacionesEditor({ initial, onSave }) {
 
 export default function DashboardIncidencias() {
   const { toast } = useToast();
-  const [incidencias, setIncidencias] = useState([]);
+  const memoria = useMemoriaUsuario()
+  const [incidencias, setIncidencias] = memoria.incidencias.listado.use()
   const [filtroEstado, setFiltroEstado] = useState("Todas");
   const [filtroSev, setFiltroSev] = useState("Todas");
   const [seleccionada, setSeleccionada] = useState(null);
@@ -56,11 +57,8 @@ export default function DashboardIncidencias() {
   const [ahora, setAhora] = useState(Date.now());
 
   useEffect(() => { const t = setInterval(() => setAhora(Date.now()), 30000); return () => clearInterval(t); }, []);
-  useEffect(() => {
-    try { const saved = safeGetJSON("pfc_incidencias"); setIncidencias(saved || DEMOS()); } catch { setIncidencias(DEMOS()); }
-  }, []);
 
-  const guardar = (data) => { setIncidencias(data); safeSetJSON("pfc_incidencias", data) };
+  const guardar = (data) => { setIncidencias(data) };
   const kpis = {
     criticas: incidencias.filter(i => i.severidad === "Crítica" && i.estado !== "Resuelta").length,
     abiertas: incidencias.filter(i => i.estado === "Abierta").length,

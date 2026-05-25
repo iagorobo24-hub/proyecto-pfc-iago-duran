@@ -1,8 +1,9 @@
-import { useState, useCallback, useMemo, useEffect } from 'react'
+import { useState, useCallback, useMemo, useEffect, useRef } from 'react'
 import catalogService from '../services/catalogService'
 import { useToast } from '../contexts/ToastContext'
 import { callAnthropicAI, parseAIJsonResponse } from '../services/anthropicService'
 import { getCategoria, CATEGORIA_ICONOS } from '../data/categoriaMapping'
+import useMemoriaUsuario from './useMemoriaUsuario'
 
 function construirGrupos(subfamiliasConTipos) {
   const grupos = {}
@@ -23,6 +24,7 @@ function construirGrupos(subfamiliasConTipos) {
 
 export default function useNavegacionFichas() {
  const { toast } = useToast()
+ const memoria = useMemoriaUsuario()
  
  const [paso, setPaso] = useState('categorias')
  const [categorias, setCategorias] = useState([])
@@ -42,18 +44,28 @@ export default function useNavegacionFichas() {
  const [referenciasDisponibles, setReferenciasDisponibles] = useState([])
  const [cargando, setCargando] = useState(false)
  const [error, setError] = useState(null)
- const [historial, setHistorial] = useState([])
+ const [historial, setHistorial] = memoria.fichas.historial.use()
 
-const [aiFicha, setAiFicha] = useState(null)
-const [aiCargando, setAiCargando] = useState(false)
-const [sugerenciasBusqueda, setSugerenciasBusqueda] = useState([])
-const [busquedaCargando, setBusquedaCargando] = useState(false)
+ const [aiCache, setAiCache] = memoria.fichas.aiCache.use()
+ const aiCacheRef = useRef(aiCache)
+ useEffect(() => { aiCacheRef.current = aiCache }, [aiCache])
+ const [aiCargando, setAiCargando] = useState(false)
+ const [sugerenciasBusqueda, setSugerenciasBusqueda] = useState([])
+ const [busquedaCargando, setBusquedaCargando] = useState(false)
 
-async function cargarInfoIA(ficha) {
+ const aiFicha = useMemo(() => {
+   const key = referencia ? (referencia.ref_fabricante || referencia.ref || '') : ''
+   return key && aiCache[key] ? aiCache[key] : null
+ }, [referencia, aiCache])
+
+ async function cargarInfoIA(ficha) {
+  const key = ficha.ref_fabricante || ficha.ref || ''
+  if (aiCacheRef.current[key]) return
+
   setAiCargando(true)
   const nombreProd = ficha.name || ficha.nombre || ''
   const marcaProd = ficha.marca || ''
-  const refProd = ficha.ref_fabricante || ficha.ref || ''
+  const refProd = key
 
   try {
     const { text } = await callAnthropicAI({
@@ -75,7 +87,7 @@ Dado un producto con su nombre, marca y referencia, busca mentalmente en tu cono
 
     const parsed = parseAIJsonResponse(text)
     if (!parsed.error) {
-      setAiFicha(parsed.data)
+      setAiCache(prev => ({ ...prev, [key]: parsed.data }))
     }
   } catch (e) {
     console.warn('No se pudieron obtener datos por IA:', e)
@@ -197,7 +209,6 @@ useEffect(() => {
   setSubcategoria(null)
   setGrupos({})
   setReferencia(null)
-  setAiFicha(null)
   setPaso('marcas')
   setHistorial(prev => [...prev, { paso: 'categorias' }])
  }, [])
@@ -207,7 +218,6 @@ useEffect(() => {
   setGama(null)
   setTipo(null)
   setReferencia(null)
-  setAiFicha(null)
   setPaso('gamas')
   setHistorial(prev => [...prev, { paso: 'marcas' }])
  }, [])
@@ -216,7 +226,6 @@ useEffect(() => {
   setCategoriaGrupo(cat)
   setSubcategoria(null)
   setReferencia(null)
-  setAiFicha(null)
   setPaso('subcategorias')
   setHistorial(prev => [...prev, { paso: 'categorias_grupo' }])
  }, [])
@@ -228,7 +237,6 @@ useEffect(() => {
   setCargando(true)
   setSubcategoria(subcat)
   setReferencia(null)
-  setAiFicha(null)
   setError(null)
   try {
     const products = await catalogService.getProductosPorSubcategoria(categoria, marca, filtros)
@@ -246,7 +254,6 @@ useEffect(() => {
   setGama(gamaNombre)
   setTipo(null)
   setReferencia(null)
-  setAiFicha(null)
   setPaso('tipos')
   setHistorial(prev => [...prev, { paso: 'gamas' }])
  }, [])
@@ -254,7 +261,6 @@ useEffect(() => {
  const seleccionarTipo = useCallback((tipoNombre) => {
   setTipo(tipoNombre)
   setReferencia(null)
-  setAiFicha(null)
   setPaso('referencias')
   setHistorial(prev => [...prev, { paso: 'tipos' }])
  }, [])
@@ -262,7 +268,7 @@ useEffect(() => {
  const seleccionarReferencia = useCallback(async (producto) => {
    setCargando(true)
    setError(null)
-   setAiFicha(null)
+
    try {
     let ficha = producto
     if (typeof producto === 'string' || typeof producto === 'number') {
@@ -300,14 +306,13 @@ useEffect(() => {
   setSubcategoria(null)
   setGrupos({})
   setReferencia(null)
-  setAiFicha(null)
   setHistorial([])
  }, [])
 
  const buscarReferenciaDirecta = useCallback(async (refId) => {
    if (!refId) return false
    setCargando(true)
-   setAiFicha(null)
+
    try {
     const ficha = await catalogService.getProductoPorRef(refId)
     if (ficha) {

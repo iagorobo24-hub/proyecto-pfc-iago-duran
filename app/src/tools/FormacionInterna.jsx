@@ -3,7 +3,7 @@ import { GraduationCap } from 'lucide-react'
 import Button from '../components/ui/Button'
 import Input from '../components/ui/Input'
 import { useToast } from '../contexts/ToastContext'
-import { safeGetJSON, safeSetJSON } from '../utils/storage'
+import useMemoriaUsuario from '../hooks/useMemoriaUsuario'
 import styles from './FormacionInterna.module.css'
 
 const AREAS = ["Almacén", "Comercial", "Técnico", "Seguridad", "Sistemas"];
@@ -32,11 +32,11 @@ const PROMPT_PLAN = (emp, modulos, progreso) => {
 };
 
 export default function FormacionInterna() {
-  const { toast } = useToast();
-  const [empleados, setEmpleados] = useState([]);
-  const [modulos, setModulos] = useState(MODULOS_INIT);
-  const [progresos, setProgresos] = useState({});
-  const [fechasCompletado, setFechasCompletado] = useState({});
+  const memoria = useMemoriaUsuario()
+  const [empleados, setEmpleados] = memoria.formacion.empleados.use()
+  const [modulos, setModulosState] = memoria.formacion.modulos.use()
+  const [progresos, setProgresosState] = memoria.formacion.progresos.use()
+  const [fechasCompletado, setFechasCompletadoState] = memoria.formacion.fechas.use()
   const [seleccionado, setSeleccionado] = useState(null);
   const [vista, setVista] = useState("dashboard");
   const [planIA, setPlanIA] = useState("");
@@ -44,35 +44,33 @@ export default function FormacionInterna() {
   const [formModulo, setFormModulo] = useState({ nombre: "", area: AREAS[0], horas: "4", obligatorio: false });
   const [formEmpleado, setFormEmpleado] = useState({ nombre: "", rol: ROLES[0], departamento: "" });
 
+  const setModulos = (val) => { setModulosState(val); memoria.formacion.modulos.save(val) }
+  const setProgresos = (val) => { setProgresosState(val) }
+  const setFechasCompletado = (val) => { setFechasCompletadoState(val) }
+
   useEffect(() => {
-    try {
-      const emp = safeGetJSON("pfc_formacion_empleados");
-      const prg = safeGetJSON("pfc_formacion_progresos");
-      const fec = safeGetJSON("pfc_formacion_fechas");
-      const emps = emp || EMPLEADOS_INIT();
-      const prgs = prg || {};
-      const fecs = fec || {};
-      const prgsCompleto = {};
-      emps.forEach(e => { prgsCompleto[e.id] = {}; MODULOS_INIT.forEach(m => { prgsCompleto[e.id][m.id] = prgs[e.id]?.[m.id] || "pendiente"; }); });
-      setEmpleados(emps); setProgresos(prgsCompleto); setFechasCompletado(fecs);
-    } catch {
-      const emps = EMPLEADOS_INIT();
-      setEmpleados(emps);
-      const prgs = {}; emps.forEach(e => { prgs[e.id] = progresoInicial(MODULOS_INIT); });
-      setProgresos(prgs);
+    if (!modulos || modulos.length === 0) setModulos(MODULOS_INIT)
+    if (!empleados || empleados.length === 0) {
+      const initEmps = EMPLEADOS_INIT()
+      setEmpleados(initEmps)
+      const prgs = {}
+      initEmps.forEach(e => { prgs[e.id] = progresoInicial(MODULOS_INIT) })
+      setProgresos(prgs)
     }
-  }, []);
+  }, [])
 
   const guardar = (emps, prgs, fecs) => {
-    safeSetJSON("pfc_formacion_empleados", emps); safeSetJSON("pfc_formacion_progresos", prgs); safeSetJSON("pfc_formacion_fechas", fecs)
-  };
+    if (emps) memoria.formacion.empleados.save(emps)
+    if (prgs) memoria.formacion.progresos.save(prgs)
+    if (fecs) memoria.formacion.fechas.save(fecs)
+  }
 
   const cambiarProgreso = (empId, modId, nuevoEstado) => {
     const nuevosProgresos = { ...progresos, [empId]: { ...progresos[empId], [modId]: nuevoEstado } };
     const nuevasFechas = { ...fechasCompletado };
     if (nuevoEstado === "completado") { if (!nuevasFechas[empId]) nuevasFechas[empId] = {}; nuevasFechas[empId][modId] = Date.now(); }
     else { if (nuevasFechas[empId]) delete nuevasFechas[empId][modId]; }
-    setProgresos(nuevosProgresos); setFechasCompletado(nuevasFechas); guardar(empleados, nuevosProgresos, nuevasFechas); toast.show("Progreso actualizado");
+    setProgresos(nuevosProgresos); setFechasCompletado(nuevasFechas); toast.show("Progreso actualizado");
   };
 
   const añadirModulo = () => {

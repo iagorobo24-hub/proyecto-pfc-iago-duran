@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Warehouse } from 'lucide-react';
 import Button from '../components/ui/Button'
 import { Label, TipCard, Breadcrumb, ViewToggle } from '../components/ui/CircleLayout'
-import { safeGetJSON, safeSetJSON, safeSetItem } from '../utils/storage'
+import useMemoriaUsuario from '../hooks/useMemoriaUsuario'
 import styles from './SimuladorAlmacen.module.css'
 
 // ── Paleta corporativa Proyectos PFC ───────────────────────────────────────────────
@@ -99,8 +99,10 @@ const PROMPT_ANALISIS = (pedido, tiempos, categoria, incResueltas, operario) => 
 
 // ── Componente principal ──────────────────────────────────────────────────────
 export default function SimuladorAlmacen() {
+  const memoria = useMemoriaUsuario()
+  const [historial, setHistorial] = memoria.simulador.historial.use()
   const [pantalla, setPantalla] = useState("perfil");
-  const [operario, setOperario] = useState({ nombre: "", turno: "Mañana", area: "Almacén" });
+  const [operario, setOperario] = memoria.simulador.perfil.use()
   const [modoSim, setModoSim] = useState("entrenamiento");
   const [pedidoActivo, setPedidoActivo] = useState(null);
   const [etapaActual, setEtapaActual] = useState(0);
@@ -109,7 +111,6 @@ export default function SimuladorAlmacen() {
   const [log, setLog] = useState([]);
   const [analisis, setAnalisis] = useState("");
   const [cargando, setCargando] = useState(false);
-  const [historial, setHistorial] = useState([]);
   const [mostrarHistorial, setMostrarHistorial] = useState(false);
   const [modoManual, setModoManual] = useState(false);
   const [formManual, setFormManual] = useState({ producto: "", referencia: "", categoria: "Contactor", cantidad: "1", cliente: "" });
@@ -122,11 +123,7 @@ export default function SimuladorAlmacen() {
   const intervalRef = useRef(null);
   const inicioEtapaRef = useRef(null);
 
-  useEffect(() => {
-    const p = safeGetJSON("pfc_sim_perfil"); if (p) setOperario(p); const h = safeGetJSON("pfc_simulaciones_v3"); if (h) setHistorial(h);
-  }, []);
-
-  const guardarPerfil = () => { if (!operario.nombre.trim()) return; safeSetItem("pfc_sim_perfil", JSON.stringify(operario)); setPantalla("onboarding"); };
+  const guardarPerfil = () => { if (!operario.nombre.trim()) return; setOperario(operario); setPantalla("onboarding"); };
   const showToast = (msg) => { setToast(msg); setTimeout(() => setToast(""), 2500); };
 
   useEffect(() => {
@@ -187,7 +184,6 @@ export default function SimuladorAlmacen() {
     const nuevaEntrada = { fecha: new Date().toISOString(), pedido: pedidoActivo, tiempos: todosTiempos, puntuacion: punt, incResueltas, operario: operario.nombre, modo: modoSim };
     const nuevoHistorial = [nuevaEntrada, ...historial].slice(0, 20);
     setHistorial(nuevoHistorial);
-    safeSetJSON("pfc_simulaciones_v3", nuevoHistorial)
     setPantalla("resultado");
     if (cargando) return;
     setCargando(true);

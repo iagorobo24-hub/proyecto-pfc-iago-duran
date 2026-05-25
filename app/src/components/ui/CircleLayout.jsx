@@ -67,19 +67,33 @@ export function GamaCard({ name, meta, onClick, className = '' }) {
 }
 
 export function RefCard({ code, desc, price, onClick, image, className = '' }) {
+  const initials = code ? code.slice(0, 2).toUpperCase() : '??'
+  const [imgError, setImgError] = React.useState(false)
+
+  const showImage = image && !imgError
+
   return (
     <button className={`${styles.refCard} ${className}`} onClick={onClick}>
-      {image && (
-        <div className={styles.refCard__imageWrap}>
-          <img src={image} alt={code} className={styles.refCard__image} />
-        </div>
-      )}
+      <div className={styles.refCard__imageWrap}>
+        {showImage ? (
+          <img
+            src={image}
+            alt={code}
+            className={styles.refCard__image}
+            onError={() => setImgError(true)}
+          />
+        ) : (
+          <div className={styles.refCard__imageFallback}>
+            {initials}
+          </div>
+        )}
+      </div>
       <div className={styles.refCard__info}>
-        <div className={styles.refCard__code}>{code}</div>
-        {desc && <div className={styles.refCard__desc}>{desc}</div>}
+        <div className={styles.refCard__code} title={code}>{code}</div>
+        {desc && <div className={styles.refCard__desc} title={desc}>{desc}</div>}
       </div>
       {price !== undefined && price !== null && (
-        <div className={styles.refCard__price}>{price}€</div>
+        <div className={styles.refCard__price}>{typeof price === 'number' ? price.toFixed(2) : price}€</div>
       )}
     </button>
   )

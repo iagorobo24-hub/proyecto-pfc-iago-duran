@@ -1,0 +1,234 @@
+.printPage {
+  width: 210mm;
+  min-height: 297mm;
+  margin: 0 auto;
+  padding: 20mm 15mm;
+  background: white;
+  color: #1a1a1a;
+  font-family: 'IBM Plex Sans', system-ui, sans-serif;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 3px solid #0072CE;
+}
+
+.companyInfo {
+  flex: 1;
+}
+
+.companyName {
+  font-size: 22px;
+  font-weight: 700;
+  color: #0072CE;
+  letter-spacing: -0.02em;
+  margin: 0 0 4px;
+}
+
+.companyTagline {
+  font-size: 11px;
+  color: #666;
+  margin: 0;
+}
+
+.budgetMeta {
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.budgetTitle {
+  font-size: 26px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 2px;
+  letter-spacing: -0.01em;
+}
+
+.budgetNum {
+  font-size: 13px;
+  color: #0072CE;
+  font-weight: 600;
+  margin: 0 0 8px;
+}
+
+.budgetDate {
+  font-size: 11px;
+  color: #888;
+  margin: 0;
+}
+
+.clientSection {
+  margin-bottom: 24px;
+  padding: 16px;
+  background: #f8f9fa;
+  border-radius: 6px;
+}
+
+.clientTitle {
+  font-size: 11px;
+  font-weight: 700;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0 0 10px;
+}
+
+.clientGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px 24px;
+  font-size: 12px;
+}
+
+.clientLabel {
+  color: #888;
+  font-weight: 500;
+}
+
+.clientValue {
+  color: #1a1a1a;
+  font-weight: 600;
+}
+
+.tableWrap {
+  margin-bottom: 24px;
+}
+
+.tableTitle {
+  font-size: 13px;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin: 0 0 10px;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+}
+
+.table thead th {
+  background: #0072CE;
+  color: white;
+  padding: 8px 10px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.table thead th:last-child {
+  text-align: right;
+}
+
+.table tbody td {
+  padding: 7px 10px;
+  border-bottom: 1px solid #e5e7eb;
+  vertical-align: top;
+}
+
+.table tbody tr:nth-child(even) {
+  background: #fafbfc;
+}
+
+.table tbody td:last-child {
+  text-align: right;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.refCell {
+  font-family: 'IBM Plex Mono', 'Courier New', monospace;
+  font-size: 10px;
+  color: #0072CE;
+  font-weight: 500;
+}
+
+.descCell {
+  color: #333;
+}
+
+.totalsSection {
+  margin-left: auto;
+  width: 280px;
+  margin-bottom: 30px;
+}
+
+.totalRow {
+  display: flex;
+  justify-content: space-between;
+  padding: 5px 12px;
+  font-size: 12px;
+  color: #555;
+}
+
+.totalRowFinal {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 12px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #0072CE;
+  border-top: 2px solid #0072CE;
+  margin-top: 4px;
+}
+
+.termsSection {
+  display: flex;
+  gap: 40px;
+  padding-top: 16px;
+  border-top: 1px solid #e5e7eb;
+  font-size: 10px;
+  color: #888;
+}
+
+.termsBlock {
+  flex: 1;
+}
+
+.termsLabel {
+  font-weight: 600;
+  color: #555;
+  margin-bottom: 4px;
+}
+
+.footer {
+  position: absolute;
+  bottom: 15mm;
+  left: 15mm;
+  right: 15mm;
+  text-align: center;
+  font-size: 9px;
+  color: #aaa;
+  border-top: 1px solid #e5e7eb;
+  padding-top: 10px;
+}
+
+@media print {
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: white;
+  }
+
+  .printPage {
+    width: 100%;
+    margin: 0;
+    padding: 15mm 12mm;
+    box-shadow: none;
+  }
+
+  .footer {
+    position: fixed;
+    bottom: 10mm;
+    left: 12mm;
+    right: 12mm;
+  }
+}

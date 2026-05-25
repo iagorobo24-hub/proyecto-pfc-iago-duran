@@ -497,3 +497,154 @@
     grid-template-columns: 1fr;
   }
 }
+
+/* ── Gestión: Historial completo ─ */
+.gestionList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.gestionItem {
+  display: flex;
+  align-items: center;
+  background: var(--white);
+  border: 1.5px solid var(--gray-100);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: all 0.2s var(--ease-out);
+}
+
+.gestionItem:hover {
+  border-color: var(--blue-200);
+  box-shadow: var(--shadow-sm);
+}
+
+.gestionItem__info {
+  flex: 1;
+  padding: 14px 18px;
+  cursor: pointer;
+  min-width: 0;
+}
+
+.gestionItem__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.gestionItem__num {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--blue-800);
+}
+
+.gestionItem__fecha {
+  font-size: var(--text-xs);
+  color: var(--gray-400);
+}
+
+.gestionItem__cliente {
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--gray-700);
+  margin-bottom: 2px;
+}
+
+.gestionItem__meta {
+  font-size: var(--text-xs);
+  color: var(--gray-400);
+}
+
+.gestionItem__actions {
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+}
+
+.gestionItem__delete {
+  background: none;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 6px 8px;
+  border-radius: var(--radius-md);
+  transition: all 0.15s;
+  opacity: 0.5;
+}
+
+.gestionItem__delete:hover {
+  opacity: 1;
+  background: var(--red-50);
+}
+
+/* ── PDF View ─ */
+.pdfOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: #f0f0f0;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.pdfToolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 24px;
+  background: white;
+  border-bottom: 1px solid #e5e7eb;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.pdfToolbar__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: none;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.pdfToolbar__btn:hover {
+  background: #f3f4f6;
+  border-color: #9ca3af;
+}
+
+.pdfContainer {
+  flex: 1;
+  padding: 40px 20px;
+  display: flex;
+  justify-content: center;
+  background: #f0f0f0;
+}
+
+@media print {
+  .pdfOverlay {
+    position: static;
+    background: white;
+  }
+
+  .pdfToolbar {
+    display: none !important;
+  }
+
+  .pdfContainer {
+    padding: 0;
+    background: white;
+  }
+}

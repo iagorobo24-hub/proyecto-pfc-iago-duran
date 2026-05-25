@@ -401,6 +401,14 @@
   50% { opacity: 0.7; }
 }
 
+/* ── Referencias scroll ─ */
+.refsScroll {
+  width: 100%;
+  max-height: calc(100vh - 320px);
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
 /* ── Responsive ─ */
 @media (max-width: 1024px) {
   .layout {

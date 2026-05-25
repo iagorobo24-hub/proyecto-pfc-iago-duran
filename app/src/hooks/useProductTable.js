@@ -2,6 +2,13 @@ const POLA_ORDER = ['1P', '1P+N', '2P', '3P', '3P+N', '4P']
 const CURVE_ORDER = ['B', 'C', 'D', 'K', 'MA', 'TMD', 'Z']
 const AMP_STEPS = [0.5, 1, 1.6, 2, 2.5, 3, 4, 5, 6, 6.3, 8, 10, 12.5, 13, 15, 16, 20, 25, 30, 32, 40, 50, 63, 80, 100, 125, 150, 160, 200, 220, 250, 320, 400, 500, 570, 630, 800, 1000, 1250, 1600]
 
+export function extractSubgama(name) {
+  if (!name) return ''
+  const m = name.match(/\b(C60[NHLS]|C60BPR|C60BP|C60SP|C60H-DC|C60L|C60H|C60N|N40N|N40VIGI|iC60|iC60N|iC60H|iC60L|iID|Vigi|NSX[^-]|NSX\d+|R9F|RX3|TX3|Resi9)\b/i)
+  if (m) return m[1].replace(/\biC60\b/i, 'iC60').replace(/\bNSX/i, 'NSX')
+  return ''
+}
+
 const MAGNETOTERMICO_GAMAS = [
   'Acti 9 iC60',
   'C60 UL CSA IEC',
@@ -153,7 +160,7 @@ function groupByTableDiferencial(products) {
 }
 
 function groupByTableMagnetotermico(products) {
-  const rows = {}
+  const groups = {}
   let calibreMin = Infinity
   let calibreMax = -Infinity
 
@@ -177,24 +184,34 @@ function groupByTableMagnetotermico(products) {
       }
     }
 
-    const key = curve + '-' + pola
-    if (!rows[key]) rows[key] = {}
-    if (!rows[key][amp]) rows[key][amp] = []
-    rows[key][amp].push(p)
+    const subgama = extractSubgama(p.name) || 'general'
+    const groupKey = subgama + '|' + curve
+    if (!groups[groupKey]) groups[groupKey] = { rows: {}, subgama, curve }
+    if (!groups[groupKey].rows[curve + '-' + pola]) groups[groupKey].rows[curve + '-' + pola] = {}
+    if (!groups[groupKey].rows[curve + '-' + pola][amp]) groups[groupKey].rows[curve + '-' + pola][amp] = []
+    groups[groupKey].rows[curve + '-' + pola][amp].push(p)
 
     if (amp < calibreMin) calibreMin = amp
     if (amp > calibreMax) calibreMax = amp
   })
 
-  const curvas = [...new Set(Object.keys(rows).map(k => k.split('-')[0]))]
-    .filter(c => CURVE_ORDER.includes(c))
-    .sort((a, b) => CURVE_ORDER.indexOf(a) - CURVE_ORDER.indexOf(b))
-
-  const polas = [...new Set(Object.keys(rows).map(k => k.split('-')[1]))]
+  const polasSet = new Set()
+  Object.values(groups).forEach(g => {
+    Object.keys(g.rows).forEach(k => polasSet.add(k.split('-')[1]))
+  })
+  const polas = [...polasSet]
     .filter(p => POLA_ORDER.includes(p))
     .sort((a, b) => POLA_ORDER.indexOf(a) - POLA_ORDER.indexOf(b))
 
   const sortedAmps = AMP_STEPS.filter(a => a >= calibreMin && a <= calibreMax)
 
-  return { rows, curvas, polas, calibres: sortedAmps, type: 'magnetotermico' }
+  const sections = Object.values(groups)
+    .filter(g => {
+      const hasData = Object.values(g.rows).some(cellMap =>
+        Object.values(cellMap).some(items => items.length > 0)
+      )
+      return hasData
+    })
+
+  return { sections, polas, calibres: sortedAmps, type: 'magnetotermico' }
 }

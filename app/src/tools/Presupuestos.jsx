@@ -2,10 +2,11 @@ import { useState, useEffect, useReducer, useMemo, useCallback } from "react";
 import React from "react";
 import { useSearchParams } from 'react-router-dom'
 import { FULL_CATEGORY_INFO } from '../data/categoryMapping'
-import { safeGetJSON, safeSetJSON } from '../utils/storage'
+import useMemoriaUsuario from '../hooks/useMemoriaUsuario'
 import Button from '../components/ui/Button'
 import { useToast } from '../contexts/ToastContext'
 import catalogService from '../services/catalogService'
+import BudgetPrintView from '../components/presupuestos/BudgetPrintView'
 import styles from './Presupuestos.module.css'
 
 const CATEGORIAS = Object.keys(FULL_CATEGORY_INFO).map(key => ({
@@ -38,7 +39,8 @@ export default function Presupuestos() {
   const [datosCliente, setDatosCliente] = useState({ nombre: "", cif: "", contacto: "", email: "", telefono: "", direccion: "", poblacion: "", cp: "", provincia: "", pais: "España", iva: 21, forma_pago: "Transferencia", plazo_entrega: "15 días", validez: "30 días" });
   const [vista, setVista] = useState("wizard");
   const [guardando, setGuardando] = useState(false);
-  const [historial, setHistorial] = useState([]);
+  const memoria = useMemoriaUsuario()
+  const [historial, setHistorial] = memoria.presupuestos.historial.use()
   const [numPresupuesto, setNumPresupuesto] = useState(genNum());
   const [filtroCatalogo, setFiltroCatalogo] = useState("");
   const [añadidos, setAñadidos] = useState({});
@@ -50,7 +52,6 @@ export default function Presupuestos() {
   const [pasoCatalogo, setPasoCatalogo] = useState("marcas");
   const [cargandoCatalogo, setCargandoCatalogo] = useState(false);
 
-  useEffect(() => { const h = safeGetJSON("pfc_presupuestos_historial"); if (h) setHistorial(h); }, []);
   useEffect(() => {
     const producto = searchParams.get('producto');
     const referencia = searchParams.get('referencia');
@@ -125,9 +126,27 @@ export default function Presupuestos() {
     const presupuesto = { numero: numPresupuesto, fecha: new Date().toISOString(), cliente: datosCliente, partidas, categoria, total: partidas.reduce((s, p) => s + p.precio_total, 0) };
     const nuevo = [presupuesto, ...historial].slice(0, 20);
     setHistorial(nuevo);
-    safeSetJSON("pfc_presupuestos_historial", nuevo)
     setGuardando(false);
     toast.show("Presupuesto guardado", "success");
+  };
+
+  const exportarPDF = () => {
+    setVista("pdf");
+    setTimeout(() => window.print(), 300);
+  };
+
+  const eliminarPresupuesto = (index) => {
+    const nuevo = historial.filter((_, i) => i !== index);
+    setHistorial(nuevo);
+    toast.show("Presupuesto eliminado", "success");
+  };
+
+  const cargarPresupuesto = (h) => {
+    dispatchPartidas({ type: "SET", payload: h.partidas || [] });
+    setDatosCliente(h.cliente || datosCliente);
+    setNumPresupuesto(h.numero);
+    setCategoria(h.categoria || '');
+    setVista("editor");
   };
 
   const totalBase = partidas.reduce((s, p) => s + p.precio_total, 0);
@@ -177,10 +196,18 @@ export default function Presupuestos() {
 
             {historial.length > 0 && !categoria && (
               <div style={{ marginTop: '48px' }}>
-                <h3 style={{ textAlign: 'center', fontSize: '0.8125rem', fontWeight: 600, color: 'var(--gray-400)', marginBottom: '16px' }}>Últimos presupuestos</h3>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', marginBottom: '16px' }}>
+                  <h3 style={{ fontSize: '0.8125rem', fontWeight: 600, color: 'var(--gray-400)' }}>Últimos presupuestos</h3>
+                  <button
+                    style={{ fontSize: '0.75rem', color: 'var(--blue-600)', background: 'none', border: 'none', cursor: 'pointer', textDecoration: 'underline' }}
+                    onClick={() => setVista("gestion")}
+                  >
+                    Ver todos ({historial.length})
+                  </button>
+                </div>
                 <div className={styles.historialList}>
                   {historial.slice(0, 5).map((h, i) => (
-                    <button key={i} className={styles.historialItem} onClick={() => { dispatchPartidas({ type: "SET", payload: h.partidas || [] }); setDatosCliente(h.cliente || datosCliente); setVista("editor"); }}>
+                    <button key={i} className={styles.historialItem} onClick={() => cargarPresupuesto(h)}>
                       <div className={styles.historialItem__header}>
                         <span className={styles.historialItem__delegacion}>{h.numero}</span>
                         <span className={styles.historialItem__fecha}>{new Date(h.fecha).toLocaleDateString('es-ES')}</span>
@@ -192,6 +219,66 @@ export default function Presupuestos() {
                 </div>
               </div>
             )}
+          </div>
+        </main>
+      </div>
+    );
+  }
+
+  /* ── GESTIÓN: Historial completo de presupuestos ── */
+  if (vista === "gestion") {
+    return (
+      <div className={styles.layout}>
+        <main className={styles.main}>
+          <div className={styles.main__content}>
+            <div className={styles.pageHeader}>
+              <h1 className={styles.pageTitle}>Mis presupuestos</h1>
+              <p className={styles.pageSubtitle}>{historial.length} presupuesto{historial.length !== 1 ? 's' : ''} guardado{historial.length !== 1 ? 's' : ''}</p>
+            </div>
+
+            {historial.length === 0 && (
+              <div style={{ textAlign: 'center', padding: '60px 20px', color: 'var(--gray-400)' }}>
+                <div style={{ fontSize: '2rem', marginBottom: '12px' }}>📭</div>
+                <p>No hay presupuestos guardados todavía.</p>
+                <div style={{ marginTop: '16px' }}>
+                  <Button variant="primary" size="md" onClick={() => setVista("wizard")}>Crear presupuesto</Button>
+                </div>
+              </div>
+            )}
+
+            {historial.length > 0 && (
+              <div className={styles.gestionList}>
+                {historial.map((h, i) => (
+                  <div key={i} className={styles.gestionItem}>
+                    <div className={styles.gestionItem__info} onClick={() => cargarPresupuesto(h)}>
+                      <div className={styles.gestionItem__header}>
+                        <span className={styles.gestionItem__num}>{h.numero}</span>
+                        <span className={styles.gestionItem__fecha}>
+                          {new Date(h.fecha).toLocaleDateString('es-ES', { day: 'numeric', month: 'short', year: 'numeric' })}
+                        </span>
+                      </div>
+                      <div className={styles.gestionItem__cliente}>{h.cliente?.nombre || 'Sin cliente'}</div>
+                      <div className={styles.gestionItem__meta}>
+                        {h.partidas?.length || 0} partidas · Total: {h.total?.toFixed(2) || '0'}€
+                      </div>
+                    </div>
+                    <div className={styles.gestionItem__actions}>
+                      <button
+                        className={styles.gestionItem__delete}
+                        onClick={() => eliminarPresupuesto(i)}
+                        title="Eliminar presupuesto"
+                      >
+                        🗑
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            <div style={{ textAlign: 'center', marginTop: '24px' }}>
+              <Button variant="ghost" size="sm" onClick={() => setVista("wizard")}>← Volver</Button>
+            </div>
           </div>
         </main>
       </div>
@@ -402,6 +489,29 @@ export default function Presupuestos() {
     );
   }
 
+  /* ── PDF: Vista de impresión ── */
+  if (vista === "pdf") {
+    return (
+      <div className={styles.pdfOverlay}>
+        <div className={styles.pdfToolbar}>
+          <button className={styles.pdfToolbar__btn} onClick={() => setVista("editor")}>
+            ← Volver al editor
+          </button>
+          <button className={styles.pdfToolbar__btn} onClick={() => window.print()}>
+            🖨 Imprimir / Guardar PDF
+          </button>
+        </div>
+        <div className={styles.pdfContainer}>
+          <BudgetPrintView
+            presupuesto={partidas}
+            datosCliente={datosCliente}
+            numPresupuesto={numPresupuesto}
+          />
+        </div>
+      </div>
+    );
+  }
+
   /* ── EDITOR: Tabla de partidas ── */
   return (
     <div className={styles.layout}>
@@ -543,6 +653,7 @@ export default function Presupuestos() {
           <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', marginTop: '24px', flexWrap: 'wrap' }}>
             <Button variant="secondary" size="md" onClick={() => setVista("seleccion")}>← Volver al catálogo</Button>
             <Button variant="primary" size="md" onClick={guardar} loading={guardando}>Guardar presupuesto</Button>
+            <Button variant="secondary" size="md" onClick={exportarPDF}>📄 Exportar PDF</Button>
             <Button variant="ghost" size="md" onClick={() => { setVista("wizard"); setNumPresupuesto(genNum()); }}>Nuevo presupuesto</Button>
           </div>
         </div>

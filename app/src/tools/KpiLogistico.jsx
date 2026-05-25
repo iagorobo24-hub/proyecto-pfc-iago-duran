@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { TrendingUp } from 'lucide-react';
-import { safeGetJSON, safeSetJSON } from '../utils/storage'
+import useMemoriaUsuario from '../hooks/useMemoriaUsuario'
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, ReferenceLine } from "recharts";
 import Button from '../components/ui/Button'
 import Input from '../components/ui/Input'
@@ -32,10 +32,11 @@ const EJEMPLO_DATOS = {
 
 export default function KPILogistico() {
   const { toast } = useToast();
+  const memoria = useMemoriaUsuario()
+  const [historial, setHistorial] = memoria.kpi.historial.use()
   const [datos, setDatos] = useState({ delegacion: "", turno: "Mañana", pedidos: "", horas: "", errores: "", tiempo_ciclo: "", ubicaciones_ocupadas: "", ubicaciones_total: "", devoluciones: "", lineas_expedidas: "", operarios: "" });
   const [kpis, setKpis] = useState(null);
   const [informe, setInforme] = useState("");
-  const [historial, setHistorial] = useState([]);
   const [cargando, setCargando] = useState(false);
   const [tab, setTab] = useState("calculo");
 
@@ -44,9 +45,7 @@ export default function KPILogistico() {
     toast.show("Datos de ejemplo cargados", "success");
   };
 
-  useEffect(() => { const h = safeGetJSON("pfc_kpi_historial"); if (h) setHistorial(h); }, []);
-
-  const guardarHistorial = (entrada) => { const nuevo = [entrada, ...historial].slice(0, 30); setHistorial(nuevo); safeSetJSON("pfc_kpi_historial", nuevo) };
+  const guardarHistorial = (entrada) => { const nuevo = [entrada, ...historial].slice(0, 30); setHistorial(nuevo) };
 
   const calcularKPIs = () => {
     const d = datos;

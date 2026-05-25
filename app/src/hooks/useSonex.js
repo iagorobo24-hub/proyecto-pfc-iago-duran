@@ -1,7 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { safeGetJSON, safeSetJSON, safeRemoveItem } from '../utils/storage';
-
-const STORAGE_KEY = 'pfc_sonex_sessions';
+import useMemoriaUsuario from './useMemoriaUsuario';
 
 function generateId() {
   return `session_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`;
@@ -34,7 +32,8 @@ function createSessionObj(messages = []) {
 }
 
 export function useSonex() {
-  const [sessions, setSessions] = useState([]);
+  const memoria = useMemoriaUsuario()
+  const [sessions, setSessions] = memoria.sonex.sesiones.use()
   const [activeSessionId, setActiveSessionId] = useState(null);
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
@@ -46,8 +45,8 @@ export function useSonex() {
   const messagesEndRef = useRef(null);
 
   const persistSessions = useCallback((updatedSessions) => {
-    safeSetJSON(STORAGE_KEY, updatedSessions);
-  }, []);
+    setSessions(updatedSessions);
+  }, [setSessions]);
 
   const getActiveSession = useCallback(() => {
     return sessions.find(s => s.id === activeSessionId) || null;
@@ -67,39 +66,25 @@ export function useSonex() {
   }, [activeSessionId, messages, persistSessions]);
 
   useEffect(() => {
-    try {
-      const oldData = safeGetJSON('pfc_sonex_historial');
-      const stored = safeGetJSON(STORAGE_KEY);
+    const legacy = memoria.migrarDesdeLegacy('pfc_sonex_historial', 'sonex', 'sesiones')
+    const stored = sessions
 
-      if (stored) {
-        const parsed = stored;
-        setSessions(parsed);
-        if (parsed.length > 0) {
-          const last = parsed[parsed.length - 1];
-          setActiveSessionId(last.id);
-          setMessages(normalizarMensajes(last.messages));
-        } else {
-          const session = createSessionObj([]);
-          setSessions([session]);
-          setActiveSessionId(session.id);
-          persistSessions([session]);
-        }
-      } else if (oldData) {
-        const oldMessages = normalizarMensajes(oldData);
-        const session = createSessionObj(oldMessages);
-        setSessions([session]);
-        setActiveSessionId(session.id);
-        setMessages(oldMessages);
-        persistSessions([session]);
-        safeRemoveItem('pfc_sonex_historial');
-      } else {
-        const session = createSessionObj([]);
-        setSessions([session]);
-        setActiveSessionId(session.id);
-        persistSessions([session]);
+    if (stored && stored.length > 0) {
+      if (!activeSessionId) {
+        const last = stored[stored.length - 1]
+        setActiveSessionId(last.id)
+        setMessages(normalizarMensajes(last.messages))
       }
-    } catch (e) {
-      console.warn('Error loading sessions:', e);
+    } else if (legacy) {
+      const oldMessages = normalizarMensajes(legacy)
+      const session = createSessionObj(oldMessages)
+      setSessions([session])
+      setActiveSessionId(session.id)
+      setMessages(oldMessages)
+    } else {
+      const session = createSessionObj([])
+      setSessions([session])
+      setActiveSessionId(session.id)
     }
   }, []);
 
