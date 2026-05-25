@@ -21,6 +21,11 @@
   overflow: hidden;
 }
 
+:global([data-theme="dark"]) .card {
+  background: linear-gradient(135deg, var(--color-bg-alt) 0%, var(--color-surface) 100%);
+  border-color: var(--color-border);
+}
+
 .glow {
   position: absolute;
   top: -50%;
@@ -30,6 +35,10 @@
   height: 100%;
   background: radial-gradient(ellipse, rgba(0, 114, 206, 0.08) 0%, transparent 70%);
   pointer-events: none;
+}
+
+:global([data-theme="dark"]) .glow {
+  background: radial-gradient(ellipse, rgba(96, 165, 250, 0.15) 0%, transparent 70%);
 }
 
 .iconBadge {
@@ -90,6 +99,10 @@
   background: var(--brand-blue-dark);
   transform: translateY(-2px);
   box-shadow: 0 8px 24px rgba(0, 48, 135, 0.25);
+}
+
+:global([data-theme="dark"]) .primaryBtn:hover {
+  box-shadow: 0 8px 24px rgba(251, 191, 36, 0.25);
 }
 
 .secondaryBtn {

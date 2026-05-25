@@ -123,6 +123,14 @@
   margin-top: var(--space-2);
 }
 
+:global([data-theme="dark"]) .primaryBtn {
+  box-shadow: 0 4px 12px rgba(96, 165, 250, 0.2);
+}
+
+:global([data-theme="dark"]) .primaryBtn:hover {
+  box-shadow: 0 12px 24px rgba(96, 165, 250, 0.3);
+}
+
 @media (max-width: 1024px) {
   .content {
     margin: 0 auto;

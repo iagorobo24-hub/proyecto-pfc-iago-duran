@@ -123,6 +123,33 @@
   color: var(--brand-blue-dark);
 }
 
+:global([data-theme="dark"]) .badge {
+  background: var(--color-brand-soft);
+  color: var(--color-brand);
+}
+
+:global([data-theme="dark"]) .stepCard {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+}
+
+:global([data-theme="dark"]) .stepNumber {
+  color: var(--color-bg-alt);
+}
+
+:global([data-theme="dark"]) .stepIcon {
+  background: var(--color-brand-soft);
+  color: var(--color-brand);
+}
+
+:global([data-theme="dark"]) .stepLink {
+  color: var(--color-brand);
+}
+
+:global([data-theme="dark"]) .stepLink:hover {
+  color: var(--color-brand-vivid);
+}
+
 @media (max-width: 1024px) {
   .stepsGrid {
     grid-template-columns: 1fr;

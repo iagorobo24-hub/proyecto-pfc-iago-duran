@@ -1,8 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Linkedin, AppWindow, ChevronDown, BarChart3, Wrench, FileText, Target, Cpu, FileSpreadsheet } from 'lucide-react';
+import { Linkedin, AppWindow, ChevronDown, BarChart3, Wrench, FileText, Target, Cpu, FileSpreadsheet, Sun, Moon } from 'lucide-react';
 import styles from './styles/HeroHeader.module.css';
+import { useTheme } from '../../contexts/ThemeContext';
 
 const SECTION_LINKS = [
   { id: 'stats', label: 'Stats', icon: <BarChart3 size={14} /> },
@@ -14,6 +15,7 @@ const SECTION_LINKS = [
 ];
 
 const HeroHeader = () => {
+  const { dark, toggle } = useTheme();
   const [sectionsOpen, setSectionsOpen] = useState(false);
   const wrapperRef = React.useRef(null);
 
@@ -96,6 +98,14 @@ const HeroHeader = () => {
             </AnimatePresence>
           </div>
 
+          <button
+            onClick={toggle}
+            className={styles.themeToggle}
+            title={dark ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
+          >
+            {dark ? <Sun size={16} /> : <Moon size={16} />}
+            <span>{dark ? 'Claro' : 'Oscuro'}</span>
+          </button>
           <a href="https://www.linkedin.com/in/iago-dur%C3%A1n-romera-72b1a13ba/" target="_blank" rel="noopener noreferrer" className={styles.navLink}>
             <Linkedin size={18} />
             <span>LinkedIn</span>
