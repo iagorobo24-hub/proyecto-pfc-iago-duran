@@ -370,7 +370,7 @@ export default function SimuladorAlmacen() {
 
               {/* Feedback incidencia */}
               {feedbackInc && (
-                <div className={styles.incidenciaCard__feedback + (feedbackInc.correcto ? ' incidenciaCard__feedback--correcto' : ' incidenciaCard__feedback--incorrecto')}
+                <div className={`${styles.incidenciaCard__feedback} ${feedbackInc.correcto ? styles['incidenciaCard__feedback--correcto'] : styles['incidenciaCard__feedback--incorrecto']}`}
                   style={{ padding: '20px', borderRadius: 'var(--radius-lg)', maxWidth: 600, width: '100%' }}>
                   <div style={{ display: 'flex', gap: '10px', alignItems: 'center', marginBottom: '12px' }}>
                     <span style={{ fontSize: '1.25rem' }}>{feedbackInc.correcto ? '✅' : '⚠️'}</span>

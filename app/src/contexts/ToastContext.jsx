@@ -53,7 +53,7 @@ function ToastContainer({ toasts }) {
 const TOAST_THEME = {
   info:    { bg: 'var(--color-surface)', color: 'var(--color-text)' },
   success: { bg: 'var(--success)', color: 'var(--gray-900)' },
-  error:   { bg: 'var(--color-error)', color: 'var(--gray-900)' },
+  error:   { bg: 'var(--color-error)', color: 'var(--color-on-brand)' },
   warning: { bg: 'var(--warning)', color: 'var(--gray-900)' },
 }
 

@@ -19,7 +19,7 @@ export const MEMORY_SCHEMA = {
     sesiones: { key: 'sonex_sesiones', default: [], maxAge: 365 },
   },
   simulador: {
-    perfil: { key: 'simulador_perfil', default: null, maxAge: 365 },
+    perfil: { key: 'simulador_perfil', default: { nombre: '', turno: 'Mañana', area: 'Almacén' }, maxAge: 365 },
     historial: { key: 'simulador_historial', default: [], maxAge: 365 },
     estado: { key: 'simulador_estado', default: null, maxAge: 1 },
   },
