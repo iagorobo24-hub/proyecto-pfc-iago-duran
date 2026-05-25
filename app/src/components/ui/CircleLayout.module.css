@@ -652,3 +652,35 @@
     gap: var(--space-3);
   }
 }
+
+/* ── Dark mode overrides ── */
+:global([data-theme="dark"]) .viewToggle {
+  background: var(--color-bg-alt);
+  border-color: var(--color-border);
+}
+
+:global([data-theme="dark"]) .viewToggle__btn {
+  color: var(--color-text-tertiary);
+}
+
+:global([data-theme="dark"]) .viewToggle__btnActive {
+  background: var(--color-surface);
+  color: var(--color-text);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+:global([data-theme="dark"]) .brandCard__logo {
+  background: #ffffff;
+}
+
+:global([data-theme="dark"]) .refCard__imageWrap {
+  background: #ffffff;
+}
+
+:global([data-theme="dark"]) .fichaCard__imageWrap {
+  background: #ffffff;
+}
+
+:global([data-theme="dark"]) .refCard__imageFallback {
+  background: var(--gray-100);
+}
