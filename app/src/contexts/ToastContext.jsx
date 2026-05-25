@@ -50,15 +50,16 @@ function ToastContainer({ toasts }) {
   )
 }
 
+const TOAST_THEME = {
+  info:    { bg: 'var(--color-surface)', color: 'var(--color-text)' },
+  success: { bg: 'var(--success)', color: 'var(--gray-900)' },
+  error:   { bg: 'var(--color-error)', color: 'var(--gray-900)' },
+  warning: { bg: 'var(--warning)', color: 'var(--gray-900)' },
+}
+
 /* Item individual de toast */
 function ToastItem({ toast }) {
-  const colores = {
-    info:    { bg: '#1f2937', color: '#ffffff' },
-    success: { bg: '#065f46', color: '#ffffff' },
-    error:   { bg: '#991b1b', color: '#ffffff' },
-    warning: { bg: '#92400e', color: '#ffffff' },
-  }
-  const { bg, color } = colores[toast.tipo] || colores.info
+  const { bg, color } = TOAST_THEME[toast.tipo] || TOAST_THEME.info
 
   return (
     <div style={{
@@ -71,6 +72,7 @@ function ToastItem({ toast }) {
       boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
       maxWidth: '320px',
       animation: 'fadeIn 150ms ease',
+      border: toast.tipo === 'info' ? '1px solid var(--color-border)' : 'none',
     }}>
       {toast.mensaje}
     </div>

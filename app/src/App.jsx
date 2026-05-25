@@ -34,7 +34,7 @@ class ErrorBoundary extends Component {
             {this.state.error.message || 'Error inesperado al cargar la herramienta.'}
           </p>
           <button onClick={() => { this.setState({ error: null }); window.location.reload() }}
-            style={{ padding: '10px 24px', background: 'var(--brand-blue)', color: '#fff', border: 'none', borderRadius: '8px', fontWeight: 600, cursor: 'pointer' }}>
+            style={{ padding: '10px 24px', background: 'var(--color-brand)', color: 'var(--color-on-brand)', border: 'none', borderRadius: '8px', fontWeight: 600, cursor: 'pointer' }}>
             Recargar página
           </button>
         </div>

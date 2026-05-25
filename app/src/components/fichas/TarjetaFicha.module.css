@@ -131,8 +131,8 @@
 
 /* Consejo técnico */
 .consejo {
-  background: #ebf3fc;
-  border-left: 4px solid #4a90d9;
+  background: var(--blue-50);
+  border-left: 4px solid var(--blue-500);
   padding: 14px 20px;
   border-bottom: 1px solid var(--color-border);
 }
@@ -140,7 +140,7 @@
 .consejoLabel {
   font-size: 10px;
   font-weight: 700;
-  color: #003087;
+  color: var(--blue-800);
   letter-spacing: 1.5px;
   text-transform: uppercase;
   margin-bottom: 7px;
@@ -154,15 +154,15 @@
 
 /* Disclaimer */
 .disclaimer {
-  background: #fff3e0;
-  border-left: 4px solid #c07010;
+  background: var(--warning-soft);
+  border-left: 4px solid var(--warning);
   padding: 11px 18px;
   border-radius: 0 0 8px 8px;
 }
 
 .disclaimerTexto {
   font-size: 11px;
-  color: #92400e;
+  color: var(--warning);
   line-height: 1.5;
 }
 

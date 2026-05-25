@@ -5,15 +5,7 @@ import { Label, TipCard, Breadcrumb, ViewToggle } from '../components/ui/CircleL
 import useMemoriaUsuario from '../hooks/useMemoriaUsuario'
 import styles from './SimuladorAlmacen.module.css'
 
-// ── Paleta corporativa Proyectos PFC ───────────────────────────────────────────────
-const C = {
-  azulOscuro: "#003087", azulMedio: "#1A4A8A", azulClaro: "#4A90D9",
-  azulSuave:  "#EBF1FA", blanco: "#FFFFFF",    fondo: "#F5F6F8",
-  texto:      "#1A1A2E", textoSec: "#4A5568",  textoTer: "#8A94A6",
-  borde:      "#D1D9E6", verde: "#1B6B3A",     verdeSuave: "#EDF7F2",
-  amarillo:   "#C07010", amarilloS: "#FFF8EE", rojo: "#C62828",
-  rojoSuave:  "#FDECEA",
-};
+
 
 // ── Datos del simulador ──────────────────────────────────────────────────────
 const ETAPAS = [
@@ -80,9 +72,9 @@ const getEstandar = (etapaId, categoria) => etapaId === 2 ? (ESTANDAR_PICKING[ca
 const getSemaforo = (t, est) => {
   if (!est) return null;
   const pct = (t / est) * 100;
-  if (pct <= 100) return { label: "OK", color: C.azul, bg: C.azulSuave };
-  if (pct <= 150) return { label: "Lento", color: C.amarillo, bg: C.amarilloS };
-  return { label: "Muy lento", color: C.rojo, bg: C.rojoSuave };
+  if (pct <= 100) return { label: "OK", color: "var(--success)", bg: "var(--success-soft)" };
+  if (pct <= 150) return { label: "Lento", color: "var(--warning)", bg: "var(--warning-soft)" };
+  return { label: "Muy lento", color: "var(--color-error)", bg: "var(--color-error-soft)" };
 };
 const calcPuntuacion = (tiempos, categoria, incResueltas) => {
   let pts = 100;

@@ -30,18 +30,18 @@
 /* Variantes */
 .primary {
   background: var(--color-brand);
-  color: #ffffff;
+  color: var(--gray-900);
 }
 .primary:hover:not(:disabled) {
-  background: #001d5c;
+  background: var(--color-brand-vivid);
 }
 
 .secondary {
   background: var(--color-shell);
-  color: #ffffff;
+  color: var(--gray-800);
 }
 .secondary:hover:not(:disabled) {
-  background: #1f2937;
+  background: var(--gray-500);
 }
 
 .ghost {
@@ -50,23 +50,23 @@
   border: 1px solid var(--color-brand);
 }
 .ghost:hover:not(:disabled) {
-  background: rgba(0, 48, 135, 0.06);
+  background: var(--color-brand-soft);
 }
 
 .danger {
-  background: #dc2626;
-  color: #ffffff;
+  background: var(--color-error);
+  color: var(--gray-900);
 }
 .danger:hover:not(:disabled) {
-  background: #b91c1c;
+  background: var(--color-error);
 }
 
 /* Spinner de carga */
 .spinner {
   width: 14px;
   height: 14px;
-  border: 2px solid rgba(255,255,255,0.3);
-  border-top-color: #ffffff;
+  border: 2px solid rgba(0,0,0,0.2);
+  border-top-color: var(--gray-900);
   border-radius: 50%;
   animation: spin 0.6s linear infinite;
 }

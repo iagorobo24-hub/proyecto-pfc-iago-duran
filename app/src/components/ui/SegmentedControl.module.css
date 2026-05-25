@@ -28,9 +28,5 @@
 
 .active {
   background: var(--color-brand);
-  color: #ffffff;
-}
-
-[data-theme="dark"] .active {
-  color: #1c1f26;
+  color: var(--color-on-brand);
 }

@@ -17,15 +17,15 @@
 }
 
 /* Variantes de stock */
-.stock-alto  { background: #d1fae5; color: #065f46; }
-.stock-alto .dot  { background: #10b981; }
+.stock-alto  { background: var(--success-soft); color: var(--success); }
+.stock-alto .dot  { background: var(--success); }
 
-.stock-medio { background: #fef3c7; color: #92400e; }
-.stock-medio .dot { background: #f59e0b; }
+.stock-medio { background: var(--warning-soft); color: var(--warning); }
+.stock-medio .dot { background: var(--warning); }
 
-.stock-bajo  { background: #fee2e2; color: #991b1b; }
-.stock-bajo .dot  { background: #ef4444; }
+.stock-bajo  { background: var(--color-error-soft); color: var(--color-error); }
+.stock-bajo .dot  { background: var(--color-error); }
 
 /* Variantes de categoría */
-.categoria { background: #f3f4f6; color: #4b5563; }
-.norma     { background: #1f2937; color: #f9fafb; }
+.categoria { background: var(--gray-100); color: var(--gray-600); }
+.norma     { background: var(--gray-600); color: var(--gray-100); }

@@ -62,14 +62,14 @@ export function AuthProvider({ children }) {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          background: 'linear-gradient(135deg, #0f172a 0%, #1e293b 100%)',
+          background: 'var(--color-bg)',
           fontFamily: 'var(--font-sans, sans-serif)',
         }}>
-          <div style={{ textAlign: 'center', color: '#94a3b8' }}>
+          <div style={{ textAlign: 'center', color: 'var(--color-text-secondary)' }}>
             <div style={{
               width: '36px', height: '36px',
-              border: '3px solid rgba(255,255,255,0.1)',
-              borderTopColor: '#fbbf24',
+              border: '3px solid var(--color-border)',
+              borderTopColor: 'var(--color-brand)',
               borderRadius: '50%',
               animation: 'spin 0.8s linear infinite',
               margin: '0 auto 16px',

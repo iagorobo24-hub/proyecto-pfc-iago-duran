@@ -59,8 +59,8 @@
 .iconBox {
   width: 56px;
   height: 56px;
-  background: var(--color-brand-light, #eff6ff);
-  border: 1px solid #bfdbfe;
+  background: var(--blue-50);
+  border: 1px solid var(--blue-200);
   border-radius: 14px;
   display: flex;
   align-items: center;
@@ -115,10 +115,10 @@
 .chipPrimary {
   background: var(--color-brand);
   border-color: var(--color-brand);
-  color: #ffffff;
+  color: var(--color-on-brand);
 }
 
 .chipPrimary:hover {
-  background: #002070;
-  border-color: #002070;
+  background: var(--color-brand-vivid);
+  border-color: var(--color-brand-vivid);
 }
