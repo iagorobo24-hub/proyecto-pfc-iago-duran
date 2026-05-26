@@ -62,6 +62,10 @@ export function clearAnalytics() {
   safeSetJSON(ANALYTICS_KEY, [])
 }
 
+export function trackPageView(ruta) {
+  trackEvent('pageview', 'visita', ruta)
+}
+
 export default function useAnalytics() {
   const track = useCallback((categoria, accion, etiqueta = '', valor = null) => {
     trackEvent(categoria, accion, etiqueta, valor)
