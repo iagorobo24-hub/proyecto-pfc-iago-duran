@@ -1,5 +1,5 @@
 export const POLA_ORDER = ['1P', '1P+N', '2P', '3P', '3P+N', '4P']
-const CURVE_ORDER = ['B', 'C', 'D', 'K', 'MA', 'TMD', 'Z']
+export const CURVE_ORDER = ['B', 'C', 'D', 'K', 'MA', 'TMD', 'Z']
 const AMP_STEPS = [0.5, 1, 1.6, 2, 2.5, 3, 4, 5, 6, 6.3, 8, 10, 12.5, 13, 15, 16, 20, 25, 30, 32, 40, 50, 63, 80, 100, 125, 150, 160, 200, 220, 250, 320, 400, 500, 570, 630, 800, 1000, 1250, 1600]
 
 export function extractSubgama(name) {
@@ -106,6 +106,119 @@ export function ampToStandard(amp) {
   }
   if (Math.abs(amp - closest) / closest > 0.1) return amp
   return closest
+}
+
+export function extractTipoDiferencial(name) {
+  if (!name) return ''
+  const m = name.match(/\b(Tipo\s+)?(AC|Hpi|Si)\b/i)
+  if (m) {
+    const v = m[2].toUpperCase()
+    if (v === 'Hpi') return 'Hpi'
+    if (v === 'Si') return 'Si'
+    return v
+  }
+  const m2 = name.match(/\b(Clase\s+)?([A-F])\b/)
+  if (m2) {
+    const v = m2[2].toUpperCase()
+    if (['A', 'B', 'F'].includes(v)) return v
+  }
+  return ''
+}
+
+export function getCurvasDisponibles(products) {
+  const curves = new Set()
+  for (const p of products) {
+    const c = extractCurve(p.name)
+    if (c && c !== '?' && CURVE_ORDER.includes(c)) curves.add(c)
+  }
+  return CURVE_ORDER.filter(c => curves.has(c))
+}
+
+export function getTiposDiferencial(products) {
+  const tipos = new Set()
+  for (const p of products) {
+    const t = extractTipoDiferencial(p.name)
+    if (t) tipos.add(t)
+    if (p.tipo && ['AC', 'A', 'F', 'B', 'Hpi', 'Si'].includes(p.tipo)) tipos.add(p.tipo)
+  }
+  return ['AC', 'A', 'F', 'B', 'Hpi', 'Si'].filter(t => tipos.has(t))
+}
+
+export function getPolosDisponibles(products, filtro = {}) {
+  const polas = new Set()
+  for (const p of products) {
+    if (filtro.curve && extractCurve(p.name) !== filtro.curve) continue
+    const pola = extractPoles(p.name)
+    if (pola && pola !== '?' && POLA_ORDER.includes(pola)) polas.add(pola)
+  }
+  return POLA_ORDER.filter(p => polas.has(p))
+}
+
+export function getCalibresDisponibles(products, filtro = {}) {
+  const amps = new Set()
+  for (const p of products) {
+    if (filtro.curve && extractCurve(p.name) !== filtro.curve) continue
+    if (filtro.polos && extractPoles(p.name) !== filtro.polos) continue
+    if (filtro.sensibilidad && extractSensitivity(p.name) !== filtro.sensibilidad) continue
+    const amp = extractAmps(p.name)
+    if (amp > 0) amps.add(ampToStandard(amp))
+  }
+  return [...amps].sort((a, b) => a - b)
+}
+
+export function getSensibilidadesDisponibles(products, filtro = {}) {
+  const sens = new Set()
+  for (const p of products) {
+    if (filtro.tipo && extractTipoDiferencial(p.name) !== filtro.tipo) continue
+    if (filtro.polos && extractPoles(p.name) !== filtro.polos) continue
+    const s = extractSensitivity(p.name)
+    if (s > 0 && SENSITIVITY_ORDER.includes(s)) sens.add(s)
+  }
+  return SENSITIVITY_ORDER.filter(s => sens.has(s))
+}
+
+export function filterProductsBy(products, filtro = {}) {
+  return products.filter(p => {
+    if (filtro.curve && extractCurve(p.name) !== filtro.curve) return false
+    if (filtro.tipo && extractTipoDiferencial(p.name) !== filtro.tipo) return false
+    if (filtro.polos && extractPoles(p.name) !== filtro.polos) return false
+    if (filtro.calibre !== undefined && filtro.calibre !== null) {
+      const amp = ampToStandard(extractAmps(p.name))
+      if (amp !== filtro.calibre) return false
+    }
+    if (filtro.sensibilidad !== undefined && filtro.sensibilidad !== null) {
+      if (extractSensitivity(p.name) !== filtro.sensibilidad) return false
+    }
+    return true
+  })
+}
+
+export const CURVA_DESC = {
+  B: 'Protección de personas — baja sobreintensidad',
+  C: 'Protección general — uso estándar',
+  D: 'Protección de motores — alta sobreintensidad',
+  K: 'Circuitos especiales — carga inductiva',
+  MA: 'Protección de motores — solo magnético',
+  Z: 'Semiconductores — muy baja sobreintensidad',
+  TMD: 'Térmico-magnético ajustable (ComPacT NSX)',
+}
+
+export const TIPO_DIFERENCIAL_DESC = {
+  AC: 'Corriente alterna senoidal',
+  A: 'CA + pulsos unidireccionales',
+  F: 'CA + pulsos + altas frecuencias',
+  B: 'CA + CC + pulsos',
+  Hpi: 'Alta inmunidad — evita disparos intempestivos',
+  Si: 'Selectivo — retardo intencionado',
+}
+
+export const SENSIBILIDAD_DESC = {
+  10: 'Equipos muy sensibles',
+  30: 'Protección de personas',
+  100: 'Personas + incendios',
+  300: 'Protección contra incendios',
+  500: 'Protección contra incendios',
+  1000: 'Protección contra incendios',
 }
 
 export function groupByTable(products) {

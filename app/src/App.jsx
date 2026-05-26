@@ -1,25 +1,31 @@
 import { Suspense, lazy, Component } from 'react'
-import { Routes, Route, Navigate } from 'react-router-dom'
+import { Routes, Route } from 'react-router-dom'
 import AppShell from './components/layout/AppShell'
 import LoginPage from './components/auth/LoginPage'
 import LandingPage from './pages/LandingPage'
+import PresupuestosWizard from './components/presupuestos/PresupuestosWizard'
+import PresupuestosSeleccion from './components/presupuestos/PresupuestosSeleccion'
+import PresupuestosEditor from './components/presupuestos/PresupuestosEditor'
+import PresupuestosGestion from './components/presupuestos/PresupuestosGestion'
+import PresupuestosPdf from './components/presupuestos/PresupuestosPdf'
 import useDocumentTitle from './hooks/useDocumentTitle'
 
 const FichasTecnicas = lazy(() => import('./tools/FichasTecnicas'))
 const SimuladorAlmacen = lazy(() => import('./tools/SimuladorAlmacen'))
 const DashboardIncidencias = lazy(() => import('./tools/DashboardIncidencias'))
 const KpiLogistico = lazy(() => import('./tools/KpiLogistico'))
-const Presupuestos = lazy(() => import('./tools/Presupuestos'))
+const PresupuestosLayout = lazy(() => import('./components/presupuestos/PresupuestosLayout'))
 const FormacionInterna = lazy(() => import('./tools/FormacionInterna'))
 const Sonex = lazy(() => import('./tools/Sonex'))
+const DashboardGlobal = lazy(() => import('./tools/DashboardGlobal'))
 
 const FichasTecnicasPage    = () => { useDocumentTitle('Fichas Técnicas');    return <FichasTecnicas /> }
 const SimuladorAlmacenPage  = () => { useDocumentTitle('Simulador Almacén');  return <SimuladorAlmacen /> }
 const DashboardIncidenciasPage = () => { useDocumentTitle('Incidencias');     return <DashboardIncidencias /> }
 const KpiLogisticoPage      = () => { useDocumentTitle('KPI Logístico');      return <KpiLogistico /> }
-const PresupuestosPage      = () => { useDocumentTitle('Presupuestos');       return <Presupuestos /> }
 const FormacionInternaPage  = () => { useDocumentTitle('Formación Interna');  return <FormacionInterna /> }
 const SonexPage             = () => { useDocumentTitle('SONEX — Asistente Técnico'); return <Sonex /> }
+const DashboardGlobalPage   = () => { useDocumentTitle('Dashboard');               return <DashboardGlobal /> }
 
 class ErrorBoundary extends Component {
   state = { error: null }
@@ -57,12 +63,18 @@ export default function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/app" element={<AppShell />}>
-          <Route index element={<Navigate to="/app/sonex" replace />} />
+          <Route index element={<Suspense fallback={<PageLoader />}><DashboardGlobalPage /></Suspense>} />
           <Route path="fichas"       element={<Suspense fallback={<PageLoader />}><FichasTecnicasPage /></Suspense>} />
           <Route path="almacen"      element={<Suspense fallback={<PageLoader />}><SimuladorAlmacenPage /></Suspense>} />
           <Route path="incidencias"  element={<Suspense fallback={<PageLoader />}><DashboardIncidenciasPage /></Suspense>} />
           <Route path="kpi"          element={<Suspense fallback={<PageLoader />}><KpiLogisticoPage /></Suspense>} />
-          <Route path="presupuestos" element={<Suspense fallback={<PageLoader />}><PresupuestosPage /></Suspense>} />
+          <Route path="presupuestos" element={<Suspense fallback={<PageLoader />}><PresupuestosLayout /></Suspense>}>
+            <Route index element={<PresupuestosWizard />} />
+            <Route path="seleccion" element={<PresupuestosSeleccion />} />
+            <Route path="editor" element={<PresupuestosEditor />} />
+            <Route path="gestion" element={<PresupuestosGestion />} />
+            <Route path="pdf" element={<PresupuestosPdf />} />
+          </Route>
           <Route path="formacion"    element={<Suspense fallback={<PageLoader />}><FormacionInternaPage /></Suspense>} />
           <Route path="sonex"        element={<Suspense fallback={<PageLoader />}><SonexPage /></Suspense>} />
         </Route>

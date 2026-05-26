@@ -166,6 +166,15 @@
   line-height: 1.5;
 }
 
+:global([data-theme="dark"]) .consejo {
+  background: color-mix(in srgb, var(--blue-900) 60%, transparent);
+  border-left-color: var(--blue-600);
+}
+
+:global([data-theme="dark"]) .consejoLabel {
+  color: var(--blue-300);
+}
+
 /* Acciones */
 .acciones {
   display: flex;

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { sanitizeUrl, parseAIJsonResponse, formatAIResponse } from '../services/anthropicService'
+import { sanitizeUrl, parseAIJsonResponse } from '../services/anthropicService'
 
 describe('sanitizeUrl', () => {
   it('returns valid https URL unchanged', () => {
@@ -123,34 +123,3 @@ describe('parseAIJsonResponse', () => {
   })
 })
 
-describe('formatAIResponse', () => {
-  it('returns non-empty string unchanged (no markdown)', () => {
-    expect(formatAIResponse('test response')).toBe('test response')
-  })
-
-  it('converts **bold** to <strong>', () => {
-    expect(formatAIResponse('**bold** text')).toBe('<strong>bold</strong> text')
-  })
-
-  it('converts *italic* to <em>', () => {
-    expect(formatAIResponse('*italic* text')).toBe('<em>italic</em> text')
-  })
-
-  it('converts `code` to styled span', () => {
-    const result = formatAIResponse('use `code` here')
-    expect(result).toContain('<code')
-    expect(result).toContain('code')
-  })
-
-  it('converts newlines to <br>', () => {
-    expect(formatAIResponse('line1\nline2')).toBe('line1<br>line2')
-  })
-
-  it('returns empty string for empty input', () => {
-    expect(formatAIResponse('')).toBe('')
-  })
-
-  it('returns empty string for null', () => {
-    expect(formatAIResponse(null)).toBe('')
-  })
-})

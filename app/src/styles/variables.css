@@ -297,6 +297,8 @@ body {
   line-height: 1.5;
   color: var(--gray-800);
   background: var(--gray-50);
+  transition: background-color var(--duration-normal) var(--ease-out),
+              color var(--duration-normal) var(--ease-out);
 }
 
 a { color: var(--blue-600); text-decoration: none; transition: color var(--duration-fast) var(--ease-out); }
@@ -308,9 +310,30 @@ img { max-width: 100%; height: auto; display: block; }
 
 /* Scrollbar */
 ::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--gray-200); border-radius: var(--radius-full); }
+::-webkit-scrollbar-track { background: transparent; transition: background-color var(--duration-normal) var(--ease-out); }
+::-webkit-scrollbar-thumb { background: var(--gray-200); border-radius: var(--radius-full); transition: background-color var(--duration-normal) var(--ease-out); }
 ::-webkit-scrollbar-thumb:hover { background: var(--gray-300); }
+
+/* Logo adaptation for dark mode */
+[data-theme="dark"] img[src*="/logos/"] {
+  filter: brightness(0.9) contrast(1.1);
+  opacity: 0.85;
+  transition: filter var(--duration-normal) var(--ease-out), opacity var(--duration-normal) var(--ease-out);
+}
+
+/* Smooth transitions for theme-aware elements */
+[data-theme] {
+  transition: color-scheme var(--duration-normal) var(--ease-out);
+}
+
+/* Smooth theme transitions on variable-based properties */
+[data-theme="dark"] *,
+[data-theme="light"] * {
+  transition: background-color var(--duration-normal) var(--ease-out),
+              border-color var(--duration-normal) var(--ease-out),
+              box-shadow var(--duration-normal) var(--ease-out),
+              color var(--duration-normal) var(--ease-out);
+}
 
 /* Focus visible */
 :focus-visible { outline: 2px solid var(--blue-500); outline-offset: 2px; }

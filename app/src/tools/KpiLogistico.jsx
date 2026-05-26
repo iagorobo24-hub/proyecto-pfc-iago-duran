@@ -5,6 +5,7 @@ import { BarChart, Bar, LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContai
 import Button from '../components/ui/Button'
 import Input from '../components/ui/Input'
 import { useToast } from '../contexts/ToastContext'
+import { generarPDFKPICompleto } from '../utils/pdfGenerator'
 import styles from './KpiLogistico.module.css'
 
 const BENCHMARKS = {
@@ -38,6 +39,7 @@ export default function KPILogistico() {
   const [kpis, setKpis] = useState(null);
   const [informe, setInforme] = useState("");
   const [cargando, setCargando] = useState(false);
+  const [exportandoPDF, setExportandoPDF] = useState(false);
   const [tab, setTab] = useState("calculo");
 
   const cargarEjemplo = () => {
@@ -75,6 +77,17 @@ export default function KPILogistico() {
       setInforme(text || "Error al conectar."); guardarHistorial({ delegacion: datos.delegacion || "Delegación", turno: datos.turno, fecha: new Date().toISOString(), kpis: k, informe: text });
     } catch { setInforme("Error al conectar."); }
     setCargando(false);
+  };
+
+  const exportarPDF = async () => {
+    if (!kpis) return;
+    setExportandoPDF(true);
+    try {
+      await generarPDFKPICompleto({ kpis, datos, informe, BENCHMARKS });
+    } catch (err) {
+      console.error('Error exportando PDF:', err);
+    }
+    setExportandoPDF(false);
   };
 
   const datosGrafico = historial.slice(0, 7).reverse().map((h, i) => ({ name: `T${i + 1}`, pedidos_hora: parseFloat(h.kpis.pedidos_hora.toFixed(1)) }));
@@ -144,6 +157,11 @@ export default function KPILogistico() {
               <div className={styles.actionButtons}>
                 <Button variant="secondary" size="md" onClick={cargarEjemplo}>Cargar ejemplo</Button>
                 <Button variant="primary" size="md" onClick={calcular} loading={cargando}>Calcular KPIs e informe IA →</Button>
+                {kpis && (
+                  <Button variant="secondary" size="md" onClick={exportarPDF} loading={exportandoPDF}>
+                    📄 Exportar PDF
+                  </Button>
+                )}
               </div>
 
               {/* KPIs */}

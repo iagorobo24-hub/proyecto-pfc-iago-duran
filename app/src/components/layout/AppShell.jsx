@@ -1,9 +1,12 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Outlet, useLocation } from 'react-router-dom'
-import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Search } from 'lucide-react'
 import Topbar from './Topbar'
 import Sidebar from './Sidebar'
+import useKeyboardShortcuts from '../../hooks/useKeyboardShortcuts'
+import KeyboardShortcutsOverlay from './KeyboardShortcutsOverlay'
 import { safeGetItem, safeSetItem } from '../../utils/storage'
+import { trackEvent } from '../../hooks/useAnalytics'
 import styles from './AppShell.module.css'
 
 /* Hook para detectar si estamos en mobile/tablet */
@@ -28,6 +31,28 @@ export default function AppShell() {
   useEffect(() => {
     safeSetItem('Proyectos PFC_sidebar_collapsed', collapsed)
   }, [collapsed])
+
+  useEffect(() => {
+    trackPageView(location.pathname)
+    trackEvent('herramienta', 'apertura', location.pathname)
+  }, [location.pathname])
+
+  const [shortcutsVisible, setShortcutsVisible] = useState(false)
+  const [searchVisible, setSearchVisible] = useState(false)
+  const searchRef = useRef(null)
+
+  useKeyboardShortcuts({
+    onToggleSidebar: () => setCollapsed(c => !c),
+    onToggleShortcuts: () => setShortcutsVisible(v => !v),
+    onSearch: () => setSearchVisible(true),
+    shortcutsVisible,
+  })
+
+  useEffect(() => {
+    if (searchVisible && searchRef.current) {
+      searchRef.current.focus()
+    }
+  }, [searchVisible])
 
   return (
     <div
@@ -56,6 +81,30 @@ export default function AppShell() {
         {/* KEY basada en location fuerza a React a reiniciar el componente al cambiar de ruta */}
         <Outlet key={location.pathname} />
       </main>
+
+      {shortcutsVisible && (
+        <KeyboardShortcutsOverlay onClose={() => setShortcutsVisible(false)} />
+      )}
+
+      {searchVisible && (
+        <div className={styles.searchOverlay} onClick={() => setSearchVisible(false)}>
+          <div className={styles.searchPanel} onClick={e => e.stopPropagation()}>
+            <div className={styles.searchInputWrap}>
+              <Search size={18} className={styles.searchIcon} />
+              <input
+                ref={searchRef}
+                type="text"
+                className={styles.searchInput}
+                placeholder="Buscar productos, referencias, herramientas..."
+                onKeyDown={e => {
+                  if (e.key === 'Escape') setSearchVisible(false)
+                }}
+              />
+            </div>
+            <p className={styles.searchHint}>Escribe para buscar. Pulsa <kbd className={styles.searchKbd}>Esc</kbd> para cerrar.</p>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

@@ -101,9 +101,13 @@ export function useSonex() {
       ...nuevoMensaje,
       timestamp: nuevoMensaje.timestamp instanceof Date ? nuevoMensaje.timestamp : new Date(),
     };
-    const updatedMessages = [...messages, msgNormalizado].slice(-100);
-    setMessages(updatedMessages);
-    saveCurrentMessages(updatedMessages);
+    const exists = messages.find(m => m.id === msgNormalizado.id);
+    const updatedMessages = exists
+      ? messages.map(m => m.id === msgNormalizado.id ? msgNormalizado : m)
+      : [...messages, msgNormalizado];
+    const trimmed = updatedMessages.slice(-100);
+    setMessages(trimmed);
+    saveCurrentMessages(trimmed);
   }, [messages, saveCurrentMessages]);
 
   const createNewSession = useCallback(() => {

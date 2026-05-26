@@ -12,6 +12,8 @@ import FloatingParticles from './FloatingParticles';
 import SimpleFooter from './SimpleFooter';
 import FeaturesMini from './FeaturesMini';
 import AnimatedBackground from './AnimatedBackground';
+import TestimoniosSection from './TestimoniosSection';
+import ComparativaSection from './ComparativaSection';
 import styles from './styles/HeroContainer.module.css';
 import transitions from './styles/SectionTransitions.module.css';
 
@@ -57,6 +59,16 @@ const HeroContainer = () => {
 
       {/* 7 Tools Showcase */}
       <section id="herramientas"><ToolsShowcase /></section>
+
+      <SectionBreak />
+
+      {/* Testimonios */}
+      <TestimoniosSection />
+
+      <SectionBreak />
+
+      {/* Before vs After Comparison */}
+      <ComparativaSection />
 
       <SectionBreak />
 

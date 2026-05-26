@@ -1,6 +1,7 @@
 import Badge from '../ui/Badge'
 import Button from '../ui/Button'
 import styles from './TarjetaFicha.module.css'
+import { renderMarkdown } from '../../utils/markdown'
 
 /* TarjetaFicha — muestra la ficha técnica completa de un producto */
 export default function TarjetaFicha({ resultado, onCopiar, onComparar, onPresupuesto }) {
@@ -80,7 +81,7 @@ export default function TarjetaFicha({ resultado, onCopiar, onComparar, onPresup
       {/* Consejo técnico */}
       <div className={styles.consejo}>
         <div className={styles.consejoLabel}>◈ Consejo técnico</div>
-        <div className={styles.consejoTexto}>{resultado.consejo_tecnico}</div>
+        <div className={styles.consejoTexto} dangerouslySetInnerHTML={{ __html: renderMarkdown(resultado.consejo_tecnico) }} />
       </div>
 
       {/* Disclaimer */}

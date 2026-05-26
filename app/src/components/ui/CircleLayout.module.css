@@ -733,3 +733,16 @@
 :global([data-theme="dark"]) .refCard__imageFallback {
   background: var(--gray-100);
 }
+
+:global([data-theme="dark"]) .tipCard {
+  background: color-mix(in srgb, var(--blue-900) 60%, transparent);
+  border-color: var(--blue-800);
+}
+
+:global([data-theme="dark"]) .tipCard__label {
+  color: var(--blue-300);
+}
+
+:global([data-theme="dark"]) .tipCard__text {
+  color: var(--color-text-secondary);
+}

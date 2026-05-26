@@ -6,6 +6,12 @@
   max-width: 900px;
   margin: 0 auto;
   padding: var(--space-4);
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.virtualSection {
+  width: 100%;
 }
 
 .section {

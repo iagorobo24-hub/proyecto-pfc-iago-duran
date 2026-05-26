@@ -1,0 +1,191 @@
+.card {
+  background: var(--color-surface);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-8);
+  margin-top: var(--space-6);
+  box-shadow: var(--shadow-sm);
+  width: 100%;
+  max-width: 640px;
+}
+
+.imageWrap {
+  margin-bottom: var(--space-6);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 180px;
+  max-height: 280px;
+}
+
+.image {
+  width: 100%;
+  height: auto;
+  max-height: 280px;
+  object-fit: contain;
+  object-position: center;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--space-6);
+}
+
+.badge {
+  display: inline-flex;
+  padding: 2px 10px;
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--color-brand);
+  background: var(--color-bg);
+  border-radius: var(--radius-full);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border: 1px solid var(--color-border);
+}
+
+.refCode {
+  font-family: var(--font-mono);
+  font-size: var(--text-2xl);
+  font-weight: 600;
+  color: var(--color-text);
+  margin-top: var(--space-2);
+}
+
+.desc {
+  font-size: var(--text-md);
+  color: var(--color-text-secondary);
+  margin-top: var(--space-2);
+}
+
+.priceBlock {
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.priceValue {
+  font-family: var(--font-display);
+  font-size: var(--text-3xl);
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.priceLabel {
+  font-size: var(--text-xs);
+  color: var(--color-text-tertiary);
+}
+
+.specs {
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-6);
+}
+
+.spec {
+  padding: var(--space-2) var(--space-4);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  flex: 1;
+  min-width: 120px;
+}
+
+.specLabel {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--color-text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 2px;
+}
+
+.specValue {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.actions {
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  border-top: 1px solid var(--color-border);
+  padding-top: var(--space-6);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-5);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all 0.2s var(--ease-out);
+  border: none;
+  font-family: inherit;
+}
+
+.btnPrimary {
+  background: var(--color-brand);
+  color: var(--white);
+}
+
+.btnPrimary:hover {
+  opacity: 0.9;
+}
+
+.btnSecondary {
+  background: var(--color-bg);
+  color: var(--color-text);
+  border: 1.5px solid var(--color-border);
+}
+
+.btnSecondary:hover {
+  border-color: var(--color-brand);
+  color: var(--color-brand);
+}
+
+.btnGhost {
+  background: transparent;
+  color: var(--color-text-secondary);
+  border: 1.5px solid transparent;
+}
+
+.btnGhost:hover {
+  color: var(--color-text);
+}
+
+:global([data-theme="dark"]) .card {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+}
+
+:global([data-theme="dark"]) .badge {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+  color: var(--color-brand);
+}
+
+:global([data-theme="dark"]) .spec {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+}
+
+:global([data-theme="dark"]) .btnSecondary {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+  color: var(--color-text);
+}
+
+:global([data-theme="dark"]) .btnGhost {
+  color: var(--color-text-tertiary);
+}

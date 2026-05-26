@@ -2,9 +2,11 @@ import { useState } from "react";
 import { useNavigate } from 'react-router-dom'
 import { Clock, Plus, Trash2, MessageSquare, ChevronLeft } from 'lucide-react'
 import catalogService from '../services/catalogService'
+import { renderMarkdown } from '../utils/markdown'
 import { FULL_CATEGORY_INFO } from '../data/categoryMapping'
 import { useToast } from '../contexts/ToastContext'
 import { useSonex } from '../hooks/useSonex'
+import { trackEvent } from '../hooks/useAnalytics'
 import styles from './Sonex.module.css'
 
 const CATEGORIAS = Object.keys(FULL_CATEGORY_INFO).map(key => ({
@@ -34,29 +36,6 @@ export default function Sonex() {
   } = useSonex();
   const [view, setView] = useState('chat');
 
-  const procesarMarkdown = (texto) => {
-    if (!texto) return [];
-    const lineas = texto.split('\n');
-    const elementos = [];
-    let keyCounter = 0;
-    const procesarNegritas = (txt) => {
-      if (!txt?.includes('**')) return txt;
-      const partes = txt.split('**');
-      return partes.map((p, i) => i % 2 === 1 ? <strong key={i} style={{ fontWeight: '600' }}>{p}</strong> : p);
-    };
-    lineas.forEach((linea) => {
-      const key = keyCounter++;
-      if (!linea.trim()) { elementos.push(<div key={key} style={{ height: '6px' }} />); return; }
-      if (linea.startsWith('### ')) { elementos.push(<div key={key} style={{ fontSize: '13px', fontWeight: '700', color: 'var(--gray-800)', marginTop: '10px', marginBottom: '4px' }}>{linea.replace('### ', '')}</div>); return; }
-      if (linea.startsWith('## ')) { elementos.push(<div key={key} style={{ fontSize: '14px', fontWeight: '700', color: 'var(--gray-800)', marginTop: '12px', marginBottom: '4px' }}>{linea.replace('## ', '')}</div>); return; }
-      if (linea.trim() === '---') { elementos.push(<hr key={key} style={{ border: 'none', borderTop: '1px solid var(--gray-100)', margin: '8px 0' }} />); return; }
-      if (linea.match(/^[-*] /)) { elementos.push(<div key={key} style={{ display: 'flex', gap: '6px', marginBottom: '2px', alignItems: 'flex-start' }}><span style={{ color: 'var(--blue-800)', flexShrink: 0, marginTop: '2px' }}>—</span><span style={{ fontSize: '13px', color: 'var(--gray-600)', lineHeight: '1.5' }}>{procesarNegritas(linea.replace(/^[-*] /, ''))}</span></div>); return; }
-      if (linea.match(/^\d+\. /)) { elementos.push(<div key={key} style={{ display: 'flex', gap: '6px', marginBottom: '2px', alignItems: 'flex-start' }}><span style={{ color: 'var(--blue-800)', flexShrink: 0, fontSize: '11px', fontWeight: '700', minWidth: '16px', marginTop: '2px' }}>{linea.match(/^(\d+)\./)[1]}.</span><span style={{ fontSize: '13px', color: 'var(--gray-600)', lineHeight: '1.5' }}>{procesarNegritas(linea.replace(/^\d+\. /, ''))}</span></div>); return; }
-      elementos.push(<div key={key} style={{ fontSize: '13px', color: 'var(--gray-600)', lineHeight: '1.6', marginBottom: '2px' }}>{procesarNegritas(linea)}</div>);
-    });
-    return elementos;
-  };
-
   const extraerReferencias = async (texto) => {
     if (!texto) return [];
     
@@ -78,25 +57,24 @@ export default function Sonex() {
     }
   };
 
-  const irAFicha = (referencia) => { navigate(`/fichas?ref=${encodeURIComponent(referencia)}`); toast.show(`Abriendo ficha de ${referencia}`, 'success'); };
-  const irAPresupuesto = (item) => { navigate(`/presupuestos?${new URLSearchParams({ producto: item.desc, referencia: item.ref })}`); toast.show(`${item.ref} añadido al presupuesto`, 'success'); };
+  const irAFicha = (referencia) => { navigate(`/app/fichas?ref=${encodeURIComponent(referencia)}`); toast.show(`Abriendo ficha de ${referencia}`, 'success'); };
+  const irAPresupuesto = (item) => { navigate(`/app/presupuestos?${new URLSearchParams({ producto: item.desc, referencia: item.ref })}`); toast.show(`${item.ref} añadido al presupuesto`, 'success'); };
 
-  const generarRespuestaIA = async (userMessage) => {
-    try {
-      const { callAnthropicAI } = await import('../services/anthropicService');
+  const [streamingText, setStreamingText] = useState('');
 
-      const modoInstrucciones = {
-        busqueda: 'Modo BÚSQUEDA activado. Responde con referencias técnicas exactas, especificaciones detalladas y datos concretos de productos. Prioriza códigos de referencia, secciones, materiales y rangos de operación. Sé preciso y directo.',
-        comparativa: 'Modo COMPARATIVA activado. Organiza la respuesta en tablas comparativas con pros y contras. Destaca diferencias técnicas clave, rendimiento, precio relativo y caso de uso ideal para cada opción. Concluye con una recomendación clara.',
-        asistencia: 'Modo ASISTENCIA activado. Actúa como asesor técnico: escucha la necesidad, valora el contexto de instalación, sugiere la solución más adecuada y explica por qué. Ofrece alternativas viables y consejos de montaje o compatibilidad.',
-        formacion: 'Modo FORMACIÓN activado. Explica conceptos técnicos de forma didáctica y estructurada. Incluye normativa aplicable (REBT, UNE), pasos de instalación, esquemas conceptuales y buenas prácticas. Usa un tono pedagógico pero profesional.',
-      };
+  const buildSystemPrompt = () => {
+    const modoInstrucciones = {
+      busqueda: 'Modo BÚSQUEDA activado. Responde con referencias técnicas exactas, especificaciones detalladas y datos concretos de productos. Prioriza códigos de referencia, secciones, materiales y rangos de operación. Sé preciso y directo.',
+      comparativa: 'Modo COMPARATIVA activado. Organiza la respuesta en tablas comparativas con pros y contras. Destaca diferencias técnicas clave, rendimiento, precio relativo y caso de uso ideal para cada opción. Concluye con una recomendación clara.',
+      asistencia: 'Modo ASISTENCIA activado. Actúa como asesor técnico: escucha la necesidad, valora el contexto de instalación, sugiere la solución más adecuada y explica por qué. Ofrece alternativas viables y consejos de montaje o compatibilidad.',
+      formacion: 'Modo FORMACIÓN activado. Explica conceptos técnicos de forma didáctica y estructurada. Incluye normativa aplicable (REBT, UNE), pasos de instalación, esquemas conceptuales y buenas prácticas. Usa un tono pedagógico pero profesional.',
+    };
 
-      const categoriaTexto = categoriaActiva
-        ? `\nEl usuario consulta desde la categoría: ${categoriaActiva}. Enfoca tu respuesta en productos y soluciones de esta familia técnica.`
-        : '';
+    const categoriaTexto = categoriaActiva
+      ? `\nEl usuario consulta desde la categoría: ${categoriaActiva}. Enfoca tu respuesta en productos y soluciones de esta familia técnica.`
+      : '';
 
-      const systemPrompt = `Eres SONEX, un técnico superior del sector eléctrico con 20 años de experiencia en instalaciones industriales, automatización, domótica, climatización y energías renovables. Tu conocimiento abarca normativa vigente (REBT, UNE, IEC), productos de material eléctrico, sistemas de control y herramientas de medición.
+    return `Eres SONEX, un técnico superior del sector eléctrico con 20 años de experiencia en instalaciones industriales, automatización, domótica, climatización y energías renovables. Tu conocimiento abarca normativa vigente (REBT, UNE, IEC), productos de material eléctrico, sistemas de control y herramientas de medición.
 
 Directrices obligatorias:
 - Responde siempre con rigor técnico y lenguaje profesional.
@@ -107,35 +85,48 @@ Directrices obligatorias:
 - Usa un tono formal pero cercano, como un compañero experto al que se le consulta en el mostrador técnico.
 
 ${modoInstrucciones[modoActivo] || modoInstrucciones.busqueda}${categoriaTexto}`;
-      
-      const { text } = await callAnthropicAI({ 
-        provider: 'openrouter',
-        model: "anthropic/claude-3.5-haiku",
-        max_tokens: 1000, 
-        system: systemPrompt, 
-        messages: [{ role: "user", content: userMessage }] 
-      });
-      
-      return text || "Lo siento, no pude procesar tu consulta.";
-    } catch (error) {
-      console.error("Sonex AI Error:", error);
-      return `Error: ${error.message || "No se pudo conectar con SONEX. Por favor, revisa la consola para más detalles."}`;
-    }
   };
 
   const handleSendMessage = async () => {
     if (!input.trim() || isLoading) return;
     const userMessage = input.trim();
     setInput("");
-    guardarMensaje({ id: Date.now(), role: "user", content: userMessage, timestamp: new Date() });
+    const userMsgId = Date.now();
+    guardarMensaje({ id: userMsgId, role: "user", content: userMessage, timestamp: new Date() });
     setIsLoading(true);
+    setStreamingText('');
+
+    trackEvent('ia', 'consulta', modoActivo, userMessage.length)
     try {
-      const aiResponse = await generarRespuestaIA(userMessage);
-      const refs = await extraerReferencias(aiResponse);
-      const aiMsg = { id: Date.now() + 1, role: "assistant", content: aiResponse, timestamp: new Date(), referencias: refs };
-      guardarMensaje(aiMsg);
-      if (aiMsg.referencias.length > 0) setRefsTurno(prev => [...prev, ...aiMsg.referencias]);
-    } catch (error) { toast.show("Error al procesar la consulta"); }
+      const { callAnthropicAIStream } = await import('../services/anthropicService');
+      const aiMsgId = userMsgId + 1;
+
+      guardarMensaje({ id: aiMsgId, role: "assistant", content: '', timestamp: new Date(), referencias: [] });
+
+      let fullText = '';
+      await callAnthropicAIStream(
+        {
+          provider: 'openrouter',
+          model: "anthropic/claude-3.5-haiku",
+          max_tokens: 1000,
+          system: buildSystemPrompt(),
+          messages: [{ role: "user", content: userMessage }]
+        },
+        (chunk) => {
+          fullText += chunk;
+          setStreamingText(fullText);
+        }
+      );
+
+      const refs = await extraerReferencias(fullText);
+      guardarMensaje({ id: aiMsgId, role: "assistant", content: fullText, timestamp: new Date(), referencias: refs });
+      if (refs.length > 0) setRefsTurno(prev => [...prev, ...refs]);
+      setStreamingText('');
+    } catch (error) {
+      trackEvent('ia', 'error', modoActivo, error?.message || 'unknown')
+      toast.show("Error al procesar la consulta");
+      setStreamingText('');
+    }
     setIsLoading(false);
   };
 
@@ -270,12 +261,15 @@ ${modoInstrucciones[modoActivo] || modoInstrucciones.busqueda}${categoriaTexto}`
               )}
             </div>
           ) : (
-            messages.map((message) => (
+            messages.map((message, idx) => {
+              const isLastAssistant = idx === messages.length - 1 && message.role === 'assistant' && !message.content && streamingText;
+              const displayContent = isLastAssistant ? streamingText : message.content;
+              return (
               <div key={message.id} className={`${styles.message} ${message.role === 'user' ? styles['message--user'] : ''}`}>
                 <div className={styles.message__avatar}>{message.role === 'user' ? 'T' : 'S'}</div>
                 <div className={styles.message__content}>
                   <div className={`${styles.message__bubble} ${message.role}`}>
-                    {message.role === 'user' ? message.content : procesarMarkdown(message.content)}
+                    {message.role === 'user' ? displayContent : <div className={styles.markdownContent} dangerouslySetInnerHTML={{ __html: renderMarkdown(displayContent) }} />}
                   </div>
                   {message.role === 'assistant' && message.referencias && message.referencias.length > 0 && (
                     <div className={styles.messageRefs}>
@@ -291,13 +285,14 @@ ${modoInstrucciones[modoActivo] || modoInstrucciones.busqueda}${categoriaTexto}`
                       ))}
                     </div>
                   )}
-                  <div className={styles.message__time}>{message.timestamp.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}</div>
+                    <div className={styles.message__time}>{message.timestamp.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}</div>
                 </div>
               </div>
-            ))
+              );
+            })
           )}
 
-          {isLoading && (
+          {isLoading && !streamingText && (
             <div className={styles.message}>
               <div className={styles.message__avatar} style={{ background: 'var(--blue-800)', color: 'var(--white)' }}>S</div>
               <div className={styles.message__content}>
@@ -305,7 +300,7 @@ ${modoInstrucciones[modoActivo] || modoInstrucciones.busqueda}${categoriaTexto}`
                   <div className={styles.loadingDots}>
                     {[0, 1, 2].map(i => <div key={i} className={styles.loadingDots__dot} />)}
                   </div>
-                  <span style={{ fontSize: '12px', color: 'var(--gray-400)', fontStyle: 'italic', marginLeft: '8px' }}>SONEX está pensando...</span>
+                  <span style={{ fontSize: '12px', color: 'var(--gray-400)', fontStyle: 'italic', marginLeft: '8px' }}>SONEX está escribiendo...</span>
                 </div>
               </div>
             </div>

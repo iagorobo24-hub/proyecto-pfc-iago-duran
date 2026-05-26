@@ -47,9 +47,9 @@ export default async function handler(req, res) {
   }
 
   try {
-    const { provider = DEFAULT_PROVIDER, model = DEFAULT_MODEL, messages, system, max_tokens = 1000, temperature = 0.7 } = req.body;
+    const { provider = DEFAULT_PROVIDER, model = DEFAULT_MODEL, messages, system, max_tokens = 1000, temperature = 0.7, stream = false } = req.body;
 
-    console.log('[AI API] Provider:', provider, 'Model:', model);
+    console.log('[AI API] Provider:', provider, 'Model:', model, 'Stream:', stream);
 
     // Get API key based on provider
     let apiKey;
@@ -123,6 +123,57 @@ export default async function handler(req, res) {
     }
 
     console.log('[AI API] Calling:', endpoint);
+
+    if (stream) {
+      body.stream = true;
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(body)
+      });
+
+      if (!response.ok) {
+        const errData = await response.json().catch(() => ({}));
+        console.error('[AI API] Stream error:', errData);
+        res.setHeader('Content-Type', 'application/json');
+        return res.status(response.status).json(errData);
+      }
+
+      res.setHeader('Content-Type', 'text/event-stream');
+      res.setHeader('Cache-Control', 'no-cache');
+      res.setHeader('Connection', 'keep-alive');
+      res.flushHeaders();
+
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = '';
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+        const lines = buffer.split('\n');
+        buffer = lines.pop() || '';
+        for (const line of lines) {
+          if (line.startsWith('data: ')) {
+            const dataStr = line.slice(6).trim();
+            if (dataStr === '[DONE]') continue;
+            try {
+              const parsed = JSON.parse(dataStr);
+              const content = parsed.choices?.[0]?.delta?.content || parsed.choices?.[0]?.text || '';
+              if (content) {
+                res.write(`data: ${JSON.stringify({ content })}\n\n`);
+              }
+            } catch {
+              // skip malformed JSON lines
+            }
+          }
+        }
+      }
+
+      res.write(`data: ${JSON.stringify({ done: true })}\n\n`);
+      return res.end();
+    }
 
     const response = await fetch(endpoint, {
       method: 'POST',

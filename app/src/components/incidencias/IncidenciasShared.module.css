@@ -1,0 +1,18 @@
+.badge {
+  display: inline-flex;
+  padding: 2px 8px;
+  font-size: var(--text-xs);
+  font-weight: 600;
+  border-radius: var(--radius-full);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.badge--critica { color: var(--error); background: var(--error-soft); }
+.badge--alta { color: var(--warning); background: var(--warning-soft); }
+.badge--media { color: var(--blue-800); background: var(--blue-50); }
+.badge--baja { color: var(--success); background: var(--success-soft); }
+.badge--abierta { color: var(--error); background: var(--error-soft); }
+.badge--diagnostico { color: var(--warning); background: var(--warning-soft); }
+.badge--resuelta { color: var(--success); background: var(--success-soft); }
+.badge--escalada { color: var(--error); background: var(--error-soft); }

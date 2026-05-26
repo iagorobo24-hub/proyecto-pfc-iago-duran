@@ -1,13 +1,15 @@
 import { useState, useEffect, useRef } from "react";
-import { Warehouse } from 'lucide-react';
 import Button from '../components/ui/Button'
-import { Label, TipCard, Breadcrumb, ViewToggle } from '../components/ui/CircleLayout'
 import useMemoriaUsuario from '../hooks/useMemoriaUsuario'
+import useSimuladorMultijugador from '../hooks/useSimuladorMultijugador'
+import SimuladorPerfil from '../components/simulador/SimuladorPerfil'
+import SimuladorOnboarding from '../components/simulador/SimuladorOnboarding'
+import SimuladorEtapa from '../components/simulador/SimuladorEtapa'
+import SimuladorResultados from '../components/simulador/SimuladorResultados'
+import SalaMultijugador from '../components/simulador/SalaMultijugador'
+import RankingMultijugador from '../components/simulador/RankingMultijugador'
 import styles from './SimuladorAlmacen.module.css'
 
-
-
-// ── Datos del simulador ──────────────────────────────────────────────────────
 const ETAPAS = [
   { id: 0, nombre: "Recepción",    icono: "📥", desc: "Verificación de albarán y conteo de bultos",        estandar: 60  },
   { id: 1, nombre: "Ubicación",    icono: "📦", desc: "Transporte e introducción en ubicación WMS",        estandar: 90  },
@@ -29,7 +31,6 @@ const PEDIDOS_DEMO = [
   { id: 5, producto: "Cable RVK 3x2.5mm²",    referencia: "RVK-3X2.5-100", categoria: "Cable",        cantidad: 5, cliente: "Obra polígono Grela",     urgente: false, dificultad: "Básico"      },
 ];
 
-// ── Banco de 15 incidencias ──────────────────────────────────────────────────
 const INCIDENCIAS = [
   { id: "INC-01", etapa: 0, titulo: "Discrepancia en el albarán", descripcion: "El albarán indica 3 unidades pero en el pallet solo hay 2.", opciones: [
     { texto: "Registrar con 2 unidades y abrir incidencia al proveedor", correcto: true, feedback: "Correcto. Se registra lo recibido realmente y se notifica la discrepancia." },
@@ -66,7 +67,6 @@ const INCIDENCIAS = [
   ]},
 ];
 
-// ── Helpers ──────────────────────────────────────────────────────────────────
 const fmtT = (s) => s < 60 ? `${s}s` : `${Math.floor(s / 60)}m ${s % 60}s`;
 const getEstandar = (etapaId, categoria) => etapaId === 2 ? (ESTANDAR_PICKING[categoria] || 75) : ETAPAS[etapaId].estandar;
 const getSemaforo = (t, est) => {
@@ -89,13 +89,16 @@ const PROMPT_ANALISIS = (pedido, tiempos, categoria, incResueltas, operario) => 
   return `Eres el responsable de logística de la empresa. Analiza la sesión.\nOperario: ${operario || "Anónimo"}\nPedido: ${pedido.producto} (${pedido.referencia})\n\nTiempos:\n${ETAPAS.map((e, i) => `- ${e.nombre}: ${tiempos[i]}s (est: ${estandares[i]}s, ${desv[i] > 0 ? "+" : ""}${desv[i]}%)`).join("\n")}\nTotal: ${tiempos.reduce((a, b) => a + b, 0)}s\nIncidencias: ${incResueltas.length} presentadas${incFalladas.length > 0 ? `, ${incFalladas.length} falladas` : ", todas correctas"}.\n\n3 párrafos: (1) rendimiento por etapa con tiempos, (2) gestión de incidencias, (3) recomendación accionable. Tono constructivo.`;
 };
 
-// ── Componente principal ──────────────────────────────────────────────────────
 export default function SimuladorAlmacen() {
   const memoria = useMemoriaUsuario()
   const [historial, setHistorial] = memoria.simulador.historial.use()
   const [pantalla, setPantalla] = useState("perfil");
   const [operario, setOperario] = memoria.simulador.perfil.use()
   const [modoSim, setModoSim] = useState("entrenamiento");
+  const [modoJuego, setModoJuego] = useState("solo");
+  const multiplayer = useSimuladorMultijugador(operario)
+
+  const isMultiplayer = modoJuego === "multijugador" && multiplayer.roomCode
   const [pedidoActivo, setPedidoActivo] = useState(null);
   const [etapaActual, setEtapaActual] = useState(0);
   const [tiempos, setTiempos] = useState([]);
@@ -104,8 +107,6 @@ export default function SimuladorAlmacen() {
   const [analisis, setAnalisis] = useState("");
   const [cargando, setCargando] = useState(false);
   const [mostrarHistorial, setMostrarHistorial] = useState(false);
-  const [modoManual, setModoManual] = useState(false);
-  const [formManual, setFormManual] = useState({ producto: "", referencia: "", categoria: "Contactor", cantidad: "1", cliente: "" });
   const [toast, setToast] = useState("");
   const [incActiva, setIncActiva] = useState(null);
   const [incResueltas, setIncResueltas] = useState([]);
@@ -114,6 +115,7 @@ export default function SimuladorAlmacen() {
 
   const intervalRef = useRef(null);
   const inicioEtapaRef = useRef(null);
+  const [puntuacionPropia, setPuntuacionPropia] = useState(0);
 
   const guardarPerfil = () => { if (!operario.nombre.trim()) return; setOperario(operario); setPantalla("onboarding"); };
   const showToast = (msg) => { setToast(msg); setTimeout(() => setToast(""), 2500); };
@@ -136,7 +138,7 @@ export default function SimuladorAlmacen() {
   };
 
   const iniciarSimulacion = (pedido, modo) => {
-    setPedidoActivo(pedido); setModoSim(modo); setEtapaActual(0); setTiempos([]); setLog([]); setAnalisis(""); setIncResueltas([]); setIncActiva(null); setFeedbackInc(null); setIncPendientes(sortearIncidencias());
+    setPedidoActivo(pedido); setModoSim(modo); setEtapaActual(0); setTiempos([]); setLog([]); setAnalisis(""); setIncResueltas([]); setIncActiva(null); setFeedbackInc(null); setIncPendientes(sortearIncidencias()); setPuntuacionPropia(0);
     addLog(`▶ Pedido: ${pedido.producto} [${modo === "evaluacion" ? "EVALUACIÓN" : "ENTRENAMIENTO"}]`); setPantalla("simulacion");
   };
 
@@ -161,6 +163,10 @@ export default function SimuladorAlmacen() {
     setTiempos(prev => [...prev, tiempo]);
     addLog(`✓ ${ETAPAS[etapaActual].nombre}: ${fmtT(tiempo)}`);
     const siguiente = etapaActual + 1;
+    const totalTime = [...tiempos, tiempo].reduce((a, b) => a + b, 0);
+    if (isMultiplayer && multiplayer.actualizarProgreso) {
+      multiplayer.actualizarProgreso({ etapa: siguiente, puntuacion: calcPuntuacion([...tiempos, tiempo], pedidoActivo?.categoria, incResueltas), tiempoTotal: totalTime });
+    }
     if (siguiente < ETAPAS.length) {
       setEtapaActual(siguiente);
       if (intervalRef.current) clearInterval(intervalRef.current);
@@ -173,6 +179,10 @@ export default function SimuladorAlmacen() {
   const finalizarSimulacion = (ultimoTiempo) => {
     const todosTiempos = [...tiempos, ultimoTiempo];
     const punt = calcPuntuacion(todosTiempos, pedidoActivo.categoria, incResueltas);
+    setPuntuacionPropia(punt);
+    if (isMultiplayer && multiplayer.finalizarPartida) {
+      multiplayer.finalizarPartida({ puntuacion: punt, tiempoTotal: todosTiempos.reduce((a, b) => a + b, 0) });
+    }
     const nuevaEntrada = { fecha: new Date().toISOString(), pedido: pedidoActivo, tiempos: todosTiempos, puntuacion: punt, incResueltas, operario: operario.nombre, modo: modoSim };
     const nuevoHistorial = [nuevaEntrada, ...historial].slice(0, 20);
     setHistorial(nuevoHistorial);
@@ -202,11 +212,6 @@ export default function SimuladorAlmacen() {
   const resetear = () => { setPantalla("onboarding"); setPedidoActivo(null); setTiempos([]); setIncResueltas([]); setIncActiva(null); setFeedbackInc(null); setAnalisis(""); };
   const verHistorial = (entrada) => { setPedidoActivo(entrada.pedido); setTiempos(entrada.tiempos); setIncResueltas(entrada.incResueltas || []); setPantalla("resultado"); setMostrarHistorial(false); };
 
-  const dificultadBadge = (d) => {
-    const map = { "Básico": "badge--basico", "Intermedio": "badge--intermedio", "Avanzado": "badge--avanzado" };
-    return <span className={`${styles.badge} ${styles[map[d]] || ''}`}>{d}</span>;
-  };
-
   const estandarActual = getEstandar(etapaActual, pedidoActivo?.categoria);
   const semaforoActual = estandarActual ? getSemaforo(tiempoEtapa, estandarActual) : null;
   const puntuacionActual = calcPuntuacion(tiempos, pedidoActivo?.categoria, incResueltas);
@@ -216,7 +221,6 @@ export default function SimuladorAlmacen() {
       <main className={styles.main}>
         <div className={styles.main__content}>
 
-          {/* Header */}
           <div className={styles.pageHeader}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', marginBottom: '8px' }}>
               <span style={{ fontSize: '2rem' }}>🏭</span>
@@ -225,249 +229,122 @@ export default function SimuladorAlmacen() {
             <p className={styles.pageSubtitle}>Reproduce el ciclo completo de un pedido con incidencias reales</p>
           </div>
 
-          {/* ── PERFIL ── */}
           {pantalla === "perfil" && (
-            <div className={styles.circleLayout}>
-              <div className={styles.formCard}>
-                <div className={styles.formCard__header}>
-                  <div className={styles.formCard__icon} aria-hidden="true">👤</div>
-                  <h2 className={styles.formCard__title}>Perfil del operario</h2>
-                  <p className={styles.formCard__subtitle}>Introduce tus datos para comenzar la simulación</p>
-                </div>
-                <div className={styles.formCard__group}>
-                  <label className={styles.formCard__label} htmlFor="sim-nombre">Nombre</label>
-                  <input
-                    id="sim-nombre"
-                    className={styles.formCard__input}
-                    value={operario.nombre}
-                    onChange={e => setOperario(p => ({ ...p, nombre: e.target.value }))}
-                    placeholder="Tu nombre"
-                  />
-                </div>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
-                  <div className={styles.formCard__group}>
-                    <label className={styles.formCard__label} htmlFor="sim-turno">Turno</label>
-                    <select
-                      id="sim-turno"
-                      className={styles.formCard__select}
-                      value={operario.turno}
-                      onChange={e => setOperario(p => ({ ...p, turno: e.target.value }))}
-                    >
-                      <option>Mañana</option><option>Tarde</option><option>Noche</option>
-                    </select>
-                  </div>
-                  <div className={styles.formCard__group}>
-                    <label className={styles.formCard__label} htmlFor="sim-area">Área</label>
-                    <select
-                      id="sim-area"
-                      className={styles.formCard__select}
-                      value={operario.area}
-                      onChange={e => setOperario(p => ({ ...p, area: e.target.value }))}
-                    >
-                      <option>Almacén</option><option>Expedición</option><option>Recepción</option>
-                    </select>
-                  </div>
-                </div>
-                <Button variant="primary" size="md" onClick={guardarPerfil} className={styles.formCard__btn}>
-                  Iniciar simulación →
-                </Button>
-              </div>
-            </div>
+            <SimuladorPerfil
+              operario={operario}
+              setOperario={setOperario}
+              guardarPerfil={guardarPerfil}
+            />
           )}
 
-          {/* ── ONBOARDING ── */}
-          {pantalla === "onboarding" && (
-            <div className={styles.circleLayout}>
-              <div style={{ textAlign: 'center', marginBottom: '24px' }}>
-                <span style={{ fontSize: '2rem' }}>📋</span>
-                <h2 style={{ fontSize: '1.25rem', fontWeight: 600, color: 'var(--gray-800)', marginBottom: '4px' }}>Hola, {operario.nombre}</h2>
-                <p style={{ fontSize: '0.875rem', color: 'var(--gray-400)' }}>Elige un modo de simulación</p>
+          {pantalla === "onboarding" && !multiplayer.partidaIniciada && (
+            <>
+              <div className={styles.modeToggle}>
+                <button
+                  className={`${styles.modeToggle__btn} ${modoJuego === 'solo' ? styles['modeToggle__btn--active'] : ''}`}
+                  onClick={() => setModoJuego('solo')}
+                >🎯 Solo</button>
+                <button
+                  className={`${styles.modeToggle__btn} ${modoJuego === 'multijugador' ? styles['modeToggle__btn--active'] : ''}`}
+                  onClick={() => setModoJuego('multijugador')}
+                >👥 Multijugador</button>
               </div>
 
-              <div className={styles.etapasGrid} style={{ gap: '12px' }}>
-                <button onClick={() => iniciarSimulacion(PEDIDOS_DEMO[0], "entrenamiento")} className={styles.etapaCard} style={{ minWidth: '240px' }}>
-                  <span style={{ fontSize: '2rem' }}>🎓</span>
-                  <span style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--gray-800)' }}>Entrenamiento</span>
-                  <span style={{ fontSize: '0.75rem', color: 'var(--gray-400)' }}>Con feedback inmediato</span>
-                </button>
-                <button onClick={() => iniciarSimulacion(PEDIDOS_DEMO[0], "evaluacion")} className={styles.etapaCard} style={{ minWidth: '240px' }}>
-                  <span style={{ fontSize: '2rem' }}>📝</span>
-                  <span style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--gray-800)' }}>Evaluación</span>
-                  <span style={{ fontSize: '0.75rem', color: 'var(--gray-400)' }}>Sin ayuda durante el proceso</span>
-                </button>
-              </div>
-
-              {/* Historial */}
-              {historial.length > 0 && (
-                <div style={{ marginTop: '32px', width: '100%', maxWidth: '600px' }}>
-                  <button onClick={() => setMostrarHistorial(!mostrarHistorial)} style={{ fontSize: '0.8125rem', fontWeight: 600, color: 'var(--gray-500)', background: 'none', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px', margin: '0 auto' }}>
-                    {mostrarHistorial ? '▲' : '▼'} Últimas simulaciones ({historial.length})
-                  </button>
-                  {mostrarHistorial && (
-                    <div className={styles.historialList} style={{ marginTop: '12px' }}>
-                      {historial.slice(0, 5).map((h, i) => (
-                        <button key={i} className={styles.historialItem} onClick={() => verHistorial(h)}>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <span style={{ fontSize: '0.875rem', fontWeight: 500 }}>{h.pedido.producto}</span>
-                            <span style={{ fontFamily: 'var(--font-display)', fontSize: '1.125rem', fontWeight: 700, color: 'var(--blue-800)' }}>{h.puntuacion}/100</span>
-                          </div>
-                          <div style={{ fontSize: '0.75rem', color: 'var(--gray-400)' }}>{new Date(h.fecha).toLocaleDateString('es-ES')} · {h.operario}</div>
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </div>
+              {modoJuego === 'solo' && (
+                <SimuladorOnboarding
+                  operario={operario}
+                  historial={historial}
+                  mostrarHistorial={mostrarHistorial}
+                  setMostrarHistorial={setMostrarHistorial}
+                  iniciarSimulacion={iniciarSimulacion}
+                  verHistorial={verHistorial}
+                  pedidosDemo={PEDIDOS_DEMO}
+                />
               )}
+
+              {modoJuego === 'multijugador' && (
+                <SalaMultijugador
+                  roomCode={multiplayer.roomCode}
+                  jugadores={multiplayer.jugadores}
+                  rol={multiplayer.rol}
+                  error={multiplayer.error}
+                  eventos={multiplayer.eventos}
+                  partidaIniciada={multiplayer.partidaIniciada}
+                  crearSala={multiplayer.crearSala}
+                  unirseSala={multiplayer.unirseSala}
+                  iniciarPartida={multiplayer.iniciarPartida}
+                  abandonarSala={multiplayer.abandonarSala}
+                />
+              )}
+            </>
+          )}
+
+          {pantalla === "onboarding" && multiplayer.partidaIniciada && (
+            <div className={styles.circleLayout} style={{ textAlign: 'center', padding: '40px 20px' }}>
+              <div style={{ fontSize: '2rem', marginBottom: '12px' }}>🎮</div>
+              <div style={{ fontSize: '1.125rem', fontWeight: 700, color: 'var(--color-text)', marginBottom: '8px' }}>
+                ¡Partida lista!
+              </div>
+              <p style={{ fontSize: '0.875rem', color: 'var(--color-text-secondary)', marginBottom: '20px' }}>
+                La simulación va a comenzar. Selecciona un pedido para empezar.
+              </p>
+              <SimuladorOnboarding
+                operario={operario}
+                historial={[]}
+                mostrarHistorial={false}
+                setMostrarHistorial={() => {}}
+                iniciarSimulacion={(pedido, modo) => { iniciarSimulacion(pedido, modo || 'evaluacion') }}
+                verHistorial={() => {}}
+                pedidosDemo={PEDIDOS_DEMO}
+              />
             </div>
           )}
 
-          {/* ── SIMULACIÓN ── */}
           {pantalla === "simulacion" && pedidoActivo && (
-            <div className={styles.circleLayout}>
-              {/* Timer + Etapa */}
-              <div className={styles.timer}>{fmtT(tiempoEtapa)}</div>
-
-              {semaforoActual && (
-                <span className={`${styles.badge} ${semaforoActual.label === "OK" ? 'badge--basico' : semaforoActual.label === "Lento" ? 'badge--intermedio' : 'badge--avanzado'}`}
-                  style={{ background: semaforoActual.bg, color: semaforoActual.color, padding: '4px 12px', fontSize: '0.75rem', fontWeight: 600, borderRadius: 'var(--radius-full)' }}>
-                  ● {semaforoActual.label}
-                </span>
-              )}
-
-              {/* Etapa actual */}
-              {!incActiva && !feedbackInc && (
-                <div className={styles.fichaCard} style={{ maxWidth: 600, width: '100%' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '24px' }}>
-                    <div>
-                      <div style={{ fontSize: '0.625rem', fontWeight: 600, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '4px' }}>ETAPA ACTIVA</div>
-                      <div style={{ fontSize: '2rem', marginBottom: '4px' }}>{ETAPAS[etapaActual].icono}</div>
-                      <div style={{ fontSize: '1.25rem', fontWeight: 700, color: 'var(--gray-800)' }}>{ETAPAS[etapaActual].nombre}</div>
-                      <div style={{ fontSize: '0.875rem', color: 'var(--gray-500)', marginTop: '4px' }}>{ETAPAS[etapaActual].desc}</div>
-                    </div>
-                    <div style={{ textAlign: 'right' }}>
-                      <div style={{ fontSize: '0.625rem', fontWeight: 600, color: 'var(--gray-400)', marginBottom: '4px' }}>ESTÁNDAR</div>
-                      <div style={{ fontSize: '1.125rem', fontWeight: 600, color: 'var(--gray-600)' }}>{estandarActual ? fmtT(estandarActual) : 'N/A'}</div>
-                    </div>
-                  </div>
-                  <Button variant="primary" size="md" onClick={avanzarEtapa} style={{ width: '100%' }}>
-                    {etapaActual < ETAPAS.length - 1 ? `Completar ${ETAPAS[etapaActual].nombre} →` : 'Completar ciclo ✓'}
-                  </Button>
-                </div>
-              )}
-
-              {/* Incidencia activa */}
-              {incActiva && !feedbackInc && (
-                <div className={styles.incidenciaCard}>
-                  <div className={styles.incidenciaCard__title}>⚡ {incActiva.titulo}</div>
-                  <div className={styles.incidenciaCard__desc}>{incActiva.descripcion}</div>
-                  <div className={styles.incidenciaCard__opciones}>
-                    {incActiva.opciones.map((op, i) => (
-                      <button key={i} className={styles.incidenciaCard__opcion} onClick={() => responderIncidencia(op)}>{op.texto}</button>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Feedback incidencia */}
-              {feedbackInc && (
-                <div className={`${styles.incidenciaCard__feedback} ${feedbackInc.correcto ? styles['incidenciaCard__feedback--correcto'] : styles['incidenciaCard__feedback--incorrecto']}`}
-                  style={{ padding: '20px', borderRadius: 'var(--radius-lg)', maxWidth: 600, width: '100%' }}>
-                  <div style={{ display: 'flex', gap: '10px', alignItems: 'center', marginBottom: '12px' }}>
-                    <span style={{ fontSize: '1.25rem' }}>{feedbackInc.correcto ? '✅' : '⚠️'}</span>
-                    <span style={{ fontSize: '0.875rem', fontWeight: 700, color: feedbackInc.correcto ? 'var(--success)' : 'var(--warning)' }}>
-                      {feedbackInc.correcto ? '¡Correcto!' : 'Respuesta incorrecta'}
-                    </span>
-                  </div>
-                  <div style={{ fontSize: '0.8125rem', lineHeight: 1.6, marginBottom: '16px' }}>{feedbackInc.feedback}</div>
-                  <Button variant="primary" size="sm" onClick={continuarTrasFeedback}>Continuar →</Button>
-                </div>
-              )}
-
-              {/* Log */}
-              {log.length > 0 && (
-                <div style={{ maxWidth: 600, width: '100%', marginTop: '24px' }}>
-                  <div style={{ fontSize: '0.6875rem', fontWeight: 700, color: 'var(--gray-400)', letterSpacing: '0.06em', marginBottom: '8px' }}>LOG DE EVENTOS</div>
-                  <div style={{ maxHeight: '200px', overflowY: 'auto' }}>
-                    {log.map((entry, i) => (
-                      <div key={i} style={{ fontSize: '0.75rem', fontFamily: 'monospace', color: i === 0 ? 'var(--blue-800)' : 'var(--gray-400)', marginBottom: '4px', lineHeight: 1.4, paddingBottom: '6px', borderBottom: i < log.length - 1 ? '1px solid var(--gray-50)' : 'none' }}>
-                        {entry}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
+            <SimuladorEtapa
+              ETAPAS={ETAPAS}
+              etapaActual={etapaActual}
+              tiempoEtapa={tiempoEtapa}
+              fmtT={fmtT}
+              estandarActual={estandarActual}
+              semaforoActual={semaforoActual}
+              incActiva={incActiva}
+              feedbackInc={feedbackInc}
+              log={log}
+              avanzarEtapa={avanzarEtapa}
+              responderIncidencia={responderIncidencia}
+              continuarTrasFeedback={continuarTrasFeedback}
+            />
           )}
 
-          {/* ── RESULTADO ── */}
           {pantalla === "resultado" && pedidoActivo && tiempos.length > 0 && (
-            <div className={styles.circleLayout}>
-              <div className={styles.resultsCard}>
-                <div className={styles.resultsCard__title}>Simulación completada</div>
-                <p style={{ fontSize: '0.875rem', color: 'var(--gray-500)', marginBottom: '24px' }}>{pedidoActivo.producto}</p>
-
-                <div className={styles.resultsCard__stats}>
-                  {[
-                    { label: "Puntuación", valor: `${puntuacionActual}`, unidad: "/100" },
-                    { label: "Tiempo", valor: fmtT(tiempos.reduce((a, b) => a + b, 0)) },
-                    { label: "Incidencias", valor: `${incResueltas.filter(r => r.correcto).length}/${incResueltas.length}` },
-                  ].map(({ label, valor, unidad }) => (
-                    <div key={label} className={styles.resultsCard__stat}>
-                      <div className={styles.resultsCard__statValue}>{valor}</div>
-                      {unidad && <div className={styles.resultsCard__statLabel}>{unidad}</div>}
-                      <div className={styles.resultsCard__statLabel}>{label}</div>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Tabla de etapas */}
-                <div className={styles.fichaCard} style={{ marginBottom: '16px', padding: '0', overflow: 'hidden' }}>
-                  <div style={{ display: 'grid', gridTemplateColumns: '140px 80px 80px 60px 1fr', padding: '10px 16px', background: 'var(--gray-50)', fontSize: '0.625rem', fontWeight: 600, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>
-                    {["Etapa", "Tiempo", "Estándar", "Desv.", "Resultado"].map(h => <div key={h}>{h}</div>)}
-                  </div>
-                  {ETAPAS.map((e, i) => {
-                    const est = getEstandar(i, pedidoActivo.categoria) || 75;
-                    const desv = Math.round(((tiempos[i] - est) / est) * 100);
-                    const sem = getSemaforo(tiempos[i], est);
-                    return (
-                      <div key={i} style={{ display: 'grid', gridTemplateColumns: '140px 80px 80px 60px 1fr', padding: '11px 16px', borderBottom: i < 4 ? '1px solid var(--gray-100)' : 'none', alignItems: 'center', background: i % 2 === 0 ? 'var(--white)' : 'var(--gray-50)' }}>
-                        <div style={{ fontSize: '0.8125rem', fontWeight: 500, display: 'flex', gap: '6px', alignItems: 'center' }}>
-                          <span>{e.icono}</span><span>{e.nombre}</span>
-                        </div>
-                        <div style={{ fontWeight: 600, fontVariantNumeric: 'tabular-nums', fontSize: '0.8125rem' }}>{fmtT(tiempos[i])}</div>
-                        <div style={{ color: 'var(--gray-400)', fontVariantNumeric: 'tabular-nums', fontSize: '0.8125rem' }}>{fmtT(est)}</div>
-                        <div style={{ fontWeight: 600, color: desv > 0 ? 'var(--error)' : 'var(--success)', fontSize: '0.8125rem' }}>
-                          {desv > 0 ? "+" : ""}{desv}%
-                        </div>
-                        <div style={{ display: 'inline-block', padding: '2px 8px', background: sem?.bg, color: sem?.color, fontSize: '0.625rem', fontWeight: 600, borderRadius: 'var(--radius-full)' }}>
-                          {sem?.label || "—"}
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-
-                {/* Análisis IA */}
-                <div className={styles.tipCard} style={{ textAlign: 'left', marginBottom: '16px' }}>
-                  <div className={styles.tipCard__label}>✦ Análisis IA</div>
-                  {cargando ? (
-                    <div style={{ display: 'flex', gap: '8px', alignItems: 'center', color: 'var(--gray-400)', fontSize: '0.8125rem' }}>
-                      <div className={styles.spinner} /> Analizando sesión…
-                    </div>
-                  ) : (
-                    <div style={{ fontSize: '0.875rem', color: 'var(--gray-600)', lineHeight: 1.7, whiteSpace: 'pre-wrap' }}>{analisis}</div>
-                  )}
-                </div>
-
-                <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
-                  <Button variant="primary" onClick={resetear}>Nueva simulación →</Button>
-                  <Button variant="secondary" onClick={() => setPantalla("onboarding")}>Volver</Button>
-                </div>
-              </div>
-            </div>
+            <>
+              {isMultiplayer && (
+                <RankingMultijugador
+                  jugadores={multiplayer.jugadores}
+                  puntuacionPropia={puntuacionPropia}
+                />
+              )}
+              <SimuladorResultados
+                pedidoActivo={pedidoActivo}
+                tiempos={tiempos}
+                ETAPAS={ETAPAS}
+                puntuacionActual={puntuacionActual}
+                fmtT={fmtT}
+                incResueltas={incResueltas}
+                getEstandar={getEstandar}
+                getSemaforo={getSemaforo}
+                cargando={cargando}
+                analisis={analisis}
+                resetear={resetear}
+                volver={() => {
+                  if (isMultiplayer) multiplayer.abandonarSala()
+                  setPantalla("onboarding")
+                }}
+              />
+            </>
           )}
 
-          {/* Toast */}
           {toast && (
             <div style={{ position: 'fixed', bottom: '24px', left: '50%', transform: 'translateX(-50%)', padding: '8px 20px', background: 'var(--gray-800)', color: 'var(--white)', borderRadius: 'var(--radius-full)', fontSize: '0.8125rem', fontWeight: 500, zIndex: 999 }}>
               {toast}

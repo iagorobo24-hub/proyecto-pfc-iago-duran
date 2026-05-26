@@ -124,6 +124,7 @@ Ecosistema de herramientas web para automatización industrial y logística, des
 ### Stack Tecnológico
 
 - **Frontend:** React 19 + Vite 7 + React Router DOM v7
+- **Lenguaje:** JavaScript progresivo a TypeScript (`strict: false`, `allowJs: true`)
 - **Estilos:** CSS Modules + Variables CSS personalizadas (+ Framer Motion)
 - **Autenticación:** Supabase Auth (Google Sign-In, OAuth)
 - **Base de datos:** Supabase (PostgreSQL) — tabla `products` + `brands`
@@ -208,8 +209,36 @@ proyecto-pfc-iago-duran/
 - **Archivos CSS:** camelCase.module.css (`Sonex.module.css`)
 - **Hooks:** camelCase con prefijo `use` (`useAuth`, `useFichas`)
 - **Variables CSS:** kebab-case (`--brand-primary`, `--brand-primary-dark`)
+- **Archivos TS:** PascalCase para componentes, camelCase para servicios/hooks/utils
 - **LocalStorage keys:** Prefijo `pfc_` (`pfc_fichas_historial`, `pfc_presupuestos_historial`)
 - **Rutas:** kebab-case (`/fichas-tecnicas`, `/simulador-almacen`)
+
+### TypeScript Progresivo (Migración Activa)
+
+El proyecto migra progresivamente de JS a TS. Estrategia establecida:
+
+**Configuración** (`tsconfig.json`):
+- `strict: false`, `allowJs: true` — JS y TS coexisten
+- `moduleResolution: "bundler"` — Vite resuelve `.ts` desde imports de `.js` sin cambiar rutas
+
+**Tipos compartidos** en `app/src/types/`:
+- `catalog.ts` — `Product`, `Brand`, `Category`, `SubfamiliaTipo`, `FiltroSubcategoria`
+- `ai.ts` — `AIRequestBody`, `AIResponse`, `AIFicha`
+
+**Reglas**:
+1. **Servicios nuevos en `.ts`** — Todo servicio nuevo debe escribirse en TypeScript
+2. **Servicios existentes** — Migrar a `.ts` cuando se toquen para refactor. Borrar el `.js` original
+3. **Componentes JSX** — Pueden seguir en `.jsx` (importar `.ts` funciona sin cambios)
+4. **Hooks** — Migrar a `.ts` cuando se refactoricen. Usar `returnType` explícito
+5. **No mezclar `.js` y `.ts` del mismo archivo** — Cuando se migra, borrar el `.js`
+6. **`any` permitido** en casos complejos (ej: respuestas Supabase sin tipado estricto). No bloquear la migración por querer tipos perfectos
+7. **Tipos de Supabase** — Las consultas devuelven `any`, se validan con `validateProduct`/`validateBrand` en runtime. No intentar tipar cada columna
+
+**Archivos ya migrados:**
+- `src/services/catalogService.ts` — 18 funciones, tipos completos
+- `src/services/anthropicService.ts` — funciones + streaming, tipos completos
+- `src/types/catalog.ts` — interfaces del catálogo
+- `src/types/ai.ts` — interfaces de IA
 
 ### Variables CSS
 

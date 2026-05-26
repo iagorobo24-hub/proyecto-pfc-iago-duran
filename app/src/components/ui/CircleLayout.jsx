@@ -1,5 +1,6 @@
 import React from 'react'
 import styles from './CircleLayout.module.css'
+import { renderMarkdown } from '../../utils/markdown'
 
 /* ═══════════════════════════════════════════════════════
  * CircleLayout — Centro + Órbitas
@@ -151,7 +152,7 @@ export function TipCard({ label = 'Consejo Técnico', text, className = '' }) {
   return (
     <div className={`${styles.tipCard} ${className}`}>
       <div className={styles.tipCard__label}>💡 {label}</div>
-      <p className={styles.tipCard__text}>{text}</p>
+      <div className={styles.tipCard__text} dangerouslySetInnerHTML={{ __html: renderMarkdown(text) }} />
     </div>
   )
 }

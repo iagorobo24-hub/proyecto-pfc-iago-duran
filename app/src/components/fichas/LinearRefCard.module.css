@@ -1,0 +1,125 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  background: var(--color-surface);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: all 0.2s var(--ease-out);
+  width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+  min-height: 180px;
+  flex: 1;
+}
+
+.card:hover {
+  border-color: var(--blue-200);
+  box-shadow: var(--shadow-sm);
+  transform: translateY(-2px);
+}
+
+.imageWrap {
+  width: 100%;
+  height: 100px;
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-bottom: 1px solid var(--color-border);
+  flex-shrink: 0;
+}
+
+.image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  padding: 8px;
+  box-sizing: border-box;
+}
+
+.imageFallback {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--color-text-tertiary);
+  background: linear-gradient(135deg, var(--color-bg), var(--color-border));
+}
+
+.info {
+  padding: var(--space-3) var(--space-4);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.code {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--blue-800);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.desc {
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.4;
+}
+
+.price {
+  padding: var(--space-2) var(--space-4);
+  font-family: var(--font-display);
+  font-size: var(--text-md);
+  font-weight: 700;
+  color: var(--color-text);
+  border-top: 1px solid var(--color-border);
+  background: var(--color-bg);
+  text-align: center;
+  flex-shrink: 0;
+}
+
+:global([data-theme="dark"]) .card {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+}
+
+:global([data-theme="dark"]) .card:hover {
+  border-color: var(--blue-600);
+}
+
+:global([data-theme="dark"]) .imageWrap {
+  background: #ffffff;
+}
+
+:global([data-theme="dark"]) .imageFallback {
+  background: var(--gray-100);
+  color: var(--color-text-tertiary);
+}
+
+:global([data-theme="dark"]) .code {
+  color: var(--color-text);
+}
+
+:global([data-theme="dark"]) .price {
+  background: var(--color-surface);
+  border-top-color: var(--color-border);
+  color: var(--color-text);
+}

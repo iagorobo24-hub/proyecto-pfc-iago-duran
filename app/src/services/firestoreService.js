@@ -1,10 +1,12 @@
 /**
- * Servicio de Firestore para ProyectosPFC
- * Capa de abstracción para operaciones CRUD en Firestore
+ * ════════════════════════════════════════════════════════════
+ * @deprecated Este archivo ya NO se usa en producción.
+ * Toda la persistencia se maneja via localStorage en
+ * `useMemoriaUsuario.js` con el esquema de MEMORY_SCHEMA.
  *
- * IMPORTANTE: Firestore doc() requiere número PAR de segmentos.
- * Usamos doc(db, 'col', 'doc', 'subcol', 'subdoc', ...) en lugar de
- * doc(db, 'col/doc/subcol', 'subdoc') que produce paths impares.
+ * Se mantiene por referencia histórica pero no debe
+ * importarse en nuevo código.
+ * ════════════════════════════════════════════════════════════
  */
 
 import {
