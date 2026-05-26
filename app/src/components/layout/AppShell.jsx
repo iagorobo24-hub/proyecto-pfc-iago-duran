@@ -6,7 +6,7 @@ import Sidebar from './Sidebar'
 import useKeyboardShortcuts from '../../hooks/useKeyboardShortcuts'
 import KeyboardShortcutsOverlay from './KeyboardShortcutsOverlay'
 import { safeGetItem, safeSetItem } from '../../utils/storage'
-import { trackEvent } from '../../hooks/useAnalytics'
+import { trackEvent, trackPageView } from '../../hooks/useAnalytics'
 import styles from './AppShell.module.css'
 
 /* Hook para detectar si estamos en mobile/tablet */
