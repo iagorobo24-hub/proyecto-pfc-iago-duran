@@ -380,3 +380,26 @@
     display: none;
   }
 }
+
+/* Dark mode variants */
+:global([data-theme="dark"]) .userAvatarDark {
+  border-color: var(--color-border);
+}
+
+:global([data-theme="dark"]) .userInitialsDark {
+  background: var(--color-brand-soft);
+  color: var(--color-brand);
+}
+
+:global([data-theme="dark"]) .userNameDark {
+  color: var(--color-text);
+}
+
+:global([data-theme="dark"]) .logoutBtnDark {
+  color: var(--color-text-tertiary);
+}
+
+:global([data-theme="dark"]) .logoutBtnDark:hover {
+  background: var(--color-error-soft);
+  color: var(--color-error);
+}

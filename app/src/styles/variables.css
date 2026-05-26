@@ -69,10 +69,16 @@
   --error: #e04050;
   --error-soft: rgba(224, 64, 80, 0.08);
 
-  /* ── Tipografía ── */
-  --font-display: 'Space Grotesk', sans-serif;
-  --font-body: 'DM Sans', sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
+/* ── Tipografía ── */
+--font-display: 'Space Grotesk', sans-serif;
+--font-body: 'DM Sans', sans-serif;
+--font-mono: 'JetBrains Mono', monospace;
+--font-sans: var(--font-body);
+--font-sans-serif: var(--font-body);
+
+/* ── Line heights ── */
+--leading-tight: 1.25;
+--leading-relaxed: 1.625;
 
   --text-xs: 0.625rem;
   --text-sm: 0.75rem;
