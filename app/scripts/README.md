@@ -1,6 +1,6 @@
 # Scripts de gestión del catálogo - Proyecto PFC
 
-Este directorio contiene los scripts de extracción, migración y gestión de productos del catálogo Schneider Electric en Supabase.
+Este directorio contiene los scripts de extracción, migración y gestión de productos del catálogo en Supabase.
 
 ## ⚠️ REQUISITO: Variable de entorno
 
@@ -10,11 +10,11 @@ Todos los scripts necesitan la key de Supabase:
 export SONEX_SUPABASE_KEY="tu-key-aqui"
 ```
 
-Sin esta variable, los scripts usan un placeholder (`eyJhbG...C5wg`) que **no funciona**.
+Sin esta variable, los scripts usan un placeholder que **no funciona**.
 
 ---
 
-## 📦 catlogo supabase-sonex
+## 📦 Cliente supabase-sonex
 
 **Archivo:** `lib/supabase-sonex.js`
 
@@ -48,15 +48,15 @@ import {
 
 ```javascript
 {
-  ref_fabricante: string,   // Referencia Schneider (ej: "A9F03102")
+  ref_fabricante: string,   // Referencia fabricante (ej: "A9F03102" o "5SL6106-6")
   name: string,              // Nombre comercial
-  marca: string,             // "Schneider Electric"
-  brand_id: number,          // FK a brands.id (Schneider = 456)
+  marca: string,             // "Schneider Electric" o "Siemens"
+  brand_id: number,          // FK a brands.id
   familia: string,           // "DISTRIBUCION DE POTENCIA"
-  subfamilia: string,        // "CARRIL DIN" | "CAJA MOLDEADA"
-  tipo: string,              // "Interruptor Magnetotérmico"
-  Gama: string,              // "Acti 9 iC60" | "ComPacT NSX" | etc.
-  Subgama: string,           // "iC60N" | "NSX100N" | "Vigi" | etc.
+  subfamilia: string,        // "Interruptor Magnetotérmico"
+  tipo: string,              // "CARRIL DIN" o "CAJA MOLDEADA"
+  Gama: string,              // "Acti 9 iC60" o "5SL6"
+  Subgama: string,           // "iC60N" o "5SL6 B curva"
   imagen: string | null,     // URL de imagen del producto
   pdf_url: string | null,    // URL de hoja de datos PDF
   precio: number             // 0 = sin precio
@@ -96,193 +96,17 @@ node scripts/scrape-schneider.mjs --gama=ic60 --max=20 --delay=500
 
 ### Gamas disponibles
 
-| Clave | Nombre | Range ID | Subfamilia |
-|-------|--------|----------|------------|
-| `ic60` | Acti 9 iC60 | 7556 | CARRIL DIN |
-| `nsx` | ComPacT NSX | 39910531 | CAJA MOLDEADA |
-| `vigi` | Acti 9 Vigi para iC60 | 7558 | CARRIL DIN |
-| `iid` | Interruptor diferencial Acti 9 iID | 7559 | CARRIL DIN |
-| `isw` | iSW | 7566 | CARRIL DIN |
-| `ict` | Acti 9 iCT | 7563 | CARRIL DIN |
-| `icv40` | Acti9 iCV40 | 65400 | CARRIL DIN |
-| `c60ul` | C60 UL CSA IEC | 1104 | CARRIL DIN |
-| `iprc` | iPRC - iPRI | 61709 | CARRIL DIN |
+| Clave | Nombre | Range ID |
+|-------|--------|----------|
+| `ic60` | Acti 9 iC60 | 7556 |
+| `nsx` | ComPacT NSX | 39910531 |
+| `vigi` | Acti 9 Vigi para iC60 | 7558 |
+| `iid` | Interruptor diferencial Acti 9 iID | 7559 |
+| `isw` | iSW | 7566 |
+| `ict` | Acti 9 iCT | 7563 |
 
 > **Nota:** Las gamas `iDPN`, `MTZ` e `iARC` NO están disponibles en la web española de Schneider.
-> **iK60:** NO disponible en se.com/es/es (Range API bloqueada por Akamai).
-> Usar `scrape-schneider-ik60.mjs` (scraper alternativo con generación de referencias).
 
-### Qué extrae de cada producto
-
-1. **Product page** (`/es/es/product/{ref}/`) → `<title>`, `og:image`, `product-id`
-2. **Product card API** (`/products-card/secondary?ids={ref}`) → PDF URL (Product Data Sheet)
-3. **Clasificación automática** → Extrae `Gama` y `Subgama` del nombre usando pattern matching
-
-### Archivo de log
-
-El script escribe en `scrape-schneider.log` (ignorado en `.gitignore`). 
-
-### Archivo de reporte
-
-Después de cada ejecución genera `scrape-schneider-report.json`:
-
-```json
-{
-  "total": 62,
-  "saved": 62,
-  "skipped": 0,
-  "errors": 0,
-  "byGama": {
-    "icv40": { "total": 62, "saved": 62, "skipped": 0, "errors": 0 }
-  }
-}
-```
-
-### Ejemplo real de ejecución
-
-```
-node scripts/scrape-schneider.mjs --gama=ic60 --max=5 --dry-run
-
-# Salida:
-#   📂 Gama: Acti 9 iC60 (range ID: 7556)
-#      📋 5 productos encontrados
-#   [1/5] ✅ A9F03102 | Magnetotérmico, Acti9 iC60N, 1P, 2 A, B curva...
-#     📄 PDF: https://www.se.com/.../A9F03102
-```
-
----
-
-## 🔧 migrate-columns.mjs
-
-**Migra las columnas de la tabla `products` (ejecutado una sola vez).**
-
-### Problema original
-
-Los productos tenían la estructura de columnas incorrecta:
-- `subfamilia` contenía "CARRIL DIN" / "CAJA MOLDEADA" → debía ser `tipo`
-- `tipo` contenía "Interruptor Magnetotérmico" → debía ser `Gama`
-
-### Qué hace
-
-1. `subfamilia` → mueve a `tipo`
-2. `tipo` → mueve a `Gama`
-3. `subfamilia` = "Interruptor Magnetotérmico" (valor fijo)
-4. `Subgama` = extrae del nombre (iC60N, iC60H, NSX100N, etc.)
-
-### Uso
-
-```bash
-# Requiere variable de entorno
-export SONEX_SUPABASE_KEY="..."
-
-node scripts/migrate-columns.mjs
-```
-
-### Resultado esperado
-
-```
-📦 2026 productos cargados
-
-=== RESUMEN ===
-✅ Migrados: 2026
-❌ Errores: 0
-
-📊 Distribución por Gama > Subgama:
-  Acti 9 iC60 > iC60N: 400
-  Acti 9 iC60 > iC60H: 120
-  ComPacT NSX > NSX100N: 80
-  ...
-```
-
----
-
-## 🔧 fix-migration.mjs
-
-**Corrige la migración si quedó mal. Usa el campo `name` para reconstruir `Gama` y `Subgama`.**
-
-### Cuándo usarlo
-
-Si después de `migrate-columns.mjs` los valores de `Gama`/`Subgama` son incorrectos o nulos.
-
-### Diferencia con migrate-columns.mjs
-
-- `migrate-columns.mjs` mueve datos entre columnas existentes
-- `fix-migration.mjs` reconstruye `Gama` y `Subgama` desde cero usando el `name`
-
-### Uso
-
-```bash
-export SONEX_SUPABASE_KEY="..."
-node scripts/fix-migration.mjs
-```
-
----
-
-## 🏷️ setup-schneider-brand.mjs
-
-**Configura la marca "Schneider Electric" en la tabla `brands` y asigna `brand_id` a todos los productos.**
-
-### Uso
-
-```bash
-export SONEX_SUPABASE_KEY="..."
-node scripts/setup-schneider-brand.mjs
-```
-
-### Pasos que ejecuta
-
-1. Busca si "Schneider Electric" ya existe en `brands`
-2. Si no existe, la crea (`name: "Schneider Electric"`, `website_url: "https://www.se.com/es/es/"`)
-3. Obtiene el `brand_id` generado (normalmente 456)
-4. Cuenta productos sin `brand_id`
-5. Actualiza todos los productos "Schneider Electric" con el `brand_id`
-
-### Salida esperada
-
-```
-=== CONFIGURAR MARCA SCHNEIDER ELECTRIC ===
-
-📝 Creando marca Schneider Electric...
-✅ Marca creada: { id: 456, name: 'Schneider Electric', ... }
-
-📋 Schneider brand_id: 456
-
-📦 Total productos: 2026
-📦 Productos sin brand_id: 0
-
-🔄 Actualizando productos de Schneider Electric...
-✅ 2026 productos actualizados con brand_id=456
-
-=== RESUMEN FINAL ===
-📦 Productos con brand_id Schneider: 2026
-📦 Productos sin brand_id: 0
-```
-
----
-
-## 🗂️ lib/supabase-sonex.js
-
-Ver sección "Cliente Supabase" arriba.
-
----
-
-## 🚀 Patrón de uso típico (sesión completa)
-
-```bash
-# 1. Configurar entorno
-export SONEX_SUPABASE_KEY="..."
-
-# 2. Si es la primera vez: configurar marca
-node scripts/setup-schneider-brand.mjs
-
-# 3. Scrapea Schneider (ejemplo: solo iC60, 100 productos)
-node scripts/scrape-schneider.mjs --gama=ic60 --max=100 --delay=300
-
-# 4. Si las columnas están mal: migrar
-node scripts/migrate-columns.mjs
-
-# 5. Verificar con el catálogo web (localhost:5173)
-```
 ---
 
 ## 🕷️ scrape-schneider-ik60.mjs
@@ -291,7 +115,7 @@ node scripts/migrate-columns.mjs
 
 ### Problema
 
-La gama iK60 usa `rangeId = 7557` (NO 7569), pero el endpoint `/ranges/{id}/products` de se.com está bloqueado por Akamai WAF para este rango en todos los países. La web española no comercializa iK60.
+La gama iK60 usa `rangeId = 7557`, pero el endpoint está bloqueado por Akamai WAF.
 
 ### Solución: Generación de referencias + APIs auxiliares
 
@@ -304,24 +128,6 @@ A9K[X][PP][AA]
   AA = amperaje: 06, 10, 16, 20, 25, 32, 40, 50, 63
 ```
 
-Ejemplo: `A9K02116` → `X=0` (K60N), `PP=21` (1P/C), `AA=16` (16A)
-
-### Fuentes de datos
-
-| Dato | Origen | Funciona |
-|------|--------|----------|
-| Nombre | Generado del patrón A9K | ✅ Siempre |
-| PDF | `products-card/secondary` API (ES locale) | ✅ ~50% |
-| Imagen | `shop-sg.se.com` (Magento catalog) | ✅ ~100% |
-| Precio | No disponible | ❌ |
-
-### Referencias generadas
-
-| Subgama | kA | Poles | Ref. totales |
-|---------|----|-------|-------------|
-| iK60N | 6kA | 1P/2P/3P/4P + 1P+N | ~90 |
-| iK60H | 10kA | 1P/2P/3P/4P | ~90 |
-
 ### Uso
 
 ```bash
@@ -333,26 +139,96 @@ node scripts/scrape-schneider-ik60.mjs --dry-run
 
 # Limitar cantidad (ej: 20)
 node scripts/scrape-schneider-ik60.mjs --max=20
-
-# Guardar lista de referencias como JSON
-node scripts/scrape-schneider-ik60.mjs --save-refs
 ```
 
-### Clasificación automática
+---
 
-| Campo | Valor |
-|-------|-------|
-| `familia` | DISTRIBUCION DE POTENCIA |
-| `subfamilia` | Interruptor Magnetotérmico |
-| `tipo` | CARRIL DIN |
-| `Gama` | Acti 9 iK60 |
-| `Subgama` | iK60N / iK60H |
-| `marca` | Schneider Electric |
+## 🕷️ scrape-siemens.mjs
+
+**Scraper para productos Siemens (interruptores magnetotérmicos y MCCB).**
+
+### Problema
+
+Siemens **no expone una API pública accesible** como Schneider Electric.
+
+### Solución: Generación de referencias desde patrones conocidos
+
+El scraper genera referencias desde los patrones del catálogo Siemens y verifica disponibilidad en mallmall.siemens.com.
+
+### Gamas soportadas
+
+| Clave | Gama | Descripción | Patrón de referencia |
+|-------|------|-------------|---------------------|
+| `sl6` | 5SL6 | MCB estándar, 6kA | 5SL6[1-4][16][00-99]-[0-9] |
+| `sy7` | 5SY7 | MCB gama superior, 10kA | 5SY7[1-4][16][00-99]-[0-9] |
+| `sy4` | 5SY4 | MCB industrial, 6kA | 5SY4[1-4][16][00-99]-[0-9] |
+| `va2` | 3VA2 | MCCB (caja moldeada) | 3VA2[00-99][00-99]-[A-Z0-9]+ |
+
+### Patrón de referencias Siemens
+
+Los interruptores 5SL6/5SY7/5SY4 siguen el formato:
+
+```
+5SL6[X][Y][ZZ]-[W]
+  X = polos: 1=1P, 2=2P, 3=3P, 4=4P
+  Y = curva: 1=B, 6=C
+  ZZ = amperaje: 01=1A, 06=6A, 10=10A, 16=16A, 20=20A, ..., 63=63A
+  W = versión
+```
+
+**Ejemplos:**
+- `5SL6106-6` → 1P, B curva, 6A, 6kA
+- `5SL6463-6` → 4P, C curva, 63A, 6kA
+- `5SY7210-7` → 2P, B curva, 10A, 10kA
+
+### Uso
+
+```bash
+# Todas las gamas (5SL6, 5SY7, 5SY4, 3VA2)
+node scripts/scrape-siemens.mjs
+
+# Solo una gama específica
+node scripts/scrape-siemens.mjs --gama=sl6
+node scripts/scrape-siemens.mjs --gama=sy7
+
+# Modo dry-run (prueba sin guardar en DB)
+node scripts/scrape-siemens.mjs --dry-run
+
+# Limitar productos por gama
+node scripts/scrape-siemens.mjs --max=20
+
+# Delay entre requests (ms)
+node scripts/scrape-siemens.mjs --delay=1000
+
+# Combinado
+node scripts/scrape-siemens.mjs --gama=sl6 --max=10 --delay=500
+```
+
+### Qué extrae de cada producto
+
+1. **Decodificación automática** → Extrae polos, curva, amperaje de la referencia
+2. **mallmall.siemens.com** → Nombre comercial, imagen (si está disponible)
+3. **PDF detection** → Intenta obtener hoja técnica desde `/api/products/{ref}/documents`
+
+### Diferencias con Schneider
+
+| Aspecto | Schneider | Siemens |
+|---------|-----------|---------|
+| API pública | ✅ Range API + Product Card | ❌ No disponible |
+| Generación de refs | ❌ No (solo IDs de API) | ✅ Sí (patrones conocidos) |
+| Disponibilidad | ~100% de productos | ~30-50% (mallmall limitado) |
+| Imágenes | ✅ Directas | ⚠️ CDN Siemens (puede fallar) |
+| PDFs | ✅ Product Card API | ⚠️ Route API (no siempre) |
+
+### Nota importante
+
+Algunas referencias generadas pueden no existir realmente en el catálogo de Siemens. El scraper verifica disponibilidad en mallmall.siemens.com y solo guarda los productos que existen. Esto es normal: genera ~100-200 referencias, pero solo ~30-50% estarán disponibles.
 
 ---
 
 ## 🔄 Sincronización incremental
-El scraper **`checkRefExists(ref)`** antes de insertar, así que puedes ejecutar el mismo comando múltiples veces sin duplicados:
+
+Todos los scrapers usan `checkRefExists(ref)` antes de insertar, así que puedes ejecutar el mismo comando múltiples veces sin duplicados:
 
 - Productos ya existentes → se saltan (`⏭️`)
 - Productos nuevos → se insertan (`✅`)
@@ -361,35 +237,29 @@ Esto permite sincronización incremental: ejecutar el scraper periódicamente pa
 
 ---
 
-## 📊 Tabla `products` - Schema completo
+## ❌ Scripts eliminados
 
-| Columna | Tipo | Descripción | Ejemplo |
-|---------|------|-------------|---------|
-| `id` | bigint | PK, auto | 1 |
-| `ref_fabricante` | text | Referencia Schneider | "A9F03102" |
-| `name` | text | Nombre comercial | "Magnetotérmico, Acti9 iC60N..." |
-| `marca` | text | Nombre marca | "Schneider Electric" |
-| `brand_id` | bigint | FK → brands.id | 456 |
-| `familia` | text | Familia normalizada | "DISTRIBUCION DE POTENCIA" |
-| `subfamilia` | text | Tipo físico | "CARRIL DIN" / "CAJA MOLDEADA" |
-| `tipo` | text | Categoría producto | "Interruptor Magnetotérmico" |
-| `Gama` | text | Gama Schneider | "Acti 9 iC60" |
-| `Subgama` | text | Subgama | "iC60N" |
-| `imagen` | text | URL imagen | "https://..." |
-| `pdf_url` | text | URL PDF | "https://..." |
-| `precio` | numeric | Precio (0 = sin dato) | 0 |
+### sync-catalog-enhanced.mjs
+
+Este script fue eliminado porque:
+- Usaba Firebase Firestore (obsoleto, ahora se usa Supabase)
+- Leía de un JSON local (`sonepar-catalog-scraper/catalogo-final-v12.json`)
+
+**Ya no debe usarse.**
 
 ---
 
-## 📁 Archivos
+## 📁 Archivo completo
 
 ```
 app/scripts/
 ├── README.md                       ← Este archivo
-├── scrape-schneider.mjs           ← Scraper principal (14 gamas)
-├── scrape-schneider-ik60.mjs      ← Scraper iK60 (generación refs)
+├── scrape-schneider.mjs           ← Scraper Schneider (14 gamas, API pública)
+├── scrape-schneider-ik60.mjs      ← Scraper iK60 (generación de refs A9K)
+├── scrape-siemens.mjs             ← Scraper Siemens (generación de refs 5SL6/5SY7)
 ├── scrape-schneider.log           ← Log de ejecución (ignorado)
-├── scrape-schneider-report.json   ← Último reporte
+├── scrape-schneider-report.json   ← Último reporte Schneider
+├── scrape-siemens-report.json     ← Último reporte Siemens
 ├── referencias-ik60.json          ← Lista generada de refs A9K
 ├── migrate-columns.mjs            ← Migración de columnas
 ├── fix-migration.mjs              ← Corrección de migración
@@ -400,11 +270,3 @@ app/scripts/
 └── lib/
     └── supabase-sonex.js          ← Cliente API Supabase
 ```
-
-## ❌ Script eliminado: sync-catalog-enhanced.mjs
-
-Este script fue eliminado porque:
-- Usaba Firebase Firestore (obsoleto, ahora se usa Supabase)
-- Leía de un JSON local (`sonepar-catalog-scraper/catalogo-final-v12.json`)
-
-**Ya no debe usarse.**
