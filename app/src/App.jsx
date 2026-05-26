@@ -19,13 +19,13 @@ const FormacionInterna = lazy(() => import('./tools/FormacionInterna'))
 const Sonex = lazy(() => import('./tools/Sonex'))
 const DashboardGlobal = lazy(() => import('./tools/DashboardGlobal'))
 
-const FichasTecnicasPage    = () => { useDocumentTitle('Fichas Técnicas');    return <FichasTecnicas /> }
-const SimuladorAlmacenPage  = () => { useDocumentTitle('Simulador Almacén');  return <SimuladorAlmacen /> }
-const DashboardIncidenciasPage = () => { useDocumentTitle('Incidencias');     return <DashboardIncidencias /> }
-const KpiLogisticoPage      = () => { useDocumentTitle('KPI Logístico');      return <KpiLogistico /> }
-const FormacionInternaPage  = () => { useDocumentTitle('Formación Interna');  return <FormacionInterna /> }
-const SonexPage             = () => { useDocumentTitle('SONEX — Asistente Técnico'); return <Sonex /> }
-const DashboardGlobalPage   = () => { useDocumentTitle('Dashboard');               return <DashboardGlobal /> }
+const FichasTecnicasPage = () => { useDocumentTitle('Fichas Técnicas', 'Catálogo de productos eléctricos con IA — Schneider, ABB, Siemens'); return <FichasTecnicas /> }
+const SimuladorAlmacenPage = () => { useDocumentTitle('Simulador Almacén', 'Simula procesos de almacén logístico con incidencias reales'); return <SimuladorAlmacen /> }
+const DashboardIncidenciasPage = () => { useDocumentTitle('Incidencias', 'Gestión y diagnóstico de incidencias industriales con IA'); return <DashboardIncidencias /> }
+const KpiLogisticoPage = () => { useDocumentTitle('KPI Logístico', 'Métricas y análisis de rendimiento logístico'); return <KpiLogistico /> }
+const FormacionInternaPage = () => { useDocumentTitle('Formación Interna', 'Matriz de competencias y planes de formación'); return <FormacionInterna /> }
+const SonexPage = () => { useDocumentTitle('SONEX', 'Asistente técnico con IA para mantenimiento industrial'); return <Sonex /> }
+const DashboardGlobalPage = () => { useDocumentTitle('Dashboard', 'Panel de control de todas las herramientas'); return <DashboardGlobal /> }
 
 class ErrorBoundary extends Component {
   state = { error: null }
