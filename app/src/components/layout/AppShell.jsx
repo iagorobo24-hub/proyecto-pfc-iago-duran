@@ -40,6 +40,7 @@ export default function AppShell() {
   const [shortcutsVisible, setShortcutsVisible] = useState(false)
   const [searchVisible, setSearchVisible] = useState(false)
   const searchRef = useRef(null)
+  const mainRef = useRef(null)
 
   useKeyboardShortcuts({
     onToggleSidebar: () => setCollapsed(c => !c),
@@ -48,17 +49,26 @@ export default function AppShell() {
     shortcutsVisible,
   })
 
-  useEffect(() => {
-    if (searchVisible && searchRef.current) {
-      searchRef.current.focus()
-    }
-  }, [searchVisible])
+  const saltarContenido = (e) => {
+    e.preventDefault()
+    mainRef.current?.focus()
+    mainRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
 
   return (
     <div
       className={styles.shell}
       style={{ '--sidebar-w': collapsed ? '64px' : '240px' }}
     >
+      {/* Skip Link para accesibilidad */}
+      <a
+        href="#main-content"
+        className={styles.skipLink}
+        onClick={saltarContenido}
+      >
+        Saltar al contenido principal
+      </a>
+
       <div className={styles.topbar}>
         <Topbar />
       </div>
@@ -77,10 +87,10 @@ export default function AppShell() {
         </div>
       )}
 
-      <main className={styles.main}>
-        {/* KEY basada en location fuerza a React a reiniciar el componente al cambiar de ruta */}
-        <Outlet key={location.pathname} />
-      </main>
+<main className={styles.main} ref={mainRef} tabIndex="-1" id="main-content">
+          {/* KEY basada en location fuerza a React a reiniciar el componente al cambiar de ruta */}
+          <Outlet key={location.pathname} />
+        </main>
 
       {shortcutsVisible && (
         <KeyboardShortcutsOverlay onClose={() => setShortcutsVisible(false)} />

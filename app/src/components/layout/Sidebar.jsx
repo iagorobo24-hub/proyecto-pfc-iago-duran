@@ -23,14 +23,17 @@ export default function Sidebar({ collapsed = false }) {
   const tool = TOOLS_BY_PATH[activePath] || TOOLS_BY_PATH['/fichas']
   const Icon = ICONS[tool.icon] || FileText
 
-  return (
-    <aside className={styles.sidebar}>
-
+return (
+    <aside className={styles.sidebar} role="navigation" aria-label="Menú de herramientas">
       {/* Icono grande de la herramienta activa */}
       <div className={`${styles.iconSection} ${collapsed ? styles.iconSectionCollapsed : ''}`}>
-        <div className={styles.iconWrap} title={tool.nombre}>
-          <Icon size={collapsed ? 22 : 32} strokeWidth={1.5} />
+        <div className={styles.iconWrap} title={tool.nombre} aria-label={`Herramienta: ${tool.nombre}`}>
+          <Icon size={collapsed ? 22 : 32} strokeWidth={1.5} aria-hidden="true" />
         </div>
+        {!collapsed && (
+          <p className={styles.toolNombre} role="heading" aria-level="2">{tool.nombre}</p>
+        )}
+      </div>
         {!collapsed && (
           <p className={styles.toolNombre}>{tool.nombre}</p>
         )}

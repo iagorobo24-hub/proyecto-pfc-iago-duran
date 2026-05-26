@@ -1,0 +1,27 @@
+ref_fabricante,name,marca,familia,subfamilia,tipo,Gama,Subgama,imagen,pdf_url,precio
+5SL6106-6,"Magnetotérmico 1P 6A curva B 5SL6",Siemens,DISTRIBUCION DE POTENCIA,Interruptor Magnetotérmico,CARRIL DIN,5SL6,5SL6 B curva,,,0
+5SL6110-6,"Magnetotérmico 1P 10A curva B 5SL6",Siemens,DISTRIBUCION DE POTENCIA,Interruptor Magnetotérmico,CARRIL DIN,5SL6,5SL6 B curva,,,0
+5SL6116-6,"Magnetotérmico 1P 16A curva B 5SL6",Siemens,DISTRIBUCION DE POTENCIA,Interruptor Magnetotérmico,CARRIL DIN,5SL6,5SL6 B curva,,,0
+5SL6206-6,"Magnetotérmico 2P 6A curva B 5SL6",Siemens,DISTRIBUCION DE POTENCIA,Interruptor Magnetotérmico,CARRIL DIN,5SL6,5SL6 B curva,,,0
+5SL6210-6,"Magnetotérmico 2P 10A curva B 5SL6",Siemens,DISTRIBUCION DE POTENCIA,Interruptor Magnetotérmico,CARRIL DIN,5SL6,5SL6 B curva,,,0
+5SL6316-6,"Magnetotérmico 3P 16A curva B 5SL6",Siemens,DISTRIBUCION DE POTENCIA,Interruptor Magnetotérmico,CARRIL DIN,5SL6,5SL6 B curva,,,0
+5SY4106-7,"Magnetotérmico 1P 6A curva C 5SY4",Siemens,DISTRIBUCION DE POTENCIA,Interruptor Magnetotérmico,CARRIL DIN,5SY4,5SY4 C curva,,,0
+5SY4110-7,"Magnetotérmico 1P 10A curva C 5SY4",Siemens,DISTRIBUCION DE POTENCIA,Interruptor Magnetotérmico,CARRIL DIN,5SY4,5SY4 C curva,,,0
+5SY4116-7,"Magnetotérmico 1P 16A curva C 5SY4",Siemens,DISTRIBUCION DE POTENCIA,Interruptor Magnetotérmico,CARRIL DIN,5SY4,5SY4 C curva,,,0
+5SY4216-7,"Magnetotérmico 2P 16A curva C 5SY4",Siemens,DISTRIBUCION DE POTENCIA,Interruptor Magnetotérmico,CARRIL DIN,5SY4,5SY4 C curva,,,0
+5SY7110-6,"Diferencial 10mA 1P+N 40A 5SY7",Siemens,DISTRIBUCION DE POTENCIA,Interruptor Diferencial,CARRIL DIN,5SY7,5SY7 Alta sensibilidad,,,0
+5SY7130-6,"Diferencial 30mA 1P+N 40A 5SY7",Siemens,DISTRIBUCION DE POTENCIA,Interruptor Diferencial,CARRIL DIN,5SY7,5SY7 Sensibilidad general,,,0
+5SY7163-6,"Diferencial 300mA 1P+N 40A 5SY7",Siemens,DISTRIBUCION DE POTENCIA,Interruptor Diferencial,CARRIL DIN,5SY7,5SY7 Sensibilidad industrial,,,0
+3VA21063era,"Magnetic 63A Frame 1 3VA2",Siemens,DISTRIBUCION DE POTENCIA,Interruptor Molded Case,CARRIL DIN,3VA2,3VA2 Motor Protection,,,0
+3VA21254ap,"Magnetic 250A Frame 1 3VA2",Siemens,DISTRIBUCION DE POTENCIA,Interruptor Molded Case,CARRIL DIN,3VA2,3VA2 Power Distribution,,,0
+5TT5200,"Contactor 3P 9A 230VAC 5TT5",Siemens,DISTRIBUCION DE POTENCIA,Contactores,CARRIL DIN,5TT5,5TT5 Standard,,,0
+5TT5300,"Contactor 3P 18A 230VAC 5TT5",Siemens,DISTRIBUCION DE POTENCIA,Contactores,CARRIL DIN,5TT5,5TT5 Standard,,,0
+3RK13010,"Safety Relay 2N.O. 24VDC 3RK1",Siemens,DISTRIBUCION DE POTENCIA,Relés de Seguridad,CARRIL DIN,3RK1,3RK1 Safe/Compact,,,0
+3RH2122,"Relé auxiliar 4N.O. 230VAC 3RH2",Siemens,DISTRIBUCION DE POTENCIA,Relés Auxiliares,CARRIL DIN,3RH2,3RH2 Standard,,,0
+5TB4010,"Bornas母子 16mm 5TB40",Siemens,DISTRIBUCION DE POTENCIA,Bornas,CARRIL DIN,5TB4,5TB4 Compact,,,0
+5SL6310-6,"Magnetotérmico 3P 10A curva B 5SL6",Siemens,DISTRIBUCION DE POTENCIA,Interruptor Magnetotérmico,CARRIL DIN,5SL6,5SL6 B curva,,,0
+5SL4120-6,"Magnetotérmico пределы 1P 20A curva C 5SL4",Siemens,DISTRIBUCION DE POTENCIA,Interruptor Magnetotérmico,CARRIL DIN,5SL4,5SL4 C curva,,,0
+3RW44531BC34,"Suave arranque 170A 3RW44",Siemens,DISTRIBUCION DE POTENCIA,Arrancadores Suaves,MONTAJE PAREDES,3RW4,3RW4 Advanced,,,0
+3RF295004,"SSI 1,5A 24VDC 3RF29",Siemens,DISTRIBUCION DE POTENCIA,Relés de Estado Sólido,CARRIL DIN,3RF2,3RF2 Compact,,,0
+6ES72121HE430XB8,"S7-1200 CPU 1212C DC/DC/REL",Siemens,AUTOMACION INDUSTRIAL,PLC S7-1200,MODULAR,6ES7,6ES7212,,,0
+7KG96611EB11,"Energy Meter PAC3200 7KG9",Siemens,MEDICION,Analizadores de Red,EMPLAZAMIENTO PANELE,7KG9,7KG9 Advanced,,,0

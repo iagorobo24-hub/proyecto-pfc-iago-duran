@@ -51,10 +51,11 @@ export default function Topbar() {
   }, [menuOpen])
 
   return (
-    <header className={styles.topbar}>
+    <header className={styles.topbar} role="banner">
       {/* Botón home — vuelve a la landing */}
-      <Link to="/" className={styles.homeBtn} title="Volver al inicio">
-        <House size={18} />
+      <Link to="/" className={styles.homeBtn} title="Volver al inicio" aria-label="Ir a la página de inicio">
+        <House size={18} aria-hidden="true" />
+        <span className="sr-only">Inicio</span>
       </Link>
 
       {/* Botón hamburguesa — solo visible en tablet/mobile */}
