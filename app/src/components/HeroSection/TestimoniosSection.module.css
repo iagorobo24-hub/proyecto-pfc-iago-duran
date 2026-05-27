@@ -41,10 +41,11 @@
   align-items: center;
   gap: 12px;
   padding: 20px;
-  background: var(--color-surface);
+  background: #ffffff;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
   margin-bottom: 32px;
+  box-shadow: var(--shadow-saas);
 }
 
 .averageStars {
@@ -127,7 +128,7 @@
   font-family: var(--font-body);
   font-size: 0.9375rem;
   color: var(--color-text);
-  background: var(--color-surface);
+  background: #ffffff;
   transition: border-color var(--duration-fast) var(--ease-out);
 }
 
@@ -253,4 +254,14 @@
   background: var(--color-surface);
   border-color: var(--color-border);
   box-shadow: var(--shadow-saas);
+}
+:global([data-theme="dark"]) .average {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+  box-shadow: var(--shadow-saas);
+}
+:global([data-theme="dark"]) .input,
+:global([data-theme="dark"]) .textarea {
+  background: var(--color-surface);
+  border-color: var(--color-border);
 }
