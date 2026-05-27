@@ -1,6 +1,8 @@
 .section {
   padding: 80px 24px;
   background: var(--color-surface);
+  position: relative;
+  z-index: 2;
 }
 
 .container {
