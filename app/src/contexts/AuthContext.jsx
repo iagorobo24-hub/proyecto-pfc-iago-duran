@@ -42,7 +42,10 @@ export function AuthProvider({ children }) {
         redirectTo: window.location.origin
       }
     })
-    if (error) throw error
+    if (error) {
+      console.error('[Auth] Error login:', error.message)
+      throw new Error(error.message || 'Error al iniciar sesión con Google')
+    }
     return data
   }
 
