@@ -26,3 +26,44 @@ sync-limpio-v7.mjs
 .env
 .vercel
 .firecrawl/
+
+# Output files de scripts
+*.txt
+scripts/*.json
+scripts/output/
+scripts/data/
+
+# Scripts temporales de scraping/testing
+scripts/test-*
+scripts/scrape-*
+scripts/check-*
+scripts/crawl-*
+scripts/debug-*
+scripts/explor*
+scripts/fetch-*
+scripts/fix-*
+scripts/insertar-*
+scripts/investigate-*
+scripts/load-env.js
+scripts/mark-*
+scripts/ping.txt
+scripts/reclasificar*
+scripts/redirect-log.txt
+scripts/sample*
+scripts/show-*
+scripts/temp-*
+scripts/verify-*
+scripts/wtest.txt
+scripts/analisis-*
+scripts/cambios-*
+scripts/errores-*
+scripts/ejecutar-*
+scripts/load-siemens*
+scripts/generate-siemens*
+
+# Diagramas generados
+docs/diagrams/*.html
+generar_*.py
+
+# Playwright MCP
+.playwright-mcp/

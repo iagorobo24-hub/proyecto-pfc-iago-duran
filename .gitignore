@@ -80,3 +80,14 @@ e2e/screenshots/
 app/test-results/
 test-results/
 
+# Root-level scratch files
+check-*.js
+test-out*.txt
+generar_*.py
+
+# Playwright IDE integration
+.playwright-mcp/
+
+# Generated diagrams
+docs/diagrams/*.html
+
