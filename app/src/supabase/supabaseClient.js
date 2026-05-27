@@ -18,6 +18,8 @@ function createStubClient() {
   const noop = () => Promise.resolve({ data: null, error: null })
   const noopArr = () => Promise.resolve({ data: [], error: null })
   const noopObj = () => ({ data: null, error: null })
+  const noopSession = () => Promise.resolve({ data: { session: null }, error: null })
+  const noopUser = () => Promise.resolve({ data: { user: null }, error: null })
 
   const queryBuilder = new Proxy({}, {
     get(_, method) {
@@ -104,18 +106,18 @@ function createStubClient() {
     removeAllChannels: () => {},
     getChannels: () => [],
     auth: {
-      getSession: noopObj,
+      getSession: noopSession,
       onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => {} } } }),
       signInWithOAuth: () => Promise.resolve({ data: null, error: new Error('Supabase no configurado. Revisa VITE_SUPABASE_URL y VITE_SUPABASE_ANON_KEY.') }),
       signOut: noop,
-      getUser: noopObj,
-      refreshSession: noopObj,
-      setSession: noopObj,
-      signUp: noopObj,
-      signInWithPassword: noopObj,
-      resetPasswordForEmail: noopObj,
-      verifyOtp: noopObj,
-      exchangeCodeForSession: noopObj,
+      getUser: noopUser,
+      refreshSession: noopSession,
+      setSession: noopSession,
+      signUp: (email, password) => Promise.resolve({ data: { user: null, session: null }, error: null }),
+      signInWithPassword: () => Promise.resolve({ data: { user: null, session: null }, error: null }),
+      resetPasswordForEmail: () => Promise.resolve({ data: null, error: null }),
+      verifyOtp: () => Promise.resolve({ data: { user: null, session: null }, error: null }),
+      exchangeCodeForSession: () => Promise.resolve({ data: { session: null }, error: null }),
     },
     storage: {
       from: () => ({
