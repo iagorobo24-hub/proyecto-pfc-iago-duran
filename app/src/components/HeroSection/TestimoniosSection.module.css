@@ -1,8 +1,6 @@
 .section {
   padding: 80px 24px;
   background: var(--color-bg);
-  position: relative;
-  z-index: 2;
 }
 
 .container {
@@ -39,6 +37,8 @@
 }
 
 .average {
+  position: relative;
+  z-index: 2;
   display: flex;
   align-items: center;
   gap: 12px;
@@ -88,6 +88,8 @@
 }
 
 .form {
+  position: relative;
+  z-index: 2;
   background: #ffffff;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-xl);
@@ -195,6 +197,8 @@
 }
 
 .list {
+  position: relative;
+  z-index: 2;
   background: #ffffff;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-xl);
