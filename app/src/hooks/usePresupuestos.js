@@ -2,7 +2,7 @@
  * Hook para Presupuestos - sincronización con Firestore
  */
 import { useState, useEffect, useReducer } from 'react'
-import useFirestoreSync from './useFirestoreSync'
+import useUserData from './useUserData'
 
 const genNum = () => {
   const d = new Date()
@@ -38,13 +38,12 @@ export default function usePresupuestos() {
   const [generando, setGenerando] = useState(false)
   const [guardando, setGuardando] = useState(false)
 
-  /* Hook de Firestore para historial de presupuestos */
+  /* Persistencia en Supabase + localStorage */
   const { 
     data: storedHistorial, 
     loading, 
-    saveData: saveHistorial,
-    syncStatus 
-  } = useFirestoreSync('budgets', 'default', [], 'pfc_presupuestos_historial')
+    save: saveHistorial,
+  } = useUserData('presupuestos', 'historial', [], ['pfc_presupuestos_historial'])
 
   const [historial, setHistorial] = useState([])
 
@@ -96,7 +95,6 @@ export default function usePresupuestos() {
     guardando, setGuardando,
     historial,
     loading,
-    syncStatus,
     /* Acciones */
     guardarHistorial,
     calcularTotales,

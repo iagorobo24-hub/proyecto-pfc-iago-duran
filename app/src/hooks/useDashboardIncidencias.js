@@ -2,7 +2,7 @@
  * Hook para DashboardIncidencias - sincronización con Firestore
  */
 import { useState, useEffect } from 'react'
-import useFirestoreSync from './useFirestoreSync'
+import useUserData from './useUserData'
 
 const DEMOS = () => [
   { id: 1, equipo: "Variador ATV320 — Línea 3", zona: "Zona C — Picking", operario: "M. Fernández", sintoma: "El variador se dispara por sobrecalentamiento a los 20 minutos de arranque. Alarma F0028.", severidad: "Crítica", estado: "Abierta", fechaCreacion: Date.now() - 1800000, fechaResolucion: null, observaciones: "", diagnostico: null },
@@ -19,13 +19,12 @@ export default function useDashboardIncidencias() {
   const [cargandoIA, setCargandoIA] = useState(false)
   const [ahora, setAhora] = useState(Date.now())
 
-  /* Hook de Firestore para incidencias */
+  /* Persistencia en Supabase + localStorage */
   const { 
     data: storedIncidencias, 
     loading, 
-    saveData: saveIncidencias,
-    syncStatus 
-  } = useFirestoreSync('incidents', 'default', [], 'pfc_incidencias')
+    save: saveIncidencias,
+  } = useUserData('incidencias', 'listado', [], ['pfc_incidencias'])
 
   /* Cargar datos iniciales o usar demo */
   useEffect(() => {
@@ -129,7 +128,6 @@ export default function useDashboardIncidencias() {
     criticas,
     filtradas,
     loading,
-    syncStatus,
     /* Acciones */
     guardar,
     cambiarEstado,

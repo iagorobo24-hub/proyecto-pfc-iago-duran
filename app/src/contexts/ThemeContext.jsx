@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react'
 import { flushSync } from 'react-dom'
+import { supabase } from '../supabase/supabaseClient'
 import { safeGetItem, safeSetItem } from '../utils/storage'
 
 const ThemeContext = createContext()
@@ -11,10 +12,45 @@ export function ThemeProvider({ children }) {
     return false
   })
 
-  // Sincronizar el atributo data-theme en el html
+  // Cargar tema desde Supabase si el usuario está autenticado
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (!user) return
+      supabase
+        .from('user_data')
+        .select('data')
+        .eq('user_id', user.id)
+        .eq('module', 'preferencias')
+        .eq('key', 'tema')
+        .maybeSingle()
+        .then(({ data: row }) => {
+          if (row?.data && row.data !== safeGetItem('Proyectos PFC_theme')) {
+            const temaSupabase = row.data === 'dark'
+            setDark(temaSupabase)
+          }
+        })
+        .catch(() => {})
+    })
+  }, [])
+
+  // Guardar en localStorage y Supabase
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light')
     safeSetItem('Proyectos PFC_theme', dark ? 'dark' : 'light')
+    // Sync a Supabase si hay sesión
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (!user) return
+      supabase
+        .from('user_data')
+        .upsert({
+          user_id: user.id,
+          module: 'preferencias',
+          key: 'tema',
+          data: dark ? 'dark' : 'light',
+          updated_at: new Date().toISOString(),
+        }, { onConflict: 'user_id, module, key' })
+        .catch(() => {})
+    })
   }, [dark])
 
   const toggle = (event) => {

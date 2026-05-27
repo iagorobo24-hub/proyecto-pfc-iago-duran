@@ -2,7 +2,7 @@
  * Hook para Formación Interna - sincronización con Firestore
  */
 import { useState, useEffect } from 'react'
-import useFirestoreSync from './useFirestoreSync'
+import useUserData from './useUserData'
 
 const MODULOS_INIT = [
   { id: "m1", nombre: "Recepción de mercancía", area: "Almacén", horas: 4, obligatorio: true },
@@ -24,11 +24,11 @@ export default function useFormacionInterna() {
   const [planIA, setPlanIA] = useState("")
   const [cargandoIA, setCargandoIA] = useState(false)
 
-  /* Hooks de Firestore para formación */
-  const { data: storedEmpleados, saveData: saveEmpleados } = useFirestoreSync('training', 'employees', [], 'Proyectos PFC_formacion_empleados')
-  const { data: storedModulos, saveData: saveModulos } = useFirestoreSync('training', 'modules', [], 'Proyectos PFC_formacion_modulos')
-  const { data: storedProgresos, saveData: saveProgresos } = useFirestoreSync('training', 'progress', {}, 'Proyectos PFC_formacion_progresos')
-  const { data: storedFechas, saveData: saveFechas } = useFirestoreSync('training', 'dates', {}, 'Proyectos PFC_formacion_fechas')
+  /* Persistencia en Supabase + localStorage */
+  const { data: storedEmpleados, save: saveEmpleados } = useUserData('formacion', 'empleados', [], ['Proyectos PFC_formacion_empleados'])
+  const { data: storedModulos, save: saveModulos } = useUserData('formacion', 'modulos', [], ['Proyectos PFC_formacion_modulos'])
+  const { data: storedProgresos, save: saveProgresos } = useUserData('formacion', 'progresos', {}, ['Proyectos PFC_formacion_progresos'])
+  const { data: storedFechas, save: saveFechas } = useUserData('formacion', 'fechas', {}, ['Proyectos PFC_formacion_fechas'])
 
   useEffect(() => {
     if (storedEmpleados?.length > 0) setEmpleados(storedEmpleados)

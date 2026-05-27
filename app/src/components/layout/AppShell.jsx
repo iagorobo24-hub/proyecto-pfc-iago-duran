@@ -5,6 +5,8 @@ import Topbar from './Topbar'
 import Sidebar from './Sidebar'
 import useKeyboardShortcuts from '../../hooks/useKeyboardShortcuts'
 import KeyboardShortcutsOverlay from './KeyboardShortcutsOverlay'
+import { supabase } from '../../supabase/supabaseClient'
+import { useAuth } from '../../contexts/AuthContext'
 import { safeGetItem, safeSetItem } from '../../utils/storage'
 import { trackEvent, trackPageView } from '../../hooks/useAnalytics'
 import styles from './AppShell.module.css'
@@ -22,15 +24,46 @@ function useMobile() {
 
 /* AppShell — contenedor principal con sidebar colapsable */
 export default function AppShell() {
+  const { user } = useAuth()
   const location = useLocation()
   const isMobile = useMobile()
   const [collapsed, setCollapsed] = useState(() => {
     return safeGetItem('Proyectos PFC_sidebar_collapsed') === 'true'
   })
 
+  // Cargar estado sidebar desde Supabase al montar
   useEffect(() => {
-    safeSetItem('Proyectos PFC_sidebar_collapsed', collapsed)
-  }, [collapsed])
+    if (!user?.id) return
+    supabase
+      .from('user_data')
+      .select('data')
+      .eq('user_id', user.id)
+      .eq('module', 'preferencias')
+      .eq('key', 'sidebar')
+      .maybeSingle()
+      .then(({ data: row }) => {
+        if (row?.data === true || row?.data === 'true') {
+          setCollapsed(true)
+        }
+      })
+      .catch(() => {})
+  }, [user?.id])
+
+  useEffect(() => {
+    safeSetItem('Proyectos PFC_sidebar_collapsed', collapsed ? 'true' : 'false')
+    // Sync a Supabase si hay sesión
+    if (!user?.id) return
+    supabase
+      .from('user_data')
+      .upsert({
+        user_id: user.id,
+        module: 'preferencias',
+        key: 'sidebar',
+        data: collapsed,
+        updated_at: new Date().toISOString(),
+      }, { onConflict: 'user_id, module, key' })
+      .catch(() => {})
+  }, [collapsed, user?.id])
 
   useEffect(() => {
     trackPageView(location.pathname)

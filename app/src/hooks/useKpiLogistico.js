@@ -2,7 +2,7 @@
  * Hook para KPI Logístico - sincronización con Firestore
  */
 import { useState, useEffect } from 'react'
-import useFirestoreSync from './useFirestoreSync'
+import useUserData from './useUserData'
 
 export default function useKpiLogistico() {
   const [datos, setDatos] = useState({ delegacion: "", turno: "Mañana", pedidos: "", horas: "", errores: "", tiempo_ciclo: "", ubicaciones_ocupadas: "", ubicaciones_total: "", devoluciones: "", lineas_expedidas: "", operarios: "" })
@@ -12,13 +12,12 @@ export default function useKpiLogistico() {
   const [tab, setTab] = useState("calculo")
   const [comparativa, setComparativa] = useState({ a: null, b: null })
 
-  /* Hook de Firestore para historial de KPIs */
+  /* Persistencia en Supabase + localStorage */
   const { 
     data: storedHistorial, 
     loading, 
-    saveData: saveHistorial,
-    syncStatus 
-  } = useFirestoreSync('kpi/entries', 'default', [], 'pfc_kpi_historial')
+    save: saveHistorial,
+  } = useUserData('kpi', 'historial', [], ['pfc_kpi_historial'])
 
   const [historial, setHistorial] = useState([])
 
@@ -74,7 +73,6 @@ export default function useKpiLogistico() {
     tab, setTab,
     comparativa, setComparativa,
     loading,
-    syncStatus,
     /* Acciones */
     calcularKPIs,
     calcular,

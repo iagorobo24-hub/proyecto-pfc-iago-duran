@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
-import { useFirestoreSync } from './useFirestoreSync';
 import { useAuth } from '../contexts/AuthContext';
+import useUserData from './useUserData';
 
 // ── Datos del simulador ──────────────────────────────────────────────────────
 export const ETAPAS = [
@@ -32,22 +32,20 @@ export function useSimuladorAlmacen() {
   const { user } = useAuth();
   
   // Sync para perfil de operario
-  const { data: perfilData, saveData: savePerfil, syncStatus: perfilSync } = useFirestoreSync(
-    'simulator',
-    'profile',
+  const { data: perfilData, save: savePerfil } = useUserData(
+    'simulador',
+    'perfil',
     { nombre: "", turno: "Mañana", area: "Almacén" },
-    'Proyectos PFC_sim_perfil'
+    ['Proyectos PFC_sim_perfil'],
   );
 
-  // Sync para historial de simulaciones
-  const { data: historialData, saveData: saveHistorial, syncStatus: historialSync } = useFirestoreSync(
-    'simulator',
-    'history',
+  const { data: historialData, save: saveHistorial } = useUserData(
+    'simulador',
+    'historial',
     [],
-    'Proyectos PFC_simulaciones_v3'
+    ['Proyectos PFC_simulaciones_v3'],
   );
 
-  // Estados locales
   const [pantalla, setPantalla] = useState("perfil");
   const [operario, setOperario] = useState(perfilData || { nombre: "", turno: "Mañana", area: "Almacén" });
   const [historial, setHistorial] = useState(historialData || []);
@@ -216,11 +214,6 @@ export function useSimuladorAlmacen() {
     addLog,
     
     // Sync status
-    syncStatus: {
-      perfil: perfilSync,
-      historial: historialSync,
-    },
-    
     // Refs
     intervalRef,
     inicioEtapaRef,
