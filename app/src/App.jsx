@@ -3,11 +3,6 @@ import { Routes, Route } from 'react-router-dom'
 import AppShell from './components/layout/AppShell'
 import LoginPage from './components/auth/LoginPage'
 import LandingPage from './pages/LandingPage'
-import PresupuestosWizard from './components/presupuestos/PresupuestosWizard'
-import PresupuestosSeleccion from './components/presupuestos/PresupuestosSeleccion'
-import PresupuestosEditor from './components/presupuestos/PresupuestosEditor'
-import PresupuestosGestion from './components/presupuestos/PresupuestosGestion'
-import PresupuestosPdf from './components/presupuestos/PresupuestosPdf'
 import useDocumentTitle from './hooks/useDocumentTitle'
 
 const FichasTecnicas = lazy(() => import('./tools/FichasTecnicas'))
@@ -15,6 +10,11 @@ const SimuladorAlmacen = lazy(() => import('./tools/SimuladorAlmacen'))
 const DashboardIncidencias = lazy(() => import('./tools/DashboardIncidencias'))
 const KpiLogistico = lazy(() => import('./tools/KpiLogistico'))
 const PresupuestosLayout = lazy(() => import('./components/presupuestos/PresupuestosLayout'))
+const PresupuestosWizard = lazy(() => import('./components/presupuestos/PresupuestosWizard'))
+const PresupuestosSeleccion = lazy(() => import('./components/presupuestos/PresupuestosSeleccion'))
+const PresupuestosEditor = lazy(() => import('./components/presupuestos/PresupuestosEditor'))
+const PresupuestosGestion = lazy(() => import('./components/presupuestos/PresupuestosGestion'))
+const PresupuestosPdf = lazy(() => import('./components/presupuestos/PresupuestosPdf'))
 const FormacionInterna = lazy(() => import('./tools/FormacionInterna'))
 const Sonex = lazy(() => import('./tools/Sonex'))
 const DashboardGlobal = lazy(() => import('./tools/DashboardGlobal'))
@@ -69,11 +69,11 @@ export default function App() {
           <Route path="incidencias"  element={<Suspense fallback={<PageLoader />}><DashboardIncidenciasPage /></Suspense>} />
           <Route path="kpi"          element={<Suspense fallback={<PageLoader />}><KpiLogisticoPage /></Suspense>} />
           <Route path="presupuestos" element={<Suspense fallback={<PageLoader />}><PresupuestosLayout /></Suspense>}>
-            <Route index element={<PresupuestosWizard />} />
-            <Route path="seleccion" element={<PresupuestosSeleccion />} />
-            <Route path="editor" element={<PresupuestosEditor />} />
-            <Route path="gestion" element={<PresupuestosGestion />} />
-            <Route path="pdf" element={<PresupuestosPdf />} />
+            <Route index element={<Suspense fallback={<PageLoader />}><PresupuestosWizard /></Suspense>} />
+            <Route path="seleccion" element={<Suspense fallback={<PageLoader />}><PresupuestosSeleccion /></Suspense>} />
+            <Route path="editor" element={<Suspense fallback={<PageLoader />}><PresupuestosEditor /></Suspense>} />
+            <Route path="gestion" element={<Suspense fallback={<PageLoader />}><PresupuestosGestion /></Suspense>} />
+            <Route path="pdf" element={<Suspense fallback={<PageLoader />}><PresupuestosPdf /></Suspense>} />
           </Route>
           <Route path="formacion"    element={<Suspense fallback={<PageLoader />}><FormacionInternaPage /></Suspense>} />
           <Route path="sonex"        element={<Suspense fallback={<PageLoader />}><SonexPage /></Suspense>} />

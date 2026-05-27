@@ -63,6 +63,11 @@ export default defineConfig({
     }),
   ],
   build: {
+    modulePreload: {
+      resolveDependencies(url, deps, context) {
+        return deps.filter(dep => !dep.includes('vendor-pdf'))
+      },
+    },
     rollupOptions: {
       output: {
         manualChunks(id) {

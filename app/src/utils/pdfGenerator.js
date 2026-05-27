@@ -1,5 +1,21 @@
-import { jsPDF } from 'jspdf'
-import html2canvas from 'html2canvas'
+let _jsPDF = null
+let _html2canvas = null
+
+async function getJsPDF() {
+  if (!_jsPDF) {
+    const mod = await import('jspdf')
+    _jsPDF = mod.jsPDF
+  }
+  return _jsPDF
+}
+
+async function getHtml2canvas() {
+  if (!_html2canvas) {
+    const mod = await import('html2canvas')
+    _html2canvas = mod.default
+  }
+  return _html2canvas
+}
 
 export async function captureElementToPDF(element, {
   filename = 'documento.pdf',
@@ -7,6 +23,8 @@ export async function captureElementToPDF(element, {
   margin = 10,
   scale = 2,
 } = {}) {
+  const html2canvas = await getHtml2canvas()
+  const { jsPDF } = await getJsPDF()
   const canvas = await html2canvas(element, {
     scale,
     useCORS: true,
@@ -60,6 +78,7 @@ export function generarPDFKPI({ datos, kpis, informe, elemento }) {
 }
 
 export async function generarPDFResumenIncidencias(incidencias, datosDelegacion = '') {
+  const { jsPDF } = await getJsPDF()
   const pdf = new jsPDF({ format: 'a4', unit: 'mm' })
   const pageWidth = pdf.internal.pageSize.getWidth()
   let y = 20
@@ -131,6 +150,7 @@ export async function generarPDFResumenIncidencias(incidencias, datosDelegacion 
 }
 
 export async function generarPDFKPICompleto({ kpis, datos, informe, BENCHMARKS }) {
+  const { jsPDF } = await getJsPDF()
   const pdf = new jsPDF({ format: 'a4', unit: 'mm' })
   const pageWidth = pdf.internal.pageSize.getWidth()
   let y = 20
