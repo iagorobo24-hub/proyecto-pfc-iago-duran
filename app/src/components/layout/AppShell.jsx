@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
-import { Outlet, useLocation } from 'react-router-dom'
+import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { ChevronLeft, ChevronRight, Search } from 'lucide-react'
 import Topbar from './Topbar'
 import Sidebar from './Sidebar'
@@ -26,6 +26,7 @@ function useMobile() {
 export default function AppShell() {
   const { user } = useAuth()
   const location = useLocation()
+  const navigate = useNavigate()
   const isMobile = useMobile()
   const [collapsed, setCollapsed] = useState(() => {
     return safeGetItem('Proyectos PFC_sidebar_collapsed') === 'true'
@@ -141,6 +142,10 @@ export default function AppShell() {
                 placeholder="Buscar productos, referencias, herramientas..."
                 onKeyDown={e => {
                   if (e.key === 'Escape') setSearchVisible(false)
+                  if (e.key === 'Enter' && e.target.value.trim().length >= 2) {
+                    navigate(`/app/fichas?q=${encodeURIComponent(e.target.value.trim())}`)
+                    setSearchVisible(false)
+                  }
                 }}
               />
             </div>

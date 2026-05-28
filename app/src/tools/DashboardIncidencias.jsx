@@ -3,7 +3,6 @@ import useMemoriaUsuario from '../hooks/useMemoriaUsuario';
 import IncidenciasLista from '../components/incidencias/IncidenciasLista';
 import IncidenciasDetalle from '../components/incidencias/IncidenciasDetalle';
 import IncidenciasFormulario from '../components/incidencias/IncidenciasFormulario';
-import { generarPDFResumenIncidencias } from '../utils/pdfGenerator';
 import styles from './DashboardIncidencias.module.css';
 
 export default function DashboardIncidencias() {
@@ -91,6 +90,7 @@ export default function DashboardIncidencias() {
   const exportarPDF = async () => {
     setExportandoPDF(true)
     try {
+      const { generarPDFResumenIncidencias } = await import('../utils/pdfGenerator');
       await generarPDFResumenIncidencias(incidencias)
     } catch (err) {
       console.error('Error exportando PDF:', err)

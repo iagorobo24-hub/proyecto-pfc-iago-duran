@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from 'react'
+import { createContext, useContext, useState, useEffect, useRef } from 'react'
 import { flushSync } from 'react-dom'
 import { supabase } from '../supabase/supabaseClient'
 import { safeGetItem, safeSetItem } from '../utils/storage'
@@ -12,45 +12,60 @@ export function ThemeProvider({ children }) {
     return false
   })
 
+  // Cachear userId para evitar getUser() repetido en cada toggle
+  const userIdRef = useRef(null)
+  const [userId, setUserId] = useState(null)
+
+  // Suscribir a auth para obtener el userId una sola vez
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      const uid = session?.user?.id ?? null
+      userIdRef.current = uid
+      setUserId(uid)
+    })
+    // Obtener sesión inicial
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      const uid = session?.user?.id ?? null
+      userIdRef.current = uid
+      setUserId(uid)
+    })
+    return () => subscription.unsubscribe()
+  }, [])
+
   // Cargar tema desde Supabase si el usuario está autenticado
   useEffect(() => {
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      if (!user) return
-      supabase
-        .from('user_data')
-        .select('data')
-        .eq('user_id', user.id)
-        .eq('module', 'preferencias')
-        .eq('key', 'tema')
-        .maybeSingle()
-        .then(({ data: row }) => {
-          if (row?.data && row.data !== safeGetItem('Proyectos PFC_theme')) {
-            const temaSupabase = row.data === 'dark'
-            setDark(temaSupabase)
-          }
-        })
-        .catch(() => {})
-    })
-  }, [])
+    if (!userId) return
+    supabase
+      .from('user_data')
+      .select('data')
+      .eq('user_id', userId)
+      .eq('module', 'preferencias')
+      .eq('key', 'tema')
+      .maybeSingle()
+      .then(({ data: row }) => {
+        if (row?.data && row.data !== safeGetItem('Proyectos PFC_theme')) {
+          const temaSupabase = row.data === 'dark'
+          setDark(temaSupabase)
+        }
+      })
+      .catch(() => {})
+  }, [userId])
 
   // Guardar en localStorage y Supabase
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light')
     safeSetItem('Proyectos PFC_theme', dark ? 'dark' : 'light')
-    // Sync a Supabase si hay sesión
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      if (!user) return
-      supabase
-        .from('user_data')
-        .upsert({
-          user_id: user.id,
-          module: 'preferencias',
-          key: 'tema',
-          data: dark ? 'dark' : 'light',
-          updated_at: new Date().toISOString(),
-        }, { onConflict: 'user_id, module, key' })
-        .catch(() => {})
-    })
+    if (!userIdRef.current) return
+    supabase
+      .from('user_data')
+      .upsert({
+        user_id: userIdRef.current,
+        module: 'preferencias',
+        key: 'tema',
+        data: dark ? 'dark' : 'light',
+        updated_at: new Date().toISOString(),
+      }, { onConflict: 'user_id, module, key' })
+      .catch(() => {})
   }, [dark])
 
   const toggle = (event) => {

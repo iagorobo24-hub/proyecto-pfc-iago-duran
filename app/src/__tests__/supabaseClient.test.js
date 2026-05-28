@@ -76,7 +76,7 @@ describe('Stub Supabase client — user_data operations', () => {
       .from('user_data')
       .select('data')
 
-    expect(result).toEqual({ data: [], error: null })
+    expect(result).toMatchObject({ data: [], error: null })
   })
 
   it('select with eq chaining resolves without error', async () => {

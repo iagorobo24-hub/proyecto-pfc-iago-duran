@@ -2,7 +2,6 @@ import { useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import BudgetPrintView from './BudgetPrintView'
 import { usePresupuestosContext } from './PresupuestosContext'
-import { generarPDFPresupuesto } from '../../utils/pdfGenerator'
 import styles from '../../tools/Presupuestos.module.css'
 
 export default function PresupuestosPdf() {
@@ -15,6 +14,7 @@ export default function PresupuestosPdf() {
     if (!printRef.current) return
     setExportando(true)
     try {
+      const { generarPDFPresupuesto } = await import('../../utils/pdfGenerator')
       await generarPDFPresupuesto({
         presupuesto: partidas,
         datosCliente,

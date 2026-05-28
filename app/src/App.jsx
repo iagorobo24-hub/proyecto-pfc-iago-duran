@@ -3,6 +3,7 @@ import { Routes, Route } from 'react-router-dom'
 import AppShell from './components/layout/AppShell'
 import LoginPage from './components/auth/LoginPage'
 import LandingPage from './pages/LandingPage'
+import NotFound from './pages/NotFound'
 import useDocumentTitle from './hooks/useDocumentTitle'
 
 const FichasTecnicas = lazy(() => import('./tools/FichasTecnicas'))
@@ -77,6 +78,7 @@ export default function App() {
           </Route>
           <Route path="formacion"    element={<Suspense fallback={<PageLoader />}><FormacionInternaPage /></Suspense>} />
           <Route path="sonex"        element={<Suspense fallback={<PageLoader />}><SonexPage /></Suspense>} />
+          <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
     </ErrorBoundary>

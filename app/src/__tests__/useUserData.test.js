@@ -217,7 +217,7 @@ describe('useUserData — Supabase upsert payload shape', () => {
     expect(payload.module).toBe('preferencias')
     expect(payload.key).toBe('tema')
     expect(payload.data).toBe('dark')
-    expect(payload.updated_at).toBe('2026-05-27T08:00:00Z')
+    expect(payload.updated_at).toBe('2026-05-27T08:00:00.000Z')
   })
 
   it('builds correct select query with eq filters', () => {

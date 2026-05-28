@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { Construction, ArrowRight, Linkedin } from 'lucide-react';
+import { ArrowRight, Linkedin, CheckCircle } from 'lucide-react';
 import styles from './styles/HeroContent.module.css';
 
 const TITLE_TEXT = 'Suite de herramientas para técnicos del sector eléctrico';
@@ -41,8 +41,8 @@ const HeroContent = () => {
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.6 }}
       >
-        <Construction size={14} />
-        <span>Proyecto en desarrollo activo</span>
+        <CheckCircle size={14} />
+        <span>8 módulos en producción · IA integrada</span>
       </motion.div>
 
       <motion.div
@@ -99,7 +99,7 @@ const HeroContent = () => {
         animate={{ opacity: 1 }}
         transition={{ duration: 1, delay: 0.8 }}
       >
-        * Este proyecto está en desarrollo continuo. Pueden existir cambios o nuevas funcionalidades.
+        Autenticación con Google · Datos sincronizados · Actualizaciones automáticas
       </motion.p>
     </div>
   );

@@ -1,19 +1,26 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { motion } from 'framer-motion';
 import styles from './styles/FloatingParticles.module.css';
 
+function generateParticles(count, seed = 12345) {
+  let state = seed;
+  const nextRandom = () => {
+    state = (state * 1103515245 + 12345) & 0x7fffffff;
+    return state / 0x7fffffff;
+  };
+  return Array.from({ length: count }, (_, i) => ({
+    id: i,
+    left: nextRandom() * 100,
+    delay: nextRandom() * 8,
+    duration: 6 + nextRandom() * 8,
+    size: 3 + nextRandom() * 5,
+    opacity: 0.25 + nextRandom() * 0.4,
+    xOffset: nextRandom() > 0.5 ? 40 : -40,
+  }));
+}
+
 const FloatingParticles = () => {
-  const particles = useMemo(() => {
-    return Array.from({ length: 50 }, (_, i) => ({
-      id: i,
-      left: Math.random() * 100,
-      delay: Math.random() * 8,
-      duration: 6 + Math.random() * 8,
-      size: 3 + Math.random() * 5,
-      opacity: 0.25 + Math.random() * 0.4,
-      xOffset: Math.random() > 0.5 ? 40 : -40
-    }));
-  }, []);
+  const particles = useMemo(() => generateParticles(50), []);
 
   return (
     <div className={styles.particlesContainer} aria-hidden="true">

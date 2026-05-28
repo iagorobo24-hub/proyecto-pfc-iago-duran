@@ -5,7 +5,6 @@ import { BarChart, Bar, LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContai
 import Button from '../components/ui/Button'
 import Input from '../components/ui/Input'
 import { useToast } from '../contexts/ToastContext'
-import { generarPDFKPICompleto } from '../utils/pdfGenerator'
 import styles from './KpiLogistico.module.css'
 
 const BENCHMARKS = {
@@ -83,6 +82,7 @@ export default function KPILogistico() {
     if (!kpis) return;
     setExportandoPDF(true);
     try {
+      const { generarPDFKPICompleto } = await import('../utils/pdfGenerator');
       await generarPDFKPICompleto({ kpis, datos, informe, BENCHMARKS });
     } catch (err) {
       console.error('Error exportando PDF:', err);
