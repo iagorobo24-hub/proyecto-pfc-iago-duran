@@ -17,7 +17,7 @@ export const MARCAS = {
   "Siemens": {
     nombre: "Siemens",
     color: "#009999",
-    logo: "/logos/siemens.jpg",
+    logo: "/logos/siemens.png",
   },
   "Mitsubishi Electric": {
     nombre: "Mitsubishi Electric",
@@ -27,7 +27,7 @@ export const MARCAS = {
   "IFM": {
     nombre: "IFM Electronic",
     color: "#0050AA",
-    logo: "/logos/ifm.jpg",
+    logo: "/logos/ifm.png",
   },
   "Pepperl+Fuchs": {
     nombre: "Pepperl+Fuchs",
@@ -37,12 +37,12 @@ export const MARCAS = {
   "Philips": {
     nombre: "Philips Lighting",
     color: "#0B5394",
-    logo: "/logos/philips.jpg",
+    logo: "/logos/philips.png",
   },
   "Ledvance": {
     nombre: "Ledvance",
     color: "#003366",
-    logo: "/logos/ledvance.jpg",
+    logo: "/logos/ledvance.png",
   },
   "Zemper": {
     nombre: "Zemper",

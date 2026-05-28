@@ -22,7 +22,7 @@ describe('getBrandLogoData', () => {
 
   it('returns logo for Siemens', () => {
     const result = getBrandLogoData('Siemens')
-    expect(result.logo).toBe('/logos/siemens.jpg')
+    expect(result.logo).toBe('/logos/siemens.png')
   })
 
   it('returns null logo with gradient for unknown brand', () => {
