@@ -671,8 +671,8 @@
 
 .curveGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: var(--space-3);
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: var(--space-4);
   width: 100%;
   padding: 0 var(--space-1);
 }

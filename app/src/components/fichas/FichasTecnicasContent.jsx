@@ -561,15 +561,17 @@ export default function FichasTecnicasContent({
                             <span className={styles.poleCount}>{curveData._poles[poles].length} ref.</span>
                           </div>
                           <div className={styles.curveGrid}>
-                            {curveData._poles[poles].map(p => (
-                              <LinearRefCard
-                                key={p.id}
-                                code={p.ref_fabricante}
-                                desc={p.name}
-                                price={p.precio}
-                                image={p.imagen}
-                                onClick={() => onSeleccionarReferencia(p)}
-                              />
+                            {curveData._poles[poles].map((p, i) => (
+                              <div key={p.id} style={{ animation: `fadeInUp 0.4s var(--ease-out) both`, animationDelay: `${i * 30}ms` }}>
+                                <LinearRefCard
+                                  code={p.ref_fabricante}
+                                  desc={p.name}
+                                  price={p.precio}
+                                  image={p.imagen}
+                                  marca={p.marca}
+                                  onClick={() => onSeleccionarReferencia(p)}
+                                />
+                              </div>
                             ))}
                           </div>
                         </div>
@@ -594,19 +596,20 @@ export default function FichasTecnicasContent({
               <div
                 style={{
                   display: 'grid',
-                  gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))',
-                  gap: '16px',
+                  gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))',
+                  gap: '20px',
                   width: '100%',
                   padding: '16px',
                 }}
               >
-                {filteredRefs.map(p => (
-                  <div key={p.id} role="listitem" style={{ display: 'flex' }}>
+                {filteredRefs.map((p, i) => (
+                  <div key={p.id} role="listitem" style={{ display: 'flex', animation: `fadeInUp 0.4s var(--ease-out) both`, animationDelay: `${i * 30}ms` }}>
                     <LinearRefCard
                       code={p.ref_fabricante}
                       desc={p.name}
                       price={p.precio}
                       image={p.imagen}
+                      marca={p.marca}
                       onClick={() => onSeleccionarReferencia(p)}
                     />
                   </div>
