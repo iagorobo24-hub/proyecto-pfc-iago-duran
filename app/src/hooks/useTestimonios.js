@@ -51,16 +51,6 @@ export default function useTestimonios() {
     cargar()
   }, [cargar])
 
-  // Auto-migrar localStorage → Supabase cuando el usuario existe
-  useEffect(() => {
-    if (!cargando && user?.id) {
-      const local = safeGetJSON(LS_KEY, [])
-      if (local.length > 0) {
-        migrarDesdeLocal()
-      }
-    }
-  }, [cargando, user, migrarDesdeLocal])
-
   const agregar = useCallback(async (nuevo) => {
     // Optimistic: añadir al estado local inmediatamente
     const tempId = Date.now()
@@ -162,6 +152,16 @@ export default function useTestimonios() {
       setTestimonios(prev => [...insertados, ...prev])
     }
   }, [user])
+
+  // Auto-migrar localStorage → Supabase cuando el usuario existe
+  useEffect(() => {
+    if (!cargando && user?.id) {
+      const local = safeGetJSON(LS_KEY, [])
+      if (local.length > 0) {
+        migrarDesdeLocal()
+      }
+    }
+  }, [cargando, user, migrarDesdeLocal])
 
   return {
     testimonios,
