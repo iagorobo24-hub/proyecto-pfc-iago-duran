@@ -18,6 +18,7 @@ import FichasTecnicasSkeleton from './FichasTecnicasSkeleton'
 import VistaCurvaTipo from './VistaCurvaTipo'
 import VistaPolos from './VistaPolos'
 import VistaCalibre from './VistaCalibre'
+import VistaCardConImagen from './VistaCardConImagen'
 import styles from '../../tools/FichasTecnicas.module.css'
 
 const getUrlFabricante = (prod) => {
@@ -387,6 +388,37 @@ export default function FichasTecnicasContent({
 
       const poleCounts = buildCounts(polosDisponibles, 'polos')
 
+      // Obtener imagen representativa para cada opción de polos
+      const getPolosImage = (polo) => {
+        const filtrados = filterProductsBy(referenciasDisponibles, {
+          curve: vistaCurva || undefined,
+          tipo: vistaTipo || undefined,
+          polos: polo,
+        })
+        return filtrados.find(p => p.imagen)?.imagen || null
+      }
+
+      // Obtener imagen representativa para cada calibre
+      const getCalibreImage = (calibre) => {
+        const filtrados = filterProductsBy(referenciasDisponibles, {
+          curve: vistaCurva || undefined,
+          tipo: vistaTipo || undefined,
+          polos: vistaPolos,
+          calibre: calibre,
+        })
+        return filtrados.find(p => p.imagen)?.imagen || null
+      }
+
+      // Obtener imagen representativa para cada sensibilidad
+      const getSensibilidadImage = (sensibilidad) => {
+        const filtrados = filterProductsBy(referenciasDisponibles, {
+          tipo: vistaTipo || undefined,
+          polos: vistaPolos,
+          sensibilidad: sensibilidad,
+        })
+        return filtrados.find(p => p.imagen)?.imagen || null
+      }
+
       const filtro = mode === 'magneto'
         ? { curve: vistaCurva, polos: vistaPolos, calibre: vistaCalibre }
         : { tipo: vistaTipo, polos: vistaPolos, sensibilidad: vistaSensibilidad }
@@ -439,26 +471,103 @@ export default function FichasTecnicasContent({
             <VistaCurvaTipo mode="diferencial" tipos={tiposDisponibles} counts={tipoCounts} onSelect={setVistaTipo} />
           )}
           {currentStep === 'polos' && (
-            <VistaPolos polos={polosDisponibles} counts={poleCounts} onSelect={setVistaPolos} />
+            <div className={styles.cardGrid} role="list" aria-label="Selección de polos">
+              {polosDisponibles.map(polo => {
+                const count = poleCounts[polo] || 0
+                const image = getPolosImage(polo)
+                const badge = mode === 'magneto' ? `${vistaCurva || ''} ${polo}` : `${vistaTipo || ''} ${polo}`
+                return (
+                  <VistaCardConImagen
+                    key={polo}
+                    badge={badge}
+                    name={polo}
+                    desc={`${count} ref.`}
+                    count={count}
+                    image={image}
+                    onSelect={setVistaPolos}
+                  />
+                )
+              })}
+            </div>
           )}
           {currentStep === 'calibre' && (
-            <>
-              <VistaCalibre mode="magneto" calibres={getCalibresDisponibles(referenciasDisponibles, { curve: vistaCurva, polos: vistaPolos })} onSelect={setVistaCalibre} />
+            <>\n              <div className={styles.cardGrid} role="list" aria-label="Selección de calibre">
+                {getCalibresDisponibles(referenciasDisponibles, { curve: vistaCurva, polos: vistaPolos }).map(calibre => {
+                  const filtrados = filterProductsBy(referenciasDisponibles, {
+                    curve: vistaCurva || undefined,
+                    tipo: vistaTipo || undefined,
+                    polos: vistaPolos,
+                    calibre: calibre,
+                  })
+                  const count = filtrados.length
+                  const image = getCalibreImage(calibre)
+                  return (
+                    <VistaCardConImagen
+                      key={calibre}
+                      badge={`${calibre} A`}
+                      name={`${calibre} A`}
+                      desc={`${count} ref.`}
+                      count={count}
+                      image={image}
+                      onSelect={setVistaCalibre}
+                    />
+                  )
+                })}
+              </div>
             </>
           )}
           {currentStep === 'sensibilidad' && (
-            <>
-              <VistaCalibre mode="diferencial" sensibilidades={getSensibilidadesDisponibles(referenciasDisponibles, { tipo: vistaTipo, polos: vistaPolos })} onSelect={setVistaSensibilidad} />
+            <>\n              <div className={styles.cardGrid} role="list" aria-label="Selección de sensibilidad">
+                {getSensibilidadesDisponibles(referenciasDisponibles, { tipo: vistaTipo, polos: vistaPolos }).map(sensibilidad => {
+                  const filtrados = filterProductsBy(referenciasDisponibles, {
+                    tipo: vistaTipo || undefined,
+                    polos: vistaPolos,
+                    sensibilidad: sensibilidad,
+                  })
+                  const count = filtrados.length
+                  const image = getSensibilidadImage(sensibilidad)
+                  return (
+                    <VistaCardConImagen
+                      key={sensibilidad}
+                      badge={`${sensibilidad} mA`}
+                      name={`${sensibilidad} mA`}
+                      desc={`${count} ref.`}
+                      count={count}
+                      image={image}
+                      onSelect={setVistaSensibilidad}
+                    />
+                  )
+                })}
+              </div>
             </>
           )}
           {currentStep === 'tabla' && (
-            <>
-              <div className={styles.sectionHeader}>
+            <>\n              <div className={styles.sectionHeader}>
                 <span className={`${styles.label} ${styles['label--brand']}`}>
                   {productosFiltrados.length} referencias
                 </span>
               </div>
-              <ProductTable products={productosFiltrados} onSelect={onSeleccionarReferencia} />
+              {productosFiltrados.length <= 12 ? (
+                <div className={styles.cardGrid} role="list" aria-label="Referencias disponibles">
+                  {productosFiltrados.map((p, i) => (
+                    <div
+                      key={p.id}
+                      style={{ animation: `fadeInUp 0.4s var(--ease-out) both`, animationDelay: `${i * 30}ms` }}
+                    >
+                      <LinearRefCard
+                        code={p.ref_fabricante}
+                        desc={p.name}
+                        price={p.precio}
+                        image={p.imagen}
+                        marca={p.marca}
+                        onClick={() => onSeleccionarReferencia(p)}
+                      />
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <ProductTable products={productosFiltrados} onSelect={onSeleccionarReferencia} />
+              )}
             </>
           )}
 
