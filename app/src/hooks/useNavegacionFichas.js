@@ -532,7 +532,39 @@ useEffect(() => {
  const irAPaso = useCallback((breadcrumbIndex) => {
   if (breadcrumbIndex >= historial.length) return
   const targetEntry = historial[breadcrumbIndex]
-  setPaso(targetEntry.paso)
+
+  // Map completed step → state setter to clear (so user reselects from that step)
+  const stepClearMap = {
+    categorias: () => { setCategoria(null) },
+    marcas: () => { setMarca(null) },
+    categorias_grupo: () => { setCategoriaGrupo(null) },
+    subcategorias: () => { setSubcategoria(null) },
+    gamas: () => { setGama(null) },
+    tipos: () => { setTipo(null) },
+    gamas_comerciales: () => { setGamaComercial(null) },
+    subgamas: () => { setSubgama(null) },
+    referencias: () => { setReferencia(null) },
+  }
+
+  // Map completed step → paso to display
+  const nextStepMap = {
+    categorias: 'marcas',
+    marcas: 'gamas',
+    categorias_grupo: 'subcategorias',
+    subcategorias: 'gamas_comerciales',
+    gamas: 'tipos',
+    tipos: 'gamas_comerciales',
+    gamas_comerciales: 'subgamas',
+    subgamas: 'referencias',
+    referencias: 'referencias',
+  }
+
+  // Clear the value at the target step
+  const clearFn = stepClearMap[targetEntry.paso]
+  if (clearFn) clearFn()
+
+  const nextStep = nextStepMap[targetEntry.paso] || targetEntry.paso
+  setPaso(nextStep)
   setHistorial(historial.slice(0, breadcrumbIndex))
   clearAfter(targetEntry.paso)
  }, [historial, clearAfter])
