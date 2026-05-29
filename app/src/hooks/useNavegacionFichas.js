@@ -39,6 +39,7 @@ function clearStatesAfter(paso, setters) {
       setters.setGrupos({})
       break
     case 'marcas':
+      setters.setMarca(null)
       setters.setGama(null)
       setters.setGamaComercial(null)
       setters.setTipo(null)
@@ -52,6 +53,7 @@ function clearStatesAfter(paso, setters) {
       setters.setGrupos({})
       break
     case 'categorias_grupo':
+      setters.setCategoriaGrupo(null)
       setters.setSubcategoria(null)
       setters.setGamaComercial(null)
       setters.setSubgama(null)
@@ -61,6 +63,7 @@ function clearStatesAfter(paso, setters) {
       setters.setReferenciasDisponibles([])
       break
     case 'subcategorias':
+      setters.setSubcategoria(null)
       setters.setGamaComercial(null)
       setters.setSubgama(null)
       setters.setGamasComercialesDisponibles([])
@@ -69,6 +72,7 @@ function clearStatesAfter(paso, setters) {
       setters.setReferenciasDisponibles([])
       break
     case 'gamas':
+      setters.setGama(null)
       setters.setTipo(null)
       setters.setGamaComercial(null)
       setters.setSubgama(null)
@@ -78,6 +82,7 @@ function clearStatesAfter(paso, setters) {
       setters.setReferenciasDisponibles([])
       break
     case 'tipos':
+      setters.setTipo(null)
       setters.setGamaComercial(null)
       setters.setSubgama(null)
       setters.setGamasComercialesDisponibles([])
@@ -86,14 +91,19 @@ function clearStatesAfter(paso, setters) {
       setters.setReferenciasDisponibles([])
       break
     case 'gamas_comerciales':
+      setters.setGamaComercial(null)
       setters.setSubgama(null)
       setters.setSubgamasDisponibles([])
       setters.setReferencia(null)
       setters.setReferenciasDisponibles([])
       break
     case 'subgamas':
+      setters.setSubgama(null)
       setters.setReferencia(null)
       setters.setReferenciasDisponibles([])
+      break
+    case 'referencias':
+      setters.setReferencia(null)
       break
   }
 }
