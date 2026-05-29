@@ -12,6 +12,7 @@ import {
   extractCurve, extractAmps, extractPoles, POLA_ORDER,
   getCurvasDisponibles, getTiposDiferencial, getPolosDisponibles,
   getCalibresDisponibles, getSensibilidadesDisponibles,
+  getFrameworksDisponibles,
   filterProductsBy,
 } from '../../hooks/useProductTable'
 import FichasTecnicasSkeleton from './FichasTecnicasSkeleton'
