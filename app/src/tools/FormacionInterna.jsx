@@ -6,6 +6,8 @@ import { useToast } from '../contexts/ToastContext'
 import useMemoriaUsuario from '../hooks/useMemoriaUsuario'
 import styles from './FormacionInterna.module.css'
 
+const { toast } = useToast()
+
 const AREAS = ["Almacén", "Comercial", "Técnico", "Seguridad", "Sistemas"];
 const ROLES = ["Operario", "Técnico", "Comercial", "Responsable"];
 

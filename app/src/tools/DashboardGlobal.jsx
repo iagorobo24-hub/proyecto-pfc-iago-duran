@@ -23,7 +23,7 @@ export default function DashboardGlobal() {
   const presupuestos = memoria.presupuestos.historial.use()[0]
   const kpiHistorial = memoria.kpi.historial.use()[0]
 
-  const criticas = incidencias.filter(i => i.severidad === 'Crítica' && i.estado !== 'Resuelta').length
+  const criticas = (incidencias || []).filter(i => i.severidad === 'Crítica' && i.estado !== 'Resuelta').length
   const ultimaFicha = fichas.length > 0 ? fichas[fichas.length - 1] : null
   const kpiReciente = kpiHistorial.length > 0 ? kpiHistorial[kpiHistorial.length - 1] : null
 

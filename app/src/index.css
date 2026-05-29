@@ -11,7 +11,7 @@
   flex-direction: column;
   height: 100vh;
   overflow: hidden;
-  background: var(--gray-50);
+  background: var(--color-bg);
 }
 
 .topbar {
@@ -22,7 +22,7 @@
 .main {
   flex: 1;
   overflow-y: auto;
-  background: var(--white);
+  background: var(--color-surface);
   animation: fadeIn 0.4s var(--ease-out) both;
 }
 
