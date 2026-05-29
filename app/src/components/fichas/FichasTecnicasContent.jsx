@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { getBrandLogoData } from '../../services/brandLogoService'
 import { MARCAS } from '../../data/marcasLogos'
 import { sanitizeUrl } from '../../services/anthropicService'
@@ -32,7 +32,7 @@ const getUrlFabricante = (prod) => {
   return prod.pdf_url || prod.pdfUrl
 }
 
-export default function FichasTecnicasContent({
+function FichasTecnicasContent({
   paso,
   categoria,
   marca,
@@ -913,3 +913,5 @@ export default function FichasTecnicasContent({
 
   return null
 }
+
+export default React.memo(FichasTecnicasContent)

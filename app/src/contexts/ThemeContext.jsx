@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect, useRef } from 'react'
+import { createContext, useContext, useState, useEffect, useRef, useMemo } from 'react'
 import { flushSync } from 'react-dom'
 import { supabase } from '../supabase/supabaseClient'
 import { safeGetItem, safeSetItem } from '../utils/storage'
@@ -116,8 +116,10 @@ export function ThemeProvider({ children }) {
     })
   }
 
+  const themeValue = useMemo(() => ({ dark, toggle }), [dark, toggle])
+
   return (
-    <ThemeContext.Provider value={{ dark, toggle }}>
+    <ThemeContext.Provider value={themeValue}>
       {children}
     </ThemeContext.Provider>
   )

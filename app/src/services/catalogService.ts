@@ -549,9 +549,13 @@ export async function getProductoPorRef(ref: string): Promise<Product | null> {
   }
 }
 
+function sanitizeSearchInput(t: string): string {
+  return t.replace(/[(),]/g, '')
+}
+
 export async function buscarProductos(termino: string): Promise<Product[]> {
   try {
-    const t = termino.trim();
+    const t = sanitizeSearchInput(termino.trim());
     const { data, error } = await supabase
       .from('products')
       .select('id, ref_fabricante, name, imagen, marca, familia, subfamilia, tipo, precio')
@@ -568,7 +572,7 @@ export async function buscarProductos(termino: string): Promise<Product[]> {
 
 export async function buscarProductosConLimite(termino: string, limite: number = 5): Promise<Product[]> {
   try {
-    const t = termino.trim();
+    const t = sanitizeSearchInput(termino.trim());
     const { data, error } = await supabase
       .from('products')
       .select('id, ref_fabricante, name, imagen, marca, familia, subfamilia, tipo, precio')

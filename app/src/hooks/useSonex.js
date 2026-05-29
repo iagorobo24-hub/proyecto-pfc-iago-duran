@@ -36,6 +36,8 @@ export function useSonex() {
   const [sessions, setSessions] = memoria.sonex.sesiones.use()
   const [activeSessionId, setActiveSessionId] = useState(null);
   const [messages, setMessages] = useState([]);
+  const messagesRef = useRef(messages);
+  useEffect(() => { messagesRef.current = messages }, [messages]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [categoriaActiva, setCategoriaActiva] = useState('');
@@ -54,7 +56,7 @@ export function useSonex() {
 
   const saveCurrentMessages = useCallback((msgOverrides) => {
     setSessions(prev => {
-      const msgs = msgOverrides !== undefined ? msgOverrides : messages;
+      const msgs = msgOverrides !== undefined ? msgOverrides : messagesRef.current;
       const updated = prev.map(s =>
         s.id === activeSessionId
           ? { ...s, messages: msgs.map(m => ({ ...m, timestamp: m.timestamp instanceof Date ? m.timestamp.toISOString() : m.timestamp })), title: msgs.length > 0 ? generateTitle(msgs) : s.title, updatedAt: new Date().toISOString() }
@@ -63,7 +65,7 @@ export function useSonex() {
       persistSessions(updated);
       return updated;
     });
-  }, [activeSessionId, messages, persistSessions]);
+  }, [activeSessionId, persistSessions]);
 
   useEffect(() => {
     const legacy = memoria.migrarDesdeLegacy('pfc_sonex_historial', 'sonex', 'sesiones')

@@ -106,29 +106,30 @@ export default function useMemoriaUsuario() {
     return { load, save, remove, use, storageKey }
   }, [userId])
 
-  const memoria = {}
-  for (const tool of Object.keys(MEMORY_SCHEMA)) {
-    memoria[tool] = {}
-    for (const field of Object.keys(MEMORY_SCHEMA[tool])) {
-      memoria[tool][field] = buildField(tool, field)
+  const memoria = useMemo(() => {
+    const obj = {}
+    for (const tool of Object.keys(MEMORY_SCHEMA)) {
+      obj[tool] = {}
+      for (const field of Object.keys(MEMORY_SCHEMA[tool])) {
+        obj[tool][field] = buildField(tool, field)
+      }
     }
-  }
+    return obj
+  }, [buildField])
 
-  return {
+  const migrarDesdeLegacy = useCallback((legacyKey, tool, field) => {
+    if (!userId) return null
+    const legacy = safeGetJSON(legacyKey)
+    if (legacy === null) return null
+    const fieldObj = buildField(tool, field)
+    fieldObj.save(legacy)
+    safeRemoveItem(legacyKey)
+    return legacy
+  }, [userId, buildField])
+
+  return useMemo(() => ({
     userId,
     ...memoria,
-    /**
-     * Recupera datos de un storage key legacy (migración one-shot).
-     * Si existe y userId está presente, los mueve a la nueva key y borra la vieja.
-     */
-    migrarDesdeLegacy: useCallback((legacyKey, tool, field) => {
-      if (!userId) return null
-      const legacy = safeGetJSON(legacyKey)
-      if (legacy === null) return null
-      const fieldObj = buildField(tool, field)
-      fieldObj.save(legacy)
-      safeRemoveItem(legacyKey)
-      return legacy
-    }, [userId, buildField]),
-  }
+    migrarDesdeLegacy,
+  }), [userId, memoria, migrarDesdeLegacy])
 }
