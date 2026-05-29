@@ -9,6 +9,15 @@ export function extractSubgama(name) {
   return ''
 }
 
+export function extractFramework(name) {
+  if (!name) return ''
+  const m = name.match(/\bNSX(\d{2,3})[A-Z]?\b/i)
+  if (m) return m[1]
+  return ''
+}
+
+export const FRAMEWORK_ORDER = ['15', '25', '40', '63', '80', '100', '125', '160', '200', '250', '320', '400', '500', '630']
+
 const MAGNETOTERMICO_GAMAS = [
   'Acti 9 iC60',
   'C60 UL CSA IEC',
@@ -39,13 +48,17 @@ export function supportsTableView(products) {
   const allDiferencial = products.every(
     p => (p.subfamilia || '').trim() === 'Interruptor Diferencial'
   )
+  const allMCCB = products.every(
+    p => (p.subfamilia || '').trim() === 'Interruptor Caja Moldeada'
+  )
 
-  if (!allMagnetotermico && !allDiferencial) return false
+  if (!allMagnetotermico && !allDiferencial && !allMCCB) return false
 
   const gama = products[0]?.Gama || products[0]?.gama || ''
 
   if (allMagnetotermico) return MAGNETOTERMICO_GAMAS.includes(gama)
   if (allDiferencial) return DIFERENCIAL_GAMAS.includes(gama)
+  if (allMCCB) return MAGNETOTERMICO_GAMAS.includes(gama)
 
   return false
 }
@@ -123,6 +136,15 @@ export function extractTipoDiferencial(name) {
     if (['A', 'B', 'F'].includes(v)) return v
   }
   return ''
+}
+
+export function getFrameworksDisponibles(products) {
+  const frameworks = new Set()
+  for (const p of products) {
+    const fw = extractFramework(p.name)
+    if (fw && FRAMEWORK_ORDER.includes(fw)) frameworks.add(fw)
+  }
+  return FRAMEWORK_ORDER.filter(fw => frameworks.has(fw))
 }
 
 export function getCurvasDisponibles(products) {

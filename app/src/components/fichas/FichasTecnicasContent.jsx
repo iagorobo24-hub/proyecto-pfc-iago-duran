@@ -356,17 +356,23 @@ export default function FichasTecnicasContent({
 
   if (paso === 'referencias') {
     const soportaVistaAgrupada = supportsTableView(referenciasDisponibles)
+    const esMCCB = soportaVistaAgrupada && referenciasDisponibles.every(
+      p => (p.subfamilia || '').trim() === 'Interruptor Caja Moldeada'
+    )
     const esMagnetotermico = soportaVistaAgrupada && referenciasDisponibles.every(
       p => (p.subfamilia || '').trim() === 'Interruptor Magnetotérmico'
     )
 
     if (soportaVistaAgrupada) {
-      const mode = esMagnetotermico ? 'magneto' : 'diferencial'
+      const mode = esMCCB ? 'mccb' : esMagnetotermico ? 'magneto' : 'diferencial'
 
-      const currentStep = mode === 'magneto'
-        ? (!vistaCurva ? 'curva' : !vistaPolos ? 'polos' : vistaCalibre === null ? 'calibre' : 'tabla')
-        : (!vistaTipo ? 'tipo' : !vistaPolos ? 'polos' : vistaSensibilidad === null ? 'sensibilidad' : 'tabla')
+      const currentStep = mode === 'mccb'
+        ? (!vistaFramework ? 'framework' : !vistaCurva ? 'curva' : !vistaPolos ? 'polos' : vistaCalibre === null ? 'calibre' : 'tabla')
+        : mode === 'magneto'
+          ? (!vistaCurva ? 'curva' : !vistaPolos ? 'polos' : vistaCalibre === null ? 'calibre' : 'tabla')
+          : (!vistaTipo ? 'tipo' : !vistaPolos ? 'polos' : vistaSensibilidad === null ? 'sensibilidad' : 'tabla')
 
+      const frameworksDisponibles = getFrameworksDisponibles(referenciasDisponibles)
       const curvasDisponibles = getCurvasDisponibles(referenciasDisponibles)
       const tiposDisponibles = getTiposDiferencial(referenciasDisponibles)
 
@@ -382,6 +388,7 @@ export default function FichasTecnicasContent({
       const tipoCounts = !esMagnetotermico ? buildCounts(tiposDisponibles, 'tipo') : {}
 
       const polosDisponibles = getPolosDisponibles(referenciasDisponibles, {
+        framework: vistaFramework || undefined,
         curve: vistaCurva || undefined,
         tipo: vistaTipo || undefined,
       })
@@ -419,35 +426,43 @@ export default function FichasTecnicasContent({
         return filtrados.find(p => p.imagen)?.imagen || null
       }
 
-      const filtro = mode === 'magneto'
-        ? { curve: vistaCurva, polos: vistaPolos, calibre: vistaCalibre }
-        : { tipo: vistaTipo, polos: vistaPolos, sensibilidad: vistaSensibilidad }
+      const filtro = mode === 'mccb'
+        ? { framework: vistaFramework, curve: vistaCurva, polos: vistaPolos, calibre: vistaCalibre }
+        : mode === 'magneto'
+          ? { curve: vistaCurva, polos: vistaPolos, calibre: vistaCalibre }
+          : { tipo: vistaTipo, polos: vistaPolos, sensibilidad: vistaSensibilidad }
       const productosFiltrados = filterProductsBy(referenciasDisponibles, filtro)
 
       const handleBackSubStep = () => {
         if (currentStep === 'polos') {
-          mode === 'magneto' ? setVistaCurva(null) : setVistaTipo(null)
+          if (mode === 'mccb') setVistaFramework(null)
+          else if (mode === 'magneto') setVistaCurva(null)
+          else setVistaTipo(null)
         } else if (currentStep === 'calibre' || currentStep === 'sensibilidad') {
           setVistaPolos(null)
         } else if (currentStep === 'tabla') {
-          mode === 'magneto' ? setVistaCalibre(null) : setVistaSensibilidad(null)
+          if (mode === 'mccb') setVistaCalibre(null)
+          else if (mode === 'magneto') setVistaCalibre(null)
+          else setVistaSensibilidad(null)
         }
       }
 
-      const stepLabel = mode === 'magneto'
-        ? { icon: vistaCurva || '?', label: `Curva ${vistaCurva || '...'}`, sub: vistaPolos ? `${vistaPolos}` : '', last: vistaCalibre !== null ? `${vistaCalibre} A` : '' }
-        : { icon: vistaTipo || '?', label: `Tipo ${vistaTipo || '...'}`, sub: vistaPolos ? `${vistaPolos}` : '', last: vistaSensibilidad !== null ? `${vistaSensibilidad} mA` : '' }
+      const stepLabel = mode === 'mccb'
+        ? { icon: '⚡', label: `NSX${vistaFramework || '...'}`, sub: vistaCurva ? `Curva ${vistaCurva}` : vistaPolos ? `${vistaPolos}` : '', last: vistaCalibre !== null ? `${vistaCalibre}A` : '' }
+        : mode === 'magneto'
+          ? { icon: vistaCurva || '?', label: `Curva ${vistaCurva || '...'}`, sub: vistaPolos ? `${vistaPolos}` : '', last: vistaCalibre !== null ? `${vistaCalibre} A` : '' }
+          : { icon: vistaTipo || '?', label: `Tipo ${vistaTipo || '...'}`, sub: vistaPolos ? `${vistaPolos}` : '', last: vistaSensibilidad !== null ? `${vistaSensibilidad} mA` : '' }
 
       return (
         <div className={styles.linearLayout}>
           <div className={styles.vistaSteps}>
             <span className={styles.vistaStep}>
               {stepLabel.icon}
-              {currentStep !== 'curva' && currentStep !== 'tipo' && (
+              {currentStep !== 'framework' && currentStep !== 'curva' && currentStep !== 'tipo' && (
                 <span className={styles.vistaStepArrow}> › </span>
               )}
             </span>
-            {currentStep !== 'curva' && currentStep !== 'tipo' && (
+            {currentStep !== 'framework' && currentStep !== 'curva' && currentStep !== 'tipo' && (
               <span className={styles.vistaStep}>{stepLabel.label}</span>
             )}
             {(currentStep === 'calibre' || currentStep === 'sensibilidad' || currentStep === 'tabla') && (
@@ -464,6 +479,13 @@ export default function FichasTecnicasContent({
             )}
           </div>
 
+          {currentStep === 'framework' && (
+            <VistaFramework
+              frameworks={frameworksDisponibles}
+              counts={buildCounts(frameworksDisponibles, 'framework')}
+              onSelect={(fw) => setVistaFramework(fw)}
+            />
+          )}
           {currentStep === 'curva' && (
             <VistaCurvaTipo mode="magneto" curvas={curvasDisponibles} counts={curvaCounts} onSelect={setVistaCurva} />
           )}
@@ -475,7 +497,7 @@ export default function FichasTecnicasContent({
               {polosDisponibles.map(polo => {
                 const count = poleCounts[polo] || 0
                 const image = getPolosImage(polo)
-                const badge = mode === 'magneto' ? `${vistaCurva || ''} ${polo}` : `${vistaTipo || ''} ${polo}`
+                const badge = mode === 'mccb' ? `NSX${vistaFramework || ''} ${vistaCurva || ''}` : mode === 'magneto' ? `${vistaCurva || ''} ${polo}` : `${vistaTipo || ''} ${polo}`
                 return (
                   <VistaCardConImagen
                     key={polo}
@@ -491,30 +513,36 @@ export default function FichasTecnicasContent({
             </div>
           )}
           {currentStep === 'calibre' && (
-            <>\n              <div className={styles.cardGrid} role="list" aria-label="Selección de calibre">
-                {getCalibresDisponibles(referenciasDisponibles, { curve: vistaCurva, polos: vistaPolos }).map(calibre => {
-                  const filtrados = filterProductsBy(referenciasDisponibles, {
-                    curve: vistaCurva || undefined,
-                    tipo: vistaTipo || undefined,
-                    polos: vistaPolos,
-                    calibre: calibre,
-                  })
-                  const count = filtrados.length
-                  const image = getCalibreImage(calibre)
-                  return (
-                    <VistaCardConImagen
-                      key={calibre}
-                      badge={`${calibre} A`}
-                      name={`${calibre} A`}
-                      desc={`${count} ref.`}
-                      count={count}
-                      image={image}
-                      onSelect={setVistaCalibre}
-                    />
-                  )
-                })}
-              </div>
-            </>
+                      <>
+                        <div className={styles.cardGrid} role="list" aria-label="Selección de calibre">
+                          {getCalibresDisponibles(referenciasDisponibles, {
+                            framework: mode === 'mccb' ? vistaFramework : undefined,
+                            curve: mode !== 'mccb' ? vistaCurva : undefined,
+                            polos: vistaPolos,
+                          }).map(calibre => {
+                            const filtrados = filterProductsBy(referenciasDisponibles, {
+                              framework: mode === 'mccb' ? vistaFramework : undefined,
+                              curve: mode !== 'mccb' ? vistaCurva : undefined,
+                              tipo: vistaTipo || undefined,
+                              polos: vistaPolos,
+                              calibre: calibre,
+                            })
+                            const count = filtrados.length
+                            const image = getCalibreImage(calibre)
+                            return (
+                              <VistaCardConImagen
+                                key={calibre}
+                                badge={`${calibre} A`}
+                                name={`${calibre} A`}
+                                desc={`${count} ref.`}
+                                count={count}
+                                image={image}
+                                onSelect={setVistaCalibre}
+                              />
+                            )
+                          })}
+                        </div>
+                      </>
           )}
           {currentStep === 'sensibilidad' && (
             <>\n              <div className={styles.cardGrid} role="list" aria-label="Selección de sensibilidad">
