@@ -33,13 +33,16 @@ export default function useUserData(module, field, defaultValue = null, legacyKe
     return () => { mountedRef.current = false }
   }, [])
 
+  const defaultValueRef = useRef(defaultValue)
+  defaultValueRef.current = defaultValue
+
   const cargar = useCallback(async () => {
     setLoading(true)
     setError(null)
 
     if (!userId) {
       // Sin sesión → solo localStorage
-      const local = safeGetJSON(localStorageKey, defaultValue)
+      const local = safeGetJSON(localStorageKey, defaultValueRef.current)
       if (mountedRef.current) {
         setData(local)
         setLoading(false)
@@ -65,19 +68,19 @@ export default function useUserData(module, field, defaultValue = null, legacyKe
         safeSetJSON(localStorageKey, parsed)
       } else {
         // No hay datos en Supabase, probar localStorage como respaldo
-        const local = safeGetJSON(localStorageKey, defaultValue)
+        const local = safeGetJSON(localStorageKey, defaultValueRef.current)
         if (mountedRef.current) setData(local)
       }
     } catch (e) {
       console.warn(`[useUserData] Error cargando ${module}.${field} de Supabase:`, e.message)
       setError(e.message)
       // Fallback a localStorage
-      const local = safeGetJSON(localStorageKey, defaultValue)
+      const local = safeGetJSON(localStorageKey, defaultValueRef.current)
       if (mountedRef.current) setData(local)
     } finally {
       if (mountedRef.current) setLoading(false)
     }
-  }, [userId, module, field, localStorageKey, defaultValue])
+  }, [userId, module, field, localStorageKey])
 
   useEffect(() => {
     cargar()
@@ -145,7 +148,7 @@ export default function useUserData(module, field, defaultValue = null, legacyKe
 
   const remove = useCallback(async () => {
     safeRemoveItem(localStorageKey)
-    if (mountedRef.current) setData(defaultValue)
+    if (mountedRef.current) setData(defaultValueRef.current)
 
     if (!userId) return
 
@@ -162,7 +165,7 @@ export default function useUserData(module, field, defaultValue = null, legacyKe
       console.warn(`[useUserData] Error eliminando ${module}.${field} de Supabase:`, e.message)
       setError(e.message)
     }
-  }, [userId, module, field, localStorageKey, defaultValue])
+  }, [userId, module, field, localStorageKey])
 
   const migrateFromLocal = useCallback(async (legacyKey) => {
     if (!userId) return null

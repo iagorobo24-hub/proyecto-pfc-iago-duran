@@ -56,22 +56,18 @@ function createStubClient() {
             if (prop === 'csv') return () => noop()
             if (prop === 'merge') return () => chain
 
-            if (prop === 'insert' || prop === 'upsert') return (data) => ({
-              data: Array.isArray(data) ? data : [data],
-              error: null,
-              select: () => chain,
-              then: (resolve) => resolve({ data: Array.isArray(data) ? data : [data], error: null }),
-            })
-            if (prop === 'update') return (data) => ({
-              data,
-              error: null,
-              then: (resolve) => resolve({ data, error: null }),
-            })
-            if (prop === 'delete') return () => ({
-              data: null,
-              error: null,
-              then: (resolve) => resolve({ data: null, error: null }),
-            })
+            if (prop === 'insert' || prop === 'upsert') return (data) => {
+              const result = { data: Array.isArray(data) ? data : [data], error: null, select: () => chain }
+              return { ...result, then: (resolve) => resolve(result), catch: (reject) => Promise.resolve().catch(reject) }
+            }
+            if (prop === 'update') return (data) => {
+              const result = { data, error: null }
+              return { ...result, then: (resolve) => resolve(result), catch: (reject) => Promise.resolve().catch(reject) }
+            }
+            if (prop === 'delete') return () => {
+              const result = { data: null, error: null }
+              return { ...result, then: (resolve) => resolve(result), catch: (reject) => Promise.resolve().catch(reject) }
+            }
             if (prop === 'select') return (columns) => ({
               data: [],
               error: null,

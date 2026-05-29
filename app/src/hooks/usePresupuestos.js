@@ -17,6 +17,8 @@ function partidasReducer(state, action) {
       return state.map(p => p._id === action.id ? { ...p, [action.field]: action.value, precio_total: action.field === "precio_unitario" ? action.value * p.cantidad : action.field === "cantidad" ? p.precio_unitario * action.value : p.precio_total } : p)
     case "ADD_ITEM":
       return [...state, { _id: state.length, ...action.payload }]
+    case "ADD_FROM_CATALOG":
+      return [...state, { _id: state.length, ref: action.ref || "", desc: action.desc || "", cantidad: 1, precio_unitario: action.precio || 0, precio_total: action.precio || 0, descuento: 0 }]
     case "ADD":
       return [...state, { _id: state.length, ref: "", desc: "", cantidad: 1, precio_unitario: 0, precio_total: 0, descuento: 0 }]
     case "DELETE":
@@ -27,6 +29,8 @@ function partidasReducer(state, action) {
       return state
   }
 }
+
+const EMPTY_ARRAY = []
 
 export default function usePresupuestos() {
   const [categoria, setCategoria] = useState("")
@@ -39,11 +43,11 @@ export default function usePresupuestos() {
   const [guardando, setGuardando] = useState(false)
 
   /* Persistencia en Supabase + localStorage */
-  const { 
-    data: storedHistorial, 
-    loading, 
+  const {
+    data: storedHistorial,
+    loading,
     save: saveHistorial,
-  } = useUserData('presupuestos', 'historial', [], ['pfc_presupuestos_historial'])
+  } = useUserData('presupuestos', 'historial', EMPTY_ARRAY, ['pfc_presupuestos_historial'])
 
   const [historial, setHistorial] = useState([])
 

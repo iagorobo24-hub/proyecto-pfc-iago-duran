@@ -56,16 +56,17 @@ export function ThemeProvider({ children }) {
     document.documentElement.setAttribute('data-theme', dark ? 'dark' : 'light')
     safeSetItem('Proyectos PFC_theme', dark ? 'dark' : 'light')
     if (!userIdRef.current) return
-    supabase
-      .from('user_data')
-      .upsert({
-        user_id: userIdRef.current,
-        module: 'preferencias',
-        key: 'tema',
-        data: dark ? 'dark' : 'light',
-        updated_at: new Date().toISOString(),
-      }, { onConflict: 'user_id, module, key' })
-      .catch(() => {})
+    Promise.resolve(
+      supabase
+        .from('user_data')
+        .upsert({
+          user_id: userIdRef.current,
+          module: 'preferencias',
+          key: 'tema',
+          data: dark ? 'dark' : 'light',
+          updated_at: new Date().toISOString(),
+        }, { onConflict: 'user_id, module, key' })
+    ).catch(() => {})
   }, [dark])
 
   const toggle = (event) => {

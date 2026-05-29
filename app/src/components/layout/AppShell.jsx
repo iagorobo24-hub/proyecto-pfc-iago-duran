@@ -54,16 +54,17 @@ export default function AppShell() {
     safeSetItem('Proyectos PFC_sidebar_collapsed', collapsed ? 'true' : 'false')
     // Sync a Supabase si hay sesión
     if (!user?.id) return
-    supabase
-      .from('user_data')
-      .upsert({
-        user_id: user.id,
-        module: 'preferencias',
-        key: 'sidebar',
-        data: collapsed,
-        updated_at: new Date().toISOString(),
-      }, { onConflict: 'user_id, module, key' })
-      .catch(() => {})
+    Promise.resolve(
+      supabase
+        .from('user_data')
+        .upsert({
+          user_id: user.id,
+          module: 'preferencias',
+          key: 'sidebar',
+          data: collapsed,
+          updated_at: new Date().toISOString(),
+        }, { onConflict: 'user_id, module, key' })
+    ).catch(() => {})
   }, [collapsed, user?.id])
 
   useEffect(() => {
