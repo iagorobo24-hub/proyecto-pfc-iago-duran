@@ -516,47 +516,47 @@ useEffect(() => {
  }, [historial, clearAfter])
 
  const irAPaso = useCallback((breadcrumbIndex) => {
-  if (breadcrumbIndex >= historial.length) return
-  const targetEntry = historial[breadcrumbIndex]
-  const step = targetEntry.paso
+  // Build the list of steps from CURRENT STATE (not from historial)
+  // This matches how breadcrumb useMemo builds its items
+  const stateSteps = []
+  if (categoria) stateSteps.push('categorias')
+  if (marca) stateSteps.push('marcas')
+  if (categoriaGrupo) {
+    stateSteps.push('categorias_grupo')
+    if (subcategoria) stateSteps.push('subcategorias')
+  } else {
+    if (gama) stateSteps.push('gamas')
+    if (tipo) stateSteps.push('tipos')
+  }
+  if (gamaComercial) stateSteps.push('gamas_comerciales')
+  if (subgama) stateSteps.push('subgamas')
+  if (referencia) stateSteps.push('referencias')
 
-  // Clear the value AT this step (so user reselects from here)
-  switch (step) {
-    case 'categorias': setCategoria(null); break
-    case 'marcas': setMarca(null); break
-    case 'categorias_grupo': setCategoriaGrupo(null); break
-    case 'subcategorias': setSubcategoria(null); break
-    case 'gamas': setGama(null); break
-    case 'tipos': setTipo(null); break
-    case 'gamas_comerciales': setGamaComercial(null); break
-    case 'subgamas': setSubgama(null); break
-    case 'referencias': setReferencia(null); break
+  if (breadcrumbIndex >= stateSteps.length) return
+  const stepToClear = stateSteps[breadcrumbIndex]
+
+  // Clear all state from this step onward
+  switch (stepToClear) {
+    case 'categorias': setCategoria(null)
+    case 'marcas': setMarca(null); setGama(null); setTipo(null)
+    case 'categorias_grupo': setCategoriaGrupo(null)
+    case 'subcategorias': setSubcategoria(null)
+    case 'gamas': setGama(null); setTipo(null)
+    case 'tipos': setTipo(null)
+    case 'gamas_comerciales': setGamaComercial(null); setSubgama(null)
+    case 'subgamas': setSubgama(null)
+    case 'referencias': setReferencia(null); setReferenciasDisponibles([]); break
   }
 
-  // Clear everything FROM this step onward
-  const clearFrom = (s) => {
-    const order = ['categorias', 'marcas', 'categorias_grupo', 'subcategorias', 'gamas', 'tipos', 'gamas_comerciales', 'subgamas', 'referencias']
-    const idx = order.indexOf(s)
-    if (idx < 0) return
-    const clearMap = {
-      categorias: () => setMarca(null),
-      marcas: () => setGama(null),
-      categorias_grupo: () => setSubcategoria(null),
-      subcategorias: () => setGamaComercial(null),
-      gamas: () => setTipo(null),
-      tipos: () => setGamaComercial(null),
-      gamas_comerciales: () => setSubgama(null),
-      subgamas: () => setReferencia(null),
-      referencias: () => setReferenciasDisponibles([]),
-    }
-    for (let i = idx; i < order.length; i++) {
-      clearMap[order[i]]?.()
-    }
-  }
-  clearFrom(step)
+  // Also clear available lists for downstream steps
+  setGamasComercialesDisponibles([])
+  setSubgamasDisponibles([])
 
-  // Map completed step → next paso to display
-  const nextStepMap = {
+  // Determine next paso from remaining state
+  const remaining = stateSteps.slice(0, breadcrumbIndex)
+  const lastRemaining = remaining[remaining.length - 1]
+
+  const pasoMap = {
     categorias: 'marcas',
     marcas: 'gamas',
     categorias_grupo: 'subcategorias',
@@ -565,12 +565,18 @@ useEffect(() => {
     tipos: 'gamas_comerciales',
     gamas_comerciales: 'subgamas',
     subgamas: 'referencias',
-    referencias: 'referencias',
   }
 
-  setPaso(nextStepMap[step] || step)
+  if (breadcrumbIndex === 0) {
+    setPaso('marcas')
+  } else if (lastRemaining) {
+    setPaso(pasoMap[lastRemaining] || 'referencias')
+  } else {
+    setPaso('categorias')
+  }
+
   setHistorial(historial.slice(0, breadcrumbIndex))
- }, [historial])
+ }, [historial, categoria, marca, gama, tipo, categoriaGrupo, subcategoria, gamaComercial, subgama, referencia])
 
  const reiniciar = useCallback(() => {
   setPaso('categorias')
