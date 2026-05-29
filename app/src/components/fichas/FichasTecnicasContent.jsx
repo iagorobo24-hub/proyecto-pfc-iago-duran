@@ -541,7 +541,7 @@ export default function FichasTecnicasContent({
                                 desc={`${count} ref.`}
                                 count={count}
                                 image={image}
-                                onSelect={setVistaCalibre}
+                                onSelect={() => setVistaCalibre(calibre)}
                               />
                             )
                           })}
@@ -566,7 +566,7 @@ export default function FichasTecnicasContent({
                       desc={`${count} ref.`}
                       count={count}
                       image={image}
-                      onSelect={setVistaSensibilidad}
+                      onSelect={() => setVistaSensibilidad(sensibilidad)}
                     />
                   )
                 })}
