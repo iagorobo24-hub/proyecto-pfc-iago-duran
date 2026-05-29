@@ -536,46 +536,44 @@ useEffect(() => {
   if (breadcrumbIndex >= stateSteps.length) return
   const stepToClear = stateSteps[breadcrumbIndex]
 
-  // Clear all state from this step onward
+  // Clear everything AFTER this step (not the step itself — user reselects from here)
   switch (stepToClear) {
-    case 'categorias': setCategoria(null)
-    case 'marcas': setMarca(null); setGama(null); setTipo(null)
-    case 'categorias_grupo': setCategoriaGrupo(null)
-    case 'subcategorias': setSubcategoria(null)
-    case 'gamas': setGama(null); setTipo(null)
-    case 'tipos': setTipo(null)
-    case 'gamas_comerciales': setGamaComercial(null); setSubgama(null)
-    case 'subgamas': setSubgama(null)
-    case 'referencias': setReferencia(null); setReferenciasDisponibles([]); break
+    case 'categorias':
+      setMarca(null)
+    case 'marcas':
+      setCategoriaGrupo(null); setGama(null); setTipo(null)
+    case 'categorias_grupo':
+      setSubcategoria(null)
+    case 'subcategorias':
+      setGamaComercial(null); setSubgama(null)
+    case 'gamas':
+      setTipo(null)
+    case 'tipos':
+      setGamaComercial(null); setSubgama(null)
+    case 'gamas_comerciales':
+      setSubgama(null)
+    case 'subgamas':
+      setReferencia(null); setReferenciasDisponibles([]); break
   }
 
   // Also clear available lists for downstream steps
   setGamasComercialesDisponibles([])
   setSubgamasDisponibles([])
 
-  // Determine next paso from remaining state
-  const remaining = stateSteps.slice(0, breadcrumbIndex)
-  const lastRemaining = remaining[remaining.length - 1]
-
-  const pasoMap = {
-    categorias: 'marcas',
-    marcas: 'gamas',
-    categorias_grupo: 'subcategorias',
-    subcategorias: 'gamas_comerciales',
-    gamas: 'tipos',
-    tipos: 'gamas_comerciales',
-    gamas_comerciales: 'subgamas',
-    subgamas: 'referencias',
+  // Determine paso to display — same step that was clicked
+  const stepPasoMap = {
+    categorias: 'categorias',
+    marcas: 'marcas',
+    categorias_grupo: 'categorias_grupo',
+    subcategorias: 'subcategorias',
+    gamas: 'gamas',
+    tipos: 'tipos',
+    gamas_comerciales: 'gamas_comerciales',
+    subgamas: 'subgamas',
+    referencias: 'referencias',
   }
 
-  if (breadcrumbIndex === 0) {
-    setPaso('marcas')
-  } else if (lastRemaining) {
-    setPaso(pasoMap[lastRemaining] || 'referencias')
-  } else {
-    setPaso('categorias')
-  }
-
+  setPaso(stepPasoMap[stepToClear] || 'categorias')
   setHistorial(historial.slice(0, breadcrumbIndex))
  }, [historial, categoria, marca, gama, tipo, categoriaGrupo, subcategoria, gamaComercial, subgama, referencia])
 
