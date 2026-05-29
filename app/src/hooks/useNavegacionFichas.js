@@ -518,21 +518,44 @@ useEffect(() => {
  const irAPaso = useCallback((breadcrumbIndex) => {
   if (breadcrumbIndex >= historial.length) return
   const targetEntry = historial[breadcrumbIndex]
+  const step = targetEntry.paso
 
-  // Map completed step → state setter to clear (so user reselects from that step)
-  const stepClearMap = {
-    categorias: () => { setCategoria(null) },
-    marcas: () => { setMarca(null) },
-    categorias_grupo: () => { setCategoriaGrupo(null) },
-    subcategorias: () => { setSubcategoria(null) },
-    gamas: () => { setGama(null) },
-    tipos: () => { setTipo(null) },
-    gamas_comerciales: () => { setGamaComercial(null) },
-    subgamas: () => { setSubgama(null) },
-    referencias: () => { setReferencia(null) },
+  // Clear the value AT this step (so user reselects from here)
+  switch (step) {
+    case 'categorias': setCategoria(null); break
+    case 'marcas': setMarca(null); break
+    case 'categorias_grupo': setCategoriaGrupo(null); break
+    case 'subcategorias': setSubcategoria(null); break
+    case 'gamas': setGama(null); break
+    case 'tipos': setTipo(null); break
+    case 'gamas_comerciales': setGamaComercial(null); break
+    case 'subgamas': setSubgama(null); break
+    case 'referencias': setReferencia(null); break
   }
 
-  // Map completed step → paso to display
+  // Clear everything FROM this step onward
+  const clearFrom = (s) => {
+    const order = ['categorias', 'marcas', 'categorias_grupo', 'subcategorias', 'gamas', 'tipos', 'gamas_comerciales', 'subgamas', 'referencias']
+    const idx = order.indexOf(s)
+    if (idx < 0) return
+    const clearMap = {
+      categorias: () => setMarca(null),
+      marcas: () => setGama(null),
+      categorias_grupo: () => setSubcategoria(null),
+      subcategorias: () => setGamaComercial(null),
+      gamas: () => setTipo(null),
+      tipos: () => setGamaComercial(null),
+      gamas_comerciales: () => setSubgama(null),
+      subgamas: () => setReferencia(null),
+      referencias: () => setReferenciasDisponibles([]),
+    }
+    for (let i = idx; i < order.length; i++) {
+      clearMap[order[i]]?.()
+    }
+  }
+  clearFrom(step)
+
+  // Map completed step → next paso to display
   const nextStepMap = {
     categorias: 'marcas',
     marcas: 'gamas',
@@ -545,15 +568,9 @@ useEffect(() => {
     referencias: 'referencias',
   }
 
-  // Clear the value at the target step
-  const clearFn = stepClearMap[targetEntry.paso]
-  if (clearFn) clearFn()
-
-  const nextStep = nextStepMap[targetEntry.paso] || targetEntry.paso
-  setPaso(nextStep)
+  setPaso(nextStepMap[step] || step)
   setHistorial(historial.slice(0, breadcrumbIndex))
-  clearAfter(targetEntry.paso)
- }, [historial, clearAfter])
+ }, [historial])
 
  const reiniciar = useCallback(() => {
   setPaso('categorias')
