@@ -38,20 +38,6 @@ function clearStatesAfter(paso, setters) {
       setters.setReferenciasDisponibles([])
       setters.setGrupos({})
       break
-    case 'marcas':
-      setters.setMarca(null)
-      setters.setGama(null)
-      setters.setGamaComercial(null)
-      setters.setTipo(null)
-      setters.setCategoriaGrupo(null)
-      setters.setSubcategoria(null)
-      setters.setSubgama(null)
-      setters.setGamasComercialesDisponibles([])
-      setters.setSubgamasDisponibles([])
-      setters.setReferencia(null)
-      setters.setReferenciasDisponibles([])
-      setters.setGrupos({})
-      break
     case 'categorias_grupo':
       setters.setCategoriaGrupo(null)
       setters.setSubcategoria(null)
