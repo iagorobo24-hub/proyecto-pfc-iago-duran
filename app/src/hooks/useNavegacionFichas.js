@@ -122,9 +122,11 @@ export default function useNavegacionFichas() {
  const [error, setError] = useState(null)
  const [historial, setHistorial] = memoria.fichas.historial.use()
 
- const [aiCache, setAiCache] = memoria.fichas.aiCache.use()
- const aiCacheRef = useRef(aiCache)
- useEffect(() => { aiCacheRef.current = aiCache }, [aiCache])
+  const [aiCache, setAiCache] = memoria.fichas.aiCache.use()
+  const aiCacheRef = useRef(aiCache)
+  useEffect(() => { aiCacheRef.current = aiCache }, [aiCache])
+  const prevMarcaRef = useRef(null)
+  useEffect(() => { prevMarcaRef.current = marca }, [marca])
  const [aiCargando, setAiCargando] = useState(false)
  const [sugerenciasBusqueda, setSugerenciasBusqueda] = useState([])
  const [busquedaCargando, setBusquedaCargando] = useState(false)
@@ -206,8 +208,8 @@ useEffect(() => {
   load()
  }, [categoria])
 
- useEffect(() => {
-  if (!categoria || !marca) return;
+  useEffect(() => {
+   if (!categoria || !marca) return;
   async function load() {
    setCargando(true)
    setError(null)
@@ -216,17 +218,16 @@ useEffect(() => {
     const g = construirGrupos(pares)
 
     if (Object.keys(g).length > 0) {
-      setGrupos(g)
-      setCategoriaGrupo(null)
-      setSubcategoria(null)
-      setGamaComercial(null)
-      setGamasComercialesDisponibles([])
-      setSubgama(null)
-      setSubgamasDisponibles([])
-      setGamasDisponibles([])
-      setTiposDisponibles([])
-      setPaso('categorias_grupo')
-      setHistorial(prev => [...prev, { paso: 'marcas' }])
+     setGrupos(g)
+     setCategoriaGrupo(null)
+     setSubcategoria(null)
+     setGamaComercial(null)
+     setGamasComercialesDisponibles([])
+     setSubgama(null)
+     setSubgamasDisponibles([])
+     setGamasDisponibles([])
+     setTiposDisponibles([])
+     if (paso === 'marcas') setPaso('categorias_grupo')
     } else {
       const data = await catalogService.getGamasPorMarcaYCategoria(marca, categoria)
       setGamasDisponibles(data.map(g => g.nombre))
