@@ -30,10 +30,15 @@ export default function PresupuestosSeleccion() {
   const [anadidos, setAnadidos] = useState({})
 
   useEffect(() => {
+    console.log('[PresupuestosSeleccion] useEffect[ categoria] — categoria:', categoria)
     setCargandoCatalogo(true)
     catalogService.getMarcasPorCategoria(categoria).then(data => {
+      console.log('[PresupuestosSeleccion] Marcas loaded:', data.length, data.slice(0, 3))
       setMarcasDisponibles(data)
       setPasoCatalogo('marcas')
+      setCargandoCatalogo(false)
+    }).catch(err => {
+      console.error('[PresupuestosSeleccion] Error loading marcas:', err)
       setCargandoCatalogo(false)
     })
   }, [categoria])
