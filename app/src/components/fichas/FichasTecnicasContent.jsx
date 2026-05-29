@@ -19,6 +19,7 @@ import FichasTecnicasSkeleton from './FichasTecnicasSkeleton'
 import VistaCurvaTipo from './VistaCurvaTipo'
 import VistaPolos from './VistaPolos'
 import VistaCalibre from './VistaCalibre'
+import VistaFramework from './VistaFramework'
 import VistaCardConImagen from './VistaCardConImagen'
 import styles from '../../tools/FichasTecnicas.module.css'
 
@@ -70,6 +71,7 @@ export default function FichasTecnicasContent({
   onAnadirPresupuesto,
 }) {
   const [refFilter, setRefFilter] = useState('')
+  const [vistaFramework, setVistaFramework] = useState(null)
   const [vistaCurva, setVistaCurva] = useState(null)
   const [vistaTipo, setVistaTipo] = useState(null)
   const [vistaPolos, setVistaPolos] = useState(null)
@@ -77,6 +79,7 @@ export default function FichasTecnicasContent({
   const [vistaSensibilidad, setVistaSensibilidad] = useState(null)
 
   useEffect(() => {
+    setVistaFramework(null)
     setVistaCurva(null)
     setVistaTipo(null)
     setVistaPolos(null)
