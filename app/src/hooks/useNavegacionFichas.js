@@ -498,23 +498,40 @@ useEffect(() => {
    }
   }, [])
 
- const clearAfter = useCallback((restoredPaso) => {
-  clearStatesAfter(restoredPaso, {
-    setMarca, setGama, setGamaComercial, setTipo, setCategoriaGrupo,
-    setSubcategoria, setSubgama, setSubgamasDisponibles,
-    setGamasComercialesDisponibles,
-    setReferencia, setReferenciasDisponibles, setGrupos
-  })
- }, [])
-
  const volver = useCallback(() => {
   const nuevoHistorial = [...historial]
   const anterior = nuevoHistorial.pop()
   if (!anterior) { reiniciar(); return; }
   setPaso(anterior.paso)
   setHistorial(nuevoHistorial)
-  clearAfter(anterior.paso)
- }, [historial, clearAfter])
+  // Inline clear — avoids stale closure issue with clearAfter
+  switch (anterior.paso) {
+    case 'marcas':
+      setCategoriaGrupo(null); setGama(null); setTipo(null)
+      setGamasComercialesDisponibles([]); setSubgamasDisponibles([]); setReferenciasDisponibles([])
+      break
+    case 'categorias_grupo':
+      setSubcategoria(null)
+      setGamaComercial(null); setSubgama(null); setGamasComercialesDisponibles([]); setSubgamasDisponibles([]); setReferenciasDisponibles([])
+      break
+    case 'subcategorias':
+      setGamaComercial(null); setSubgama(null); setGamasComercialesDisponibles([]); setSubgamasDisponibles([]); setReferenciasDisponibles([])
+      break
+    case 'gamas':
+      setTipo(null)
+      setGamasComercialesDisponibles([]); setSubgamasDisponibles([]); setReferenciasDisponibles([])
+      break
+    case 'tipos':
+      setGamaComercial(null); setSubgama(null); setGamasComercialesDisponibles([]); setSubgamasDisponibles([]); setReferenciasDisponibles([])
+      break
+    case 'gamas_comerciales':
+      setSubgama(null); setSubgamasDisponibles([]); setReferenciasDisponibles([])
+      break
+    case 'subgamas':
+      setReferencia(null); setReferenciasDisponibles([])
+      break
+  }
+ }, [historial])
 
  const irAPaso = useCallback((breadcrumbIndex) => {
   // Build the list of steps from CURRENT STATE (not from historial)
@@ -540,20 +557,28 @@ useEffect(() => {
   switch (stepToClear) {
     case 'categorias':
       setMarca(null)
+      break
     case 'marcas':
       setCategoriaGrupo(null); setGama(null); setTipo(null)
+      break
     case 'categorias_grupo':
       setSubcategoria(null)
+      break
     case 'subcategorias':
       setGamaComercial(null); setSubgama(null)
+      break
     case 'gamas':
       setTipo(null)
+      break
     case 'tipos':
       setGamaComercial(null); setSubgama(null)
+      break
     case 'gamas_comerciales':
       setSubgama(null)
+      break
     case 'subgamas':
-      setReferencia(null); setReferenciasDisponibles([]); break
+      setReferencia(null); setReferenciasDisponibles([])
+      break
   }
 
   // Also clear available lists for downstream steps
