@@ -88,8 +88,7 @@ export function useSonex() {
       setSessions([session])
       setActiveSessionId(session.id)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []) // se ejecuta solo al mount — migrarDesdeLegacy usa userId interno
+  }, [memoria]) // se ejecuta solo al mount — migrarDesdeLegacy usa userId interno
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });

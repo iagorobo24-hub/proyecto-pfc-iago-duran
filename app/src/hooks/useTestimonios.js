@@ -119,7 +119,7 @@ export default function useTestimonios() {
       setTestimonios(prev)
       setError(e.message)
     }
-  }, [testimonios])
+  }, [user])
 
   const migrarDesdeLocal = useCallback(async () => {
     const local = safeGetJSON(LS_KEY, [])

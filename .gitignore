@@ -91,3 +91,4 @@ generar_*.py
 # Generated diagrams
 docs/diagrams/*.html
 
+.vercel
