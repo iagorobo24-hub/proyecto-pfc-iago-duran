@@ -6,7 +6,7 @@ El modelo de datos fue cambiando según evolucionaba el proyecto:
 
 1. **Al principio:** Los datos estaban en archivos JavaScript dentro de la propia web. Había unos 120 productos de prueba. Funcionaba para hacer pruebas pero no valía para producción.
 2. **Después:** Migré todo a Firestore (una base de datos NoSQL de Google). Ahí estaban los 400.000+ productos del catálogo real y los datos de usuario.
-3. **Ahora:** El **catálogo** está en **Supabase (PostgreSQL)** — tablas `products` y `brands`. Los **datos de usuario** (fichas guardadas, presupuestos, incidencias, KPIs, formación) siguen en **Firestore** (colecciones por usuario).
+3. **Ahora:** El **catálogo** está en **Supabase (PostgreSQL)** — tablas `products` y `brands`. Los **datos de usuario** (fichas guardadas, presupuestos, incidencias, KPIs, formación) se almacenan en **localStorage** con sincronización a Supabase `user_data` table cuando hay sesión activa.
 
 Este documento explica cómo está organizado todo en la versión actual.
 
@@ -47,15 +47,16 @@ website_url: "https://www.se.com"  ← Web de la marca
 
 La comunicación con Supabase se hace desde el frontend directamente (client-side) usando `@supabase/supabase-js`. Las consultas van con la **anon key** pública — la seguridad se gestiona con Row Level Security (RLS) en las tablas.
 
-Servicio principal: `app/src/services/catalogService.js`
-- `getCategorias()` — Familias únicas con productos
+Servicio principal: `app/src/services/catalogService.ts`
+- `getCategorias()` — Familias únicas con productos (1 query + Set dedup)
 - `getMarcasPorCategoria(familia)` — Marcas que tienen productos en una familia
 - `getGamasPorMarcaYCategoria(marca, familia)` — Gamas/subfamilias para legacy
 - `getSubfamiliasConTipos(marca, familia)` — Pares (subfamilia, tipo) para DP agrupado
 - `getProductosPorSubcategoria(familia, marca, filtros)` — Productos por subcategoría
 - `getProductosPorFiltro(familia, marca, gama, tipo)` — Productos por filtro exacto
 - `getProductoPorRef(ref)` — Producto por referencia única
-- `buscarProductos(termino)` — Búsqueda por nombre
+- `buscarProductos(termino)` — Búsqueda por nombre con sanitización
+- `buscarProductosConLimite(termino, limite)` — Búsqueda con límite configurable
 
 ### Categorización en frontend (`categoriaMapping.js`)
 
@@ -70,42 +71,20 @@ Para DISTRIBUCION DE POTENCIA, el mapeo `subfamilia+tipo → (categoria, subcate
 
 ---
 
-## Firestore: datos de usuario (legado)
+## Datos de usuario (localStorage + Supabase sync)
 
-Los datos que genera cada usuario al usar las herramientas siguen en Firestore. La estructura es:
+Los datos que genera cada usuario al usar las herramientas se almacenan en **localStorage** con la librería `useMemoriaUsuario` (custom hook). Cuando hay sesión activa, se sincronizan con la tabla `user_data` de Supabase.
 
-### Colección `users/{userId}/fichas`
-Fichas técnicas guardadas por el usuario.
+### Estructura de datos por módulo
 
-### Colección `users/{userId}/presupuestos`
-Presupuestos creados:
-```
-items: [
-    { ref: "A9F74110", name: "Interruptor...", cantidad: 5, precio: 25.50 }
-]
-subtotal: 127.50
-iva: 21
-total: 154.28
-estado: "borrador"              ← borrador / enviado / aceptado
-```
-
-### Colección `users/{userId}/incidencias`
-Incidencias registradas:
-```
-titulo: "Producto defectuoso"
-descripcion: "El producto llegó dañado..."
-categoria: "calidad"             ← calidad / logistica / producto
-severidad: "alto"                ← bajo / medio / alto / critico
-estado: "abierta"                ← abierta / en_proceso / resuelta
-```
-
-### Colección `users/{userId}/kpis`
-Configuración de KPIs y valores guardados por el usuario.
-
-### Colección `users/{userId}/formacion`
-Matriz de competencias y planes de formación.
-
-Cada usuario solo ve sus propios datos (controlado por `firestore.rules`).
+- **`pfc_fichas_historial`** — Fichas técnicas consultadas
+- **`pfc_presupuestos_historial`** — Presupuestos creados
+- **`pfc_incidencias_listado`** — Incidencias registradas
+- **`pfc_kpi_historial`** — Resultados de KPIs calculados
+- **`pfc_formacion_modulos`** — Módulos de formación
+- **`pfc_formacion_empleados`** — Empleados y su progreso
+- **`pfc_simulador_historial`** — Resultados del simulador
+- **`pfc_analytics_events`** — Eventos de uso (analytics)
 
 ---
 

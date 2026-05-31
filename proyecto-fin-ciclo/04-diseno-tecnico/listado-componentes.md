@@ -14,13 +14,14 @@ Cada ruta es una página distinta dentro de la web. Algunas requieren haber inic
 |------|----------|------------------|------------|
 | `/` | Landing page | No | Página principal con presentación del proyecto |
 | `/login` | Inicio de sesión | No | Botón para entrar con Google |
-| `/fichas` | Fichas Técnicas | Sí | Catálogo de productos con navegador por familias |
-| `/almacen` | Simulador Almacén | Sí | Simulación paso a paso de un pedido |
-| `/incidencias` | Dashboard Incidencias | Sí | Registro y seguimiento de fallos |
-| `/kpi` | KPI Logístico | Sí | Gráficos con indicadores del almacén |
-| `/presupuestos` | Presupuestos | Sí | Generador de presupuestos con productos reales |
-| `/formacion` | Formación Interna | Sí | Matriz de competencias de empleados |
-| `/sonex` | SONEX Asistente | Sí | Chat con IA para preguntas técnicas |
+| `/app` | Dashboard Global | Sí | Panel de control con widgets de todas las herramientas |
+| `/app/fichas` | Fichas Técnicas | Sí | Catálogo de productos con navegador por familias |
+| `/app/almacen` | Simulador Almacén | Sí | Simulación paso a paso de un pedido |
+| `/app/incidencias` | Dashboard Incidencias | Sí | Registro y seguimiento de fallos |
+| `/app/kpi` | KPI Logístico | Sí | Gráficos con indicadores del almacén |
+| `/app/presupuestos` | Presupuestos | Sí | Generador de presupuestos con productos reales |
+| `/app/formacion` | Formación Interna | Sí | Matriz de competencias de empleados |
+| `/app/sonex` | SONEX Asistente | Sí | Chat con IA para preguntas técnicas |
 
 ---
 
@@ -45,8 +46,8 @@ Son los "cachos" de los que está hecha cada pantalla. Separarlos así ayuda a q
 | Componente | ¿Qué hace? |
 |------------|------------|
 | `AppShell` | Esqueleto principal: barra arriba, menú lateral, contenido en medio |
-| `Topbar` | Barra superior con el logo, el tema claro/oscuro y el avatar del usuario |
-| `Sidebar` | Menú lateral con los iconos de cada herramienta |
+| `Topbar` | Barra superior con el logo, el tema claro/oscuro, búsqueda y avatar del usuario |
+| `Sidebar` | Menú lateral con navegación a las 7 herramientas + info de la herramienta activa |
 
 ### 2.3 Auth (inicio de sesión)
 

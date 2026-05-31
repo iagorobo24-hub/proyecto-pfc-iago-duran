@@ -219,19 +219,64 @@ Los tests E2E funcionaban pero se perdieron en commits posteriores.
 
 ---
 
-## Fase 10 — Migración a Supabase (mayo 2026, en curso)
+## Fase 10 — Migración a Supabase (mayo 2026)
 
 **Objetivo:** Sustituir Firestore por PostgreSQL
 
-### Qué se está haciendo
+### Qué se hizo
 
-- Scripts de sincronización a Supabase
-- Migración de estructura de datos
-- Cambios en catalogService
+- Catálogo migrado a Supabase (tablas `products` + `brands`)
+- Auth migrada a Supabase Auth (Google OAuth)
+- Datos de usuario migrados a localStorage con sync a Supabase `user_data`
+- Scripts de scraping y migración creados (48 scripts)
+- catalogService.ts con 18 funciones optimizadas
 
 ### Estado
 
-En progreso. Ver `app/supabase/` y scripts en `app/scripts/`.
+✅ Completado. Supabase es el backend principal.
+
+---
+
+## Fase 11 — Auditoría CTO y profesionalización (mayo 2026)
+
+**Objetivo:** Elevar la calidad del código a nivel profesional
+
+### Auditoría 1: Seguridad y código
+
+| Área | Correcciones |
+|------|-------------|
+| **Seguridad API** | CORS whitelist, rate limiting (30 req/min), model validation, input bounds, error leakage eliminado |
+| **XSS** | main.jsx: innerHTML → DOM API textContent |
+| **Dark mode** | 13 hardcoded `#ffffff` → `var(--color-surface)` en 5 CSS modules |
+| **Performance** | Brand lookup O(n)→O(1) con reverse Map, dead code eliminado |
+| **Linting** | ESLint expandido para api/scripts, console.log → logger |
+
+### Auditoría 2: Bugs y UX
+
+| Área | Correcciones |
+|------|-------------|
+| **Auth bypass** | `__PW_MOCK_USER__` solo en DEV |
+| **Crash fix** | PresupuestosEditor: genNum undefined → genNum() |
+| **Data corruption** | usePresupuestos: UPDATE recalcula con descuento, DELETE reindexa _id |
+| **SQL injection** | .or() filter sanitization en 3 funciones |
+| **UX** | Sonex confirmación borrar, KpiLogistico dark mode, LoginPage error messages |
+| **Deps** | crawlee/camoufox → devDependencies, animate.css eliminado |
+
+### Auditoría 3: Pendientes implementados
+
+| Área | Implementaciones |
+|------|-----------------|
+| **Seguridad** | ProtectedRoute en todas las rutas /app/* |
+| **Performance** | AbortController pattern (7 useEffects), getCategorias 1 query, React.memo (4 componentes) |
+| **UX forms** | DashboardIncidencias + KpiLogistico: required fields, inline errors, disabled button |
+| **Navegación** | Sidebar con NavLink a 7 herramientas |
+| **Persistencia** | PresupuestosEditor auto-save (30s debounce + beforeunload) |
+| **Analytics** | Batched flush (5s interval + beforeunload) |
+| **Accesibilidad** | ARIA tab patterns (5 tools), role=status/alert, aria-label, loading=lazy |
+
+### Estado
+
+✅ Completado. 40 archivos modificados en 3 sesiones de auditoría.
 
 ---
 
@@ -249,7 +294,8 @@ En progreso. Ver `app/supabase/` y scripts en `app/scripts/`.
 | 7 | 7-8 abr | Firestore |
 | 8 | 8-10 abr | 75K productos |
 | 9 | 11-12 abr | Landing page |
-| 10 | mayo | Supabase (en curso) |
+| 10 | mayo | Supabase ✅ |
+| 11 | mayo | Auditoría CTO ✅ (40 archivos, 272 tests) |
 
 ---
 

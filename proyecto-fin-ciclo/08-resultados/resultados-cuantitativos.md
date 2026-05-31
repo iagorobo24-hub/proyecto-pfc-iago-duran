@@ -15,26 +15,44 @@ Aquí van los números. No es que me guste especialmente medir todo, pero para u
 | Métrica | Valor |
 |---------|-------|
 | **Tiempo total de desarrollo** | ~3 meses (marzo-mayo 2026) |
-| **Horas estimadas con IA** | 100+ horas |
-| **Commits en GitHub** | 200+ |
-| **Líneas de código (app/)** | ~8,000 |
-| **Componentes creados** | 50+ |
-| **Custom hooks** | 10 |
+| **Horas estimadas con IA** | 150+ horas |
+| **Commits en GitHub** | 250+ |
+| **Líneas de código (app/)** | ~12,000 |
+| **Componentes creados** | 100+ |
+| **Custom hooks** | 13 |
+| **Tests unitarios** | 272 (12 suites Vitest) |
+| **Tests E2E** | 7 specs Playwright |
+| **Servicios/Utilidades** | 9 (3 services + 6 utils) |
+| **CSS Modules** | 57 archivos |
+| **TypeScript (migración)** | 4 archivos .ts (progresivo) |
 
 ### Archivos del proyecto
 
 ```
 app/
 ├── src/
-│   ├── components/     (20+ componentes)
-│   ├── pages/          (8 páginas)
-│   ├── hooks/          (10 hooks)
-│   ├── services/       (5 servicios)
-│   ├── contexts/       (3 contextos)
-│   └── tools/          (7 módulos)
-├── api/                (1 función serverless)
-├── scripts/            (5 scripts)
-└── public/             (logos, imágenes)
+│   ├── components/     (100+ componentes en 8 subdirectorios)
+│   │   ├── auth/       (LoginPage, ProtectedRoute)
+│   │   ├── fichas/     (19 componentes — navegación catálogo)
+│   │   ├── HeroSection/ (19 componentes — landing page)
+│   │   ├── incidencias/ (8 componentes)
+│   │   ├── layout/     (AppShell, Topbar, Sidebar, KeyboardShortcuts)
+│   │   ├── presupuestos/ (9 componentes — wizard, editor, PDF)
+│   │   ├── simulador/  (8 componentes — multijugador)
+│   │   └── ui/         (22 componentes — Button, Badge, CircleLayout...)
+│   ├── hooks/          (13 custom hooks)
+│   ├── services/       (3 services — catalogService, anthropicService, brandLogoService)
+│   ├── contexts/       (3 contextos — Auth, Theme, Toast)
+│   ├── tools/          (8 módulos — 7 herramientas + Dashboard Global)
+│   ├── utils/          (6 utilidades — logger, markdown, storage, validate, pdf, normalizar)
+│   ├── types/          (2 archivos TS — catalog.ts, ai.ts)
+│   ├── data/           (7 archivos de configuración + simulador/)
+│   └── config/         (tools.js)
+├── api/                (1 Vercel Function — ai.js gateway)
+├── scripts/            (48 scripts — scraping, migración DB)
+├── e2e/                (7 specs + helpers + responsive audit)
+├── __tests__/          (12 suites — 272 tests Vitest)
+└── public/             (logos, screenshots)
 ```
 
 ---
@@ -101,17 +119,17 @@ app/
 
 ---
 
-## Métricas de Firebase
+## Métricas de Supabase
 
-### Firestore (Spark tier)
+### Free tier
 
 | Métrica | Límite | Uso |
 |---------|--------|-----|
-| **Lecturas/día** | 50,000 | ~1,000 |
-| **Escrituras/día** | 50,000 | ~500 (sync) |
-| **Eliminaciones/día** | 20,000 | ~0 |
-| **Almacenamiento** | 1 GB | ~200 MB |
-| **Descarga de red** | 10 GB | ~500 MB |
+| **Database size** | 500 MB | ~50 MB (catálogo) |
+| **Auth users** | 50,000 | ~1 (desarrollo) |
+| **Edge Functions** | 500K invocations | ~1,000 |
+| **Storage** | 1 GB | ~100 MB (imágenes) |
+| **Bandwidth** | 5 GB | ~500 MB |
 
 ---
 
@@ -142,7 +160,7 @@ app/
 
 | Servicio | Tier | Coste real |
 |----------|------|------------|
-| **Firebase Auth + Firestore** | Spark (gratis) | 0€ |
+| **Supabase** | Free (gratis) | 0€ |
 | **Vercel** | Hobby (gratis) | 0€ |
 | **OpenRouter** | Free (gratis) | 0€ |
 | **GitHub** | Free (gratis) | 0€ |

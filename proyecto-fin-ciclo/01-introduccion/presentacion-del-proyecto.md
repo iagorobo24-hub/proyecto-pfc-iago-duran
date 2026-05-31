@@ -48,11 +48,13 @@ Lo que hace único este proyecto no es solo la aplicación en sí, sino **cómo 
 | Métrica | Valor |
 |---------|-------|
 | **Productos en catálogo** | 400.000+ |
-| **Módulos funcionales** | 7 |
-| **Stack tecnológico** | React 19, Vite 7, Firebase, Vercel |
+| **Módulos funcionales** | 8 (7 herramientas + Dashboard Global) |
+| **Stack tecnológico** | React 19, Vite 7, Supabase, Vercel |
 | **Coste en producción** | 0€ (tier gratuito) |
 | **Herramientas IA usadas** | 15+ |
 | **Tiempo de desarrollo** | ~3 meses (marzo-mayo 2026) |
+| **Tests unitarios** | 272 (Vitest) |
+| **Tests E2E** | 7 specs (Playwright) |
 
 ---
 
@@ -78,13 +80,14 @@ Lo que hace único este proyecto no es solo la aplicación en sí, sino **cómo 
 ## Tecnologías principales
 
 ```
-Frontend:     React 19 + Vite 7 + React Router v7
-Estilos:      CSS Modules + Variables CSS
-Auth:         Firebase Auth (Google Sign-In)
-Base de datos: Firestore (400K+ productos)
-IA:           OpenRouter API (Claude, DeepSeek, Qwen)
-Hosting:      Vercel (hobby tier, gratis)
-Testing:      Playwright (E2E)
+Frontend:      React 19 + Vite 7 + React Router v7
+Estilos:       CSS Modules + Variables CSS + Dark Mode
+Auth:          Supabase Auth (Google OAuth)
+Base de datos: Supabase PostgreSQL (400K+ productos)
+IA:            OpenRouter API (Claude, DeepSeek, Qwen, Gemini)
+Hosting:       Vercel (hobby tier, gratis)
+Testing:       Vitest (272 tests) + Playwright (7 specs E2E)
+Seguridad:     ProtectedRoute, CSP headers, rate limiting, input sanitization
 ```
 
 ---

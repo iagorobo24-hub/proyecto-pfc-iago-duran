@@ -48,26 +48,7 @@ Para los KPIs (los indicadores del almacén) necesitaba gráficos. Usé **Rechar
 
 ## La autenticación y la base de datos
 
-### Firebase (Auth + Firestore)
-
-Firebase es de Google y te da dos cosas muy útiles: **inicio de sesión con Google** y **base de datos en la nube**.
-
-| Servicio | Por qué lo elegí |
-|----------|-----------------|
-| **Firebase Auth** | El login con Google se configura en 10 minutos |
-| **Firestore** | Es una base de datos flexible, sin esquemas fijos |
-
-**Problemas que encontré:**
-- El plan gratis de Firestore solo permite 50.000 escrituras al día. Con 400.000 productos, eso fue un problema
-- Buscar productos por nombre es más complicado de lo que parece
-
-**Alternativas:**
-- **Supabase** — Más potencia, más escalable. De hecho, estoy migrando a esto ahora
-- **MongoDB** — También gratis pero más lioso de montar
-
-**Mi opinión:** Firebase está muy bien para empezar. Es como conducir un coche automático: llegas rápido a todos sitios. Pero cuando quieres hacer cosas más avanzadas, te chocas con limitaciones. Por eso migré el catálogo a Supabase.
-
-### Supabase (PostgreSQL + Auth)
+### Supabase (PostgreSQL + Auth) — Backend principal
 
 **Estado actual:** Es el backend principal del proyecto. Gestiona el catálogo de productos y la autenticación.
 
@@ -76,17 +57,29 @@ Firebase es de Google y te da dos cosas muy útiles: **inicio de sesión con Goo
 | **PostgreSQL** | Consultas flexibles con `ilike`, `.or()`, joins — imposible en Firestore |
 | **Supabase Auth** | OAuth unificado con Google, sesión gestionada automáticamente |
 | **Client-side SDK** | Consultas directas desde el frontend con anon key y RLS |
+| **RLS (Row Level Security)** | Seguridad a nivel de fila, sin necesidad de reglas complejas |
 
 **Cómo funciona:**
-- `catalogService.js` (en el frontend) hace consultas directas a Supabase desde el navegador
+- `catalogService.ts` (en el frontend) hace consultas directas a Supabase desde el navegador
 - Las queries usan la anon key (pública) — la seguridad la da Row Level Security
 - Para DISTRIBUCION DE POTENCIA, el frontend agrupa productos en categorías y subcategorías mediante `categoriaMapping.js`
 - Para el resto de familias, se usa navegación legacy (gama → tipo)
+- Brand lookup optimizado con reverse Map (O(1) en vez de O(n))
 
 **Ventajas sobre Firestore:**
 - Sin límite de escrituras diarias
 - Consultas complejas con múltiples filtros
-- Los datos de usuario siguen en Firestore (por ahora)
+- Búsqueda full-text con `ilike`
+- Datos de usuario en localStorage con sync a Supabase `user_data`
+
+### Firebase (legacy — en desuso)
+
+Firebase fue el backend original. Actualmente solo se usa como referencia en la documentación. La migración a Supabase completó el catálogo y la autenticación.
+
+| Servicio | Estado actual |
+|----------|--------------|
+| **Firebase Auth** | Migrado a Supabase Auth |
+| **Firestore** | Migrado a localStorage + Supabase sync |
 
 ### La API de IA
 

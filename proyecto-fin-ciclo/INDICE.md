@@ -75,8 +75,8 @@ proyecto-fin-ciclo/
 
 | ID | Herramienta | Uso principal | Estado |
 |----|-------------|---------------|--------|
-| DB-001 | Firebase | Auth + Firestore (actual) | ✅ Completa |
-| DB-002 | Supabase | PostgreSQL (migración en curso) | 🔄 En progreso |
+| DB-001 | Firebase | Auth legacy (migrado a Supabase) | ✅ Completada (legado) |
+| DB-002 | Supabase | PostgreSQL + Auth (principal) | ✅ Completada (producción) |
 
 ### Scraping y testing
 

@@ -2,7 +2,7 @@
 
 ## Visión general
 
-**Proyecto PFC** es una **Single Page Application (SPA)** construida con React 19, desplegada en Vercel, con autenticación y base de datos en Firebase, e integrada con OpenRouter para funcionalidades de IA.
+**Proyecto PFC** es una **Single Page Application (SPA)** construida con React 19, desplegada en Vercel, con autenticación y base de datos en Supabase (PostgreSQL), e integrada con OpenRouter para funcionalidades de IA.
 
 ---
 
@@ -51,9 +51,10 @@ En vez de esquemas eléctricos (que no tocan aquí), el proyecto tiene diagramas
 
 | Servicio | Tecnología | Función |
 |----------|------------|---------|
-| **catalogService** | Firestore | Lectura de productos |
-| **authService** | Firebase Auth | Autenticación |
-| **aiService** | OpenRouter | Chat con IA |
+| **catalogService** | Supabase (PostgreSQL) | Catálogo de productos (products + brands) |
+| **AuthContext** | Supabase Auth | Autenticación Google OAuth |
+| **anthropicService** | OpenRouter API | Gateway IA unificado |
+| **api/ai.js** | Vercel Function | Serverless proxy IA con rate limiting |
 
 ---
 
@@ -96,20 +97,29 @@ En vez de esquemas eléctricos (que no tocan aquí), el proyecto tiene diagramas
 ## Capas de seguridad
 
 ### Capa 1: Autenticación
-- Firebase Auth (Google Sign-In)
-- Sesión persistente
+- Supabase Auth (Google OAuth)
+- ProtectedRoute en todas las rutas `/app/*`
+- Sesión persistente con `onAuthStateChange`
 
 ### Capa 2: Autorización
-- Firebase Security Rules
-- Datos por usuario (`auth.uid`)
+- Row Level Security (RLS) en Supabase
+- Datos por usuario autenticado
 
 ### Capa 3: Red
 - HTTPS obligatorio (Vercel)
-- CSP headers
+- CSP headers (Content-Security-Policy)
+- X-Content-Type-Options, X-Frame-Options, X-XSS-Protection
 
-### Capa 4: API
-- API key en servidor (Vercel Function)
-- No expuesta al cliente
+### Capa 4: API Gateway
+- CORS whitelist (solo orígenes permitidos)
+- Rate limiting (30 req/min por IP)
+- Model validation (whitelist de modelos)
+- Input bounds (max 50 msgs, 50k chars)
+
+### Capa 5: Datos
+- Sanitización de inputs (`.or()` filters, search queries)
+- DOMPurify en rendering de markdown
+- textContent en mensajes de error (no innerHTML)
 
 ---
 
@@ -117,10 +127,10 @@ En vez de esquemas eléctricos (que no tocan aquí), el proyecto tiene diagramas
 
 | Servicio | Uso | Tier |
 |----------|-----|------|
-| **Firebase Auth** | Autenticación | Spark (gratis) |
-| **Firestore** | Base de datos | Spark (gratis) |
+| **Supabase** | PostgreSQL + Auth | Free (gratis) |
 | **Vercel** | Hosting + Functions | Hobby (gratis) |
 | **OpenRouter** | API de IA | Free (gratis) |
+| **GitHub** | Control de versiones | Free (gratis) |
 
 ---
 
