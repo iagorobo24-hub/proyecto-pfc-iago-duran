@@ -98,67 +98,51 @@ Si pudiera volver atrás, hay cosas que haría distinto. Y otras que repetiría 
 
 ### Error 8: La pesadilla de configurar la base de datos — Scraping, Sync y Conexión
 
-**Qué pasó:** El proceso de obtener los datos del catálogo de la empresa y mostrarlos en la web resultó ser mucho más complejo de lo esperado. Pasé por tres fases críticas:
+**Qué pasó:** El proceso de obtener los datos del catálogo de la empresa y mostrarlos en la web resultó ser mucho más complejo de lo esperado. Pasé por tres fases:
 
-#### Fase 1: Scraping de Proyecto PFC.es
+#### Fase 1: Scraping de la web de la empresa
 
-**El problema:** Scrapear la web de la empresa fue un proceso largo y frustrante. La web tiene protecciones contra bots, estructura HTML cambiante, y miles de productos con información incompleta o mal formateada.
+La web tiene protecciones contra bots, estructura HTML cambiante, y miles de productos con información incompleta.
 
 **Qué intenté:**
 - Múltiples versiones del scraper (v1 a v7)
-- Diferentes bibliotecas (Puppeteer, Playwright, requests)
+- Puppeteer, Playwright, crawlee
 - Manejo de CAPTCHA y rate limiting
 - Parsing de JSONs embebidos en el HTML
 
 **Qué salió mal:**
-- La tienda online cambiaba estructura cada semana
-- Algunos productos no tenían precio o imagen
-- Los datos vinieron con caracteres especiales mal codificados
-- Timeout constantes en las requests
+- La web cambiaba estructura cada semana
+- Productos sin precio o imagen
+- Caracteres especiales mal codificados
+- Timeout constantes
 
-**Tiempo invertido:** Semanas de iteración hasta conseguir ~400.000 productos scrapeados.
+**Resultado:** Semanas de iteración hasta conseguir los ~400.000 productos.
 
 #### Fase 2: Sync a Supabase
 
-**El problema:** Una vez scrapeados los datos, había que subirlos a Supabase de forma ordenada.
+Subir 400K productos a PostgreSQL de forma ordenada.
 
-**Qué intenté:**
-- Scripts de sincronización incremental
-- Manejo de duplicados
-- Normalización de familias y categorías
-
-**Qué salió mal:**
-- El tier gratuito de Supabase tiene límites de inserción
-- Algunas columnas no existían en la tabla (precio, imagen)
+**Problemas:**
+- Límites de inserción en el tier gratuito
+- Columnas que no existían en la tabla
 - El sync tardaba horas y a veces fallaba a mitad
-- La estructura de datos no era óptima para las queries que necesitaba la web
+- La estructura de datos no era óptima para las queries
 
-**Tiempo invertido:** Días de scripts y pruebas hasta tener los datos subidos.
+**Resultado:** Días de scripts y pruebas.
 
-#### Fase 3: Conexión web <-> Base de datos
+#### Fase 3: Conexión web ↔ Base de datos
 
-**El problema:** Actualmente (Mayo 2026), la navegación entre fichas técnicas no funciona correctamente. La web no puede cargar todas las categorías y la conexión es inestable.
+Al principio la navegación no funcionaba bien: solo aparecían 3 categorías (deberían ser 12+), timeouts en consultas pesadas, y datos con saltos de línea que rompían las comparaciones.
 
-**Síntomas observados:**
-- Solo aparecen 3 categorías (deberían ser 12+)
-- Error 500 en algunas consultas
-- Timeout en consultas que piden muchos datos
-- Inconsistencia entre los datos que devuelve Supabase y lo que espera el código
+**Cómo se resolvió:**
+- Optimización de `getCategorias()` — de paginar toda la tabla a 1 query + dedup
+- Brand lookup optimizado — de O(n) a O(1) con reverse Map
+- Sanitización de inputs en `.or()` filters
+- Scripts de normalización de datos
 
-**Causas identificadas:**
-1. **Límite de 1000 productos:** Supabase por defecto limita las queries a 1000 resultados. Los datos scrapeados tienen familias con miles de productos cada una.
-2. **Valores con saltos de línea:** Los datos scrapeados tienen `\n` al final de cada campo, rompiendo las comparaciones.
-3. **Timeouts en consultas pesadas:** Consultas sin filtros específicos (como "dame todas las familias") son demasiado lentas (>30s) y Supabase las cancela.
-4. **Posible confusión de proyectos:** Puede que haya múltiples proyectos Supabase y los datos no estén donde el código espera.
-5. **Mapeo de familias incompleto:** El código tiene un mapeo fijo de familias, pero los datos reales pueden tener nombres diferentes.
+**Estado actual:** Todo funciona. El catálogo carga rápido y la navegación es fluida.
 
-**Estado actual (11 Mayo 2026):**
-- Los datos están en Supabase (~400k productos)
-- La conexión desde Vercel funciona (ve las 455 marcas)
-- La navegación de categorías no funciona correctamente
-- Estamos iterando para resolver los problemas de consulta
-
-**Lección:** Los datos son labase de todo. Sin una estructura de datos limpia y queries optimizadas, el frontend no puede funcionar, sin importar cuánto código escribas. Además, los tiers gratuitos tienen limitaciones importantes que hay que entender antes de comprometerse con una arquitectura.
+**Lección:** Los datos son la base de todo. Sin una estructura limpia y queries optimizadas, el frontend no puede funcionar. Y los tiers gratuitos tienen limitaciones que hay que entender antes de comprometerse con una arquitectura.
 
 ---
 
