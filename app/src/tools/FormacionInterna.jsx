@@ -6,45 +6,45 @@ import { useToast } from '../contexts/ToastContext'
 import useMemoriaUsuario from '../hooks/useMemoriaUsuario'
 import styles from './FormacionInterna.module.css'
 
-const { toast } = useToast()
-
-const AREAS = ["Almacén", "Comercial", "Técnico", "Seguridad", "Sistemas"];
-const ROLES = ["Operario", "Técnico", "Comercial", "Responsable"];
-
-const MODULOS_INIT = [
-  { id: "m1", nombre: "Recepción de mercancía", area: "Almacén", horas: 4, obligatorio: true },
-  { id: "m2", nombre: "Gestión de ubicaciones WMS", area: "Almacén", horas: 6, obligatorio: true },
-  { id: "m3", nombre: "Proceso de picking", area: "Almacén", horas: 5, obligatorio: true },
-  { id: "m4", nombre: "Expedición y embalaje", area: "Almacén", horas: 3, obligatorio: true },
-  { id: "m5", nombre: "Atención al cliente B2B", area: "Comercial", horas: 8, obligatorio: false },
-  { id: "m6", nombre: "Catálogo eléctrico industrial", area: "Técnico", horas: 12, obligatorio: false },
-  { id: "m7", nombre: "PRL — Almacén logístico", area: "Seguridad", horas: 8, obligatorio: true },
-];
-
-const EMPLEADOS_INIT = () => [
-  { id: "e1", nombre: "María Fernández", rol: "Operario", departamento: "Almacén", fechaAlta: Date.now() - 5184000000 },
-];
-
-const progresoInicial = (modulos) => Object.fromEntries(modulos.map(m => [m.id, "pendiente"]));
-
-const PROMPT_PLAN = (emp, modulos, progreso) => {
-  const completados = modulos.filter(m => progreso[m.id] === "completado").map(m => m.nombre);
-  const pendientes = modulos.filter(m => progreso[m.id] === "pendiente").map(m => m.nombre);
-  return `Eres el responsable de formación de la empresa.\nEmpleado: ${emp.nombre} — ${emp.rol}\nCompletados: ${completados.join(", ") || "ninguno"}\nPendientes: ${pendientes.join(", ") || "ninguno"}\n\nPlan en 3 párrafos: (1) valoración, (2) módulos prioritarios, (3) recomendación semanal.`;
-};
-
 export default function FormacionInterna() {
+  const AREAS = ["Almacén", "Comercial", "Técnico", "Seguridad", "Sistemas"]
+  const ROLES = ["Operario", "Técnico", "Comercial", "Responsable"]
+
+  const MODULOS_INIT = [
+    { id: "m1", nombre: "Recepción de mercancía", area: "Almacén", horas: 4, obligatorio: true },
+    { id: "m2", nombre: "Gestión de ubicaciones WMS", area: "Almacén", horas: 6, obligatorio: true },
+    { id: "m3", nombre: "Proceso de picking", area: "Almacén", horas: 5, obligatorio: true },
+    { id: "m4", nombre: "Expedición y embalaje", area: "Almacén", horas: 3, obligatorio: true },
+    { id: "m5", nombre: "Atención al cliente B2B", area: "Comercial", horas: 8, obligatorio: false },
+    { id: "m6", nombre: "Catálogo eléctrico industrial", area: "Técnico", horas: 12, obligatorio: false },
+    { id: "m7", nombre: "PRL — Almacén logístico", area: "Seguridad", horas: 8, obligatorio: true },
+  ]
+
+  const EMPLEADOS_INIT = () => [
+    { id: "e1", nombre: "María Fernández", rol: "Operario", departamento: "Almacén", fechaAlta: Date.now() - 5184000000 },
+  ]
+
+  const progresoInicial = (modulos) => Object.fromEntries(modulos.map(m => [m.id, "pendiente"]))
+
+  const PROMPT_PLAN = (emp, modulos, progreso) => {
+    const completados = modulos.filter(m => progreso[m.id] === "completado").map(m => m.nombre)
+    const pendientes = modulos.filter(m => progreso[m.id] === "pendiente").map(m => m.nombre)
+    return `Eres el responsable de formación de la empresa.\nEmpleado: ${emp.nombre} — ${emp.rol}\nCompletados: ${completados.join(", ") || "ninguno"}\nPendientes: ${pendientes.join(", ") || "ninguno"}\n\nPlan en 3 párrafos: (1) valoración, (2) módulos prioritarios, (3) recomendación semanal.`
+  }
+
   const memoria = useMemoriaUsuario()
   const [empleados, setEmpleados] = memoria.formacion.empleados.use()
   const [modulos, setModulosState] = memoria.formacion.modulos.use()
   const [progresos, setProgresosState] = memoria.formacion.progresos.use()
   const [fechasCompletado, setFechasCompletadoState] = memoria.formacion.fechas.use()
-  const [seleccionado, setSeleccionado] = useState(null);
-  const [vista, setVista] = useState("dashboard");
-  const [planIA, setPlanIA] = useState("");
-  const [cargandoIA, setCargandoIA] = useState(false);
-  const [formModulo, setFormModulo] = useState({ nombre: "", area: AREAS[0], horas: "4", obligatorio: false });
-  const [formEmpleado, setFormEmpleado] = useState({ nombre: "", rol: ROLES[0], departamento: "" });
+  const [seleccionado, setSeleccionado] = useState(null)
+  const [vista, setVista] = useState("dashboard")
+  const [planIA, setPlanIA] = useState("")
+  const [cargandoIA, setCargandoIA] = useState(false)
+  const [formModulo, setFormModulo] = useState({ nombre: "", area: AREAS[0], horas: "4", obligatorio: false })
+  const [formEmpleado, setFormEmpleado] = useState({ nombre: "", rol: ROLES[0], departamento: "" })
+
+  const { show: toast } = useToast()
 
   const setModulos = (val) => { setModulosState(val); memoria.formacion.modulos.save(val) }
   const setProgresos = (val) => { setProgresosState(val) }

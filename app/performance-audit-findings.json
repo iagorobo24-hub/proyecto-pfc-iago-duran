@@ -1,0 +1,197 @@
+{
+  "audit_timestamp": "2026-05-31T00:17:00Z",
+  "audit_scope": "/home/abu/github_repos/proyecto-pfc-iago-duran/app/src",
+  "stack": "React, JavaScript, TypeScript, Vite, PWA",
+  "summary": {
+    "total_findings": 23,
+    "critical": 4,
+    "high": 7,
+    "medium": 8,
+    "low": 4
+  },
+  "findings": [
+    {
+      "severity": "critical",
+      "category": "useEffect-deps",
+      "file": "src/tools/SimuladorAlmacen.jsx",
+      "issue": "Missing dependencies in useEffect",
+      "description": "useEffect at line 45 missing dependencies: 'tiempos', 'pedidoActivo', 'isMultiplayer', 'multiplayer'. The effect depends on 'pantalla', 'etapaActual', 'incActiva', 'feedbackInc' but references 'tiempos' (via calcPuntuacion in multiplayer callback) and 'pedidoActivo.categoria'. This causes stale closures and potential incorrect multiplayer score broadcasts."
+    },
+    {
+      "severity": "critical",
+      "category": "useEffect-deps",
+      "file": "src/hooks/useNavegacionFichas.js",
+      "issue": "Empty dependency array with async operation",
+      "description": "useEffect at line 176 (load categorias) uses empty dep array [] but calls async catalogService.initCatalog(). If the component unmounts before completion, setCategorias would be called on unmounted component. Also no error boundary around this critical initialization."
+    },
+    {
+      "severity": "critical",
+      "category": "useState-migration",
+      "file": "src/tools/SimuladorAlmacen.jsx",
+      "issue": "Excessive useState - 16+ state variables",
+      "description": "Component has 16+ useState calls (pantalla, modoSim, modoJuego, pedidoActivo, etapaActual, tiempos, tiempoEtapa, log, analisis, cargando, mostrarHistorial, toast, incActiva, incResueltas, incPendientes, feedbackInc, puntuacionPropia). Should be consolidated into useReducer or split into smaller custom hooks (e.g., useSimulacionState, useIncidenciasState)."
+    },
+    {
+      "severity": "critical",
+      "category": "async-error-handling",
+      "file": "src/hooks/useNavegacionFichas.js",
+      "issue": "Async operations without try/catch",
+      "description": "Lines 46-55: catalogService.getMarcasPorCategoria() is called in useEffect with .then().catch() but several other catalog calls in the same file (lines 211-246 getGamasPorMarcaYCategoria, lines 248-264 getTiposPorGamaMarcaYFamilia) use .then() without .catch(), silently swallowing errors."
+    },
+    {
+      "severity": "high",
+      "category": "inline-styles",
+      "file": "src/tools/SimuladorAlmacen.jsx",
+      "issue": "Excessive inline styles (30+ instances)",
+      "description": "File has 30+ inline style={{}} attributes on lines 147-271. These should be moved to SimuladorAlmacen.module.css: page header layout (line 147-151), toast notification (line 271-273), multiplayer waiting screen (lines 205-212). Inline styles bypass CSS modules optimization and create memory overhead on re-renders."
+    },
+    {
+      "severity": "high",
+      "category": "inline-styles",
+      "file": "src/tools/FormacionInterna.jsx",
+      "issue": "Excessive inline styles (25+ instances)",
+      "description": "Lines 118-283 contain 25+ inline styles for layout, buttons, cards, badges. Should be migrated to FormacionInterna.module.css for better maintainability and CSS reuse."
+    },
+    {
+      "severity": "high",
+      "category": "inline-styles",
+      "file": "src/tools/KpiLogistico.jsx",
+      "issue": "Excessive inline styles (20+ instances)",
+      "description": "Lines 118-205 contain ~20 inline styles for form layout, KPI cards with conditional colors, chart containers. Complex inline style calculations (line 175) with ternary for color should be CSS classes instead."
+    },
+    {
+      "severity": "high",
+      "category": "inline-functions",
+      "file": "src/tools/SimuladorAlmacen.jsx",
+      "issue": "Inline function definitions in render body",
+      "description": "Lines 42-135 declare 10+ functions (guardarPerfil, showToast, sortearIncidencias, iniciarSimulacion, addLog, comprobarIncidencia, responderIncidencia, continuarTrasFeedback, avanzarEtapa, finalizarSimulacion, resetear, verHistorial) inside the component body without useCallback. These recreate on every render causing child component re-renders and memory churn. Should be wrapped in useCallback or extracted to useSimuladorAlmacen hook."
+    },
+    {
+      "severity": "high",
+      "category": "inline-functions",
+      "file": "src/components/presupuestos/PresupuestosLayout.jsx",
+      "issue": "Inline functions in render",
+      "description": "Line 32: useEffect with empty deps [] that calls hook.dispatchPartidas. The navigate call inside could cause issues if component unmounts. Line 47: guardarPresupuesto useCallback has correct deps but called inline in JSX which is fine, however the anonymous arrow functions in lines 226-227's onClick handlers should be useCallback."
+    },
+    {
+      "severity": "high",
+      "category": "memoization",
+      "file": "src/tools/SimuladorAlmacen.jsx",
+      "issue": "Missing React.memo on child components",
+      "description": "SimuladorEtapa, SimuladorOnboarding, SimuladorResultados, SimuladorPerfil, SalaMultijugador, RankingMultijugador are passed multiple object props (ETAPAS, semaforoActual, log, incActiva, feedbackInc) that are recreated on every render. These should be wrapped in React.memo with proper comparison."
+    },
+    {
+      "severity": "high",
+      "category": "context-memoization",
+      "file": "src/contexts/AuthContext.jsx",
+      "issue": "Context value recreated on every render",
+      "description": "Line 58: useMemo has loginWithGoogle and logout as dependencies. These functions are defined inline in the component body, meaning the memoized value changes on every render, defeating the purpose of memoization. Functions should be wrapped in useCallback outside the memo or converted to useMemo with stable function references."
+    },
+    {
+      "severity": "high",
+      "category": "context-memoization",
+      "file": "src/components/presupuestos/PresupuestosLayout.jsx",
+      "issue": "Context provider value not memoized",
+      "description": "Lines 67-79: value object is created inline without useMemo. On any state change (partidas, datosCliente, etc.), the entire value object is recreated, causing all consumers of PresupuestosContext to re-render unnecessarily."
+    },
+    {
+      "severity": "medium",
+      "category": "inline-styles",
+      "file": "src/App.jsx",
+      "issue": "Inline styles in error boundary",
+      "description": "Lines 38-55 contain inline styles for error fallback UI (flex layout, typography, button styles). Should be in a dedicated ErrorFallback.module.css."
+    },
+    {
+      "severity": "medium",
+      "category": "inline-styles",
+      "file": "src/pages/NotFound.jsx",
+      "issue": "Inline styles in 404 page",
+      "description": "Lines 5-27 contain inline styles for the entire 404 page layout. Should use NotFound.module.css."
+    },
+    {
+      "severity": "medium",
+      "category": "useEffect-deps",
+      "file": "src/components/presupuestos/PresupuestosSeleccion.jsx",
+      "issue": "useEffect with .then() but missing error handling",
+      "description": "Lines 46-53: useEffect for loading gamas uses .then() without .catch(). If supabase query fails, error is silently swallowed and UI shows empty state without user notification."
+    },
+    {
+      "severity": "medium",
+      "category": "useEffect-deps",
+      "file": "src/contexts/ThemeContext.jsx",
+      "issue": "useEffect deps missing toggle function",
+      "description": "Line 55-70: useEffect depends on 'dark' but calls supabase upsert. The toggle function is not in deps array. Line 119 memoizes themeValue but toggle is recreated each render since it's defined inline without useCallback."
+    },
+    {
+      "severity": "medium",
+      "category": "useEffect-deps",
+      "file": "src/hooks/useSimuladorAlmacen.js",
+      "issue": "Stale closure in async callback",
+      "description": "Lines 178-194: finalization callback callAI is defined inside finalizarSimulacion. The async function captures state from closure. If the component re-renders during AI call, multiple calls could be triggered. The try/catch is present but no abort mechanism."
+    },
+    {
+      "severity": "medium",
+      "category": "bundle-size",
+      "file": "dist/assets/vendor-pdf-BL-2XpEu.js",
+      "issue": "Vendor bundle oversized",
+      "description": "File is 588KB. Contains jspdf and html2canvas libraries loaded for PDF generation. Consider dynamic import only when exporting, or tree-shake more aggressively. Target: <200KB."
+    },
+    {
+      "severity": "medium",
+      "category": "bundle-size",
+      "file": "dist/assets/vendor-charts-C2-Kdl7_.js",
+      "issue": "Recharts bundle at 347KB",
+      "description": "This is large for a charting library. Consider using smaller alternatives (victory, tinycharts) or code-splitting charts into a separate chunk loaded only on KPI pages."
+    },
+    {
+      "severity": "low",
+      "category": "inline-functions",
+      "file": "src/components/layout/AppShell.jsx",
+      "issue": "Inline handler in JSX",
+      "description": "Line 117: onClick={() => setCollapsed(c => !c)} is fine but saltarContenido function at line 87 is defined in render body. Should be useCallback but impact is minimal."
+    },
+    {
+      "severity": "low",
+      "category": "inline-styles",
+      "file": "src/tools/Sonex.jsx",
+      "issue": "Inline style on avatar element",
+      "description": "Line 297: style={{ background: 'var(--blue-800)', color: 'var(--white)' }} on avatar div. Minor issue but could be a CSS class."
+    },
+    {
+      "severity": "low",
+      "category": "async-error-handling",
+      "file": "src/components/layout/AppShell.jsx",
+      "issue": "Supabase query with empty catch",
+      "description": "Line 50: .catch(() => {}) silently swallows all errors. Should at minimum log the error for debugging."
+    },
+    {
+      "severity": "low",
+      "category": "memoization",
+      "file": "src/components/fichas/FichasTecnicasContent.jsx",
+      "issue": "Only one component memoized",
+      "description": "File has React.memo on line 421 for the default export, but internal sub-components (brand cards, product cards) that receive callbacks like onSeleccionarMarca are not memoized, causing re-renders when parent state changes."
+    }
+  ],
+  "bundle_analysis": {
+    "total_js_size_kb": 2150,
+    "largest_bundles": [
+      { "file": "vendor-pdf-BL-2XpEu.js", "size_kb": 588, "issue": "PDF libs - consider dynamic import" },
+      { "file": "vendor-charts-C2-Kdl7_.js", "size_kb": 347, "issue": "Recharts - consider code-splitting" },
+      { "file": "index-BqTBNlry.js", "size_kb": 295, "issue": "Main bundle - acceptable" },
+      { "file": "vendor-react-Cuptpqwr.js", "size_kb": 230, "issue": "React - acceptable" },
+      { "file": "index.es-C9rbO66U.js", "size_kb": 158, "issue": "Entry chunk - acceptable" },
+      { "file": "vendor-animations-D-FCa0mi.js", "size_kb": 131, "issue": "Animation library - review if all used" }
+    ],
+    "recommendation": "Split vendor-pdf and vendor-charts into separate chunks with dynamic imports"
+  },
+  "top_priority_fixes": [
+    "1. Extract all inline functions in SimuladorAlmacen.jsx to useCallback or move to custom hook",
+    "2. Consolidate 16+ useState calls in SimuladorAlmacen.jsx into useReducer",
+    "3. Add React.memo to SimuladorEtapa, SimuladorOnboarding, SimuladorResultados components",
+    "4. Memoize context values in AuthContext and PresupuestosContext",
+    "5. Migrate 75+ inline styles to CSS modules",
+    "6. Add .catch() handlers to all supabase queries with proper error handling",
+    "7. Fix useEffect dependencies in SimuladorAlmacen and useNavegacionFichas",
+    "8. Code-split PDF and charts libraries with dynamic import"
+  ]
+}
