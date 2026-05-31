@@ -13,16 +13,32 @@ window.addEventListener('error', (e) => {
   console.error('[Global Error]', e.error)
   const root = document.getElementById('root')
   if (root && !root.innerHTML.includes('Error')) {
-    root.innerHTML = `
-      <div style="padding:40px;font-family:sans-serif;max-width:600px;margin:0 auto;">
-        <h1>⚠️ Error de carga</h1>
-        <p>Ha ocurrido un error al cargar la aplicación.</p>
-        <p><strong>Error:</strong> ${e.error?.message || 'Desconocido'}</p>
-        <button onclick="location.reload()" style="padding:10px 20px;background:#0072CE;color:white;border:none;border-radius:4px;cursor:pointer;margin-top:20px;">
-          Recargar página
-        </button>
-      </div>
-    `
+    root.textContent = ''
+    const container = document.createElement('div')
+    container.style.cssText = 'padding:40px;font-family:sans-serif;max-width:600px;margin:0 auto;'
+
+    const h1 = document.createElement('h1')
+    h1.textContent = '⚠️ Error de carga'
+    container.appendChild(h1)
+
+    const p = document.createElement('p')
+    p.textContent = 'Ha ocurrido un error al cargar la aplicación.'
+    container.appendChild(p)
+
+    const errorP = document.createElement('p')
+    const strong = document.createElement('strong')
+    strong.textContent = 'Error: '
+    errorP.appendChild(strong)
+    errorP.appendChild(document.createTextNode(e.error?.message || 'Desconocido'))
+    container.appendChild(errorP)
+
+    const btn = document.createElement('button')
+    btn.textContent = 'Recargar página'
+    btn.style.cssText = 'padding:10px 20px;background:#0072CE;color:white;border:none;border-radius:4px;cursor:pointer;margin-top:20px;'
+    btn.onclick = () => location.reload()
+    container.appendChild(btn)
+
+    root.appendChild(container)
   }
 })
 

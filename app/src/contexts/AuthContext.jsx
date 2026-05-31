@@ -14,8 +14,8 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    // Soporte para E2E tests con Playwright
-    if (window.__PW_MOCK_USER__) {
+    // Soporte para E2E tests con Playwright — solo en desarrollo
+    if (import.meta.env.DEV && window.__PW_MOCK_USER__) {
       setUser(window.__PW_MOCK_USER__)
       setLoading(false)
       return
@@ -67,7 +67,7 @@ export function AuthProvider({ children }) {
           justifyContent: 'center',
           background: 'var(--color-bg)',
           fontFamily: 'var(--font-sans, sans-serif)',
-        }}>
+        }} role="status" aria-label="Cargando sesión">
           <div style={{ textAlign: 'center', color: 'var(--color-text-secondary)' }}>
             <div style={{
               width: '36px', height: '36px',

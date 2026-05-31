@@ -1,5 +1,4 @@
-import { useState, useEffect, useMemo } from 'react'
-import React from 'react'
+import { useState, useEffect, useMemo, Fragment } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { FULL_CATEGORY_INFO } from '../../data/categoryMapping'
 import catalogService from '../../services/catalogService'
@@ -30,10 +29,8 @@ export default function PresupuestosSeleccion() {
   const [anadidos, setAnadidos] = useState({})
 
   useEffect(() => {
-    console.log('[PresupuestosSeleccion] useEffect[ categoria] — categoria:', categoria)
     setCargandoCatalogo(true)
     catalogService.getMarcasPorCategoria(categoria).then(data => {
-      console.log('[PresupuestosSeleccion] Marcas loaded:', data.length, data.slice(0, 3))
       setMarcasDisponibles(data)
       setPasoCatalogo('marcas')
       setCargandoCatalogo(false)
@@ -97,14 +94,14 @@ export default function PresupuestosSeleccion() {
   const renderBreadcrumb = () => (
     <div className={styles.breadcrumb}>
       {breadcrumbItems.map((item, i) => (
-        <React.Fragment key={i}>
+        <Fragment key={i}>
           {i > 0 && <span className={styles.breadcrumb__sep}>›</span>}
           {item.onClick ? (
             <button className={styles.breadcrumb__link} onClick={item.onClick}>{item.label}</button>
           ) : (
             <span className={styles.breadcrumb__current}>{item.label}</span>
           )}
-        </React.Fragment>
+        </Fragment>
       ))}
     </div>
   )

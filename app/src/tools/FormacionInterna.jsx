@@ -126,9 +126,9 @@ export default function FormacionInterna() {
 
           {/* Tabs */}
           <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '24px' }}>
-            <div className={styles.viewToggle}>
-              <button className={`${styles.viewToggle__btn} ${vista === 'dashboard' ? styles['viewToggle__btn--active'] : ''}`} onClick={() => { setVista('dashboard'); setSeleccionado(null); }}>Equipo</button>
-              <button className={`${styles.viewToggle__btn} ${vista === 'ajustes' ? styles['viewToggle__btn--active'] : ''}`} onClick={() => setVista('ajustes')}>Ajustes</button>
+            <div className={styles.viewToggle} role="tablist" aria-label="Vistas de formación">
+              <button role="tab" aria-selected={vista === 'dashboard'} className={`${styles.viewToggle__btn} ${vista === 'dashboard' ? styles['viewToggle__btn--active'] : ''}`} onClick={() => { setVista('dashboard'); setSeleccionado(null); }}>Equipo</button>
+              <button role="tab" aria-selected={vista === 'ajustes'} className={`${styles.viewToggle__btn} ${vista === 'ajustes' ? styles['viewToggle__btn--active'] : ''}`} onClick={() => setVista('ajustes')}>Ajustes</button>
             </div>
           </div>
 

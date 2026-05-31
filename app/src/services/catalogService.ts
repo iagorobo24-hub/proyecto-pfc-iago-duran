@@ -4,6 +4,18 @@ import { log, logWarn, logError } from '../utils/logger';
 import type { Product, Brand, Category, SubfamiliaTipo, FiltroSubcategoria } from '../types/catalog';
 
 let marcasCache: Map<number, string> | null = null;
+let marcasReverseCache: Map<string, number> | null = null;
+
+async function findBrandIdByName(marca: string): Promise<number | null> {
+  const marcasMap = await cargarMarcas();
+  if (!marcasReverseCache) {
+    marcasReverseCache = new Map();
+    for (const [id, name] of marcasMap.entries()) {
+      marcasReverseCache.set(name.trim(), id);
+    }
+  }
+  return marcasReverseCache.get(marca.trim()) ?? null;
+}
 
 const etiquetasFamilias: Record<string, string> = {
   'CABLES': 'Cables',
@@ -62,6 +74,7 @@ async function cargarMarcas(): Promise<Map<number, string>> {
   }
 
   marcasCache = new Map();
+  marcasReverseCache = null;
   data?.forEach(b => { const valid = validateBrand(b as Record<string, unknown>); if (valid && valid.id) marcasCache!.set(valid.id as number, valid.name as string); });
   log('✅ Marcas cargadas:', marcasCache.size);
   return marcasCache;
@@ -71,36 +84,19 @@ export async function getCategorias(): Promise<Category[]> {
   try {
     log('📂 Cargando familias desde products...');
 
-    const familiasUnicas = new Set<string>();
-    let from = 0;
-    const pageSize = 1000;
+    const { data, error } = await supabase
+      .from('products')
+      .select('familia')
+      .not('familia', 'is', null);
 
-    while (true) {
-      const { data, error } = await supabase
-        .from('products')
-        .select('familia')
-        .not('familia', 'is', null)
-        .order('id')
-        .range(from, from + pageSize - 1);
-
-      if (error) {
-        logError('❌ Error:', error);
-        break;
-      }
-
-      if (!data || data.length === 0) break;
-
-      data.forEach(p => {
-        if (p.familia) familiasUnicas.add((p.familia as string).trim());
-      });
-
-      if (data.length < pageSize) break;
-      from += pageSize;
+    if (error) {
+      logError('❌ Error:', error);
+      return [];
     }
 
-    const familiasArray = [...familiasUnicas];
+    const familiasUnicas = [...new Set((data as Array<{ familia: string }>)?.map(p => p.familia?.trim()).filter(Boolean))];
 
-    const categorias: Category[] = familiasArray.map(familia => ({
+    const categorias: Category[] = familiasUnicas.map(familia => ({
       id: familia,
       label: etiquetasFamilias[familia] || familia,
       icon: '📁',
@@ -109,6 +105,7 @@ export async function getCategorias(): Promise<Category[]> {
 
     categorias.sort((a, b) => a.label.localeCompare(b.label));
 
+    log('✅ Categorías cargadas:', categorias.length);
     return categorias;
   } catch (error) {
     logError('❌ Error getCategorias:', error);
@@ -161,14 +158,7 @@ export async function getMarcasPorCategoria(familia: string): Promise<{ nombre: 
 
 export async function getGamasPorMarcaYCategoria(marca: string, familia: string): Promise<{ nombre: string }[]> {
   try {
-    const marcasMap = await cargarMarcas();
-    let brandId: number | null = null;
-    for (const [id, name] of marcasMap.entries()) {
-      if (name.trim() === marca.trim()) {
-        brandId = id;
-        break;
-      }
-    }
+    const brandId = await findBrandIdByName(marca);
 
     if (!brandId) {
       logWarn('⚠️ Marca no encontrada:', marca);
@@ -200,14 +190,7 @@ export async function getGamasPorMarcaYCategoria(marca: string, familia: string)
 
 export async function getTiposPorGamaMarcaYFamilia(gama: string, marca: string, familia: string): Promise<string[]> {
   try {
-    const marcasMap = await cargarMarcas();
-    let brandId: number | null = null;
-    for (const [id, name] of marcasMap.entries()) {
-      if (name.trim() === marca.trim()) {
-        brandId = id;
-        break;
-      }
-    }
+    const brandId = await findBrandIdByName(marca);
 
     if (!brandId) return [];
 
@@ -242,14 +225,7 @@ export async function getProductosPorFiltro(
   subgama?: string
 ): Promise<Product[]> {
   try {
-    const marcasMap = await cargarMarcas();
-    let brandId: number | null = null;
-    for (const [id, name] of marcasMap.entries()) {
-      if (name.trim() === marca.trim()) {
-        brandId = id;
-        break;
-      }
-    }
+    const brandId = await findBrandIdByName(marca);
 
     let query = supabase
       .from('products')
@@ -289,11 +265,7 @@ export async function getGamasPorFiltro(
   tipo: string
 ): Promise<string[]> {
   try {
-    const marcasMap = await cargarMarcas();
-    let brandId: number | null = null;
-    for (const [id, name] of marcasMap.entries()) {
-      if (name.trim() === marca.trim()) { brandId = id; break; }
-    }
+    const brandId = await findBrandIdByName(marca);
     if (!brandId) return [];
 
     const { data, error } = await supabase
@@ -327,11 +299,7 @@ export async function getSubgamasPorFiltro(
   gamaComercial?: string
 ): Promise<string[]> {
   try {
-    const marcasMap = await cargarMarcas();
-    let brandId: number | null = null;
-    for (const [id, name] of marcasMap.entries()) {
-      if (name.trim() === marca.trim()) { brandId = id; break; }
-    }
+    const brandId = await findBrandIdByName(marca);
     if (!brandId) return [];
 
     let query = supabase
@@ -364,11 +332,7 @@ export async function getSubgamasPorFiltro(
 
 export async function getSubfamiliasConTipos(marca: string, familia: string): Promise<SubfamiliaTipo[]> {
   try {
-    const marcasMap = await cargarMarcas();
-    let brandId: number | null = null;
-    for (const [id, name] of marcasMap.entries()) {
-      if (name.trim() === marca.trim()) { brandId = id; break; }
-    }
+    const brandId = await findBrandIdByName(marca);
     if (!brandId) return [];
 
     const { data, error } = await supabase
@@ -409,16 +373,16 @@ export async function getProductosPorSubcategoria(
   subgama?: string
 ): Promise<Product[]> {
   try {
-    const marcasMap = await cargarMarcas();
-    let brandId: number | null = null;
-    for (const [id, name] of marcasMap.entries()) {
-      if (name.trim() === marca.trim()) { brandId = id; break; }
-    }
+    const brandId = await findBrandIdByName(marca);
     if (!brandId) return [];
 
     const conditions = filtros.map(f => {
-      if (f.tipo) return `and(subfamilia.eq.${f.subfamilia},tipo.eq.${f.tipo})`;
-      return `subfamilia.eq.${f.subfamilia}`;
+      const sub = sanitizeFilterValue(f.subfamilia);
+      if (f.tipo) {
+        const tipo = sanitizeFilterValue(f.tipo);
+        return `and(subfamilia.eq.${sub},tipo.eq.${tipo})`;
+      }
+      return `subfamilia.eq.${sub}`;
     });
 
     let query = supabase
@@ -454,16 +418,16 @@ export async function getSubgamasPorSubcategoria(
   gamaComercial?: string
 ): Promise<string[]> {
   try {
-    const marcasMap = await cargarMarcas();
-    let brandId: number | null = null;
-    for (const [id, name] of marcasMap.entries()) {
-      if (name.trim() === marca.trim()) { brandId = id; break; }
-    }
+    const brandId = await findBrandIdByName(marca);
     if (!brandId) return [];
 
     const conditions = filtros.map(f => {
-      if (f.tipo) return `and(subfamilia.eq.${f.subfamilia},tipo.eq.${f.tipo})`;
-      return `subfamilia.eq.${f.subfamilia}`;
+      const sub = sanitizeFilterValue(f.subfamilia);
+      if (f.tipo) {
+        const tipo = sanitizeFilterValue(f.tipo);
+        return `and(subfamilia.eq.${sub},tipo.eq.${tipo})`;
+      }
+      return `subfamilia.eq.${sub}`;
     });
 
     let query = supabase
@@ -499,16 +463,16 @@ export async function getGamasPorSubcategoria(
   filtros: FiltroSubcategoria[]
 ): Promise<string[]> {
   try {
-    const marcasMap = await cargarMarcas();
-    let brandId: number | null = null;
-    for (const [id, name] of marcasMap.entries()) {
-      if (name.trim() === marca.trim()) { brandId = id; break; }
-    }
+    const brandId = await findBrandIdByName(marca);
     if (!brandId) return [];
 
     const conditions = filtros.map(f => {
-      if (f.tipo) return `and(subfamilia.eq.${f.subfamilia},tipo.eq.${f.tipo})`;
-      return `subfamilia.eq.${f.subfamilia}`;
+      const sub = sanitizeFilterValue(f.subfamilia);
+      if (f.tipo) {
+        const tipo = sanitizeFilterValue(f.tipo);
+        return `and(subfamilia.eq.${sub},tipo.eq.${tipo})`;
+      }
+      return `subfamilia.eq.${sub}`;
     });
 
     const { data, error } = await supabase
@@ -549,8 +513,12 @@ export async function getProductoPorRef(ref: string): Promise<Product | null> {
   }
 }
 
+function sanitizeFilterValue(v: string): string {
+  return v.replace(/[().,]/g, '')
+}
+
 function sanitizeSearchInput(t: string): string {
-  return t.replace(/[(),]/g, '')
+  return t.replace(/[(),]/g, '').replace(/[%_]/g, '\\$&')
 }
 
 export async function buscarProductos(termino: string): Promise<Product[]> {

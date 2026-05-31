@@ -94,9 +94,10 @@ function clearStatesAfter(paso, setters) {
   }
 }
 
-export default function useNavegacionFichas() {
+ export default function useNavegacionFichas() {
  const { toast } = useToast()
  const memoria = useMemoriaUsuario()
+ const requestIdRef = useRef(0)
  
  const [paso, setPaso] = useState('categorias')
  const [categorias, setCategorias] = useState([])
@@ -192,17 +193,20 @@ useEffect(() => {
 
  useEffect(() => {
   if (!categoria) return;
+  const reqId = ++requestIdRef.current
   async function load() {
    setCargando(true)
    setError(null)
    try {
     const data = await catalogService.getMarcasPorCategoria(categoria)
+    if (reqId !== requestIdRef.current) return
     setMarcasDisponibles(data)
    } catch (err) {
+    if (reqId !== requestIdRef.current) return
     console.error('Error cargando marcas:', err)
     setError('Error al cargar marcas')
    } finally {
-    setCargando(false)
+    if (reqId === requestIdRef.current) setCargando(false)
    }
   }
   load()
@@ -210,6 +214,7 @@ useEffect(() => {
 
   useEffect(() => {
    if (!categoria || !marca) return;
+  const reqId = ++requestIdRef.current
   async function load() {
    setCargando(true)
    setError(null)
@@ -217,6 +222,7 @@ useEffect(() => {
     const pares = await catalogService.getSubfamiliasConTipos(marca, categoria)
     const g = construirGrupos(pares)
 
+    if (reqId !== requestIdRef.current) return
     if (Object.keys(g).length > 0) {
      setGrupos(g)
      setCategoriaGrupo(null)
@@ -230,61 +236,70 @@ useEffect(() => {
      if (paso === 'marcas') setPaso('categorias_grupo')
     } else {
       const data = await catalogService.getGamasPorMarcaYCategoria(marca, categoria)
+      if (reqId !== requestIdRef.current) return
       setGamasDisponibles(data.map(g => g.nombre))
       setGrupos({})
       setCategoriaGrupo(null)
       setSubcategoria(null)
     }
    } catch (err) {
+    if (reqId !== requestIdRef.current) return
     console.error('Error cargando gamas:', err)
     setError('Error al cargar gamas')
    } finally {
-    setCargando(false)
+    if (reqId === requestIdRef.current) setCargando(false)
    }
   }
   load()
  }, [categoria, marca])
 
- useEffect(() => {
-  if (!categoria || !marca || !gama) return;
-  async function load() {
-   setCargando(true)
-   setError(null)
-   try {
-    const data = await catalogService.getTiposPorGamaMarcaYFamilia(gama, marca, categoria)
-    setTiposDisponibles(data)
-   } catch (err) {
-    console.error('Error cargando tipos:', err)
-    setError('Error al cargar tipos')
-   } finally {
-    setCargando(false)
+  useEffect(() => {
+   if (!categoria || !marca || !gama) return;
+   const reqId = ++requestIdRef.current
+   async function load() {
+    setCargando(true)
+    setError(null)
+    try {
+     const data = await catalogService.getTiposPorGamaMarcaYFamilia(gama, marca, categoria)
+     if (reqId !== requestIdRef.current) return
+     setTiposDisponibles(data)
+    } catch (err) {
+     if (reqId !== requestIdRef.current) return
+     console.error('Error cargando tipos:', err)
+     setError('Error al cargar tipos')
+    } finally {
+     if (reqId === requestIdRef.current) setCargando(false)
+    }
    }
-  }
-  load()
- }, [categoria, marca, gama])
+   load()
+  }, [categoria, marca, gama])
 
   useEffect(() => {
   if (!categoria || !marca || !gama || !tipo) return;
+  const reqId = ++requestIdRef.current
   async function load() {
    setCargando(true)
    setError(null)
    try {
     const products = await catalogService.getProductosPorFiltro(categoria, marca, gama, tipo)
+    if (reqId !== requestIdRef.current) return
     setReferenciasDisponibles(products)
    } catch (err) {
+    if (reqId !== requestIdRef.current) return
     console.error('Error cargando productos:', err)
     setError('Error al cargar productos')
    } finally {
-    setCargando(false)
+    if (reqId === requestIdRef.current) setCargando(false)
    }
   }
   load()
  }, [categoria, marca, gama, tipo])
 
- useEffect(() => {
+  useEffect(() => {
   if (paso !== 'gamas_comerciales') return
   if (!categoria || !marca) return
 
+  const reqId = ++requestIdRef.current
   async function load() {
    setCargando(true)
    setError(null)
@@ -296,6 +311,7 @@ useEffect(() => {
     } else if (gama && tipo) {
       gamas = await catalogService.getGamasPorFiltro(categoria, marca, gama, tipo)
     }
+    if (reqId !== requestIdRef.current) return
     setGamasComercialesDisponibles(gamas)
 
     if (gamas.length === 0) {
@@ -306,6 +322,7 @@ useEffect(() => {
       } else if (gama && tipo) {
         subgamas = await catalogService.getSubgamasPorFiltro(categoria, marca, gama, tipo)
       }
+      if (reqId !== requestIdRef.current) return
       setSubgamasDisponibles(subgamas)
 
       if (subgamas.length === 0) {
@@ -316,6 +333,7 @@ useEffect(() => {
         } else if (gama && tipo) {
           products = await catalogService.getProductosPorFiltro(categoria, marca, gama, tipo)
         }
+        if (reqId !== requestIdRef.current) return
         setReferenciasDisponibles(products)
         setPaso('referencias')
       } else {
@@ -323,19 +341,21 @@ useEffect(() => {
       }
     }
    } catch (err) {
+    if (reqId !== requestIdRef.current) return
     console.error('Error cargando gamas:', err)
     setError('Error al cargar gamas')
    } finally {
-    setCargando(false)
+    if (reqId === requestIdRef.current) setCargando(false)
    }
   }
   load()
  }, [paso, categoria, marca, categoriaGrupo, subcategoria, gama, tipo, grupos])
 
- useEffect(() => {
+  useEffect(() => {
   if (paso !== 'subgamas') return
   if (!categoria || !marca) return
 
+  const reqId = ++requestIdRef.current
   async function load() {
    setCargando(true)
    setError(null)
@@ -347,6 +367,7 @@ useEffect(() => {
     } else if (gama && tipo) {
       subgamas = await catalogService.getSubgamasPorFiltro(categoria, marca, gama, tipo, gamaComercial)
     }
+    if (reqId !== requestIdRef.current) return
     setSubgamasDisponibles(subgamas)
 
     if (subgamas.length === 0) {
@@ -357,14 +378,16 @@ useEffect(() => {
       } else if (gama && tipo) {
         products = await catalogService.getProductosPorFiltro(categoria, marca, gama, tipo, gamaComercial)
       }
+      if (reqId !== requestIdRef.current) return
       setReferenciasDisponibles(products)
       setPaso('referencias')
     }
    } catch (err) {
+    if (reqId !== requestIdRef.current) return
     console.error('Error cargando subgamas:', err)
     setError('Error al cargar subgamas')
    } finally {
-    setCargando(false)
+    if (reqId === requestIdRef.current) setCargando(false)
    }
   }
   load()

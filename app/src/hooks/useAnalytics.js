@@ -1,16 +1,29 @@
-import { useCallback } from 'react'
+import { useCallback, useRef, useEffect } from 'react'
 import { safeGetJSON, safeSetJSON } from '../utils/storage'
 
 const ANALYTICS_KEY = 'pfc_analytics_events'
 const MAX_EVENTS = 500
+const FLUSH_INTERVAL_MS = 5000
+
+let pendingEvents = []
+let flushTimer = null
+
+function flush() {
+  if (pendingEvents.length === 0) return
+  const events = safeGetJSON(ANALYTICS_KEY, [])
+  events.push(...pendingEvents)
+  safeSetJSON(ANALYTICS_KEY, events.slice(-MAX_EVENTS))
+  pendingEvents = []
+  flushTimer = null
+}
 
 export function getAnalytics() {
+  flush()
   return safeGetJSON(ANALYTICS_KEY, [])
 }
 
 export function trackEvent(categoria, accion, etiqueta = '', valor = null) {
-  const events = getAnalytics()
-  events.push({
+  pendingEvents.push({
     categoria,
     accion,
     etiqueta,
@@ -18,7 +31,12 @@ export function trackEvent(categoria, accion, etiqueta = '', valor = null) {
     ts: Date.now(),
     ruta: window.location.pathname,
   })
-  safeSetJSON(ANALYTICS_KEY, events.slice(-MAX_EVENTS))
+  if (!flushTimer) flushTimer = setTimeout(flush, FLUSH_INTERVAL_MS)
+}
+
+// Flush on page unload
+if (typeof window !== 'undefined') {
+  window.addEventListener('beforeunload', flush)
 }
 
 export function getAnalyticsSummary() {

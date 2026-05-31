@@ -11,7 +11,7 @@ export default function LinearRefCard({ code, desc, price, onClick, image, marca
       <div className={styles.imageWrap}>
         {showImage ? (
           <>
-            <img src={image} alt={code} className={styles.image} onError={() => setImgError(true)} />
+            <img src={image} alt={code} className={styles.image} loading="lazy" onError={() => setImgError(true)} />
             <span className={styles.badge}>REF</span>
           </>
         ) : (

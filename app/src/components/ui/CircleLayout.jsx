@@ -37,12 +37,12 @@ export function OrbitRow({ children, className = '' }) {
   )
 }
 
-export function BrandCard({ logo, logoFallback, logoColor, logoGradient, name, count, onClick, className = '' }) {
+export const BrandCard = React.memo(function BrandCard({ logo, logoFallback, logoColor, logoGradient, name, count, onClick, className = '' }) {
   return (
     <button className={`${styles.brandCard} ${className}`} onClick={onClick}>
       <div className={styles.brandCard__logo}>
         {logo ? (
-          <img src={logo} alt={name} />
+          <img src={logo} alt={name} loading="lazy" />
         ) : (
           <div className={styles.brandCard__logoFallback} style={{ background: logoGradient || logoColor }}>
             {logoFallback}
@@ -53,9 +53,9 @@ export function BrandCard({ logo, logoFallback, logoColor, logoGradient, name, c
       {count && <div className={styles.brandCard__count}>{count}</div>}
     </button>
   )
-}
+})
 
-export function GamaCard({ name, meta, onClick, className = '' }) {
+export const GamaCard = React.memo(function GamaCard({ name, meta, onClick, className = '' }) {
   return (
     <button className={`${styles.gamaCard} ${className}`} onClick={onClick}>
       <div>
@@ -65,9 +65,9 @@ export function GamaCard({ name, meta, onClick, className = '' }) {
       <span className={styles.gamaCard__arrow}>›</span>
     </button>
   )
-}
+})
 
-export function RefCard({ code, desc, price, onClick, image, className = '' }) {
+export const RefCard = React.memo(function RefCard({ code, desc, price, onClick, image, className = '' }) {
   const initials = code ? code.slice(0, 2).toUpperCase() : '??'
   const [imgError, setImgError] = React.useState(false)
 
@@ -81,6 +81,7 @@ export function RefCard({ code, desc, price, onClick, image, className = '' }) {
             src={image}
             alt={code}
             className={styles.refCard__image}
+            loading="lazy"
             onError={() => setImgError(true)}
           />
         ) : (
@@ -98,14 +99,14 @@ export function RefCard({ code, desc, price, onClick, image, className = '' }) {
       )}
     </button>
   )
-}
+})
 
-export function FichaCard({ refCode, desc, price, specs, actions, image, className = '' }) {
+export const FichaCard = React.memo(function FichaCard({ refCode, desc, price, specs, actions, image, className = '' }) {
   return (
     <div className={`${styles.fichaCard} ${className}`}>
       {image && (
         <div className={styles.fichaCard__imageWrap}>
-          <img src={image} alt={refCode || desc} className={styles.fichaCard__image} />
+          <img src={image} alt={refCode || desc} className={styles.fichaCard__image} loading="lazy" />
         </div>
       )}
 
@@ -146,7 +147,7 @@ export function FichaCard({ refCode, desc, price, specs, actions, image, classNa
       )}
     </div>
   )
-}
+})
 
 export function TipCard({ label = 'Consejo Técnico', text, className = '' }) {
   return (

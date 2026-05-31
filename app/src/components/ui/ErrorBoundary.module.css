@@ -1,0 +1,56 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  gap: 16px;
+  padding: 40px;
+  font-family: var(--font-body);
+  color: var(--color-text);
+  background: var(--color-bg);
+}
+
+.title {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.message {
+  color: var(--color-text-secondary);
+  max-width: 400px;
+  text-align: center;
+  margin: 0;
+}
+
+.retryBtn {
+  padding: 10px 24px;
+  background: var(--color-brand);
+  color: var(--color-on-brand);
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.retryBtn:hover {
+  background: var(--brand-primary-dark);
+}
+
+.loader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--color-text-secondary);
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.animatePulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}

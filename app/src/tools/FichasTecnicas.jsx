@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useToast } from '../contexts/ToastContext'
 import { trackEvent } from '../hooks/useAnalytics'
@@ -39,7 +39,7 @@ export default function FichasTecnicas() {
 
   const [modo, setModo] = useState('navegacion')
 
-  const catInfo = FULL_CATEGORY_INFO[categoria] || {}
+  const catInfo = useMemo(() => FULL_CATEGORY_INFO[categoria] || {}, [categoria])
   const isCargando = navegacionCargando || busquedaIACargando
 
   const handleSugerenciaClick = useCallback((p) => {

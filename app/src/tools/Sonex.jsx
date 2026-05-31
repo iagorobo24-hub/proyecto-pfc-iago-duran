@@ -189,7 +189,7 @@ ${modoInstrucciones[modoActivo] || modoInstrucciones.busqueda}${categoriaTexto}`
                     </span>
                   </div>
                   <button
-                    onClick={(e) => { e.stopPropagation(); deleteSession(session.id); }}
+                    onClick={(e) => { e.stopPropagation(); if (window.confirm('¿Eliminar esta conversación?')) deleteSession(session.id); }}
                     className={styles.historyItemDelete}
                     title="Eliminar chat"
                   >
@@ -204,12 +204,14 @@ ${modoInstrucciones[modoActivo] || modoInstrucciones.busqueda}${categoriaTexto}`
             {/* Modos */}
             <div className={styles.seccion}>
               <div className={styles.seccionLabel}>MODO DE OPERACIÓN</div>
-              {MODO_OBJETOS.map(modo => (
-                <button key={modo.id} onClick={() => handleModoClick(modo.id)} className={`${styles.modoBtn} ${modoActivo === modo.id ? styles['modoBtn--active'] : ''}`}>
-                  <span className={styles.modoBtnLabel}>{modo.label}</span>
-                  <span className={styles.modoBtnDesc}>{modo.desc}</span>
-                </button>
-              ))}
+              <div role="tablist" aria-label="Modo de operación">
+                {MODO_OBJETOS.map(modo => (
+                  <button key={modo.id} role="tab" aria-selected={modoActivo === modo.id} onClick={() => handleModoClick(modo.id)} className={`${styles.modoBtn} ${modoActivo === modo.id ? styles['modoBtn--active'] : ''}`}>
+                    <span className={styles.modoBtnLabel}>{modo.label}</span>
+                    <span className={styles.modoBtnDesc}>{modo.desc}</span>
+                  </button>
+                ))}
+              </div>
             </div>
 
             {/* Categorías */}
@@ -319,11 +321,13 @@ ${modoInstrucciones[modoActivo] || modoInstrucciones.busqueda}${categoriaTexto}`
               className={styles.chatInputField}
               rows={1}
               disabled={isLoading}
+              aria-label="Consulta técnica para SONEX"
             />
             <button
               onClick={handleSendMessage}
               disabled={!input.trim() || isLoading}
               className={styles.chatSendBtn}
+              aria-label="Enviar consulta"
             >
               →
             </button>

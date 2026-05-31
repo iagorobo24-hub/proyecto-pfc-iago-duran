@@ -5,7 +5,7 @@ export default function LinearFichaCard({ refCode, desc, price, specs, actions, 
     <div className={`${styles.card} ${className}`}>
       {image && (
         <div className={styles.imageWrap}>
-          <img src={image} alt={refCode || desc} className={styles.image} />
+          <img src={image} alt={refCode || desc} className={styles.image} loading="lazy" />
         </div>
       )}
 

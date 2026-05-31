@@ -10,7 +10,7 @@ export default function VistaCardConImagen({ badge, name, desc, count, image, on
     >
       <div className={styles.card__imageWrap}>
         {image ? (
-          <img src={image} alt="" className={styles.card__image} />
+          <img src={image} alt={name || ''} className={styles.card__image} loading="lazy" />
         ) : (
           <div className={styles.card__imagePlaceholder}>
             <span className={styles.card__imageIcon}>⚡</span>

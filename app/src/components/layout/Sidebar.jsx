@@ -1,10 +1,10 @@
-import { useLocation } from 'react-router-dom'
+import { NavLink, useLocation } from 'react-router-dom'
 import {
   FileText, Warehouse, ShieldAlert, TrendingUp,
   Euro, GraduationCap, Bot
 } from 'lucide-react'
 import styles from './Sidebar.module.css'
-import { TOOLS_BY_PATH, normalizeToolPath } from '../../config/tools'
+import { TOOLS, TOOLS_BY_PATH, normalizeToolPath } from '../../config/tools'
 
 const ICONS = {
   FileText,
@@ -16,7 +16,7 @@ const ICONS = {
   Bot,
 }
 
-/* Sidebar — icono grande + descripción y consejo de la herramienta activa */
+/* Sidebar — navegación + info de la herramienta activa */
 export default function Sidebar({ collapsed = false }) {
   const { pathname } = useLocation()
   const activePath = normalizeToolPath(pathname)
@@ -25,17 +25,38 @@ export default function Sidebar({ collapsed = false }) {
 
   return (
     <aside className={styles.sidebar} role="navigation" aria-label="Menú de herramientas">
-      {/* Icono grande de la herramienta activa */}
+      {/* Icono de la herramienta activa */}
       <div className={`${styles.iconSection} ${collapsed ? styles.iconSectionCollapsed : ''}`}>
         <div className={styles.iconWrap} title={tool.nombre} aria-label={`Herramienta: ${tool.nombre}`}>
-          <Icon size={collapsed ? 22 : 32} strokeWidth={1.5} aria-hidden="true" />
+          <Icon size={collapsed ? 22 : 24} strokeWidth={1.5} aria-hidden="true" />
         </div>
         {!collapsed && (
           <p className={styles.toolNombre} role="heading" aria-level="2">{tool.nombre}</p>
         )}
       </div>
 
-      {/* Descripción y consejo — ocultos cuando está colapsado */}
+      {/* Navegación a todas las herramientas */}
+      {!collapsed && (
+        <nav className={styles.navSection} aria-label="Herramientas">
+          {TOOLS.map(t => {
+            const ToolIcon = ICONS[t.icon] || FileText
+            const isActive = t.path === activePath
+            return (
+              <NavLink
+                key={t.path}
+                to={t.appPath}
+                className={`${styles.navItem} ${isActive ? styles.navItemActive : ''}`}
+                aria-current={isActive ? 'page' : undefined}
+              >
+                <ToolIcon size={16} strokeWidth={1.5} aria-hidden="true" />
+                <span className={styles.navItemLabel}>{t.nombre}</span>
+              </NavLink>
+            )
+          })}
+        </nav>
+      )}
+
+      {/* Descripción y consejo — solo de la herramienta activa */}
       {!collapsed && (
         <div className={styles.infoSection}>
           <p className={styles.descripcion}>{tool.descripcion}</p>
@@ -43,14 +64,6 @@ export default function Sidebar({ collapsed = false }) {
             <span className={styles.consejoLabel}>Consejo</span>
             <p className={styles.consejoTexto}>{tool.consejo}</p>
           </div>
-        </div>
-      )}
-
-      {/* Footer — oculto cuando está colapsado */}
-      {!collapsed && (
-        <div className={styles.footer}>
-          <p className={styles.footerText}>Proyectos PFC España · A Coruña</p>
-          <p className={styles.footerText}>PFC CFGS · 2026</p>
         </div>
       )}
     </aside>

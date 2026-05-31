@@ -1,42 +1,61 @@
 /**
  * Unified AI API Gateway
- * Supports multiple providers: OpenRouter (default), Groq, Gemini
- * Free models: google/gemini-2.0-flash-thinking-exp-01-21, anthropic/claude-3.5-haiku
+ * Supports multiple providers: OpenRouter (default), Groq
+ * Free models: anthropic/claude-3.5-haiku, deepseek/deepseek-r1:free
  */
 
 const PROVIDERS = {
   openrouter: {
     baseUrl: 'https://openrouter.ai/api/v1',
     models: [
-      'anthropic/claude-3.5-haiku', // FREE - fast and capable
-      'deepseek/deepseek-r1:free', // FREE - deep reasoning
-      'qwen/qwen-2.5-72b-instruct:free', // FREE - large model
-      'google/gemini-flash-1.5-8b', // FREE
+      'anthropic/claude-3.5-haiku',
+      'deepseek/deepseek-r1:free',
+      'qwen/qwen-2.5-72b-instruct:free',
+      'google/gemini-flash-1.5-8b',
     ]
   },
   groq: {
     baseUrl: 'https://api.groq.com/openai/v1',
     models: [
-      'llama-3.3-70b-versatile', // Free tier
-      'mixtral-8x7b-32768', // Free tier
+      'llama-3.3-70b-versatile',
+      'mixtral-8x7b-32768',
     ]
   }
 };
 
-// Default to OpenRouter
 const DEFAULT_PROVIDER = 'openrouter';
 const DEFAULT_MODEL = 'anthropic/claude-3.5-haiku';
+const MAX_TOKENS_CAP = 4096;
+const ALLOWED_ORIGINS = [
+  'https://proyecto-pfc-iago-duran.vercel.app',
+  'http://localhost:5173',
+  'http://localhost:3001',
+];
+
+// Simple in-memory rate limiter (per-IP, resets on cold start)
+const rateLimitMap = new Map();
+const RATE_LIMIT_WINDOW_MS = 60_000;
+const RATE_LIMIT_MAX = 30;
+
+function isRateLimited(ip) {
+  const now = Date.now();
+  const entry = rateLimitMap.get(ip);
+  if (!entry || now - entry.start > RATE_LIMIT_WINDOW_MS) {
+    rateLimitMap.set(ip, { start: now, count: 1 });
+    return false;
+  }
+  entry.count++;
+  return entry.count > RATE_LIMIT_MAX;
+}
 
 export default async function handler(req, res) {
-  console.log('[AI API] Request received:', req.method, req.url);
-
-  // CORS headers
+  // CORS headers — validate origin
   const origin = req.headers.origin;
-  if (origin) {
+  if (ALLOWED_ORIGINS.includes(origin)) {
     res.setHeader('Access-Control-Allow-Origin', origin);
-    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   }
+  res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
   if (req.method === 'OPTIONS') {
     return res.status(200).end();
@@ -46,10 +65,38 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
+  // Rate limiting
+  const clientIp = req.headers['x-forwarded-for']?.split(',')[0]?.trim() || 'unknown';
+  if (isRateLimited(clientIp)) {
+    return res.status(429).json({ error: 'Too many requests. Please try again later.' });
+  }
+
   try {
     const { provider = DEFAULT_PROVIDER, model = DEFAULT_MODEL, messages, system, max_tokens = 1000, temperature = 0.7, stream = false } = req.body;
 
-    console.log('[AI API] Provider:', provider, 'Model:', model, 'Stream:', stream);
+    // Validate inputs
+    if (!messages || !Array.isArray(messages) || messages.length === 0) {
+      return res.status(400).json({ error: 'messages must be a non-empty array' });
+    }
+
+    const safeMaxTokens = Math.min(Math.max(1, Number(max_tokens) || 1000), MAX_TOKENS_CAP);
+    const safeTemperature = Math.min(Math.max(0, Number(temperature) || 0.7), 2);
+
+    // Validate model against allowed list
+    const providerConfig = PROVIDERS[provider] || PROVIDERS.openrouter;
+    const allowedModels = providerConfig.models;
+    if (!allowedModels.includes(model)) {
+      return res.status(400).json({ error: 'Model not allowed', allowed: allowedModels });
+    }
+
+    // Limit messages array size
+    if (messages.length > 50) {
+      return res.status(400).json({ error: 'Too many messages (max 50)' });
+    }
+    const totalChars = messages.reduce((sum, m) => sum + (m.content?.length || 0), 0);
+    if (totalChars > 50000) {
+      return res.status(400).json({ error: 'Messages too long (max 50k chars)' });
+    }
 
     // Get API key based on provider
     let apiKey;
@@ -60,30 +107,19 @@ export default async function handler(req, res) {
       case 'groq':
         apiKey = process.env.GROQ_API_KEY;
         break;
-      case 'gemini':
-        apiKey = process.env.GEMINI_API_KEY;
-        break;
       default:
         apiKey = process.env.OPENROUTER_API_KEY;
     }
 
     if (!apiKey) {
-      console.log('[AI API] No API key found for provider:', provider);
-      console.log('[AI API] Available env vars:', Object.keys(process.env).filter(k => k.includes('API')));
-      
-      // Return helpful error with setup instructions
+      console.error(`[AI API] No API key for provider: ${provider}`);
       return res.status(500).json({
-        error: 'API key not configured',
-        hint: `Set ${provider.toUpperCase()}_API_KEY environment variable`,
-        availableProviders: Object.keys(PROVIDERS),
-        freeModels: PROVIDERS.openrouter.models
+        error: 'Service temporarily unavailable'
       });
     }
 
-    const providerConfig = PROVIDERS[provider] || PROVIDERS.openrouter;
     const baseUrl = providerConfig.baseUrl;
 
-    // Build request based on provider
     let endpoint, headers, body;
 
     if (provider === 'openrouter') {
@@ -94,35 +130,25 @@ export default async function handler(req, res) {
         'HTTP-Referer': 'https://proyecto-pfc-iago-duran.vercel.app',
         'X-Title': 'Proyectos PFC'
       };
-      body = {
-        model: model,
-        messages: [
-          ...(system ? [{ role: 'system', content: system }] : []),
-          ...(messages || [])
-        ],
-        max_tokens,
-        temperature
-      };
     } else if (provider === 'groq') {
       endpoint = `${baseUrl}/chat/completions`;
       headers = {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${apiKey}`
       };
-      body = {
-        model: model,
-        messages: [
-          ...(system ? [{ role: 'system', content: system }] : []),
-          ...(messages || [])
-        ],
-        max_tokens,
-        temperature
-      };
     } else {
       return res.status(400).json({ error: `Unsupported provider: ${provider}` });
     }
 
-    console.log('[AI API] Calling:', endpoint);
+    body = {
+      model,
+      messages: [
+        ...(system ? [{ role: 'system', content: system }] : []),
+        ...(messages || [])
+      ],
+      max_tokens: safeMaxTokens,
+      temperature: safeTemperature
+    };
 
     if (stream) {
       body.stream = true;
@@ -136,7 +162,7 @@ export default async function handler(req, res) {
         const errData = await response.json().catch(() => ({}));
         console.error('[AI API] Stream error:', errData);
         res.setHeader('Content-Type', 'application/json');
-        return res.status(response.status).json(errData);
+        return res.status(502).json({ error: 'AI provider error. Please try again.' });
       }
 
       res.setHeader('Content-Type', 'text/event-stream');
@@ -184,8 +210,8 @@ export default async function handler(req, res) {
     const data = await response.json();
 
     if (!response.ok) {
-      console.error('[AI API] Provider error:', data);
-      return res.status(response.status).json(data);
+      console.error('[AI API] Provider error:', await response.json().catch(() => ({})));
+      return res.status(502).json({ error: 'AI provider error. Please try again.' });
     }
 
     // Normalize response format
@@ -200,7 +226,6 @@ export default async function handler(req, res) {
 
     return res.status(200).json({
       text,
-      raw: data,
       provider,
       model
     });
@@ -208,8 +233,7 @@ export default async function handler(req, res) {
   } catch (error) {
     console.error('[AI API] Proxy error:', error);
     return res.status(500).json({
-      error: 'Failed to connect to AI provider',
-      details: error.message
+      error: 'Internal server error'
     });
   }
 }

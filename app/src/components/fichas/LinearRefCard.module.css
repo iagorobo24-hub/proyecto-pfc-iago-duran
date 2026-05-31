@@ -27,7 +27,7 @@
 .imageWrap {
   width: 100%;
   height: 140px;
-  background: linear-gradient(180deg, #fafbfd 0%, #f0f2f8 100%);
+  background: linear-gradient(180deg, var(--color-surface) 0%, var(--color-bg-alt) 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -58,7 +58,7 @@
   font-size: 0.5625rem;
   font-weight: 600;
   color: var(--blue-700);
-  background: rgba(255, 255, 255, 0.9);
+  background: color-mix(in srgb, var(--color-surface) 90%, transparent);
   backdrop-filter: blur(4px);
   padding: 2px 7px;
   border-radius: var(--radius-xs);

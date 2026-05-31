@@ -113,10 +113,12 @@ export default function DashboardIncidencias() {
           </div>
 
           <div className={styles.tabsWrap}>
-            <div className={styles.viewToggle}>
-              <button className={`${styles.viewToggle__btn} ${modo === 'lista' ? styles['viewToggle__btn--active'] : ''}`}
+            <div className={styles.viewToggle} role="tablist" aria-label="Vistas de incidencias">
+              <button role="tab" aria-selected={modo === 'lista'}
+                className={`${styles.viewToggle__btn} ${modo === 'lista' ? styles['viewToggle__btn--active'] : ''}`}
                 onClick={() => setModo('lista')}>Lista</button>
-              <button className={`${styles.viewToggle__btn} ${modo === 'nueva' ? styles['viewToggle__btn--active'] : ''}`}
+              <button role="tab" aria-selected={modo === 'nueva'}
+                className={`${styles.viewToggle__btn} ${modo === 'nueva' ? styles['viewToggle__btn--active'] : ''}`}
                 onClick={() => setModo('nueva')}>Nueva</button>
               {hasIncidencias && (
                 <button

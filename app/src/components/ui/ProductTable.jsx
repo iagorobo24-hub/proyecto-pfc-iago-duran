@@ -93,7 +93,7 @@ const MagnetotermicoTable = React.memo(function MagnetotermicoTable({ table, pol
               <div className={styles.header}>
                 {repImage && (
                   <div className={styles.repImage}>
-                    <img src={repImage} alt="" className={styles.repImage__img} />
+                    <img src={repImage} alt="" className={styles.repImage__img} loading="lazy" />
                   </div>
                 )}
                 <span className={styles.badge}>{subgama !== 'general' ? subgama : (products[0]?.Gama || products[0]?.marca)}</span>
@@ -153,7 +153,7 @@ const DiferencialTable = React.memo(function DiferencialTable({ table, polas, ca
               <div className={styles.header}>
                 {repImage && (
                   <div className={styles.repImage}>
-                    <img src={repImage} alt="" className={styles.repImage__img} />
+                    <img src={repImage} alt="" className={styles.repImage__img} loading="lazy" />
                   </div>
                 )}
                 <span className={styles.badge}>{products[0]?.Gama || products[0]?.marca}</span>

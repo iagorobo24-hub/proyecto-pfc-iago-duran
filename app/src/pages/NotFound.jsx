@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom'
 
 export default function NotFound() {
   return (
-    <div style={{
+    <main style={{
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
@@ -15,7 +15,7 @@ export default function NotFound() {
       color: 'var(--color-text)',
       background: 'var(--color-bg)',
     }}>
-      <div style={{ fontSize: '64px', lineHeight: 1, opacity: 0.15 }}>404</div>
+      <div style={{ fontSize: '64px', lineHeight: 1, opacity: 0.15 }} aria-hidden="true">404</div>
       <h1 style={{ fontSize: '1.5rem', fontWeight: 600, margin: 0, color: 'var(--color-text)' }}>
         Página no encontrada
       </h1>
@@ -36,6 +36,6 @@ export default function NotFound() {
       >
         Volver al dashboard
       </Link>
-    </div>
+    </main>
   )
 }

@@ -42,7 +42,7 @@ function ToastContainer({ toasts }) {
       flexDirection: 'column',
       gap: '8px',
       zIndex: 9999,
-    }}>
+    }} role="status" aria-live="polite">
       {toasts.map(t => (
         <ToastItem key={t.id} toast={t} />
       ))}
@@ -73,7 +73,7 @@ function ToastItem({ toast }) {
       maxWidth: '320px',
       animation: 'fadeIn 150ms ease',
       border: toast.tipo === 'info' ? '1px solid var(--color-border)' : 'none',
-    }}>
+    }} role="alert">
       {toast.mensaje}
     </div>
   )

@@ -29,7 +29,14 @@ export default function LoginPage() {
       console.error('Full error:', err)
       console.error('===================')
       
-      toast.show(`Login fallido: ${err.code || 'desconocido'}`, 'error')
+      const userMessage = {
+        'auth/popup-closed': 'Inicio de sesión cancelado',
+        'auth/popup-closed-by-user': 'Inicio de sesión cancelado',
+        'auth/network-request-failed': 'Error de conexión',
+        'auth/timeout': 'La conexión ha tardado demasiado',
+      }[err.code] || 'Error al iniciar sesión'
+      
+      toast.show(userMessage, 'error')
     }
   }
 

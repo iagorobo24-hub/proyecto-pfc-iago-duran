@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import Button from '../components/ui/Button'
+import { useToast } from '../contexts/ToastContext'
 import useMemoriaUsuario from '../hooks/useMemoriaUsuario'
 import useSimuladorMultijugador from '../hooks/useSimuladorMultijugador'
 import { ETAPAS, PEDIDOS_DEMO, INCIDENCIAS, fmtT, getEstandar, getSemaforo, calcPuntuacion, PROMPT_ANALISIS } from '../data/simulador/simuladorData'
@@ -12,6 +13,7 @@ import RankingMultijugador from '../components/simulador/RankingMultijugador'
 import styles from './SimuladorAlmacen.module.css'
 
 export default function SimuladorAlmacen() {
+  const { toast } = useToast()
   const memoria = useMemoriaUsuario()
   const [historial, setHistorial] = memoria.simulador.historial.use()
   const [pantalla, setPantalla] = useState("perfil");
@@ -29,7 +31,6 @@ export default function SimuladorAlmacen() {
   const [analisis, setAnalisis] = useState("");
   const [cargando, setCargando] = useState(false);
   const [mostrarHistorial, setMostrarHistorial] = useState(false);
-  const [toast, setToast] = useState("");
   const [incActiva, setIncActiva] = useState(null);
   const [incResueltas, setIncResueltas] = useState([]);
   const [incPendientes, setIncPendientes] = useState([]);
@@ -40,7 +41,6 @@ export default function SimuladorAlmacen() {
   const [puntuacionPropia, setPuntuacionPropia] = useState(0);
 
   const guardarPerfil = () => { if (!operario.nombre.trim()) return; setOperario(operario); setPantalla("onboarding"); };
-  const showToast = (msg) => { setToast(msg); setTimeout(() => setToast(""), 2500); };
 
   useEffect(() => {
     if (pantalla === "simulacion" && !incActiva && !feedbackInc) {
@@ -161,12 +161,16 @@ export default function SimuladorAlmacen() {
 
           {pantalla === "onboarding" && !multiplayer.partidaIniciada && (
             <>
-              <div className={styles.modeToggle}>
+              <div className={styles.modeToggle} role="tablist" aria-label="Modo de juego">
                 <button
+                  role="tab"
+                  aria-selected={modoJuego === 'solo'}
                   className={`${styles.modeToggle__btn} ${modoJuego === 'solo' ? styles['modeToggle__btn--active'] : ''}`}
                   onClick={() => setModoJuego('solo')}
                 >🎯 Solo</button>
                 <button
+                  role="tab"
+                  aria-selected={modoJuego === 'multijugador'}
                   className={`${styles.modeToggle__btn} ${modoJuego === 'multijugador' ? styles['modeToggle__btn--active'] : ''}`}
                   onClick={() => setModoJuego('multijugador')}
                 >👥 Multijugador</button>
@@ -265,12 +269,6 @@ export default function SimuladorAlmacen() {
                 }}
               />
             </>
-          )}
-
-          {toast && (
-            <div style={{ position: 'fixed', bottom: '24px', left: '50%', transform: 'translateX(-50%)', padding: '8px 20px', background: 'var(--gray-800)', color: 'var(--white)', borderRadius: 'var(--radius-full)', fontSize: '0.8125rem', fontWeight: 500, zIndex: 999 }}>
-              {toast}
-            </div>
           )}
 
         </div>

@@ -124,9 +124,9 @@ export default function KPILogistico() {
 
           {/* Tabs */}
           <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '24px' }}>
-            <div className={styles.viewToggle}>
-              <button className={`${styles.viewToggle__btn} ${tab === 'calculo' ? styles['viewToggle__btn--active'] : ''}`} onClick={() => setTab('calculo')}>Calcular</button>
-              <button className={`${styles.viewToggle__btn} ${tab === 'historial' ? styles['viewToggle__btn--active'] : ''}`} onClick={() => setTab('historial')}>Historial</button>
+            <div className={styles.viewToggle} role="tablist" aria-label="Vistas de KPI">
+              <button role="tab" aria-selected={tab === 'calculo'} className={`${styles.viewToggle__btn} ${tab === 'calculo' ? styles['viewToggle__btn--active'] : ''}`} onClick={() => setTab('calculo')}>Calcular</button>
+              <button role="tab" aria-selected={tab === 'historial'} className={`${styles.viewToggle__btn} ${tab === 'historial' ? styles['viewToggle__btn--active'] : ''}`} onClick={() => setTab('historial')}>Historial</button>
             </div>
           </div>
 
@@ -135,12 +135,16 @@ export default function KPILogistico() {
               {/* Formulario */}
               <div className={styles.formWrapper}>
                 <div className={styles.formGrid}>
-                  {CAMPOS.map(({ key, label, placeholder }) => (
-                    <div key={key} className={styles.formGroup}>
-                      <label className={styles.formGroup__label}>{label}</label>
-                      <input className={styles.formGroup__input} type="number" step="0.1" placeholder={placeholder} value={datos[key]} onChange={e => setDatos(p => ({ ...p, [key]: e.target.value }))} />
-                    </div>
-                  ))}
+                  {CAMPOS.map(({ key, label, placeholder }) => {
+                    const required = ['pedidos', 'horas', 'lineas_expedidas'].includes(key)
+                    const isEmpty = required && !datos[key]
+                    return (
+                      <div key={key} className={styles.formGroup}>
+                        <label className={styles.formGroup__label}>{label}{required && <span style={{ color: 'var(--error)' }}> *</span>}</label>
+                        <input className={styles.formGroup__input} type="number" step="0.1" placeholder={placeholder} value={datos[key]} onChange={e => setDatos(p => ({ ...p, [key]: e.target.value }))} style={isEmpty && tab === 'calculo' ? { borderColor: 'var(--error)' } : {}} />
+                      </div>
+                    )
+                  })}
                   <div className={styles.formGroup}>
                     <label className={styles.formGroup__label}>TURNO</label>
                     <select className={styles.formGroup__input} value={datos.turno} onChange={e => setDatos(p => ({ ...p, turno: e.target.value }))}>
@@ -184,7 +188,7 @@ export default function KPILogistico() {
 
                   {/* Gráfico */}
                   {datosGrafico.length > 1 && (
-                    <div style={{ maxWidth: 500, margin: '0 auto 24px', padding: '16px', background: 'var(--white)', border: '1.5px solid var(--gray-100)', borderRadius: 'var(--radius-lg)' }}>
+                    <div style={{ maxWidth: 500, margin: '0 auto 24px', padding: '16px', background: 'var(--color-surface)', border: '1.5px solid var(--color-border)', borderRadius: 'var(--radius-lg)' }}>
                       <div style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '12px' }}>Tendencia pedidos/hora</div>
                       <ResponsiveContainer width="100%" height={180}>
                         <LineChart data={datosGrafico}>

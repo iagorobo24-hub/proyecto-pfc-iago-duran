@@ -14,7 +14,14 @@ function partidasReducer(state, action) {
     case "SET":
       return action.payload.map((p, i) => ({ ...p, _id: i }))
     case "UPDATE":
-      return state.map(p => p._id === action.id ? { ...p, [action.field]: action.value, precio_total: action.field === "precio_unitario" ? action.value * p.cantidad : action.field === "cantidad" ? p.precio_unitario * action.value : p.precio_total } : p)
+      return state.map(p => {
+        if (p._id !== action.id) return p
+        const updated = { ...p, [action.field]: action.value }
+        if (action.field === "precio_unitario" || action.field === "cantidad" || action.field === "descuento") {
+          updated.precio_total = updated.cantidad * updated.precio_unitario * (1 - (updated.descuento || 0) / 100)
+        }
+        return updated
+      })
     case "ADD_ITEM":
       return [...state, { _id: state.length, ...action.payload }]
     case "ADD_FROM_CATALOG":
@@ -22,7 +29,7 @@ function partidasReducer(state, action) {
     case "ADD":
       return [...state, { _id: state.length, ref: "", desc: "", cantidad: 1, precio_unitario: 0, precio_total: 0, descuento: 0 }]
     case "DELETE":
-      return state.filter(p => p._id !== action.id)
+      return state.filter(p => p._id !== action.id).map((p, i) => ({ ...p, _id: i }))
     case "RECALC":
       return state.map(p => ({ ...p, precio_total: p.cantidad * p.precio_unitario * (1 - p.descuento/100) }))
     default:

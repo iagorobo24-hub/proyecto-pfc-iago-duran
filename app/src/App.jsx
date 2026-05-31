@@ -2,9 +2,11 @@ import { Suspense, lazy, Component } from 'react'
 import { Routes, Route } from 'react-router-dom'
 import AppShell from './components/layout/AppShell'
 import LoginPage from './components/auth/LoginPage'
+import ProtectedRoute from './components/auth/ProtectedRoute'
 import LandingPage from './pages/LandingPage'
 import NotFound from './pages/NotFound'
 import useDocumentTitle from './hooks/useDocumentTitle'
+import styles from './components/ui/ErrorBoundary.module.css'
 
 const FichasTecnicas = lazy(() => import('./tools/FichasTecnicas'))
 const SimuladorAlmacen = lazy(() => import('./tools/SimuladorAlmacen'))
@@ -35,13 +37,12 @@ class ErrorBoundary extends Component {
   render() {
     if (this.state.error) {
       return (
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', gap: '16px', padding: '40px', fontFamily: 'var(--font-body)', color: 'var(--gray-800)', background: 'var(--gray-50)' }}>
-          <h2 style={{ fontSize: '20px', fontWeight: 600 }}>Algo salió mal</h2>
-          <p style={{ color: 'var(--gray-500)', maxWidth: 400, textAlign: 'center' }}>
+        <div className={styles.container}>
+          <h2 className={styles.title}>Algo salió mal</h2>
+          <p className={styles.message}>
             {this.state.error.message || 'Error inesperado al cargar la herramienta.'}
           </p>
-          <button onClick={() => { this.setState({ error: null }); window.location.reload() }}
-            style={{ padding: '10px 24px', background: 'var(--color-brand)', color: 'var(--color-on-brand)', border: 'none', borderRadius: '8px', fontWeight: 600, cursor: 'pointer' }}>
+          <button className={styles.retryBtn} onClick={() => { this.setState({ error: null }); window.location.reload() }}>
             Recargar página
           </button>
         </div>
@@ -52,8 +53,8 @@ class ErrorBoundary extends Component {
 }
 
 const PageLoader = () => (
-  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: 'var(--blue-800)' }}>
-    <div className="animate-pulse">Cargando herramienta...</div>
+  <div className={styles.loader}>
+    <div className={styles.animatePulse}>Cargando herramienta...</div>
   </div>
 )
 
@@ -63,7 +64,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/app" element={<AppShell />}>
+        <Route path="/app" element={<ProtectedRoute><AppShell /></ProtectedRoute>}>
           <Route index element={<Suspense fallback={<PageLoader />}><DashboardGlobalPage /></Suspense>} />
           <Route path="fichas"       element={<Suspense fallback={<PageLoader />}><FichasTecnicasPage /></Suspense>} />
           <Route path="almacen"      element={<Suspense fallback={<PageLoader />}><SimuladorAlmacenPage /></Suspense>} />

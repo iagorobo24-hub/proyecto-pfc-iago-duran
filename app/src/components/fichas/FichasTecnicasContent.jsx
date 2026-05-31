@@ -141,7 +141,7 @@ function FichasTecnicasContent({
                 >
                   <div className={styles.brandCard__logo}>
                     {m.logo ? (
-                      <img src={m.logo} alt={m.nombre} />
+                      <img src={m.logo} alt={m.nombre} loading="lazy" />
                     ) : (
                       <div className={styles.brandCard__logoFallback} style={{ background: m.logoGradient || m.logoColor }}>
                         {m.logoFallback}
@@ -240,7 +240,7 @@ function FichasTecnicasContent({
             ))}
           </div>
         ) : (
-          <p style={{ color: 'var(--gray-600)', fontSize: '0.875rem' }}>Cargando gamas...</p>
+          <p style={{ color: 'var(--gray-600)', fontSize: '0.875rem' }}>{isCargando ? 'Cargando gamas...' : 'No hay gamas disponibles'}</p>
         )}
       </div>
     )
@@ -267,7 +267,7 @@ function FichasTecnicasContent({
             ))}
           </div>
         ) : (
-          <p style={{ color: 'var(--gray-600)', fontSize: '0.875rem' }}>Cargando subgamas...</p>
+          <p style={{ color: 'var(--gray-600)', fontSize: '0.875rem' }}>{isCargando ? 'Cargando subgamas...' : 'No hay subgamas disponibles'}</p>
         )}
       </div>
     )

@@ -16,6 +16,7 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import { supabase } from '../supabase/supabaseClient'
 import { useAuth } from '../contexts/AuthContext'
 import { safeGetJSON, safeSetJSON, safeRemoveItem } from '../utils/storage'
+import { log } from '../utils/logger'
 
 export default function useUserData(module, field, defaultValue = null, legacyKeys = []) {
   const { user } = useAuth()
@@ -107,7 +108,7 @@ export default function useUserData(module, field, defaultValue = null, legacyKe
               ignoreDuplicates: true, // No sobrescribir si ya existe
             })
             safeRemoveItem(legacyKey)
-            console.log(`[useUserData] Migrados datos legacy '${legacyKey}' → ${module}.${field}`)
+            log(`[useUserData] Migrados datos legacy '${legacyKey}' → ${module}.${field}`)
           } catch (e) {
             console.warn(`[useUserData] Error migrando '${legacyKey}':`, e.message)
           }
