@@ -17,50 +17,74 @@ async function findBrandIdByName(marca: string): Promise<number | null> {
   return marcasReverseCache.get(marca.trim()) ?? null;
 }
 
+/* Mapeo de variantes → nombre canónico (usado en DB desde migración 001) */
 const etiquetasFamilias: Record<string, string> = {
+  /* Cables */
   'CABLES': 'Cables',
   'CABLES DE BAJA TENSION': 'Cables',
   'CABLES DE MEDIA TENSION': 'Cables',
-  'DISTRIBUCION DE POTENCIA': 'Distribución de Potencia',
-  'INTERRUPTORES Y MECANISMOS': 'Distribución de Potencia',
-  'APARAMENTA MODULAR': 'Distribución de Potencia',
-  'ENVOLVENTES Y CUADROS ELECTRICOS': 'Distribución de Potencia',
-  'AUTOMATISMOS': 'Automatismos',
-  'CONTROL Y AUTOMATIZACION INDUSTRIAL': 'Automatismos',
-  'AUTOMATIZACION INDUSTRIAL': 'Automatismos',
+  'CABLES DE ALTA TENSION': 'Cables',
+  
+  /* Automatización industrial */
   'AUTOMATIZACION': 'Automatización',
-  'AUTOMATIZACION DE EDIFICIOS': 'Automatización de Edificios',
+  'AUTOMATIZACION INDUSTRIAL': 'Automatización',
+  'CONTROL Y AUTOMATIZACION INDUSTRIAL': 'Automatización',
+  'AUTOMACION INDUSTRIAL': 'Automatización',
+  
+  /* Automatización de edificios (domótica) */
+  'AUTOMATIZACION DE EDIFICIOS': 'Automatización de edificios',
+  'DOMOTICA': 'Automatización de edificios',
+  'DOMOTICA Y CONTROL': 'Automatización de edificios',
+  
+  /* Distribución de potencia */
+  'DISTRIBUCION DE POTENCIA': 'Distribución de potencia',
+  'POTENCIA': 'Distribución de potencia',
+  
+  /* Fotovoltaica */
   'FOTOVOLTAICA': 'Fotovoltaica',
+  
+  /* Instalación */
   'INSTALACION': 'Instalación',
-  'VEHICULOS ELECTRICOS': 'Vehículos Eléctricos',
-  'VEHICULO ELECTRICO': 'Vehículos Eléctricos',
+  'CANALIZACION': 'Instalación',
+  'CANALIZACIONES': 'Instalación',
+  'BANDEJAS': 'Instalación',
+  
+  /* Iluminación */
   'ILUMINACION': 'Iluminación',
   'LUMINARIAS': 'Iluminación',
+  
+  /* Vehículos eléctricos */
+  'VEHICULOS ELECTRICOS': 'Vehículos eléctricos',
+  'VEHICULOS_ELECTRICOS': 'Vehículos eléctricos',
+  'VEHICULO ELECTRICO': 'Vehículos eléctricos',
+  
+  /* Climatización */
   'CLIMATIZACION': 'Climatización',
   'HVAC': 'Climatización',
-  'HVAC: HVAC: CLIMATIZACION VENTILACION Y AIRE ACONDICIONADO': 'Climatización',
   'CLIMA': 'Climatización',
-  'DOMOTICA': 'Automatización de Edificios',
-  'DOMOTICA Y CONTROL': 'Automatización de Edificios',
-  'CANALIZACION': 'Canalización',
-  'CANALIZACIONES': 'Canalización',
-  'BANDEJAS': 'Canalización',
+  
+  /* Comunicación */
   'COMUNICACION': 'Comunicación',
   'COMUNICACIONES': 'Comunicación',
   'REDES': 'Comunicación',
+  
+  /* Herramientas */
   'HERRAMIENTAS': 'Herramientas',
   'HERRAMIENTAS Y MANIPULACION': 'Herramientas',
-  'SEGURIDAD Y HERRAMIENTAS': 'Herramientas',
+  
+  /* Protección */
   'PROTECCION': 'Protección',
   'PROTECCION ELECTRICA': 'Protección',
-  'EPIs': 'Protección',
+  
+  /* Fontanería */
   'FONTANERIA': 'Fontanería',
   'FONTANERÍA': 'Fontanería',
-  'AGUA Y SANEAMIENTO': 'Fontanería',
-  'ENERGIAS RENOVABLES': 'Energías Renovables',
-  'ENERGIAS RENOVABLES Y VEHICULO ELECTRICO': 'Energías Renovables',
-  'PLACAS SOLARES': 'Energías Renovables'
-};
+  
+  /* Energías renovables */
+  'ENERGIAS RENOVABLES': 'Energías renovables',
+  'ENERGIAS RENOVABLES Y VEHICULO ELECTRICO': 'Energías renovables',
+  'PLACAS SOLARES': 'Energías renovables',
+}
 
 async function cargarMarcas(): Promise<Map<number, string>> {
   if (marcasCache) return marcasCache;
