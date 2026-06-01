@@ -99,5 +99,5 @@ export const CATEGORY_IDS = {
   "fotovoltaica": "FOTOVOLTAICA",
   "iluminacion": "ILUMINACION",
   "instalacion": "INSTALACION",
-  "vehiculos": "VEHICULOS_ELECTRICOS",
+  "vehiculos": "VEHICULOS ELECTRICOS", // ← Sin barra baja
 }
