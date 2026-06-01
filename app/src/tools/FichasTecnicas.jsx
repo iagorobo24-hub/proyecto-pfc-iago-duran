@@ -95,7 +95,7 @@ export default function FichasTecnicas() {
         onSearch={buscarPorNombre}
         onSubmit={handleSearch}
       />
-      <main className={styles.main} id="main-content">
+      <main className={styles.main}>
         <div className={styles.main__content}>
 
           {breadcrumb.length > 0 && (

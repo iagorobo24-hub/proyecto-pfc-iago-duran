@@ -1,18 +1,10 @@
 import { useNavigate } from 'react-router-dom'
-import { FULL_CATEGORY_INFO } from '../../data/categoryMapping'
-import Button from '../ui/Button'
 import { usePresupuestosContext } from './PresupuestosContext'
 import styles from '../../tools/Presupuestos.module.css'
 
-const CATEGORIAS = Object.keys(FULL_CATEGORY_INFO).map(key => ({
-  id: key,
-  label: key,
-  icon: FULL_CATEGORY_INFO[key].icon,
-}))
-
 export default function PresupuestosWizard() {
   const navigate = useNavigate()
-  const { categoria, setCategoria, historial, cargarPresupuesto } = usePresupuestosContext()
+  const { historial, cargarPresupuesto, partidas } = usePresupuestosContext()
 
   return (
     <>
@@ -21,42 +13,30 @@ export default function PresupuestosWizard() {
           <span style={{ fontSize: '2rem' }}>💰</span>
           <h1 className={styles.pageTitle}>Presupuestos</h1>
         </div>
-        <p className={styles.pageSubtitle}>Genera presupuestos técnicos seleccionando referencias del catálogo</p>
+        <p className={styles.pageSubtitle}>Selecciona una categoría del panel izquierdo para navegar por el catálogo</p>
       </div>
 
-      <h3
-        style={{
-          textAlign: 'center',
-          fontSize: '0.875rem',
-          fontWeight: 600,
-          color: 'var(--gray-600)',
-          marginBottom: '24px',
-        }}
-      >
-        Selecciona la categoría de instalación
-      </h3>
-      <div className={styles.categoriasGrid}>
-        {CATEGORIAS.map(c => (
-          <button
-            key={c.id}
-            className={`${styles.catCard} ${categoria === c.id ? styles['catCard--active'] : ''}`}
-            onClick={() => setCategoria(c.id)}
-          >
-            <span className={styles.catCard__icon}>{c.icon}</span>
-            <span className={styles.catCard__name}>{c.label}</span>
-          </button>
-        ))}
-      </div>
-
-      {categoria && (
-        <div style={{ textAlign: 'center', marginTop: '32px' }}>
-          <Button variant="primary" size="lg" onClick={() => navigate('seleccion')}>
-            Ver catálogo de {CATEGORIAS.find(c => c.id === categoria)?.label} →
-          </Button>
+      {partidas.length === 0 && (
+        <div className={styles.emptyState}>
+          <div className={styles.emptyState__icon}>📋</div>
+          <div className={styles.emptyState__title}>Nuevo Presupuesto</div>
+          <div className={styles.emptyState__text}>
+            Selecciona una categoría del panel izquierdo para empezar a añadir productos al presupuesto.
+          </div>
         </div>
       )}
 
-      {historial.length > 0 && !categoria && (
+      {partidas.length > 0 && (
+        <div className={styles.emptyState}>
+          <div className={styles.emptyState__icon}>✅</div>
+          <div className={styles.emptyState__title}>{partidas.length} producto{partidas.length !== 1 ? 's' : ''} en el presupuesto</div>
+          <div className={styles.emptyState__text}>
+            Continúa añadiendo productos o ve al editor para completar el presupuesto.
+          </div>
+        </div>
+      )}
+
+      {historial.length > 0 && (
         <div style={{ marginTop: '48px' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', marginBottom: '16px' }}>
             <h3 style={{ fontSize: '0.8125rem', fontWeight: 600, color: 'var(--gray-400)' }}>

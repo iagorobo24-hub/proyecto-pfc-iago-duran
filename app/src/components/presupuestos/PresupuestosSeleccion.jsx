@@ -1,16 +1,9 @@
 import { useState, useEffect, useMemo, Fragment } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { FULL_CATEGORY_INFO } from '../../data/categoryMapping'
 import catalogService from '../../services/catalogService'
 import Button from '../ui/Button'
 import { usePresupuestosContext } from './PresupuestosContext'
 import styles from '../../tools/Presupuestos.module.css'
-
-const CATEGORIAS = Object.keys(FULL_CATEGORY_INFO).map(key => ({
-  id: key,
-  label: key,
-  icon: FULL_CATEGORY_INFO[key].icon,
-}))
 
 export default function PresupuestosSeleccion() {
   const navigate = useNavigate()
@@ -27,8 +20,16 @@ export default function PresupuestosSeleccion() {
   const [cargandoCatalogo, setCargandoCatalogo] = useState(false)
   const [filtroCatalogo, setFiltroCatalogo] = useState('')
   const [anadidos, setAnadidos] = useState({})
+  const [errorCatalogo, setErrorCatalogo] = useState(null)
 
   useEffect(() => {
+    if (!categoria) return
+    setMarca(null)
+    setGama(null)
+    setTipo(null)
+    setProductosDisponibles([])
+    setFiltroCatalogo('')
+    setErrorCatalogo(null)
     setCargandoCatalogo(true)
     catalogService.getMarcasPorCategoria(categoria).then(data => {
       setMarcasDisponibles(data)
@@ -36,33 +37,57 @@ export default function PresupuestosSeleccion() {
       setCargandoCatalogo(false)
     }).catch(err => {
       console.error('[PresupuestosSeleccion] Error loading marcas:', err)
+      setErrorCatalogo('Error al cargar las marcas del catálogo.')
       setCargandoCatalogo(false)
     })
   }, [categoria])
 
   useEffect(() => {
-    if (!marca) return
+    if (!marca || !categoria) return
+    setGama(null)
+    setTipo(null)
+    setProductosDisponibles([])
     setCargandoCatalogo(true)
+    setErrorCatalogo(null)
     catalogService.getGamasPorMarcaYCategoria(marca, categoria).then(data => {
       setGamasDisponibles(data.map(g => g.nombre))
+      setPasoCatalogo('gamas')
+      setCargandoCatalogo(false)
+    }).catch(err => {
+      console.error('[PresupuestosSeleccion] Error loading gamas:', err)
+      setErrorCatalogo('Error al cargar las gamas.')
       setCargandoCatalogo(false)
     })
   }, [categoria, marca])
 
   useEffect(() => {
-    if (!marca || !gama) return
+    if (!marca || !gama || !categoria) return
+    setTipo(null)
+    setProductosDisponibles([])
     setCargandoCatalogo(true)
+    setErrorCatalogo(null)
     catalogService.getTiposPorGamaMarcaYFamilia(gama, marca, categoria).then(data => {
       setTiposDisponibles(data)
+      setPasoCatalogo('tipos')
+      setCargandoCatalogo(false)
+    }).catch(err => {
+      console.error('[PresupuestosSeleccion] Error loading tipos:', err)
+      setErrorCatalogo('Error al cargar los tipos.')
       setCargandoCatalogo(false)
     })
   }, [categoria, marca, gama])
 
   useEffect(() => {
-    if (!marca || !gama || !tipo) return
+    if (!marca || !gama || !tipo || !categoria) return
     setCargandoCatalogo(true)
+    setErrorCatalogo(null)
     catalogService.getProductosPorFiltro(categoria, marca, gama, tipo).then(data => {
       setProductosDisponibles(data)
+      setPasoCatalogo('productos')
+      setCargandoCatalogo(false)
+    }).catch(err => {
+      console.error('[PresupuestosSeleccion] Error loading productos:', err)
+      setErrorCatalogo('Error al cargar los productos.')
       setCargandoCatalogo(false)
     })
   }, [categoria, marca, gama, tipo])
@@ -75,21 +100,17 @@ export default function PresupuestosSeleccion() {
 
   const breadcrumbItems = useMemo(() => {
     const items = []
-    items.push({
-      label: CATEGORIAS.find(c => c.id === categoria)?.label || 'Seleccionar',
-      onClick: () => { setMarca(null); setGama(null); setTipo(null); setProductosDisponibles([]); setPasoCatalogo('marcas') },
-    })
     if (marca) items.push({
       label: marca,
-      onClick: () => { setGama(null); setTipo(null); setProductosDisponibles([]); setPasoCatalogo('gamas') },
+      onClick: () => { setMarca(null); setGama(null); setTipo(null); setProductosDisponibles([]); setPasoCatalogo('marcas') },
     })
     if (gama) items.push({
       label: gama,
-      onClick: () => { setTipo(null); setProductosDisponibles([]); setPasoCatalogo('tipos') },
+      onClick: () => { setTipo(null); setProductosDisponibles([]); setPasoCatalogo('gamas') },
     })
     if (tipo) items.push({ label: tipo, current: true })
     return items
-  }, [categoria, marca, gama, tipo])
+  }, [marca, gama, tipo])
 
   const renderBreadcrumb = () => (
     <div className={styles.breadcrumb}>
@@ -106,19 +127,39 @@ export default function PresupuestosSeleccion() {
     </div>
   )
 
-  const catLabel = CATEGORIAS.find(c => c.id === categoria)?.label || ''
+  if (!categoria) {
+    return (
+      <>
+        <div className={styles.pageHeader}>
+          <h1 className={styles.pageTitle}>Selecciona una categoría</h1>
+          <p className={styles.pageSubtitle}>Elige una categoría del panel izquierdo para ver el catálogo</p>
+        </div>
+        <div className={styles.emptyState}>
+          <div className={styles.emptyState__icon}>📂</div>
+          <div className={styles.emptyState__title}>Sin categoría seleccionada</div>
+          <div className={styles.emptyState__text}>Pulsa una categoría en el panel de la izquierda para empezar.</div>
+        </div>
+      </>
+    )
+  }
 
   return (
     <>
       <div className={styles.pageHeader}>
         <h1 className={styles.pageTitle}>
-          <span aria-hidden="true">{CATEGORIAS.find(c => c.id === categoria)?.icon}</span>
-          {' '}{catLabel}
+          <span aria-hidden="true">{'📁'}</span>
+          {' '}{categoria}
         </h1>
         <p className={styles.pageSubtitle}>Selecciona marca, gama y tipo para encontrar productos</p>
       </div>
 
       {renderBreadcrumb()}
+
+      {errorCatalogo && (
+        <div style={{ textAlign: 'center', padding: '40px', color: 'var(--error)' }}>
+          {errorCatalogo}
+        </div>
+      )}
 
       {cargandoCatalogo && (
         <div style={{ textAlign: 'center', padding: '40px', color: 'var(--gray-500)' }}>
@@ -126,7 +167,7 @@ export default function PresupuestosSeleccion() {
         </div>
       )}
 
-      {!cargandoCatalogo && pasoCatalogo === 'marcas' && (
+      {!cargandoCatalogo && !errorCatalogo && pasoCatalogo === 'marcas' && (
         <div style={{ marginTop: '24px' }}>
           <h3 style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--gray-500)', marginBottom: '12px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
             Selecciona una marca
@@ -136,7 +177,7 @@ export default function PresupuestosSeleccion() {
               <button
                 key={m.nombre}
                 className={styles.productCard}
-                onClick={() => { setMarca(m.nombre); setPasoCatalogo('gamas') }}
+                onClick={() => { setMarca(m.nombre) }}
               >
                 <div className={styles.productCard__ref}>{m.nombre}</div>
                 <div className={styles.productCard__desc}>Ver gamas disponibles</div>
@@ -153,7 +194,7 @@ export default function PresupuestosSeleccion() {
         </div>
       )}
 
-      {!cargandoCatalogo && pasoCatalogo === 'gamas' && (
+      {!cargandoCatalogo && !errorCatalogo && pasoCatalogo === 'gamas' && (
         <div style={{ marginTop: '24px' }}>
           <h3 style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--gray-500)', marginBottom: '12px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
             Selecciona una gama
@@ -163,7 +204,7 @@ export default function PresupuestosSeleccion() {
               <button
                 key={g}
                 className={styles.productCard}
-                onClick={() => { setGama(g); setPasoCatalogo('tipos') }}
+                onClick={() => { setGama(g) }}
               >
                 <div className={styles.productCard__ref}>{g}</div>
                 <div className={styles.productCard__desc}>Ver tipos de producto</div>
@@ -180,7 +221,7 @@ export default function PresupuestosSeleccion() {
         </div>
       )}
 
-      {!cargandoCatalogo && pasoCatalogo === 'tipos' && (
+      {!cargandoCatalogo && !errorCatalogo && pasoCatalogo === 'tipos' && (
         <div style={{ marginTop: '24px' }}>
           <h3 style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--gray-500)', marginBottom: '12px', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
             Selecciona un tipo
@@ -190,7 +231,7 @@ export default function PresupuestosSeleccion() {
               <button
                 key={t}
                 className={styles.productCard}
-                onClick={() => { setTipo(t); setPasoCatalogo('productos') }}
+                onClick={() => { setTipo(t) }}
               >
                 <div className={styles.productCard__ref}>{t}</div>
                 <div className={styles.productCard__desc}>Ver productos</div>
@@ -207,7 +248,7 @@ export default function PresupuestosSeleccion() {
         </div>
       )}
 
-      {!cargandoCatalogo && pasoCatalogo === 'productos' && (
+      {!cargandoCatalogo && !errorCatalogo && pasoCatalogo === 'productos' && (
         <div style={{ marginTop: '24px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
             <h3 style={{ fontSize: '0.8rem', fontWeight: 600, color: 'var(--gray-500)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
@@ -285,9 +326,6 @@ export default function PresupuestosSeleccion() {
           </div>
           <div className={styles.catalogBar__actions}>
             <Button variant="secondary" size="md" onClick={() => navigate('/app/presupuestos')}>
-              Cambiar categoría
-            </Button>
-            <Button variant="primary" size="md" onClick={() => navigate('editor')}>
               Ir al presupuesto →
             </Button>
           </div>
