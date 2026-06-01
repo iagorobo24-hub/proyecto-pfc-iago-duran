@@ -122,7 +122,7 @@ export default function PresupuestosLayout() {
           <div className={styles.sidebar__actions}>
             <button
               className={`${styles.sidebar__actionBtn} ${location.pathname === '/app/presupuestos' && !hook.categoria ? styles.sidebar__actionBtnActive : ''}`}
-              onClick={() => { hook.setCategoria(''); navigate('/app/presupuestos') }}
+              onClick={() => { hook.setCategoria(''); hook.dispatchPartidas({ type: 'CLEAR' }); navigate('/app/presupuestos') }}
             >
               <span aria-hidden="true">💰</span>
               Nuevo presupuesto

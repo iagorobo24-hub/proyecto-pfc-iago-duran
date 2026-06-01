@@ -212,10 +212,10 @@ export default function PresupuestosEditor() {
       </div>
 
       <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', marginTop: '24px', flexWrap: 'wrap' }}>
-        <Button variant="secondary" size="md" onClick={() => navigate('/app/presupuestos')}>← Volver al catálogo</Button>
+        <Button variant="secondary" size="md" onClick={() => { dispatchPartidas({ type: 'CLEAR' }); navigate('/app/presupuestos') }}>← Volver al catálogo</Button>
         <Button variant="primary" size="md" onClick={guardar} loading={guardando}>Guardar presupuesto</Button>
         <Button variant="secondary" size="md" onClick={exportarPDF}>📄 Exportar PDF</Button>
-        <Button variant="ghost" size="md" onClick={() => { navigate('/app/presupuestos'); setNumPresupuesto(genNum()) }}>Nuevo presupuesto</Button>
+        <Button variant="ghost" size="md" onClick={() => { dispatchPartidas({ type: 'CLEAR' }); navigate('/app/presupuestos'); setNumPresupuesto(genNum()) }}>Nuevo presupuesto</Button>
       </div>
     </>
   )

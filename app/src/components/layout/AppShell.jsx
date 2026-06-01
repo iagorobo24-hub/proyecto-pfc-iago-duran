@@ -123,8 +123,7 @@ export default function AppShell() {
       )}
 
 <main className={styles.main} ref={mainRef} tabIndex="-1" id="main-content">
-          {/* KEY basada en location fuerza a React a reiniciar el componente al cambiar de ruta */}
-          <Outlet key={location.pathname} />
+          <Outlet />
         </main>
 
       {shortcutsVisible && (

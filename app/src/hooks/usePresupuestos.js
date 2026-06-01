@@ -30,6 +30,8 @@ function partidasReducer(state, action) {
       return [...state, { _id: state.length, ref: "", desc: "", cantidad: 1, precio_unitario: 0, precio_total: 0, descuento: 0 }]
     case "DELETE":
       return state.filter(p => p._id !== action.id).map((p, i) => ({ ...p, _id: i }))
+    case "CLEAR":
+      return []
     case "RECALC":
       return state.map(p => ({ ...p, precio_total: p.cantidad * p.precio_unitario * (1 - p.descuento/100) }))
     default:
