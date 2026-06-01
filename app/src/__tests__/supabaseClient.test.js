@@ -1,5 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { createClient } from '@supabase/supabase-js'
+import { describe, it, expect, beforeEach } from 'vitest'
 
 // The stub client from supabaseClient.js — recreate here in isolation
 // to test the query builder proxy behavior with user_data operations
@@ -9,7 +8,7 @@ function createStubClient() {
 
   const queryBuilder = new Proxy({}, {
     get(_, method) {
-      return (...args) => {
+      return () => {
         if (method === 'then' || method === 'catch') return noop()[method]
 
         const chain = new Proxy(() => {}, {
@@ -21,7 +20,7 @@ function createStubClient() {
             if (prop === 'maybeSingle') return () => noopObj()
             if (prop === 'order') return () => chain
             if (prop === 'limit') return () => chain
-            if (prop === 'select') return (columns) => ({
+            if (prop === 'select') return (/* _columns */) => ({
               data: [],
               error: null,
               then: (resolve) => resolve({ data: [], error: null }),
@@ -49,7 +48,7 @@ function createStubClient() {
   })
 
   return {
-    from: (table) => queryBuilder,
+    from: (/* _table */) => queryBuilder,
     auth: {
       getUser: () => Promise.resolve({ data: { user: null }, error: null }),
       getSession: () => Promise.resolve({ data: { session: null }, error: null }),

@@ -56,21 +56,21 @@ export async function captureElementToPDF(element, {
   return pdf
 }
 
-export function generarPDFPresupuesto({ presupuesto, datosCliente, numPresupuesto, elemento }) {
+export function generarPDFPresupuesto({ elemento, numPresupuesto }) {
   return captureElementToPDF(elemento, {
     filename: `presupuesto_${numPresupuesto || Date.now()}.pdf`,
     scale: 2,
   })
 }
 
-export function generarPDFIncidencias(incidencias, elemento) {
+export function generarPDFIncidencias(elemento) {
   return captureElementToPDF(elemento, {
     filename: `informe_incidencias_${Date.now()}.pdf`,
     scale: 2,
   })
 }
 
-export function generarPDFKPI({ datos, kpis, informe, elemento }) {
+export function generarPDFKPI({ elemento }) {
   return captureElementToPDF(elemento, {
     filename: `informe_kpi_${Date.now()}.pdf`,
     scale: 2,
@@ -136,7 +136,7 @@ export async function generarPDFResumenIncidencias(incidencias, datosDelegacion 
   pdf.text('Todas las incidencias', 20, y); y += 7
   pdf.setFont('helvetica', 'normal')
   pdf.setFontSize(9)
-  incidencias.forEach((inc, i) => {
+  incidencias.forEach((inc, idx) => {
     const estadoIcon = inc.estado === 'Resuelta' ? '✓' : inc.estado === 'Crítica' ? '!!' : '○'
     const line = `${estadoIcon} [${inc.severidad}] ${inc.equipo} — ${inc.sintoma} | ${inc.zona} | ${inc.estado}`
     const lines = pdf.splitTextToSize(line, pageWidth - 40)

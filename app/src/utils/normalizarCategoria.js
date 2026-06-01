@@ -36,7 +36,7 @@ export function normalizarCategoria(texto) {
     .replace(/[Ññ]/g, 'N')
     .replace(/[Çç]/g, 'C')
     // Eliminar caracteres no alfanuméricos excepto espacios y guiones
-    .replace(/[^A-Z0-9\s\-]/g, '')
+    .replace(/[^A-Z0-9\s-]/g, '')
     // Normalizar espacios múltiples
     .replace(/\s+/g, ' ')
     // Normalizar guiones (reemplazar por espacio para consistencia)

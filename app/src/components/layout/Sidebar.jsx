@@ -28,7 +28,7 @@ export default function Sidebar({ collapsed = false }) {
       {/* Icono de la herramienta activa */}
       <div className={`${styles.iconSection} ${collapsed ? styles.iconSectionCollapsed : ''}`}>
         <div className={styles.iconWrap} title={tool.nombre} aria-label={`Herramienta: ${tool.nombre}`}>
-          <Icon size={collapsed ? 22 : 24} strokeWidth={1.5} aria-hidden="true" />
+          <Icon size={collapsed ? 18 : 24} strokeWidth={1.5} aria-hidden="true" />
         </div>
         {!collapsed && (
           <p className={styles.toolNombre} role="heading" aria-level="2">{tool.nombre}</p>

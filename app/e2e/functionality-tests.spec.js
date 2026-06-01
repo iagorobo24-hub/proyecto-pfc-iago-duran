@@ -36,7 +36,6 @@ test.describe('Tests de Funcionalidad Real — PFC Iago Durán', () => {
       
       // Click first available category
       const firstCategory = categoryLocator.first()
-      const catName = await firstCategory.textContent()
       await firstCategory.click()
       await page.waitForTimeout(1500)
 
@@ -46,7 +45,6 @@ test.describe('Tests de Funcionalidad Real — PFC Iago Durán', () => {
       const brandBtns = await brandLocator.count()
       expect(brandBtns).toBeGreaterThan(0, 'Debe haber marcas después de seleccionar categoría')
       const firstBrand = brandLocator.first()
-      const brandName = await firstBrand.textContent()
       await firstBrand.click()
       await page.waitForTimeout(1500)
 

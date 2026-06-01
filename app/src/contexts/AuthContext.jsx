@@ -13,6 +13,7 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
 
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => {
     // Soporte para E2E tests con Playwright — solo en desarrollo
     if (import.meta.env.DEV && window.__PW_MOCK_USER__) {

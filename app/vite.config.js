@@ -7,12 +7,13 @@ function validateEnvVars() {
   return {
     name: 'validate-env-vars',
     configResolved() {
-      if (!process.env.VITE_SUPABASE_ANON_KEY) {
+      const isDev = process.env.NODE_ENV === 'development'
+      if (isDev && !process.env.VITE_SUPABASE_ANON_KEY) {
         console.warn('\n⚠️  [ENV] VITE_SUPABASE_ANON_KEY no está definida.')
         console.warn('   La app usará un stub de Supabase — auth y BD no funcionarán.')
         console.warn('   Configúrala en .env o en Vercel Environment Variables.\n')
       }
-      if (!process.env.VITE_SUPABASE_URL) {
+      if (isDev && !process.env.VITE_SUPABASE_URL) {
         console.warn('\n⚠️  [ENV] VITE_SUPABASE_URL no está definida.')
         console.warn('   La app usará un stub de Supabase.\n')
       }
@@ -64,7 +65,7 @@ export default defineConfig({
   ],
   build: {
     modulePreload: {
-      resolveDependencies(url, deps, context) {
+      resolveDependencies(url, deps) {
         return deps.filter(dep => !dep.includes('vendor-pdf'))
       },
     },

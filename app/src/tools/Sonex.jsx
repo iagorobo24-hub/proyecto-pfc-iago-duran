@@ -40,7 +40,7 @@ export default function Sonex() {
     if (!texto) return [];
     
     // Detectar patrones que parecen referencias (Alfanuméricos, mayúsculas, min 5 caracteres)
-    const patron = /\b([A-Z]{2,}[\d]{1,}[A-Z0-9]{1,}[A-Z0-9\-]*)\b/g;
+    const patron = /\b([A-Z]{2,}[\d]{1,}[A-Z0-9]{1,}[A-Z0-9-]*)\b/g;
     const matches = [...new Set(texto.match(patron) || [])].filter(ref => ref.length >= 5 && ref.length <= 30 && /\d/.test(ref));
     
     if (matches.length === 0) return [];

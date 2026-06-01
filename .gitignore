@@ -92,3 +92,4 @@ generar_*.py
 docs/diagrams/*.html
 
 .vercel
+.env*.local

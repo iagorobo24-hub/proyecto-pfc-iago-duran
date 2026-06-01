@@ -22,6 +22,7 @@ export default function PresupuestosSeleccion() {
   const [anadidos, setAnadidos] = useState({})
   const [errorCatalogo, setErrorCatalogo] = useState(null)
 
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => {
     if (!categoria) return
     setMarca(null)
@@ -42,6 +43,7 @@ export default function PresupuestosSeleccion() {
     })
   }, [categoria])
 
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => {
     if (!marca || !categoria) return
     setGama(null)
@@ -60,6 +62,7 @@ export default function PresupuestosSeleccion() {
     })
   }, [categoria, marca])
 
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => {
     if (!marca || !gama || !categoria) return
     setTipo(null)
@@ -77,6 +80,7 @@ export default function PresupuestosSeleccion() {
     })
   }, [categoria, marca, gama])
 
+  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => {
     if (!marca || !gama || !tipo || !categoria) return
     setCargandoCatalogo(true)

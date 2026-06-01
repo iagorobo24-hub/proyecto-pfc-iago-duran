@@ -32,6 +32,7 @@ export function safeRemoveItem(key) {
   try {
     localStorage.removeItem(key)
   } catch {
+    // Silent fail
   }
 }
 
@@ -47,6 +48,7 @@ function clearLeastUsed() {
       localStorage.removeItem(pfcKeys[pfcKeys.length - 1])
     }
   } catch {
+    // Silent fail
   }
 }
 
@@ -77,5 +79,6 @@ export function safeClear(keepKeys = []) {
     localStorage.clear()
     Object.entries(keep).forEach(([k, v]) => safeSetItem(k, v))
   } catch {
+    // Silent fail
   }
 }

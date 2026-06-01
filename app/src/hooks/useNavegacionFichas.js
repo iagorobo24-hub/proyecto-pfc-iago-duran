@@ -23,7 +23,6 @@ function construirGrupos(subfamiliasConTipos) {
 }
 
  export default function useNavegacionFichas() {
- const { toast } = useToast()
  const memoria = useMemoriaUsuario()
  const requestIdRef = useRef(0)
  

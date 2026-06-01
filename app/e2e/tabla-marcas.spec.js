@@ -77,8 +77,6 @@ test.describe('Fichas Técnicas — Vista Tabla y Marcas', () => {
 
     if (hasTable) {
       // Verify table structure: should have curve labels and pole columns
-      const curveLabels = page.locator('text=Curva C,text=Curva B,text=Curva D,text=Curva K')
-      const poleCols = page.locator('text=1P,text=2P,text=3P,text=4P,text=1P+N,text=3P+N')
       console.log('Vista tabla detectada correctamente')
 
       // Try clicking a reference cell

@@ -9,7 +9,16 @@ const MOCK_USER = {
 }
 
 async function mockAuth(page) {
-  await page.addInitScript(user => { window.__PW_MOCK_USER__ = user }, MOCK_USER)
+  // Inject mock user BEFORE any page scripts run
+  await page.addInitScript(user => {
+    // Set the mock user early so AuthContext can pick it up
+    window.__PW_MOCK_USER__ = user
+    // Also set for any other checks
+    localStorage.setItem('test_auth_user', JSON.stringify(user))
+  }, MOCK_USER)
+  
+  // Navigate to the page AFTER setting the init script
+  // The init script will run on every navigation
 }
 
 async function takeScreenshot(page, name) {

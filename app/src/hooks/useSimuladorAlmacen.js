@@ -19,7 +19,7 @@ function sortearIncidencias() {
   return elegidas
 }
 
-export default function useSimuladorAlmacen({ historial, setHistorial, operario, multiplayer }) {
+export default function useSimuladorAlmacen({ operario, multiplayer }) {
   const [pantalla, setPantalla] = useState("perfil")
   const [modoSim, setModoSim] = useState("entrenamiento")
   const [pedidoActivo, setPedidoActivo] = useState(null)
@@ -33,7 +33,6 @@ export default function useSimuladorAlmacen({ historial, setHistorial, operario,
   const [toast, setToast] = useState("")
   const [incActiva, setIncActiva] = useState(null)
   const [incResueltas, setIncResueltas] = useState([])
-  const [incPendientes, setIncPendientes] = useState([])
   const [feedbackInc, setFeedbackInc] = useState(null)
   const [puntuacionPropia, setPuntuacionPropia] = useState(0)
 
@@ -52,10 +51,6 @@ export default function useSimuladorAlmacen({ historial, setHistorial, operario,
     return () => { if (intervalRef.current) clearInterval(intervalRef.current) }
   }, [pantalla, etapaActual, incActiva, feedbackInc])
 
-  const addLog = useCallback((msg) => {
-    const hora = new Date().toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit", second: "2-digit" })
-    setLog(prev => [`[${hora}] ${msg}`, ...prev].slice(0, 25))
-  }, [])
 
   const showToast = useCallback((msg) => {
     if (toastTimeoutRef.current) clearTimeout(toastTimeoutRef.current)

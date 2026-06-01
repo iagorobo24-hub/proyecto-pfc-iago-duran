@@ -1,4 +1,4 @@
-import { useCallback, useRef, useEffect } from 'react'
+import { useCallback } from 'react'
 import { safeGetJSON, safeSetJSON } from '../utils/storage'
 
 const ANALYTICS_KEY = 'pfc_analytics_events'
@@ -41,7 +41,6 @@ if (typeof window !== 'undefined') {
 
 export function getAnalyticsSummary() {
   const events = getAnalytics()
-  const now = Date.now()
   const today = new Date(); today.setHours(0, 0, 0, 0)
 
   const pageViews = events.filter(e => e.categoria === 'pageview')

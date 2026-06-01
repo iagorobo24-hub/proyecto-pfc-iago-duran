@@ -1,14 +1,17 @@
 import { useState, useEffect } from 'react'
 import Button from '../ui/Button'
-import { useToast } from '../../contexts/ToastContext'
 import { ESTADOS, PROMPT_DIAGNOSTICO, SevBadge, EstBadge } from './IncidenciasShared'
 import styles from './IncidenciasDetalle.module.css'
 
 function ObservacionesEditor({ initial, onSave }) {
   const [texto, setTexto] = useState(initial || '')
   const [editado, setEditado] = useState(false)
-  const { toast } = useToast()
-  useEffect(() => { setTexto(initial || ''); setEditado(false) }, [initial])
+  
+  useEffect(() => {
+    setTexto(initial || '')
+    setEditado(false)
+  }, [initial])
+  
   const handleSave = () => { onSave(texto); setEditado(false); toast.show('Observación guardada', 'success') }
   return (
     <div>
@@ -24,7 +27,6 @@ function ObservacionesEditor({ initial, onSave }) {
 }
 
 export default function IncidenciasDetalle({ incidencia, cargandoIA, onCambiarEstado, onGuardarObservacion, onGenerarDiagnostico, onVolver }) {
-  const { toast } = useToast()
 
   const handleCambiarEstado = (estado) => {
     if (incidencia) onCambiarEstado(incidencia.id, estado)

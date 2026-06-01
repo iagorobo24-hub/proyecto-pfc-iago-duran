@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test'
 import { mockAuth } from './helpers'
 
-const BASE = process.env.BASE_URL || 'http://localhost:5173'
+const BASE = 'http://localhost:5173'
 
 test.describe('Fichas Técnicas — Catálogo Completo', () => {
   test.beforeEach(async ({ page }) => {

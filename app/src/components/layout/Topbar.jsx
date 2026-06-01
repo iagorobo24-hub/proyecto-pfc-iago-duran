@@ -1,11 +1,9 @@
-import { useState, useEffect } from 'react'
-import { NavLink, Link } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { useTheme } from '../../contexts/ThemeContext'
 import { useAuth } from '../../contexts/AuthContext'
 import { useToast } from '../../contexts/ToastContext'
-import { LogOut, LogIn, Menu, X, House, Sun, Moon } from 'lucide-react'
+import { LogOut, LogIn, House, Sun, Moon } from 'lucide-react'
 import styles from './Topbar.module.css'
-import { NAV_TOOLS } from '../../config/tools'
 
 /* Extrae las iniciales de un nombre o email */
 function getUserInitials(name) {
@@ -17,20 +15,11 @@ function getUserInitials(name) {
   return name.slice(0, 2).toUpperCase()
 }
 
-/* Topbar — barra superior con logo, navegación, usuario y logout */
+/* Topbar — barra superior con logo, usuario y logout (navegación en Sidebar) */
 export default function Topbar() {
   const { dark, toggle } = useTheme()
   const { user, logout } = useAuth()
   const { toast } = useToast()
-  const [menuOpen, setMenuOpen] = useState(false)
-
-  function handleMenuToggle() {
-    setMenuOpen(v => !v)
-  }
-
-  function handleNavClick() {
-    setMenuOpen(false)
-  }
 
   async function handleLogout() {
     try {
@@ -40,16 +29,6 @@ export default function Topbar() {
     }
   }
 
-  /* Cerrar dropdown con tecla Escape */
-  useEffect(() => {
-    if (!menuOpen) return
-    const handler = (e) => {
-      if (e.key === 'Escape') setMenuOpen(false)
-    }
-    window.addEventListener('keydown', handler)
-    return () => window.removeEventListener('keydown', handler)
-  }, [menuOpen])
-
   return (
     <header className={styles.topbar} role="banner">
       {/* Botón home — vuelve a la landing */}
@@ -58,58 +37,10 @@ export default function Topbar() {
         <span className="sr-only">Inicio</span>
       </Link>
 
-      {/* Botón hamburguesa — solo visible en tablet/mobile */}
-      <button
-        className={styles.menuBtn}
-        onClick={handleMenuToggle}
-        aria-expanded={menuOpen}
-        aria-haspopup="true"
-        aria-label="Menú de navegación"
-      >
-        {menuOpen ? <X size={20} /> : <Menu size={20} />}
-      </button>
-
       <div className={styles.logo}>
         <span className={styles.logoMarca}>Proyecto PFC</span>
         <span className={styles.logoSuite}>Iago Durán</span>
       </div>
-
-      {/* Navegación inline — visible solo en desktop */}
-      <nav className={styles.nav}>
-        {NAV_TOOLS.map(tool => (
-          <NavLink
-            key={tool.path}
-            to={tool.path}
-            className={({ isActive }) =>
-              isActive
-                ? `${styles.navItem} ${styles.navItemActive}`
-                : styles.navItem
-            }
-          >
-            {tool.label}
-          </NavLink>
-        ))}
-      </nav>
-
-      {/* Menú dropdown — visible solo en tablet/mobile cuando está abierto */}
-      {menuOpen && (
-        <nav className={styles.dropdown} role="navigation" aria-label="Navegación principal">
-          {NAV_TOOLS.map(tool => (
-            <NavLink
-              key={tool.path}
-              to={tool.path}
-              className={({ isActive }) =>
-                isActive
-                  ? `${styles.dropdownItem} ${styles.dropdownItemActive}`
-                  : styles.dropdownItem
-              }
-              onClick={handleNavClick}
-            >
-              {tool.label}
-            </NavLink>
-          ))}
-        </nav>
-      )}
 
       <div className={styles.rightSection}>
         {/* Toggle tema */}
@@ -164,11 +95,6 @@ export default function Topbar() {
           </Link>
         )}
       </div>
-
-      {/* Overlay para cerrar menú al hacer clic fuera */}
-      {menuOpen && (
-        <div className={styles.overlay} onClick={handleMenuToggle} />
-      )}
     </header>
   )
 }

@@ -273,7 +273,7 @@ describe('getProductosPorSubcategoria', () => {
 describe('getCatalogStats', () => {
   it('returns count', async () => {
     const chain = makeChain([])
-    chain.select = (cols, opts) => Promise.resolve({ data: [], error: null, count: 42 })
+    chain.select = () => Promise.resolve({ data: [], error: null, count: 42 })
     mockFrom.mockReturnValue(chain)
 
     const { getCatalogStats } = await import('../services/catalogService')

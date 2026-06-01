@@ -316,7 +316,7 @@ describe('parseAIJsonResponse', () => {
 
   it('returns error when validator fails', () => {
     const text = '{"name": "test"}'
-    const validator = (data) => ({
+    const validator = (/* _data */) => ({
       valid: false,
       message: 'missing required field: age'
     })

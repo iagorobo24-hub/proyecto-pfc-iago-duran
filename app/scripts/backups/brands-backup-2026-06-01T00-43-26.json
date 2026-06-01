@@ -1,0 +1,29 @@
+[
+  {
+    "id": 456,
+    "name": "Schneider Electric",
+    "logo_url": "https://icon2.cleanpng.com/20180501/vxe/avs2gje33.webp",
+    "color": null,
+    "website_url": "https://www.se.com/es/es/",
+    "created_at": "2026-05-21T12:13:37.013293+00:00",
+    "updated_at": "2026-05-21T12:13:37.013293+00:00"
+  },
+  {
+    "id": 457,
+    "name": "Legrand",
+    "logo_url": null,
+    "color": null,
+    "website_url": "https://www.legrand.es",
+    "created_at": "2026-05-22T22:36:37.032579+00:00",
+    "updated_at": "2026-05-22T22:36:37.032579+00:00"
+  },
+  {
+    "id": 458,
+    "name": "Siemens",
+    "logo_url": null,
+    "color": null,
+    "website_url": "https://www.siemens.com",
+    "created_at": "2026-05-26T17:09:54.158325+00:00",
+    "updated_at": "2026-05-26T17:09:54.158325+00:00"
+  }
+]

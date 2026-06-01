@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { getBrandLogoData } from '../../services/brandLogoService'
 import { MARCAS } from '../../data/marcasLogos'
 import { getEtiquetaSubcategoria } from '../../data/etiquetasSubcategoria'
@@ -54,21 +54,13 @@ function FichasTecnicasContent({
   onCopiarReferencia,
   onAnadirPresupuesto,
 }) {
-  const [vistaFramework, setVistaFramework] = useState(null)
-  const [vistaCurva, setVistaCurva] = useState(null)
-  const [vistaTipo, setVistaTipo] = useState(null)
-  const [vistaPolos, setVistaPolos] = useState(null)
-  const [vistaCalibre, setVistaCalibre] = useState(null)
-  const [vistaSensibilidad, setVistaSensibilidad] = useState(null)
-
-  useEffect(() => {
-    setVistaFramework(null)
-    setVistaCurva(null)
-    setVistaTipo(null)
-    setVistaPolos(null)
-    setVistaCalibre(null)
-    setVistaSensibilidad(null)
-  }, [categoria, marca, gamaComercial, subgama, gama, tipo, categoriaGrupo, subcategoria])
+  const [vistas, setVistas] = useState({ framework: null, curva: null, tipo: null, polos: null, calibre: null, sensibilidad: null })
+  const setVistaFramework = (v) => setVistas(prev => ({ ...prev, framework: v }))
+  const setVistaCurva = (v) => setVistas(prev => ({ ...prev, curva: v }))
+  const setVistaTipo = (v) => setVistas(prev => ({ ...prev, tipo: v }))
+  const setVistaPolos = (v) => setVistas(prev => ({ ...prev, polos: v }))
+  const setVistaCalibre = (v) => setVistas(prev => ({ ...prev, calibre: v }))
+  const setVistaSensibilidad = (v) => setVistas(prev => ({ ...prev, sensibilidad: v }))
 
   // ── Resultados de búsqueda ──────────────────────────────────────────────────
   if (resultadosBusqueda && resultadosBusqueda.length > 0) {
@@ -206,7 +198,7 @@ function FichasTecnicasContent({
                   aria-label={`Seleccionar ${getEtiquetaSubcategoria(subcat)}`}
                 >
                   <span className={styles.tipoCard__name}>{getEtiquetaSubcategoria(subcat)}</span>
-                  <span className={styles.tipoCard__count}>{filtros.length} filtro{filtros.length !== 1 ? 's' : ''}</span>
+                  <span className={styles.tipoCard__count}>{filtros.length} opción{filtros.length !== 1 ? 'es' : ''}</span>
                   <span className={styles.tipoCard__arrow} aria-hidden="true">›</span>
                 </button>
               </div>
@@ -332,12 +324,12 @@ function FichasTecnicasContent({
         subgama={subgama}
         gama={gama}
         tipo={tipo}
-        vistaFramework={vistaFramework} setVistaFramework={setVistaFramework}
-        vistaCurva={vistaCurva} setVistaCurva={setVistaCurva}
-        vistaTipo={vistaTipo} setVistaTipo={setVistaTipo}
-        vistaPolos={vistaPolos} setVistaPolos={setVistaPolos}
-        vistaCalibre={vistaCalibre} setVistaCalibre={setVistaCalibre}
-        vistaSensibilidad={vistaSensibilidad} setVistaSensibilidad={setVistaSensibilidad}
+        vistaFramework={vistas.framework} setVistaFramework={setVistaFramework}
+        vistaCurva={vistas.curva} setVistaCurva={setVistaCurva}
+        vistaTipo={vistas.tipo} setVistaTipo={setVistaTipo}
+        vistaPolos={vistas.polos} setVistaPolos={setVistaPolos}
+        vistaCalibre={vistas.calibre} setVistaCalibre={setVistaCalibre}
+        vistaSensibilidad={vistas.sensibilidad} setVistaSensibilidad={setVistaSensibilidad}
         onSeleccionarReferencia={onSeleccionarReferencia}
       />
     )

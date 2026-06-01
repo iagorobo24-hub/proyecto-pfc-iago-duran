@@ -65,12 +65,11 @@ export class FichasPage extends BasePage {
     // Wait for the categories label first with longer timeout
     try {
       await this.page.getByText('Categorías').waitFor({ state: 'visible', timeout: 10000 });
-    } catch (e) {
+    } catch {
       // If label not found, wait for any button in the sidebar
       console.log('Label not found, waiting for buttons directly...');
       const buttons = this.page.locator('aside button');
       await buttons.first().waitFor({ state: 'visible', timeout: timeout });
-      return; // Buttons found, we're good
     }
     
     // Wait for any button inside the categories nav

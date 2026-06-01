@@ -1,6 +1,5 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Button from '../components/ui/Button'
-import { useToast } from '../contexts/ToastContext'
 import useMemoriaUsuario from '../hooks/useMemoriaUsuario'
 import useSimuladorMultijugador from '../hooks/useSimuladorMultijugador'
 import { ETAPAS, PEDIDOS_DEMO, INCIDENCIAS, fmtT, getEstandar, getSemaforo, calcPuntuacion, PROMPT_ANALISIS } from '../data/simulador/simuladorData'
@@ -13,7 +12,6 @@ import RankingMultijugador from '../components/simulador/RankingMultijugador'
 import styles from './SimuladorAlmacen.module.css'
 
 export default function SimuladorAlmacen() {
-  const { toast } = useToast()
   const memoria = useMemoriaUsuario()
   const [historial, setHistorial] = memoria.simulador.historial.use()
   const [pantalla, setPantalla] = useState("perfil");

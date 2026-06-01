@@ -1,4 +1,4 @@
-import { useCallback, useRef, useEffect } from 'react'
+import React, { useRef, useEffect } from 'react'
 import Button from '../ui/Button'
 import styles from './FichasTecnicasSidebar.module.css'
 
