@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { getBrandLogoData } from '../../services/brandLogoService'
 import { MARCAS } from '../../data/marcasLogos'
 import { getEtiquetaSubcategoria } from '../../data/etiquetasSubcategoria'
+import { FULL_CATEGORY_INFO } from '../../data/categoryMapping'
 import Button from '../ui/Button'
 import FichasTecnicasSkeleton from './FichasTecnicasSkeleton'
 import StepReferencias from './StepReferencias'
@@ -119,9 +120,11 @@ function FichasTecnicasContent({
       }
     })
 
+    const categoriaLabel = FULL_CATEGORY_INFO[categoria]?.desc || catInfo.desc || 'Categoría'
+
     return (
       <div className={styles.linearLayout}>
-        {renderHeader(catInfo.icon, categorias.find(c => c.id === categoria)?.label, catInfo.desc)}
+        {renderHeader(catInfo.icon, 'Elige marca', categoriaLabel)}
         {marcasConLogo.length > 0 ? (
           <div className={styles.brandGrid} role="list" aria-label="Marcas disponibles">
             {marcasConLogo.map(m => (
