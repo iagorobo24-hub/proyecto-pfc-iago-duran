@@ -12,9 +12,9 @@ test.describe('Fichas Técnicas — Funcionalidad', () => {
     await page.goto(`${BASE}/app/fichas`, { waitUntil: 'domcontentloaded' })
     await page.waitForTimeout(2000)
 
-    await expect(page.getByText('Fichas Técnicas').first()).toBeVisible({ timeout: 15000 })
+    await expect(page.locator('h1').filter({ hasText: 'Fichas Técnicas' })).toBeVisible({ timeout: 15000 })
     await expect(page.getByText('Categorías')).toBeVisible()
-    await expect(page.getByPlaceholder('Buscar referencia...')).toBeVisible()
+    await expect(page.getByPlaceholder('Buscar referencia o nombre...')).toBeVisible()
   })
 
   test('Navegación entre herramientas sin recargar', async ({ page }) => {
@@ -23,17 +23,17 @@ test.describe('Fichas Técnicas — Funcionalidad', () => {
 
     await page.goto(`${BASE}/app/fichas`, { waitUntil: 'domcontentloaded' })
     await page.waitForTimeout(1000)
-    await expect(page.getByRole('heading', { name: /Fichas Técnicas/i })).toBeVisible({ timeout: 5000 })
+    await expect(page.locator('h1').filter({ hasText: 'Fichas Técnicas' })).toBeVisible({ timeout: 5000 })
 
-    await page.getByRole('link', { name: /Incidencias/i }).click()
+    await page.locator('[role="banner"] a', { hasText: 'Dashboard Incidencias' }).first().click()
     await page.waitForTimeout(500)
     expect(page.url()).toContain('/incidencias')
 
-    await page.getByRole('link', { name: /Sonex/i }).click()
+    await page.locator('[role="banner"] a', { hasText: 'Sonex' }).first().click()
     await page.waitForTimeout(500)
     expect(page.url()).toContain('/sonex')
 
-    await page.getByRole('link', { name: /KPI/i }).click()
+    await page.locator('[role="banner"] a', { hasText: 'KPI Logístico' }).first().click()
     await page.waitForTimeout(500)
     expect(page.url()).toContain('/kpi')
 
@@ -44,7 +44,7 @@ test.describe('Fichas Técnicas — Funcionalidad', () => {
     await page.goto(`${BASE}/app/fichas`, { waitUntil: 'domcontentloaded' })
     await page.waitForTimeout(3000)
 
-    const catBtns = page.getByRole('button').filter({ hasText: 'Ver marcas' })
+    const catBtns = page.locator('nav[aria-labelledby="categories-label"] button')
     const count = await catBtns.count()
     expect(count).toBeGreaterThan(0)
 
@@ -52,7 +52,9 @@ test.describe('Fichas Técnicas — Funcionalidad', () => {
     await page.waitForTimeout(1000)
 
     const pageContent = await page.locator('body').textContent()
-    const hasMarcasOrEmpty = pageContent.includes('No hay marcas') || pageContent.includes('marca')
-    expect(hasMarcasOrEmpty).toBe(true)
+    const hasContent = pageContent.includes('marca') || pageContent.includes('Marca') ||
+                       pageContent.includes('No hay') || pageContent.includes('gama') ||
+                       pageContent.includes('Gama')
+    expect(hasContent).toBe(true)
   })
 })

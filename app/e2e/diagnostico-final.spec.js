@@ -79,17 +79,16 @@ test.describe('Diagnóstico Final', () => {
     await page.waitForTimeout(1000)
 
     const nav = [
-      { name: 'Fichas Técnicas', url: /\/app\/fichas/ },
-      { name: 'Almacén', url: /\/app\/almacen/ },
-      { name: 'Incidencias', url: /\/app\/incidencias/ },
-      { name: 'KPI', url: /\/app\/kpi/ },
+      { name: 'Simulador Almacén', url: /\/app\/almacen/ },
+      { name: 'Dashboard Incidencias', url: /\/app\/incidencias/ },
+      { name: 'KPI Logístico', url: /\/app\/kpi/ },
       { name: 'Presupuestos', url: /\/app\/presupuestos/ },
-      { name: 'Formación', url: /\/app\/formacion/ },
+      { name: 'Formación Interna', url: /\/app\/formacion/ },
       { name: 'Sonex', url: /\/app\/sonex/ },
     ]
 
     for (const item of nav) {
-      await page.getByRole('link', { name: item.name }).click()
+      await page.locator('[role="banner"] a', { hasText: item.name }).first().click()
       await expect(page).toHaveURL(item.url, { timeout: 5000 })
       await page.waitForTimeout(300)
     }
@@ -100,8 +99,8 @@ test.describe('Diagnóstico Final', () => {
     await page.waitForTimeout(2000)
 
     const hasCategories = await page.getByText('Categorías').isVisible()
-    const hasSearch = await page.getByPlaceholder('Buscar referencia...').isVisible()
-    const hasHeading = await page.getByRole('heading', { name: 'Fichas Técnicas' }).first().isVisible()
+    const hasSearch = await page.getByPlaceholder('Buscar referencia o nombre...').isVisible()
+    const hasHeading = await page.locator('h1').filter({ hasText: 'Fichas Técnicas' }).isVisible()
 
     await page.screenshot({ path: 'e2e/screenshots/final-design-fichas.png', fullPage: true })
 
@@ -115,7 +114,7 @@ test.describe('Diagnóstico Final', () => {
     await page.goto(`${BASE}/app/sonex`, { waitUntil: 'domcontentloaded' })
     await page.waitForTimeout(2000)
 
-    const hasSonexText = await page.getByText('Soy SONEX').first().isVisible()
+    const hasSonexText = await page.getByText('En que puedo ayudarte').first().isVisible()
     const hasInput = await page.getByPlaceholder(/consulta|pregunta|escribe/i).isVisible()
 
     await page.screenshot({ path: 'e2e/screenshots/final-design-sonex.png', fullPage: true })

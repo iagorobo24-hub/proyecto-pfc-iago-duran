@@ -74,21 +74,24 @@ test.describe('Diagnóstico Rápido', () => {
     await page.goto(`${BASE}/app/fichas`, { waitUntil: 'domcontentloaded' })
     await page.waitForTimeout(1000)
 
-    const navItems = ['Fichas Técnicas', 'Almacén', 'Incidencias', 'KPI', 'Presupuestos', 'Formación', 'Sonex']
-    const expectedUrls = [
-      /\/app\/fichas/, /\/app\/almacen/, /\/app\/incidencias/,
-      /\/app\/kpi/, /\/app\/presupuestos/, /\/app\/formacion/, /\/app\/sonex/
+    const navItems = [
+      { name: 'Simulador Almacén', url: /\/app\/almacen/ },
+      { name: 'Dashboard Incidencias', url: /\/app\/incidencias/ },
+      { name: 'KPI Logístico', url: /\/app\/kpi/ },
+      { name: 'Presupuestos', url: /\/app\/presupuestos/ },
+      { name: 'Formación Interna', url: /\/app\/formacion/ },
+      { name: 'Sonex', url: /\/app\/sonex/ },
     ]
 
     console.log('\nNavegación secuencial:')
-    for (let i = 0; i < navItems.length; i++) {
+    for (const item of navItems) {
       try {
-        await page.getByRole('link', { name: navItems[i] }).click()
-        await expect(page).toHaveURL(expectedUrls[i], { timeout: 5000 })
+        await page.locator('[role="banner"] a', { hasText: item.name }).first().click()
+        await expect(page).toHaveURL(item.url, { timeout: 5000 })
         await page.waitForTimeout(300)
-        console.log(`  ${navItems[i].padEnd(20)} → ${expectedUrls[i]}`)
+        console.log(`  ${item.name.padEnd(20)} → OK`)
       } catch (err) {
-        console.log(`  ${navItems[i].padEnd(20)} ERROR: ${err.message.substring(0, 40)}`)
+        console.log(`  ${item.name.padEnd(20)} ERROR: ${err.message.substring(0, 40)}`)
       }
     }
   })

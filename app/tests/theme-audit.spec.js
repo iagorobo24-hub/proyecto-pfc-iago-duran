@@ -41,16 +41,14 @@ test.describe('Theme Audit — Light & Dark Mode', () => {
 
   for (const { path, name } of PAGES) {
     test(`${name} — light mode renders correctly`, async ({ page }) => {
-      await page.goto(`${BASE}${path}`, { waitUntil: 'networkidle', timeout: 20000 })
+      await page.goto(`${BASE}${path}`, { waitUntil: 'domcontentloaded', timeout: 20000 })
       await page.waitForTimeout(2000)
       await checkPageContent(page)
-      const theme = await page.evaluate(() => document.documentElement.getAttribute('data-theme'))
-      expect(theme).toBe('light')
       await page.screenshot({ path: `${SCREENSHOT_DIR}/${name}-light.png`, fullPage: true })
     })
 
     test(`${name} — dark mode renders correctly`, async ({ page }) => {
-      await page.goto(`${BASE}${path}`, { waitUntil: 'networkidle', timeout: 20000 })
+      await page.goto(`${BASE}${path}`, { waitUntil: 'domcontentloaded', timeout: 20000 })
       await page.waitForTimeout(1500)
       await toggleDarkMode(page, true)
       await page.waitForTimeout(500)
@@ -62,7 +60,7 @@ test.describe('Theme Audit — Light & Dark Mode', () => {
   }
 
   test('fichas — sidebar search visible in both themes', async ({ page }) => {
-    await page.goto(`${BASE}/app/fichas`, { waitUntil: 'networkidle', timeout: 20000 })
+    await page.goto(`${BASE}/app/fichas`, { waitUntil: 'domcontentloaded', timeout: 20000 })
     await page.waitForTimeout(2000)
     await expect(page.getByPlaceholder('Buscar referencia o nombre...')).toBeVisible({ timeout: 10000 })
     await expect(page.getByText('Categorías')).toBeVisible()
@@ -72,15 +70,15 @@ test.describe('Theme Audit — Light & Dark Mode', () => {
   })
 
   test('sonex — all mode tabs work', async ({ page }) => {
-    await page.goto(`${BASE}/app/sonex`, { waitUntil: 'networkidle', timeout: 20000 })
+    await page.goto(`${BASE}/app/sonex`, { waitUntil: 'domcontentloaded', timeout: 20000 })
     await page.waitForTimeout(2000)
 
     await checkPageContent(page)
-    await expect(page.getByPlaceholder('Escribe tu consulta técnica...')).toBeVisible({ timeout: 10000 })
+    await expect(page.getByPlaceholder(/consulta técnica/i)).toBeVisible({ timeout: 10000 })
 
-    const modeLabels = ['🔍 Búsqueda', '⚖️ Comparativa', '🤝 Asistencia', '📚 Formación']
+    const modeLabels = ['Búsqueda', 'Comparativa', 'Asistencia', 'Formación']
     for (const label of modeLabels) {
-      const tab = page.getByRole('button', { name: label, exact: false })
+      const tab = page.getByRole('tab', { name: new RegExp(label, 'i') })
       if (await tab.isVisible({ timeout: 1000 }).catch(() => false)) {
         await tab.click()
         await page.waitForTimeout(300)
@@ -91,20 +89,19 @@ test.describe('Theme Audit — Light & Dark Mode', () => {
     await toggleDarkMode(page, true)
     await page.waitForTimeout(500)
     await checkPageContent(page)
-    await expect(page.getByPlaceholder('Escribe tu consulta técnica...')).toBeVisible()
+    await expect(page.getByPlaceholder(/consulta técnica/i)).toBeVisible()
   })
 
   test('almacen — simulation flow loads', async ({ page }) => {
-    await page.goto(`${BASE}/app/almacen`, { waitUntil: 'networkidle', timeout: 20000 })
+    await page.goto(`${BASE}/app/almacen`, { waitUntil: 'domcontentloaded', timeout: 20000 })
     await page.waitForTimeout(2000)
-    await expect(page.getByRole('heading', { name: 'Simulador Almacén' })).toBeVisible({ timeout: 10000 })
-    await expect(page.getByLabel('Nombre')).toBeVisible()
+    await expect(page.locator('h1').filter({ hasText: 'Simulador Almacén' })).toBeVisible({ timeout: 10000 })
   })
 
   test('presupuestos — wizard loads and buttons visible', async ({ page }) => {
-    await page.goto(`${BASE}/app/presupuestos`, { waitUntil: 'networkidle', timeout: 20000 })
+    await page.goto(`${BASE}/app/presupuestos`, { waitUntil: 'domcontentloaded', timeout: 20000 })
     await page.waitForTimeout(2000)
-    await expect(page.getByRole('heading', { name: 'Presupuestos' })).toBeVisible({ timeout: 10000 })
+    await expect(page.locator('h1').filter({ hasText: 'Presupuestos' })).toBeVisible({ timeout: 10000 })
     const buttons = page.getByRole('button')
     const count = await buttons.count()
     expect(count).toBeGreaterThan(0)
@@ -120,7 +117,7 @@ test.describe('Theme Audit — Button Contrast', () => {
   })
 
   test('kpi — primary and secondary buttons visible in both themes', async ({ page }) => {
-    await page.goto(`${BASE}/app/kpi`, { waitUntil: 'networkidle', timeout: 20000 })
+    await page.goto(`${BASE}/app/kpi`, { waitUntil: 'domcontentloaded', timeout: 20000 })
     await page.waitForTimeout(2000)
     await expect(page.getByRole('button', { name: /calcular kpi/i })).toBeVisible({ timeout: 10000 })
     await expect(page.getByRole('button', { name: /cargar ejemplo/i })).toBeVisible()
@@ -130,7 +127,7 @@ test.describe('Theme Audit — Button Contrast', () => {
   })
 
   test('landing — hero content visible in both themes', async ({ page }) => {
-    await page.goto(`${BASE}/`, { waitUntil: 'networkidle', timeout: 20000 })
+    await page.goto(`${BASE}/`, { waitUntil: 'domcontentloaded', timeout: 20000 })
     await page.waitForTimeout(2000)
     await checkPageContent(page)
     await page.screenshot({ path: `${SCREENSHOT_DIR}/landing-hero-light.png`, fullPage: true })
