@@ -44,7 +44,7 @@ export default function PresupuestosWizard() {
                 cursor: 'pointer',
                 textDecoration: 'underline',
               }}
-              onClick={() => navigate('gestion')}
+              onClick={() => navigate('/app/presupuestos/gestion')}
             >
               Ver todos ({historial.length})
             </button>

@@ -35,7 +35,7 @@ export default function PresupuestosLayout() {
     const precio = searchParams.get('precio')
     if (producto && referencia) {
       hook.dispatchPartidas({ type: 'ADD_FROM_CATALOG', ref: referencia, desc: producto, precio: parseFloat(precio) || 0 })
-      navigate('editor', { replace: true })
+      navigate('/app/presupuestos/editor', { replace: true })
     }
   }, [])
 
@@ -59,7 +59,7 @@ export default function PresupuestosLayout() {
     hook.setDatosCliente(h.cliente || hook.datosCliente)
     setNumPresupuesto(h.numero)
     hook.setCategoria(h.categoria || '')
-    navigate('editor')
+    navigate('/app/presupuestos/editor')
   }, [hook, navigate])
 
   const eliminarPresupuesto = useCallback((index) => {

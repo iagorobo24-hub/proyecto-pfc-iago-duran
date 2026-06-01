@@ -72,7 +72,7 @@ export default function PresupuestosEditor() {
   }, [setDatosCliente, markChanged])
 
   const exportarPDF = () => {
-    navigate('pdf')
+    navigate('/app/presupuestos/pdf')
   }
 
   return (
@@ -89,7 +89,7 @@ export default function PresupuestosEditor() {
           Categorías
         </button>
         <span className={styles.breadcrumb__sep}>›</span>
-        <button className={styles.breadcrumb__link} onClick={() => navigate('seleccion')}>
+        <button className={styles.breadcrumb__link} onClick={() => navigate('/app/presupuestos')}>
           {CATEGORIAS.find(c => c.id === categoria)?.label || 'Catálogo'}
         </button>
         <span className={styles.breadcrumb__sep}>›</span>
@@ -212,7 +212,7 @@ export default function PresupuestosEditor() {
       </div>
 
       <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', marginTop: '24px', flexWrap: 'wrap' }}>
-        <Button variant="secondary" size="md" onClick={() => navigate('seleccion')}>← Volver al catálogo</Button>
+        <Button variant="secondary" size="md" onClick={() => navigate('/app/presupuestos')}>← Volver al catálogo</Button>
         <Button variant="primary" size="md" onClick={guardar} loading={guardando}>Guardar presupuesto</Button>
         <Button variant="secondary" size="md" onClick={exportarPDF}>📄 Exportar PDF</Button>
         <Button variant="ghost" size="md" onClick={() => { navigate('/app/presupuestos'); setNumPresupuesto(genNum()) }}>Nuevo presupuesto</Button>

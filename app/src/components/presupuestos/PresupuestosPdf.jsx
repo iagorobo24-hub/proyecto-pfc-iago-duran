@@ -30,7 +30,7 @@ export default function PresupuestosPdf() {
   return (
     <div className={styles.pdfOverlay}>
       <div className={styles.pdfToolbar}>
-        <button className={styles.pdfToolbar__btn} onClick={() => navigate('../editor')}>
+        <button className={styles.pdfToolbar__btn} onClick={() => navigate('/app/presupuestos/editor')}>
           ← Volver al editor
         </button>
         <button className={styles.pdfToolbar__btn} onClick={exportarPDF} disabled={exportando}>

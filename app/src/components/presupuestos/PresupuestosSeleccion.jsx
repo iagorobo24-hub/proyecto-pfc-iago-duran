@@ -17,7 +17,7 @@ export default function PresupuestosSeleccion() {
   const [tiposDisponibles, setTiposDisponibles] = useState([])
   const [productosDisponibles, setProductosDisponibles] = useState([])
   const [pasoCatalogo, setPasoCatalogo] = useState('marcas')
-  const [cargandoCatalogo, setCargandoCatalogo] = useState(false)
+  const [cargandoCatalogo, setCargandoCatalogo] = useState(() => !!categoria)
   const [filtroCatalogo, setFiltroCatalogo] = useState('')
   const [anadidos, setAnadidos] = useState({})
   const [errorCatalogo, setErrorCatalogo] = useState(null)
