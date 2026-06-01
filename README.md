@@ -387,10 +387,3 @@ MIT License — Copyright (c) 2026 Iago Durán
 
 ---
 
-## Agradecimientos
-
-- **Supabase** — Backend como servicio (auth + PostgreSQL)
-- **OpenRouter** — Gateway unificado de modelos de IA
-- **Vercel** — Hosting y serverless functions
-- **React** — UI library
-- **Vite** — Build tool
