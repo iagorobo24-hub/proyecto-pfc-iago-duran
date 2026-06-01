@@ -1,4 +1,19 @@
 export const FULL_CATEGORY_INFO = {
+  /* 🚗 VEHÍCULOS ELÉCTRICOS - MAPEO COMPLETO (29 productos)
+   * 
+   * Estructura:
+   * ├── Puntos de recarga (23) - Legrand
+   * │   └─ RECARGA
+   * │      ├─ Green'up One
+   * │      ├─ Green'up Home
+   * │      └─ Green'up Premium
+   * ├── Protección para recarga (5) - Schneider Electric
+   * │   └─ CARRIL DIN
+   * │      └─ Acti9 iID (tipo B EV)
+   * └── Accesorios (1) - Legrand
+   *     └─ RECARGA
+   *        └─ Poste metálico Green'up
+   */
   "AUTOMATIZACION": {
     icon: '⚙️',
     desc: 'Contactores, relés térmicos, interruptores horarios y control modular para automatización industrial.',
@@ -36,8 +51,13 @@ export const FULL_CATEGORY_INFO = {
   },
   "VEHICULOS ELECTRICOS": {
     icon: '🚗',
-    desc: 'Puntos de recarga, accesorios y equipos para movilidad eléctrica.',
-    tip: 'Verifica la potencia de carga (kW) y el tipo de conector (Tipo 2, CCS, etc.).'
+    desc: 'Puntos de recarga, protección para recarga y accesorios para movilidad eléctrica.',
+    tip: 'Verifica la potencia de carga (kW), el tipo de conector (Tipo 2, CCS) y la protección diferencial tipo B o F.'
+  },
+  "Vehículos eléctricos": {
+    icon: '🚗',
+    desc: 'Puntos de recarga, protección para recarga y accesorios para movilidad eléctrica.',
+    tip: 'Verifica la potencia de carga (kW), el tipo de conector (Tipo 2, CCS) y la protección diferencial tipo B o F.'
   },
   "CLIMATIZACION": {
     icon: '🌡️',
@@ -72,6 +92,12 @@ export const FULL_CATEGORY_INFO = {
 }
 
 export const SUBCATEGORY_LABELS = {
+  /* Vehículos eléctricos */
+  'Puntos de recarga': 'Puntos de recarga',
+  'Protección para recarga': 'Protección para recarga',
+  'Accesorios': 'Accesorios',
+  
+  /* Automatización */
   'Interruptor Magnetotérmico': 'Interruptor Magnetotérmico',
   'Interruptor Diferencial': 'Interruptor Diferencial',
   'Contactor': 'Contactor',
@@ -92,12 +118,12 @@ export const TYPE_LABELS = {
   'Contador eléctrico': 'Contador Eléctrico',
 }
 export const CATEGORY_IDS = {
-  "cables": "CABLES",
-  "potencia": "DISTRIBUCION DE POTENCIA",
-  "automatizacion": "AUTOMATIZACION",
-  "domotica": "AUTOMATIZACION DE EDIFICIOS",
-  "fotovoltaica": "FOTOVOLTAICA",
-  "iluminacion": "ILUMINACION",
-  "instalacion": "INSTALACION",
-  "vehiculos": "VEHICULOS ELECTRICOS", // ← Sin barra baja
+  "cables": "Cables",
+  "potencia": "Distribución de potencia",
+  "automatizacion": "Automatización",
+  "domotica": "Automatización de edificios",
+  "fotovoltaica": "Fotovoltaica",
+  "iluminacion": "Iluminación",
+  "instalacion": "Instalación",
+  "vehiculos": "Vehículos eléctricos", // ← Nombre canónico (sin barra, con tilde)
 }
