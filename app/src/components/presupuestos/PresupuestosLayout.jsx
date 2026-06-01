@@ -74,10 +74,12 @@ export default function PresupuestosLayout() {
 
   const handleCategoriaClick = useCallback((catId) => {
     hook.setCategoria(catId)
-    navigate('/app/presupuestos/seleccion')
-  }, [hook, navigate])
+    if (!location.pathname.includes('seleccion')) {
+      navigate('/app/presupuestos/seleccion')
+    }
+  }, [hook.setCategoria, navigate, location.pathname])
 
-  const isActive = (catId) => hook.categoria === catId && location.pathname.includes('seleccion')
+  const isActive = (catId) => hook.categoria === catId
   const isGestionActive = location.pathname.includes('gestion')
 
   const value = {
@@ -119,8 +121,8 @@ export default function PresupuestosLayout() {
 
           <div className={styles.sidebar__actions}>
             <button
-              className={`${styles.sidebar__actionBtn} ${location.pathname === '/app/presupuestos' ? styles.sidebar__actionBtnActive : ''}`}
-              onClick={() => navigate('/app/presupuestos')}
+              className={`${styles.sidebar__actionBtn} ${location.pathname === '/app/presupuestos' && !hook.categoria ? styles.sidebar__actionBtnActive : ''}`}
+              onClick={() => { hook.setCategoria(''); navigate('/app/presupuestos') }}
             >
               <span aria-hidden="true">💰</span>
               Nuevo presupuesto

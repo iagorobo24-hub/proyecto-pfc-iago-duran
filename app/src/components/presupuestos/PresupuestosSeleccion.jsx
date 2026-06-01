@@ -127,22 +127,6 @@ export default function PresupuestosSeleccion() {
     </div>
   )
 
-  if (!categoria) {
-    return (
-      <>
-        <div className={styles.pageHeader}>
-          <h1 className={styles.pageTitle}>Selecciona una categoría</h1>
-          <p className={styles.pageSubtitle}>Elige una categoría del panel izquierdo para ver el catálogo</p>
-        </div>
-        <div className={styles.emptyState}>
-          <div className={styles.emptyState__icon}>📂</div>
-          <div className={styles.emptyState__title}>Sin categoría seleccionada</div>
-          <div className={styles.emptyState__text}>Pulsa una categoría en el panel de la izquierda para empezar.</div>
-        </div>
-      </>
-    )
-  }
-
   return (
     <>
       <div className={styles.pageHeader}>
@@ -325,7 +309,7 @@ export default function PresupuestosSeleccion() {
             <span className={styles.catalogBar__total}>{totalBase.toFixed(2)} €</span>
           </div>
           <div className={styles.catalogBar__actions}>
-            <Button variant="secondary" size="md" onClick={() => navigate('/app/presupuestos')}>
+            <Button variant="primary" size="md" onClick={() => navigate('/app/presupuestos/editor')}>
               Ir al presupuesto →
             </Button>
           </div>

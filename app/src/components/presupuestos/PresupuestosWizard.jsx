@@ -1,10 +1,15 @@
 import { useNavigate } from 'react-router-dom'
 import { usePresupuestosContext } from './PresupuestosContext'
 import styles from '../../tools/Presupuestos.module.css'
+import PresupuestosSeleccion from './PresupuestosSeleccion'
 
 export default function PresupuestosWizard() {
   const navigate = useNavigate()
-  const { historial, cargarPresupuesto, partidas } = usePresupuestosContext()
+  const { categoria, historial, cargarPresupuesto, partidas } = usePresupuestosContext()
+
+  if (categoria) {
+    return <PresupuestosSeleccion />
+  }
 
   return (
     <>
@@ -16,25 +21,13 @@ export default function PresupuestosWizard() {
         <p className={styles.pageSubtitle}>Selecciona una categoría del panel izquierdo para navegar por el catálogo</p>
       </div>
 
-      {partidas.length === 0 && (
-        <div className={styles.emptyState}>
-          <div className={styles.emptyState__icon}>📋</div>
-          <div className={styles.emptyState__title}>Nuevo Presupuesto</div>
-          <div className={styles.emptyState__text}>
-            Selecciona una categoría del panel izquierdo para empezar a añadir productos al presupuesto.
-          </div>
+      <div className={styles.emptyState}>
+        <div className={styles.emptyState__icon}>📋</div>
+        <div className={styles.emptyState__title}>Nuevo Presupuesto</div>
+        <div className={styles.emptyState__text}>
+          Selecciona una categoría del panel izquierdo para empezar a añadir productos al presupuesto.
         </div>
-      )}
-
-      {partidas.length > 0 && (
-        <div className={styles.emptyState}>
-          <div className={styles.emptyState__icon}>✅</div>
-          <div className={styles.emptyState__title}>{partidas.length} producto{partidas.length !== 1 ? 's' : ''} en el presupuesto</div>
-          <div className={styles.emptyState__text}>
-            Continúa añadiendo productos o ve al editor para completar el presupuesto.
-          </div>
-        </div>
-      )}
+      </div>
 
       {historial.length > 0 && (
         <div style={{ marginTop: '48px' }}>
