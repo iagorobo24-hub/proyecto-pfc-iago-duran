@@ -99,9 +99,10 @@ const HeroHeader = () => {
           </div>
 
           <button
-            onClick={toggle}
+            onClick={(e) => { e.stopPropagation(); toggle(e); }}
             className={styles.themeToggle}
             title={dark ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
+            aria-label={dark ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
           >
             {dark ? <Sun size={16} /> : <Moon size={16} />}
             <span>{dark ? 'Claro' : 'Oscuro'}</span>

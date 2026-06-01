@@ -114,10 +114,10 @@ export default function Topbar() {
       <div className={styles.rightSection}>
         {/* Toggle tema */}
         <button
-          onClick={toggle}
+          onClick={(e) => { e.stopPropagation(); toggle(e); }}
           title={dark ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
           className={styles.themeToggle}
-          aria-label="Cambiar modo oscuro/claro"
+          aria-label={dark ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
         >
           {dark ? <Sun size={16} /> : <Moon size={16} />}
           <span>{dark ? 'Claro' : 'Oscuro'}</span>
