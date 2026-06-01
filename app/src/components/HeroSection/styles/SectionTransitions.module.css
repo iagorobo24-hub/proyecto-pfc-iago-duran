@@ -28,6 +28,21 @@
   background: linear-gradient(180deg, var(--gray-50) 0%, var(--white) 50%, var(--gray-50) 100%);
 }
 
+:global([data-theme="dark"]) .dividerLine {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--color-border) 20%,
+    var(--color-brand-border) 50%,
+    var(--color-border) 80%,
+    transparent 100%
+  );
+}
+
+:global([data-theme="dark"]) .sectionGradient {
+  background: linear-gradient(180deg, var(--color-bg) 0%, var(--color-surface) 50%, var(--color-bg) 100%);
+}
+
 @media (max-width: 640px) {
   .sectionDivider {
     padding: 0 var(--space-4);

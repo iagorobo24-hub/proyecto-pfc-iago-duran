@@ -1,5 +1,4 @@
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Linkedin, CheckCircle } from 'lucide-react';
 import styles from './styles/HeroContent.module.css';

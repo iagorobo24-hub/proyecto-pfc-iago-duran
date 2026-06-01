@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { motion } from 'framer-motion'
 import { Star } from 'lucide-react'
 import useTestimonios from '../../hooks/useTestimonios'
 import styles from './TestimoniosSection.module.css'

@@ -150,6 +150,26 @@
   color: var(--color-brand-vivid);
 }
 
+:global([data-theme="dark"]) .title {
+  color: var(--color-text);
+}
+
+:global([data-theme="dark"]) .subtitle {
+  color: var(--color-text-secondary);
+}
+
+:global([data-theme="dark"]) .stepTitle {
+  color: var(--color-text);
+}
+
+:global([data-theme="dark"]) .stepDesc {
+  color: var(--color-text-secondary);
+}
+
+:global([data-theme="dark"]) .stepCard:hover {
+  border-color: var(--color-brand-border);
+}
+
 @media (max-width: 1024px) {
   .stepsGrid {
     grid-template-columns: 1fr;

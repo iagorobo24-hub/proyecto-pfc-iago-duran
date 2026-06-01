@@ -131,6 +131,28 @@
   box-shadow: 0 12px 24px rgba(96, 165, 250, 0.3);
 }
 
+:global([data-theme="dark"]) .badge {
+  background: var(--color-brand-soft);
+  border-color: var(--color-brand-border);
+  color: var(--color-brand);
+}
+
+:global([data-theme="dark"]) .title {
+  color: var(--color-text);
+}
+
+:global([data-theme="dark"]) .subtitle {
+  color: var(--color-text-secondary);
+}
+
+:global([data-theme="dark"]) .contextText {
+  color: var(--color-text-tertiary);
+}
+
+:global([data-theme="dark"]) .disclaimer {
+  color: var(--color-text-tertiary);
+}
+
 @media (max-width: 1024px) {
   .content {
     margin: 0 auto;

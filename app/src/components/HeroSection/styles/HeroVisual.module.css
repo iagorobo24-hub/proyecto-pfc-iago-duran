@@ -191,6 +191,69 @@
   background: var(--brand-primary);
 }
 
+/* ── Dark mode: Mockup ── */
+:global([data-theme="dark"]) .mainMockup {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+}
+
+:global([data-theme="dark"]) .mainMockup:hover {
+  border-color: var(--color-text-tertiary);
+}
+
+:global([data-theme="dark"]) .mockupHeader {
+  background: var(--color-bg-alt);
+  border-color: var(--color-border);
+}
+
+:global([data-theme="dark"]) .dot {
+  background: var(--gray-300);
+}
+
+:global([data-theme="dark"]) .addressBar {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+  color: var(--color-text-secondary);
+}
+
+:global([data-theme="dark"]) .mockupContent {
+  background: var(--color-surface);
+}
+
+:global([data-theme="dark"]) .dotIndicator {
+  background: var(--gray-300);
+}
+
+:global([data-theme="dark"]) .dotIndicator:hover {
+  background: var(--gray-200);
+}
+
+/* ── Dark mode: Floating cards ── */
+:global([data-theme="dark"]) .floatingCard {
+  background: var(--color-surface);
+  border-color: var(--color-border);
+}
+
+:global([data-theme="dark"]) .cardTitle {
+  color: var(--color-text);
+}
+
+:global([data-theme="dark"]) .pulseText {
+  color: var(--color-text-secondary);
+}
+
+:global([data-theme="dark"]) .statusLabel {
+  color: var(--color-text-tertiary);
+}
+
+:global([data-theme="dark"]) .progressBar {
+  background: var(--color-bg-alt);
+}
+
+:global([data-theme="dark"]) .dbNode {
+  background: var(--color-border);
+}
+
 /* Floating cards */
 .floatingCardsRow {
   display: flex;

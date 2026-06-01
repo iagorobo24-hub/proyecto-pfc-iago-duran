@@ -9,6 +9,10 @@
   padding-top: calc(var(--topbar-h) + var(--space-8));
 }
 
+:global([data-theme="dark"]) .heroContainer {
+  background-color: var(--color-bg);
+}
+
 .mainWrapper {
   flex: 1;
   display: grid;

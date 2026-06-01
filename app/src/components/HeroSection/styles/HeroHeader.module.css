@@ -245,6 +245,39 @@
   color: var(--color-brand);
 }
 
+:global([data-theme="dark"]) .logoProduct {
+  color: var(--color-text);
+}
+
+:global([data-theme="dark"]) .navLink {
+  color: var(--color-text-secondary);
+}
+
+:global([data-theme="dark"]) .navLink:hover {
+  color: var(--color-brand);
+}
+
+:global([data-theme="dark"]) .appBtn {
+  background: var(--color-bg-alt);
+  color: var(--color-text);
+  border-color: var(--color-border);
+}
+
+:global([data-theme="dark"]) .appBtn:hover {
+  background: var(--color-surface);
+  border-color: var(--color-brand-border);
+  color: var(--color-brand);
+}
+
+:global([data-theme="dark"]) .sectionsBtn {
+  color: var(--color-text-secondary);
+}
+
+:global([data-theme="dark"]) .sectionsBtn:hover {
+  background: var(--color-brand-soft);
+  color: var(--color-brand);
+}
+
 @media (max-width: 640px) {
   .themeToggle span:last-child {
     display: none;

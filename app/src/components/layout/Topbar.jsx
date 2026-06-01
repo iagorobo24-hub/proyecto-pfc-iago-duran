@@ -3,7 +3,7 @@ import { NavLink, Link } from 'react-router-dom'
 import { useTheme } from '../../contexts/ThemeContext'
 import { useAuth } from '../../contexts/AuthContext'
 import { useToast } from '../../contexts/ToastContext'
-import { LogOut, LogIn, Menu, X, House } from 'lucide-react'
+import { LogOut, LogIn, Menu, X, House, Sun, Moon } from 'lucide-react'
 import styles from './Topbar.module.css'
 import { NAV_TOOLS } from '../../config/tools'
 
@@ -116,10 +116,11 @@ export default function Topbar() {
         <button
           onClick={toggle}
           title={dark ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'}
-          className={`${styles.themeToggle} ${dark ? styles.themeToggleDark : ''}`}
+          className={styles.themeToggle}
           aria-label="Cambiar modo oscuro/claro"
         >
-          <span className={styles.themeToggleIcon}>{dark ? '☀️' : '☾'}</span>
+          {dark ? <Sun size={16} /> : <Moon size={16} />}
+          <span>{dark ? 'Claro' : 'Oscuro'}</span>
         </button>
 
         {/* Usuario autenticado o botón de login */}

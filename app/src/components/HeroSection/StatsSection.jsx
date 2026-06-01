@@ -1,21 +1,34 @@
-import React, { useEffect, useState } from 'react';
-import { motion, animate } from 'framer-motion';
+import React, { useState } from 'react';
 import catalogService from '../../services/catalogService';
 import styles from './styles/StatsSection.module.css';
 
 const Counter = ({ value, suffix = "" }) => {
   const [displayValue, setDisplayValue] = useState(0);
 
-  useEffect(() => {
-    const controls = animate(0, value, {
-      duration: 2,
-      onUpdate: (latest) => {
-        const decimals = value % 1 === 0 ? 0 : 1;
-        setDisplayValue(latest.toFixed(decimals));
-      },
-      ease: "easeOut"
-    });
-    return () => controls.stop();
+  React.useEffect(() => {
+    let started = false;
+    const start = performance.now();
+    const duration = 2000;
+    
+    const animate = () => {
+      const elapsed = performance.now() - start;
+      const progress = Math.min(elapsed / duration, 1);
+      const easeProgress = 1 - Math.pow(1 - progress, 3);
+      const current = value * easeProgress;
+      
+      if (!started) {
+        started = true;
+      }
+      
+      const decimals = value % 1 === 0 ? 0 : 1;
+      setDisplayValue(current.toFixed(decimals));
+      
+      if (progress < 1) {
+        requestAnimationFrame(animate);
+      }
+    };
+    
+    requestAnimationFrame(animate);
   }, [value]);
 
   return <span>{displayValue}{suffix}</span>;
@@ -29,7 +42,7 @@ const StatsSection = () => {
     totalBrands: 0
   });
 
-  useEffect(() => {
+  React.useEffect(() => {
     const fetchStats = async () => {
       try {
         const data = await catalogService.getCatalogStats();
@@ -57,13 +70,7 @@ const StatsSection = () => {
   ];
 
   return (
-    <motion.section
-      className={styles.statsWrapper}
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.8 }}
-    >
+    <section className={styles.statsWrapper}>
       {statsData.map((stat, index) => (
         <div key={index} className={styles.statItem}>
           <div className={styles.statValue}>
@@ -72,7 +79,7 @@ const StatsSection = () => {
           <div className={styles.statLabel}>{stat.label}</div>
         </div>
       ))}
-    </motion.section>
+    </section>
   );
 };
 
