@@ -84,6 +84,10 @@ export function ThemeProvider({ children }) {
       Math.max(y, window.innerHeight - y)
     )
 
+    // Determinar dirección ANTES del cambio
+    const isDarkToLight = dark // true si estamos en oscuro y vamos a claro
+    const isLightToDark = !dark // true si estamos en claro y vamos a oscuro
+
     const transition = document.startViewTransition(() => {
       // flushSync es vital aquí para que React actualice el DOM de forma síncrona
       const nextDark = !dark
@@ -100,17 +104,16 @@ export function ThemeProvider({ children }) {
         `circle(${endRadius}px at ${x}px ${y}px)`,
       ]
       
-      // Animamos el pseudo-elemento correspondiente según la dirección del cambio
-      // Si estamos en DARK (dark=true) y vamos a LIGHT, animamos el OLD (el que se va)
-      // Si estamos en LIGHT (dark=false) y vamos a DARK, animamos el NEW (el que llega)
+      // Light → Dark: animamos el NEW (el tema oscuro que llega)
+      // Dark → Light: animamos el OLD (el tema oscuro que se va)
       document.documentElement.animate(
         {
-          clipPath: dark ? [...clipPath].reverse() : clipPath,
+          clipPath: isLightToDark ? clipPath : [...clipPath].reverse(),
         },
         {
           duration: 400,
           easing: 'ease-in-out',
-          pseudoElement: dark ? '::view-transition-old(root)' : '::view-transition-new(root)',
+          pseudoElement: isLightToDark ? '::view-transition-new(root)' : '::view-transition-old(root)',
         }
       )
     })

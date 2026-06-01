@@ -400,3 +400,33 @@ img { max-width: 100%; height: auto; display: block; }
   .safe-bottom { padding-bottom: var(--safe-bottom); }
   .safe-top { padding-top: var(--safe-top); }
 }
+
+/* ═══════════════════════════════════════════════════════
+ * VIEW TRANSITIONS — Dark Mode Toggle
+ * ═══════════════════════════════════════════════════════ */
+/* Animación de círculo expansivo para el toggle de modo oscuro */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+/* Asegurar que las capas de transición capturen toda la pantalla */
+::view-transition-group(root) {
+  isolation: isolate;
+}
+
+/* El tema oscuro que llega (new) — empieza invisible */
+::view-transition-new(root) {
+  animation: none;
+}
+
+/* El tema claro que se va (old) — permanece visible hasta que el nuevo lo cubre */
+::view-transition-old(root) {
+  animation: none;
+}
+
+/* Prevenir flashes durante la transición */
+[data-theme] {
+  color-scheme: light dark;
+}
