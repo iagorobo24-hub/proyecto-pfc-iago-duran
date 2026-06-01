@@ -21,7 +21,7 @@ export const FULL_CATEGORY_INFO = {
   },
   "FOTOVOLTAICA": {
     icon: '☀️',
-    desc: 'Paneles solares, inversores, baterías y puntos de recarga para vehículo eléctrico.',
+    desc: 'Paneles solares, inversores, baterías y puntos de recarga para movilidad eléctrica.',
     tip: 'Dimensiona el campo fotovoltaico según el consumo anual y la superficie disponible en cubierta.'
   },
   "ILUMINACION": {
@@ -34,10 +34,40 @@ export const FULL_CATEGORY_INFO = {
     desc: 'Canalizaciones, bandejas portacables, minicanales y sistemas de instalación.',
     tip: 'Elige el tipo de canal según el número y sección de los conductores.'
   },
-  "VEHICULOS_ELECTRICOS": {
+  "VEHICULOS ELECTRICOS": {
     icon: '🚗',
     desc: 'Puntos de recarga, accesorios y equipos para movilidad eléctrica.',
     tip: 'Verifica la potencia de carga (kW) y el tipo de conector (Tipo 2, CCS, etc.).'
+  },
+  "CLIMATIZACION": {
+    icon: '🌡️',
+    desc: 'Equipos de climatización, ventilación y aire acondicionado.',
+    tip: 'Calcula la potencia frigorífica necesaria según la superficie y el aislamiento.'
+  },
+  "COMUNICACION": {
+    icon: '📡',
+    desc: 'Equipos de red, comunicaciones y sistemas de transmisión de datos.',
+    tip: 'Verifica el tipo de cable (UTP, FTP) y la categoría (Cat5e, Cat6, etc.).'
+  },
+  "HERRAMIENTAS": {
+    icon: '🔧',
+    desc: 'Herramientas manuales, eléctricas y de medición para instalación.',
+    tip: 'Elige la herramienta adecuada para cada tipo de trabajo y verifica su calibración.'
+  },
+  "PROTECCION": {
+    icon: '🛡️',
+    desc: 'Equipos de protección individual (EPIs) y seguridad eléctrica.',
+    tip: 'Usa siempre el EPI adecuado para el trabajo y verifica su estado antes de usarlo.'
+  },
+  "FONTANERIA": {
+    icon: '💧',
+    desc: 'Equipos y materiales para instalaciones de fontanería y saneamiento.',
+    tip: 'Selecciona los materiales según el tipo de fluido y la presión de trabajo.'
+  },
+  "ENERGIAS RENOVABLES": {
+    icon: '🌱',
+    desc: 'Sistemas de energía renovable: solar, eólica y otras fuentes limpias.',
+    tip: 'Estudia el recurso disponible (sol, viento) antes de dimensionar la instalación.'
   }
 }
 

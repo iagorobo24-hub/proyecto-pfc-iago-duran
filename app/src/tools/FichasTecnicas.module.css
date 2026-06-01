@@ -428,10 +428,10 @@ margin-top: auto;
 /* ── Card Grid para VistaCardConImagen ── */
 .cardGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: var(--space-5);
   width: 100%;
-  max-width: 800px;
+  max-width: 1400px;
   padding: var(--space-4) 0;
 }
 
@@ -543,10 +543,10 @@ margin-left: auto;
  * ═══════════════════════════════════════════════════════ */
 .cardGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: var(--space-5);
   width: 100%;
-  max-width: 800px;
+  max-width: 1400px;
   padding: var(--space-4) 0;
 }
 
