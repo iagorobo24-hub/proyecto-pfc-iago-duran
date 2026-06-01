@@ -35,6 +35,16 @@ export const SUBCATEGORIA_A_CATEGORIA = {
   'Elemento de Control': { categoria: 'Control Motor', subcategoria: 'Relés y control' },
   'Bloque Mando Osmoz': { categoria: 'Control Motor', subcategoria: 'Pulsadores' },
   'Pulsador Osmoz': { categoria: 'Control Motor', subcategoria: 'Pulsadores' },
+  'Relé de Seguridad': { categoria: 'Accesorios', subcategoria: 'Relés y seguridad' },
+  'Bornas': { categoria: 'Accesorios', subcategoria: 'Bornas y terminales' },
+  'Arrancador Suave': { categoria: 'Control Motor', subcategoria: 'Arrancadores suaves' },
+  'Contactor Industrial': { categoria: 'Control Motor', subcategoria: 'Contactor Industrial' },
+  'Interruptor Motor': { categoria: 'Control Motor', subcategoria: 'Interruptor Motor' },
+  'Relé Térmico': { categoria: 'Control Motor', subcategoria: 'Relé Térmico' },
+  'Autómata Programable': { categoria: 'Control Motor', subcategoria: 'Autómata Programable' },
+  'Variador de Frecuencia': { categoria: 'Control Motor', subcategoria: 'Variador de Frecuencia' },
+  'Sistema de Control': { categoria: 'Control Motor', subcategoria: 'Sistema de Control' },
+  'Actuador de Válvula': { categoria: 'Control Motor', subcategoria: 'Actuador de Válvula' },
 }
 
 export function getCategoria(subfamilia, tipo) {

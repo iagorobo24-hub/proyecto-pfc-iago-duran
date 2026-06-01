@@ -22,6 +22,23 @@ export const SUBCATEGORIA_ETIQUETAS = {
   'Contactor': 'Contactor',
   'Relés y control': 'Relés y control',
   'Pulsadores': 'Pulsadores',
+  'Relés y seguridad': 'Relés y seguridad',
+  'Bornas y terminales': 'Bornas y terminales',
+  'Arrancadores suaves': 'Arrancadores suaves',
+  'Contactor Industrial': 'Contactor Industrial',
+  'Interruptor Motor': 'Interruptor Motor',
+  'Relé Térmico': 'Relé Térmico',
+  'Arrancador Suave': 'Arrancador Suave',
+  'Sistema de Control': 'Sistema de Control',
+  'Actuador de Válvula': 'Actuador de Válvula',
+  'Borniera': 'Borniera',
+  'Canal de Instalación': 'Canal de Instalación',
+  'Mini Canal': 'Mini Canal',
+  'Bandeja Portacables': 'Bandeja Portacables',
+  'Canalización': 'Canalización',
+  'Módulo de E/S': 'Módulo de E/S',
+  'Módulo de Comunicación': 'Módulo de Comunicación',
+  'Contador Eléctrico': 'Contador Eléctrico',
 }
 
 export function getEtiquetaSubcategoria(key) {

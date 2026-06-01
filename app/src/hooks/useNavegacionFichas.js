@@ -22,78 +22,6 @@ function construirGrupos(subfamiliasConTipos) {
   return grupos
 }
 
-function clearStatesAfter(paso, setters) {
-  switch(paso) {
-    case 'categorias':
-      setters.setMarca(null)
-      setters.setGama(null)
-      setters.setGamaComercial(null)
-      setters.setTipo(null)
-      setters.setCategoriaGrupo(null)
-      setters.setSubcategoria(null)
-      setters.setSubgama(null)
-      setters.setGamasComercialesDisponibles([])
-      setters.setSubgamasDisponibles([])
-      setters.setReferencia(null)
-      setters.setReferenciasDisponibles([])
-      setters.setGrupos({})
-      break
-    case 'categorias_grupo':
-      setters.setCategoriaGrupo(null)
-      setters.setSubcategoria(null)
-      setters.setGamaComercial(null)
-      setters.setSubgama(null)
-      setters.setGamasComercialesDisponibles([])
-      setters.setSubgamasDisponibles([])
-      setters.setReferencia(null)
-      setters.setReferenciasDisponibles([])
-      break
-    case 'subcategorias':
-      setters.setSubcategoria(null)
-      setters.setGamaComercial(null)
-      setters.setSubgama(null)
-      setters.setGamasComercialesDisponibles([])
-      setters.setSubgamasDisponibles([])
-      setters.setReferencia(null)
-      setters.setReferenciasDisponibles([])
-      break
-    case 'gamas':
-      setters.setGama(null)
-      setters.setTipo(null)
-      setters.setGamaComercial(null)
-      setters.setSubgama(null)
-      setters.setGamasComercialesDisponibles([])
-      setters.setSubgamasDisponibles([])
-      setters.setReferencia(null)
-      setters.setReferenciasDisponibles([])
-      break
-    case 'tipos':
-      setters.setTipo(null)
-      setters.setGamaComercial(null)
-      setters.setSubgama(null)
-      setters.setGamasComercialesDisponibles([])
-      setters.setSubgamasDisponibles([])
-      setters.setReferencia(null)
-      setters.setReferenciasDisponibles([])
-      break
-    case 'gamas_comerciales':
-      setters.setGamaComercial(null)
-      setters.setSubgama(null)
-      setters.setSubgamasDisponibles([])
-      setters.setReferencia(null)
-      setters.setReferenciasDisponibles([])
-      break
-    case 'subgamas':
-      setters.setSubgama(null)
-      setters.setReferencia(null)
-      setters.setReferenciasDisponibles([])
-      break
-    case 'referencias':
-      setters.setReferencia(null)
-      break
-  }
-}
-
  export default function useNavegacionFichas() {
  const { toast } = useToast()
  const memoria = useMemoriaUsuario()
@@ -411,8 +339,9 @@ useEffect(() => {
   setGama(null)
   setTipo(null)
   setReferencia(null)
-  setPaso('gamas')
   setHistorial(prev => [...prev, { paso: 'marcas' }])
+  // Don't set paso here — the useEffect for [categoria, marca] will set it
+  // to either 'categorias_grupo' (DP) or 'gamas' (legacy) based on data
  }, [])
 
  const seleccionarCategoriaGrupo = useCallback((cat) => {
@@ -576,39 +505,50 @@ useEffect(() => {
   if (breadcrumbIndex >= stateSteps.length) return
   const stepToClear = stateSteps[breadcrumbIndex]
 
-  // Clear everything AFTER this step (not the step itself — user reselects from here)
+  // Clear everything AFTER this step
   switch (stepToClear) {
     case 'categorias':
-      setMarca(null)
+      setMarca(null); setCategoriaGrupo(null); setSubcategoria(null)
+      setGama(null); setTipo(null); setGamaComercial(null); setSubgama(null)
+      setGamasComercialesDisponibles([]); setSubgamasDisponibles([])
+      setReferencia(null); setReferenciasDisponibles([]); setGrupos({})
       break
     case 'marcas':
-      setCategoriaGrupo(null); setGama(null); setTipo(null)
+      setCategoriaGrupo(null); setSubcategoria(null)
+      setGama(null); setTipo(null); setGamaComercial(null); setSubgama(null)
+      setGamasComercialesDisponibles([]); setSubgamasDisponibles([])
+      setReferencia(null); setReferenciasDisponibles([]); setGamasDisponibles([]); setTiposDisponibles([])
       break
     case 'categorias_grupo':
-      setSubcategoria(null)
+      setSubcategoria(null); setGamaComercial(null); setSubgama(null)
+      setGamasComercialesDisponibles([]); setSubgamasDisponibles([])
+      setReferencia(null); setReferenciasDisponibles([])
       break
     case 'subcategorias':
       setGamaComercial(null); setSubgama(null)
+      setGamasComercialesDisponibles([]); setSubgamasDisponibles([])
+      setReferencia(null); setReferenciasDisponibles([])
       break
     case 'gamas':
-      setTipo(null)
+      setTipo(null); setGamaComercial(null); setSubgama(null)
+      setGamasComercialesDisponibles([]); setSubgamasDisponibles([])
+      setReferencia(null); setReferenciasDisponibles([]); setTiposDisponibles([])
       break
     case 'tipos':
       setGamaComercial(null); setSubgama(null)
+      setGamasComercialesDisponibles([]); setSubgamasDisponibles([])
+      setReferencia(null); setReferenciasDisponibles([])
       break
     case 'gamas_comerciales':
-      setSubgama(null)
+      setSubgama(null); setSubgamasDisponibles([])
+      setReferencia(null); setReferenciasDisponibles([])
       break
     case 'subgamas':
       setReferencia(null); setReferenciasDisponibles([])
       break
   }
 
-  // Also clear available lists for downstream steps
-  setGamasComercialesDisponibles([])
-  setSubgamasDisponibles([])
-
-  // Determine paso to display — same step that was clicked
+  // Determine paso to display
   const stepPasoMap = {
     categorias: 'categorias',
     marcas: 'marcas',
@@ -623,7 +563,20 @@ useEffect(() => {
 
   setPaso(stepPasoMap[stepToClear] || 'categorias')
   setHistorial(historial.slice(0, breadcrumbIndex))
- }, [historial, categoria, marca, gama, tipo, categoriaGrupo, subcategoria, gamaComercial, subgama, referencia])
+
+  // Reload data for the target step if needed
+  if (stepToClear === 'categorias_grupo' && marca && categoria && Object.keys(grupos).length === 0) {
+    catalogService.getSubfamiliasConTipos(marca, categoria).then(pares => {
+      const g = construirGrupos(pares)
+      setGrupos(g)
+    }).catch(err => console.error('Error reloading groups:', err))
+  }
+  if (stepToClear === 'gamas' && marca && categoria && gamasDisponibles.length === 0) {
+    catalogService.getGamasPorMarcaYCategoria(marca, categoria).then(data => {
+      setGamasDisponibles(data.map(g => g.nombre))
+    }).catch(err => console.error('Error reloading gamas:', err))
+  }
+ }, [historial, categoria, marca, gama, tipo, categoriaGrupo, subcategoria, gamaComercial, subgama, referencia, grupos, gamasDisponibles])
 
  const reiniciar = useCallback(() => {
   setPaso('categorias')
@@ -650,34 +603,94 @@ useEffect(() => {
     try {
      const ficha = await catalogService.getProductoPorRef(refId)
      if (ficha) {
-      setCategoria(ficha.familia || ficha.category)
-      setMarca(ficha.marca || ficha.brand)
+      const fam = ficha.familia || ficha.category
+      const mar = ficha.marca || ficha.brand
+      setCategoria(fam)
+      setMarca(mar)
       setGamaComercial(ficha.Gama || null)
       setSubgama(ficha.Subgama || null)
-      setGama(ficha.gama || ficha.subfamily)
-      setTipo(ficha.tipo || ficha.type)
       setReferencia(ficha)
       setPaso('ficha')
       setHistorial(prev => [...prev, { paso: 'categorias' }])
       setCargando(false)
       cargarInfoIA(ficha)
+
+      // Load intermediate navigation state in background
+      if (fam && mar) {
+        try {
+          const pares = await catalogService.getSubfamiliasConTipos(mar, fam)
+          const g = construirGrupos(pares)
+          if (Object.keys(g).length > 0) {
+            setGrupos(g)
+            for (const [catName, catData] of Object.entries(g)) {
+              for (const [subName, filtros] of Object.entries(catData.subcategorias)) {
+                const matches = filtros.some(f =>
+                  f.subfamilia === ficha.subfamilia && f.tipo === ficha.tipo
+                )
+                if (matches) {
+                  setCategoriaGrupo(catName)
+                  setSubcategoria(subName)
+                  break
+                }
+              }
+            }
+          } else {
+            const data = await catalogService.getGamasPorMarcaYCategoria(mar, fam)
+            setGamasDisponibles(data.map(g => g.nombre))
+            setGama(ficha.subfamilia || null)
+            setTipo(ficha.tipo || null)
+          }
+        } catch (e) {
+          console.warn('Error loading intermediate state:', e)
+        }
+      }
       return true
      }
      const porNombre = await catalogService.buscarProductos(refId)
      if (porNombre && porNombre.length > 0) {
       if (porNombre.length === 1) {
        const f = porNombre[0]
-       setCategoria(f.familia || f.category)
-       setMarca(f.marca || f.brand)
+       const fam = f.familia || f.category
+       const mar = f.marca || f.brand
+       setCategoria(fam)
+       setMarca(mar)
        setGamaComercial(f.Gama || null)
        setSubgama(f.Subgama || null)
-       setGama(f.subfamilia || f.gama)
-       setTipo(f.tipo || f.type)
        setReferencia(f)
        setPaso('ficha')
        setHistorial(prev => [...prev, { paso: 'categorias' }])
        setCargando(false)
        cargarInfoIA(f)
+
+       // Load intermediate state
+       if (fam && mar) {
+         try {
+           const pares = await catalogService.getSubfamiliasConTipos(mar, fam)
+           const g = construirGrupos(pares)
+           if (Object.keys(g).length > 0) {
+             setGrupos(g)
+             for (const [catName, catData] of Object.entries(g)) {
+               for (const [subName, filtros] of Object.entries(catData.subcategorias)) {
+                 const matches = filtros.some(fi =>
+                   fi.subfamilia === f.subfamilia && fi.tipo === f.tipo
+                 )
+                 if (matches) {
+                   setCategoriaGrupo(catName)
+                   setSubcategoria(subName)
+                   break
+                 }
+               }
+             }
+           } else {
+             const data = await catalogService.getGamasPorMarcaYCategoria(mar, fam)
+             setGamasDisponibles(data.map(g => g.nombre))
+             setGama(f.subfamilia || null)
+             setTipo(f.tipo || null)
+           }
+         } catch (e) {
+           console.warn('Error loading intermediate state:', e)
+         }
+       }
        return true
       }
       setReferenciasDisponibles(porNombre)
