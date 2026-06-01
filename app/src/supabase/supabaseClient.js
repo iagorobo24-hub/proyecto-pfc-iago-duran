@@ -23,7 +23,7 @@ function createStubClient() {
 
   const queryBuilder = new Proxy({}, {
     get(_, method) {
-      return (...args) => {
+      return (..._args) => {
         if (method === 'then' || method === 'catch') return noop()[method]
         // Encadenable: .select().eq().order()...
         const chain = new Proxy(() => {}, {
@@ -68,7 +68,7 @@ function createStubClient() {
               const result = { data: null, error: null }
               return { ...result, then: (resolve) => resolve(result), catch: (reject) => Promise.resolve().catch(reject) }
             }
-            if (prop === 'select') return (columns) => ({
+            if (prop === 'select') return (_columns) => ({
               data: [],
               error: null,
               ...queryBuilder,
@@ -76,7 +76,7 @@ function createStubClient() {
             })
             return chain
           },
-          apply(target, thisArg, args) {
+          apply(_target, _thisArg, _args) {
             return Promise.resolve({ data: [], error: null })
           },
         })
@@ -86,8 +86,8 @@ function createStubClient() {
   })
 
   return {
-    from: (table) => queryBuilder,
-    channel: (name, opts) => {
+    from: () => queryBuilder,
+    channel: () => {
       const channelApi = {
         on: () => channelApi,
         subscribe: (cb) => { if (cb) setTimeout(() => cb('SUBSCRIBED'), 0) },
@@ -109,7 +109,7 @@ function createStubClient() {
       getUser: noopUser,
       refreshSession: noopSession,
       setSession: noopSession,
-      signUp: (email, password) => Promise.resolve({ data: { user: null, session: null }, error: null }),
+      signUp: (_email, _password) => Promise.resolve({ data: { user: null, session: null }, error: null }),
       signInWithPassword: () => Promise.resolve({ data: { user: null, session: null }, error: null }),
       resetPasswordForEmail: () => Promise.resolve({ data: null, error: null }),
       verifyOtp: () => Promise.resolve({ data: { user: null, session: null }, error: null }),
@@ -127,7 +127,7 @@ function createStubClient() {
     functions: {
       invoke: noopObj,
     },
-    rpc: (fn, params) => ({
+    rpc: (_fn, _params) => ({
       data: null,
       error: null,
       single: () => ({ data: null, error: null }),
