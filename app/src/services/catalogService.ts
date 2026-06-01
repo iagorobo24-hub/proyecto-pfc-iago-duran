@@ -109,10 +109,13 @@ export async function getCategorias(): Promise<Category[]> {
   try {
     log('📂 Cargando familias desde products...');
 
+    // NOTA: Usamos limit alto porque Supabase defaultea a 1000 rows
+    // Con 4689 productos necesitamos al menos 5000 para cubrir todos
     const { data, error } = await supabase
       .from('products')
       .select('familia')
-      .not('familia', 'is', null);
+      .not('familia', 'is', null)
+      .limit(10000);
 
     if (error) {
       logError('❌ Error:', error);
