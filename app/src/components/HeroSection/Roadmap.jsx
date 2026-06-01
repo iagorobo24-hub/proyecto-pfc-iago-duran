@@ -1,4 +1,5 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 import { CheckCircle2, Circle, Loader2 } from 'lucide-react';
 import { ROADMAP_PHASES, ROADMAP_CATEGORIES } from '../../data/roadmapData';
 import styles from './styles/Roadmap.module.css';

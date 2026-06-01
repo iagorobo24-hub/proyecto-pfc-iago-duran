@@ -1,3 +1,4 @@
+import { motion } from 'framer-motion'
 import styles from './ComparativaSection.module.css'
 
 const COMPARATIVAS = [

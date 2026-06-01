@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { Linkedin, AppWindow, ChevronDown, BarChart3, Wrench, FileText, Target, Cpu, FileSpreadsheet, Sun, Moon } from 'lucide-react';
 import styles from './styles/HeroHeader.module.css';

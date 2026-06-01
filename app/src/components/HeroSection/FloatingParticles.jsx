@@ -1,4 +1,5 @@
 import { useMemo } from 'react';
+import { motion } from 'framer-motion';
 import styles from './styles/FloatingParticles.module.css';
 
 function generateParticles(count, seed = 12345) {
