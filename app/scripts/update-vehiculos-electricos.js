@@ -30,45 +30,35 @@ if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
 async function updateVehiculos() {
   console.log('🔧 Actualizando VEHICULOS_ELECTRICOS → VEHICULOS ELECTRICOS...\n')
   
-  // Paso 1: Contar productos antiguos
-  const countResp = await fetch(
-    `${SUPABASE_URL}/rest/v1/products?familia=eq.VEHICULOS_ELECTRICOS&select=id&count=exact`,
+  // Paso 1: Obtener TODOS los productos y filtrar manualmente
+  console.log('📥 Descargando productos de Supabase...')
+  const productosResp = await fetch(
+    `${SUPABASE_URL}/rest/v1/products?select=id,ref_fabricante,familia`,
     {
       headers: {
         'apikey': SUPABASE_ANON_KEY,
         'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-        'Prefer': 'count=exact'
       }
     }
   )
   
-  const totalAntiguos = countResp.headers.get('content-range')?.split('/')?.[1] || '0'
-  console.log(`📦 Productos con "VEHICULOS_ELECTRICOS": ${totalAntiguos}\n`)
+  const todosProductos = await productosResp.json()
+  const productosAntiguos = todosProductos.filter(p => p.familia === 'VEHICULOS_ELECTRICOS')
   
-  if (totalAntiguos === '0') {
+  console.log(`📦 Productos con "VEHICULOS_ELECTRICOS": ${productosAntiguos.length}\n`)
+  
+  if (productosAntiguos.length === 0) {
     console.log('✅ No hay productos con la nomenclatura antigua')
     return
   }
   
-  // Paso 2: Obtener IDs de productos a actualizar
-  const productosResp = await fetch(
-    `${SUPABASE_URL}/rest/v1/products?familia=eq.VEHICULOS_ELECTRICOS&select=id,ref_fabricante`,
-    {
-      headers: {
-        'apikey': SUPABASE_ANON_KEY,
-        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-      }
-    }
-  )
+  // Paso 2: Actualizar cada producto (patch)
+  console.log(`📝 Actualizando ${productosAntiguos.length} productos...\n`)
   
-  const productos = await productosResp.json()
-  console.log(`📝 Actualizando ${productos.length} productos...\n`)
-  
-  // Paso 3: Actualizar cada producto (patch)
   let actualizados = 0
   let errores = 0
   
-  for (const prod of productos) {
+  for (const prod of productosAntiguos) {
     const updateResp = await fetch(
       `${SUPABASE_URL}/rest/v1/products?id=eq.${prod.id}`,
       {
@@ -84,11 +74,14 @@ async function updateVehiculos() {
     
     if (updateResp.ok) {
       actualizados++
-      console.log(`  ✓ ${prod.ref_fabricante}`)
     } else {
       errores++
       console.log(`  ✗ Error: ${prod.ref_fabricante}`)
     }
+  }
+  
+  if (errores === 0) {
+    console.log(`  ✓ ${actualizados} productos actualizados`)
   }
   
   console.log(`\n${'='.repeat(60)}`)
@@ -96,21 +89,6 @@ async function updateVehiculos() {
   console.log(`   Actualizados: ${actualizados}`)
   console.log(`   Errores: ${errores}`)
   console.log(`${'='.repeat(60)}\n`)
-  
-  // Verificación final
-  const verifyResp = await fetch(
-    `${SUPABASE_URL}/rest/v1/products?family=eq.VEHICULOS%20ELECTRICOS&select=id&count=exact`,
-    {
-      headers: {
-        'apikey': SUPABASE_ANON_KEY,
-        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-        'Prefer': 'count=exact'
-      }
-    }
-  )
-  
-  const totalNuevos = verifyResp.headers.get('content-range')?.split('/')?.[1] || '0'
-  console.log(`📊 Total productos con "VEHICULOS ELECTRICOS": ${totalNuevos}`)
 }
 
 updateVehiculos().catch(err => {
