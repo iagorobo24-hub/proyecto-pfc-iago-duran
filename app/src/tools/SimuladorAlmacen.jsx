@@ -1,6 +1,6 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import Button from '../components/ui/Button'
-import useMemoriaUsuario from '../hooks/useMemoriaUsuario'
+import useUserData from '../hooks/useUserData'
 import useSimuladorMultijugador from '../hooks/useSimuladorMultijugador'
 import { ETAPAS, PEDIDOS_DEMO, INCIDENCIAS, fmtT, getEstandar, getSemaforo, calcPuntuacion, PROMPT_ANALISIS } from '../data/simulador/simuladorData'
 import SimuladorPerfil from '../components/simulador/SimuladorPerfil'
@@ -12,10 +12,34 @@ import RankingMultijugador from '../components/simulador/RankingMultijugador'
 import styles from './SimuladorAlmacen.module.css'
 
 export default function SimuladorAlmacen() {
-  const memoria = useMemoriaUsuario()
-  const [historial, setHistorial] = memoria.simulador.historial.use()
+  const { data: storedHistorial, save: saveHistorial } = useUserData('simulador', 'historial', [], [
+    'pfc_simulador_historial',
+  ])
+  const { data: storedPerfil, save: savePerfil } = useUserData('simulador', 'perfil', { nombre: '', turno: 'Mañana', area: 'Almacén' }, [
+    'pfc_simulador_perfil',
+  ])
+  const [historial, setHistorialState] = useState([])
+  const [operario, setOperarioState] = useState({ nombre: '', turno: 'Mañana', area: 'Almacén' })
+
+  useEffect(() => { if (storedHistorial) setHistorialState(storedHistorial) }, [storedHistorial])
+  useEffect(() => { if (storedPerfil) setOperarioState(storedPerfil) }, [storedPerfil])
+
+  const setHistorial = useCallback((val) => {
+    setHistorialState(prev => {
+      const next = typeof val === 'function' ? val(prev) : val
+      saveHistorial(next)
+      return next
+    })
+  }, [saveHistorial])
+
+  const setOperario = useCallback((val) => {
+    setOperarioState(prev => {
+      const next = typeof val === 'function' ? val(prev) : val
+      savePerfil(next)
+      return next
+    })
+  }, [savePerfil])
   const [pantalla, setPantalla] = useState("perfil");
-  const [operario, setOperario] = memoria.simulador.perfil.use()
   const [modoSim, setModoSim] = useState("entrenamiento");
   const [modoJuego, setModoJuego] = useState("solo");
   const multiplayer = useSimuladorMultijugador(operario)

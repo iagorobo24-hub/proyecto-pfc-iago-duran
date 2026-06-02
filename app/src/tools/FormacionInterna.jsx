@@ -1,9 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { GraduationCap } from 'lucide-react'
 import Button from '../components/ui/Button'
 import Input from '../components/ui/Input'
 import { useToast } from '../contexts/ToastContext'
-import useMemoriaUsuario from '../hooks/useMemoriaUsuario'
+import useUserData from '../hooks/useUserData'
 import styles from './FormacionInterna.module.css'
 
 export default function FormacionInterna() {
@@ -32,11 +32,33 @@ export default function FormacionInterna() {
     return `Eres el responsable de formación de la empresa.\nEmpleado: ${emp.nombre} — ${emp.rol}\nCompletados: ${completados.join(", ") || "ninguno"}\nPendientes: ${pendientes.join(", ") || "ninguno"}\n\nPlan en 3 párrafos: (1) valoración, (2) módulos prioritarios, (3) recomendación semanal.`
   }
 
-  const memoria = useMemoriaUsuario()
-  const [empleados, setEmpleados] = memoria.formacion.empleados.use()
-  const [modulos, setModulosState] = memoria.formacion.modulos.use()
-  const [progresos, setProgresosState] = memoria.formacion.progresos.use()
-  const [fechasCompletado, setFechasCompletadoState] = memoria.formacion.fechas.use()
+  const { data: storedEmpleados, save: saveEmpleados } = useUserData('formacion', 'empleados', [], ['pfc_formacion_empleados'])
+  const { data: storedModulos, save: saveModulos } = useUserData('formacion', 'modulos', [], ['pfc_formacion_modulos'])
+  const { data: storedProgresos, save: saveProgresos } = useUserData('formacion', 'progresos', {}, ['pfc_formacion_progresos'])
+  const { data: storedFechas, save: saveFechas } = useUserData('formacion', 'fechas', {}, ['pfc_formacion_fechas'])
+
+  const [empleados, setEmpleadosState] = useState([])
+  const [modulos, setModulosState] = useState([])
+  const [progresos, setProgresosState] = useState({})
+  const [fechasCompletado, setFechasCompletadoState] = useState({})
+
+  useEffect(() => { if (storedEmpleados) setEmpleadosState(storedEmpleados) }, [storedEmpleados])
+  useEffect(() => { if (storedModulos) setModulosState(storedModulos) }, [storedModulos])
+  useEffect(() => { if (storedProgresos) setProgresosState(storedProgresos) }, [storedProgresos])
+  useEffect(() => { if (storedFechas) setFechasCompletadoState(storedFechas) }, [storedFechas])
+
+  const setEmpleados = useCallback((val) => {
+    setEmpleadosState(prev => { const next = typeof val === 'function' ? val(prev) : val; saveEmpleados(next); return next })
+  }, [saveEmpleados])
+  const setModulos = useCallback((val) => {
+    setModulosState(prev => { const next = typeof val === 'function' ? val(prev) : val; saveModulos(next); return next })
+  }, [saveModulos])
+  const setProgresos = useCallback((val) => {
+    setProgresosState(prev => { const next = typeof val === 'function' ? val(prev) : val; saveProgresos(next); return next })
+  }, [saveProgresos])
+  const setFechasCompletado = useCallback((val) => {
+    setFechasCompletadoState(prev => { const next = typeof val === 'function' ? val(prev) : val; saveFechas(next); return next })
+  }, [saveFechas])
   const [seleccionado, setSeleccionado] = useState(null)
   const [vista, setVista] = useState("dashboard")
   const [planIA, setPlanIA] = useState("")
@@ -45,10 +67,6 @@ export default function FormacionInterna() {
   const [formEmpleado, setFormEmpleado] = useState({ nombre: "", rol: ROLES[0], departamento: "" })
 
   const { show: toast } = useToast()
-
-  const setModulos = (val) => { setModulosState(val); memoria.formacion.modulos.save(val) }
-  const setProgresos = (val) => { setProgresosState(val) }
-  const setFechasCompletado = (val) => { setFechasCompletadoState(val) }
 
   useEffect(() => {
     if (!modulos || modulos.length === 0) setModulos(MODULOS_INIT)
@@ -60,12 +78,6 @@ export default function FormacionInterna() {
       setProgresos(prgs)
     }
   }, [])
-
-  const guardar = (emps, prgs, fecs) => {
-    if (emps) memoria.formacion.empleados.save(emps)
-    if (prgs) memoria.formacion.progresos.save(prgs)
-    if (fecs) memoria.formacion.fechas.save(fecs)
-  }
 
   const cambiarProgreso = (empId, modId, nuevoEstado) => {
     const nuevosProgresos = { ...progresos, [empId]: { ...progresos[empId], [modId]: nuevoEstado } };
@@ -81,14 +93,14 @@ export default function FormacionInterna() {
     const nuevos = [...modulos, nuevo];
     const nuevosProgresos = { ...progresos };
     empleados.forEach(e => { nuevosProgresos[e.id] = { ...nuevosProgresos[e.id], [nuevo.id]: "pendiente" }; });
-    setModulos(nuevos); setProgresos(nuevosProgresos); guardar(empleados, nuevosProgresos, fechasCompletado); setFormModulo({ nombre: "", area: AREAS[0], horas: "4", obligatorio: false }); toast.show(`Módulo "${nuevo.nombre}" añadido`);
+    setModulos(nuevos); setProgresos(nuevosProgresos); setFormModulo({ nombre: "", area: AREAS[0], horas: "4", obligatorio: false }); toast.show(`Módulo "${nuevo.nombre}" añadido`);
   };
 
   const añadirEmpleado = () => {
     if (!formEmpleado.nombre || !formEmpleado.departamento) return;
     const nuevo = { id: `e${Date.now()}`, ...formEmpleado, fechaAlta: Date.now() };
     const nuevos = [...empleados, nuevo];
-    setEmpleados(nuevos); setProgresos({ ...progresos, [nuevo.id]: progresoInicial(modulos) }); guardar(nuevos, { ...progresos, [nuevo.id]: progresoInicial(modulos) }, fechasCompletado); setFormEmpleado({ nombre: "", rol: ROLES[0], departamento: "" }); toast.show(`Empleado "${nuevo.nombre}" añadido`);
+    setEmpleados(nuevos); setProgresos({ ...progresos, [nuevo.id]: progresoInicial(modulos) }); setFormEmpleado({ nombre: "", rol: ROLES[0], departamento: "" }); toast.show(`Empleado "${nuevo.nombre}" añadido`);
   };
 
   const generarPlan = async (emp) => {

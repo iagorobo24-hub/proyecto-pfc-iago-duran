@@ -107,6 +107,7 @@ export default function usePresupuestos() {
     generando, setGenerando,
     guardando, setGuardando,
     historial,
+    setHistorial,
     loading,
     /* Acciones */
     guardarHistorial,

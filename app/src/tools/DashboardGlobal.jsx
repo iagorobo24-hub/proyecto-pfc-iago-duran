@@ -1,5 +1,5 @@
 import { BookOpen, Warehouse, ShieldAlert, BarChart3, Receipt, GraduationCap, Bot, Activity } from 'lucide-react'
-import useMemoriaUsuario from '../hooks/useMemoriaUsuario'
+import useUserData from '../hooks/useUserData'
 import DashboardWidget from '../components/ui/DashboardWidget'
 import { getAnalyticsSummary } from '../hooks/useAnalytics'
 import styles from './DashboardGlobal.module.css'
@@ -16,12 +16,10 @@ function formatDate(ts) {
 }
 
 export default function DashboardGlobal() {
-  const memoria = useMemoriaUsuario()
-
-  const fichas = memoria.fichas.historial.use()[0]
-  const incidencias = memoria.incidencias.listado.use()[0]
-  const presupuestos = memoria.presupuestos.historial.use()[0]
-  const kpiHistorial = memoria.kpi.historial.use()[0]
+  const { data: fichas } = useUserData('fichas', 'historial', [])
+  const { data: incidencias } = useUserData('incidencias', 'listado', [])
+  const { data: presupuestos } = useUserData('presupuestos', 'historial', [])
+  const { data: kpiHistorial } = useUserData('kpi', 'historial', [])
 
   const criticas = (incidencias || []).filter(i => i.severidad === 'Crítica' && i.estado !== 'Resuelta').length
   const ultimaFicha = fichas.length > 0 ? fichas[fichas.length - 1] : null

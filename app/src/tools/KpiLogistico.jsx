@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { TrendingUp } from 'lucide-react';
-import useMemoriaUsuario from '../hooks/useMemoriaUsuario'
+import useUserData from '../hooks/useUserData'
 import { BarChart, Bar, LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, ReferenceLine } from "recharts";
 import Button from '../components/ui/Button'
 import Input from '../components/ui/Input'
@@ -32,8 +32,20 @@ const EJEMPLO_DATOS = {
 
 export default function KPILogistico() {
   const { toast } = useToast();
-  const memoria = useMemoriaUsuario()
-  const [historial, setHistorial] = memoria.kpi.historial.use()
+  const { data: storedHistorial, save: saveHistorial } = useUserData('kpi', 'historial', [], [
+    'pfc_kpi_historial',
+  ])
+  const [historial, setHistorialState] = useState([])
+
+  useEffect(() => { if (storedHistorial) setHistorialState(storedHistorial) }, [storedHistorial])
+
+  const setHistorial = useCallback((val) => {
+    setHistorialState(prev => {
+      const next = typeof val === 'function' ? val(prev) : val
+      saveHistorial(next)
+      return next
+    })
+  }, [saveHistorial])
   const [datos, setDatos] = useState({ delegacion: "", turno: "Mañana", pedidos: "", horas: "", errores: "", tiempo_ciclo: "", ubicaciones_ocupadas: "", ubicaciones_total: "", devoluciones: "", lineas_expedidas: "", operarios: "" });
   const [kpis, setKpis] = useState(null);
   const [informe, setInforme] = useState("");

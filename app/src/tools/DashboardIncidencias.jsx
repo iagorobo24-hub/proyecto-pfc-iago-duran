@@ -1,13 +1,25 @@
-import { useState, useEffect, useRef } from 'react';
-import useMemoriaUsuario from '../hooks/useMemoriaUsuario';
+import { useState, useEffect, useRef, useCallback } from 'react';
+import useUserData from '../hooks/useUserData';
 import IncidenciasLista from '../components/incidencias/IncidenciasLista';
 import IncidenciasDetalle from '../components/incidencias/IncidenciasDetalle';
 import IncidenciasFormulario from '../components/incidencias/IncidenciasFormulario';
 import styles from './DashboardIncidencias.module.css';
 
 export default function DashboardIncidencias() {
-  const memoria = useMemoriaUsuario()
-  const [incidencias, setIncidencias] = memoria.incidencias.listado.use()
+  const { data: storedIncidencias, save: saveIncidencias } = useUserData('incidencias', 'listado', [], [
+    'pfc_incidencias_listado',
+  ])
+  const [incidencias, setIncidenciasState] = useState([])
+
+  useEffect(() => { if (storedIncidencias) setIncidenciasState(storedIncidencias) }, [storedIncidencias])
+
+  const setIncidencias = useCallback((val) => {
+    setIncidenciasState(prev => {
+      const next = typeof val === 'function' ? val(prev) : val
+      saveIncidencias(next)
+      return next
+    })
+  }, [saveIncidencias])
   const [filtroEstado, setFiltroEstado] = useState('Todas')
   const [filtroSev, setFiltroSev] = useState('Todas')
   const [seleccionada, setSeleccionada] = useState(null)

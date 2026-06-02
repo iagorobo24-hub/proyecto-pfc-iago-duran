@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import useMemoriaUsuario from './useMemoriaUsuario';
+import useUserData from './useUserData';
 
 function generateId() {
   return `session_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`;
@@ -32,8 +32,10 @@ function createSessionObj(messages = []) {
 }
 
 export function useSonex() {
-  const memoria = useMemoriaUsuario()
-  const [sessions, setSessions] = memoria.sonex.sesiones.use()
+  const { data: storedSessions, save: saveSessions } = useUserData('sonex', 'sesiones', [], [
+    'pfc_sonex_historial',
+  ])
+  const [sessions, setSessionsState] = useState([])
   const [activeSessionId, setActiveSessionId] = useState(null);
   const [messages, setMessages] = useState([]);
   const messagesRef = useRef(messages);
@@ -45,6 +47,16 @@ export function useSonex() {
   const [refsTurno, setRefsTurno] = useState([]);
 
   const messagesEndRef = useRef(null);
+
+  useEffect(() => { if (storedSessions) setSessionsState(storedSessions) }, [storedSessions])
+
+  const setSessions = useCallback((val) => {
+    setSessionsState(prev => {
+      const next = typeof val === 'function' ? val(prev) : val
+      saveSessions(next)
+      return next
+    })
+  }, [saveSessions])
 
   const persistSessions = useCallback((updatedSessions) => {
     setSessions(updatedSessions);
@@ -68,27 +80,18 @@ export function useSonex() {
   }, [activeSessionId, persistSessions]);
 
   useEffect(() => {
-    const legacy = memoria.migrarDesdeLegacy('pfc_sonex_historial', 'sonex', 'sesiones')
-    const stored = sessions
-
-    if (stored && stored.length > 0) {
+    if (storedSessions && storedSessions.length > 0) {
       if (!activeSessionId) {
-        const last = stored[stored.length - 1]
+        const last = storedSessions[storedSessions.length - 1]
         setActiveSessionId(last.id)
         setMessages(normalizarMensajes(last.messages))
       }
-    } else if (legacy) {
-      const oldMessages = normalizarMensajes(legacy)
-      const session = createSessionObj(oldMessages)
-      setSessions([session])
-      setActiveSessionId(session.id)
-      setMessages(oldMessages)
     } else {
       const session = createSessionObj([])
       setSessions([session])
       setActiveSessionId(session.id)
     }
-  }, [memoria]) // se ejecuta solo al mount — migrarDesdeLegacy usa userId interno
+  }, [])
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });

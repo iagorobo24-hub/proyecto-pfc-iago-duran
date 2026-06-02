@@ -1,9 +1,8 @@
-import { useState, useEffect, useReducer, useCallback } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Outlet, useSearchParams, useNavigate, useLocation } from 'react-router-dom'
 import { useToast } from '../../contexts/ToastContext'
 import { FULL_CATEGORY_INFO } from '../../data/categoryMapping'
 import usePresupuestos from '../../hooks/usePresupuestos'
-import useMemoriaUsuario from '../../hooks/useMemoriaUsuario'
 import PresupuestosContext from './PresupuestosContext'
 import styles from '../../tools/Presupuestos.module.css'
 
@@ -25,8 +24,6 @@ export default function PresupuestosLayout() {
   const [searchParams] = useSearchParams()
 
   const hook = usePresupuestos()
-  const memoria = useMemoriaUsuario()
-  const [historial, setHistorial] = memoria.presupuestos.historial.use()
   const [numPresupuesto, setNumPresupuesto] = useState(genNum())
 
   useEffect(() => {
@@ -42,17 +39,21 @@ export default function PresupuestosLayout() {
   const guardarPresupuesto = useCallback(() => {
     if (hook.partidas.length === 0) { toast.show('Añade al menos un producto', 'error'); return }
     const presupuesto = {
+      id: numPresupuesto,
       numero: numPresupuesto,
       fecha: new Date().toISOString(),
+      fechaCreacion: new Date().toISOString(),
       cliente: hook.datosCliente,
       partidas: hook.partidas,
       categoria: hook.categoria,
       total: hook.partidas.reduce((s, p) => s + p.precio_total, 0),
+      totales: hook.calcularTotales(),
+      datos: hook.datosCliente,
     }
-    const nuevo = [presupuesto, ...historial].slice(0, 20)
-    setHistorial(nuevo)
+    const nuevo = [presupuesto, ...hook.historial].slice(0, 20)
+    hook.setHistorial(nuevo)
     toast.show('Presupuesto guardado', 'success')
-  }, [hook.partidas, hook.datosCliente, hook.categoria, numPresupuesto, historial, setHistorial, toast])
+  }, [hook, numPresupuesto, toast])
 
   const cargarPresupuesto = useCallback((h) => {
     hook.dispatchPartidas({ type: 'SET', payload: h.partidas || [] })
@@ -63,10 +64,10 @@ export default function PresupuestosLayout() {
   }, [hook, navigate])
 
   const eliminarPresupuesto = useCallback((index) => {
-    const nuevo = historial.filter((_, i) => i !== index)
-    setHistorial(nuevo)
+    const nuevo = hook.historial.filter((_, i) => i !== index)
+    hook.setHistorial(nuevo)
     toast.show('Presupuesto eliminado', 'success')
-  }, [historial, setHistorial, toast])
+  }, [hook, toast])
 
   const totalBase = hook.partidas.reduce((s, p) => s + p.precio_total, 0)
   const ivaAmount = totalBase * (hook.datosCliente.iva / 100)
@@ -84,7 +85,7 @@ export default function PresupuestosLayout() {
 
   const value = {
     ...hook,
-    historial,
+    historial: hook.historial,
     numPresupuesto,
     setNumPresupuesto,
     totalBase,
@@ -132,7 +133,7 @@ export default function PresupuestosLayout() {
               onClick={() => navigate('/app/presupuestos/gestion')}
             >
               <span aria-hidden="true">📋</span>
-              Gestión ({historial.length})
+              Gestión ({hook.historial.length})
             </button>
           </div>
         </aside>

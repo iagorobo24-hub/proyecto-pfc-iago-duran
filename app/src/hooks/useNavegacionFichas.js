@@ -1,9 +1,8 @@
 import { useState, useCallback, useMemo, useEffect, useRef } from 'react'
 import catalogService from '../services/catalogService'
-import { useToast } from '../contexts/ToastContext'
 import { callAnthropicAI, parseAIJsonResponse } from '../services/anthropicService'
 import { getCategoria, CATEGORIA_ICONOS } from '../data/categoriaMapping'
-import useMemoriaUsuario from './useMemoriaUsuario'
+import useUserData from './useUserData'
 
 function construirGrupos(subfamiliasConTipos) {
   const grupos = {}
@@ -23,8 +22,14 @@ function construirGrupos(subfamiliasConTipos) {
 }
 
  export default function useNavegacionFichas() {
- const memoria = useMemoriaUsuario()
  const requestIdRef = useRef(0)
+
+ const { data: storedHistorial, save: saveHistorial } = useUserData('fichas', 'historial', [], [
+   'pfc_fichas_historial',
+ ])
+ const { data: storedAiCache, save: saveAiCache } = useUserData('fichas', 'aiCache', {}, [
+   'pfc_fichas_ai_cache',
+ ])
  
  const [paso, setPaso] = useState('categorias')
  const [categorias, setCategorias] = useState([])
@@ -48,9 +53,27 @@ function construirGrupos(subfamiliasConTipos) {
  const [referenciasDisponibles, setReferenciasDisponibles] = useState([])
  const [cargando, setCargando] = useState(false)
  const [error, setError] = useState(null)
- const [historial, setHistorial] = memoria.fichas.historial.use()
+ const [historial, setHistorialState] = useState([])
+ const [aiCache, setAiCacheState] = useState({})
 
-  const [aiCache, setAiCache] = memoria.fichas.aiCache.use()
+ useEffect(() => { if (storedHistorial) setHistorialState(storedHistorial) }, [storedHistorial])
+ useEffect(() => { if (storedAiCache) setAiCacheState(storedAiCache) }, [storedAiCache])
+
+ const setHistorial = useCallback((val) => {
+   setHistorialState(prev => {
+     const next = typeof val === 'function' ? val(prev) : val
+     saveHistorial(next)
+     return next
+   })
+ }, [saveHistorial])
+
+ const setAiCache = useCallback((val) => {
+   setAiCacheState(prev => {
+     const next = typeof val === 'function' ? val(prev) : val
+     saveAiCache(next)
+     return next
+   })
+ }, [saveAiCache])
   const aiCacheRef = useRef(aiCache)
   useEffect(() => { aiCacheRef.current = aiCache }, [aiCache])
   const prevMarcaRef = useRef(null)

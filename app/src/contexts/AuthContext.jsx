@@ -1,5 +1,6 @@
-import { createContext, useContext, useEffect, useState, useMemo } from 'react'
+import { createContext, useContext, useEffect, useState, useMemo, useRef } from 'react'
 import { supabase } from '../supabase/supabaseClient'
+import { migrateLocalStorageToSupabase } from '../utils/migrateLocalStorage'
 
 const AuthContext = createContext()
 
@@ -12,6 +13,7 @@ export function useAuth() {
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
+  const migratedRef = useRef(false)
 
   // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => {
@@ -34,6 +36,18 @@ export function AuthProvider({ children }) {
 
     return () => subscription.unsubscribe()
   }, [])
+
+  // Migrar localStorage → Supabase una vez por sesión
+  useEffect(() => {
+    if (user?.id && !migratedRef.current) {
+      migratedRef.current = true
+      migrateLocalStorageToSupabase(user.id).then(result => {
+        if (result.migrated > 0) {
+          console.log(`[Auth] Migrados ${result.migrated} campos de localStorage → Supabase`)
+        }
+      }).catch(e => console.warn('[Auth] Error en migración:', e.message))
+    }
+  }, [user])
 
   /* Login con Google via Supabase */
   async function loginWithGoogle() {
