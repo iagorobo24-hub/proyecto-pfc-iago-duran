@@ -17,6 +17,7 @@ import { supabase } from '../supabase/supabaseClient'
 import { useAuth } from '../contexts/AuthContext'
 import { safeGetJSON, safeSetJSON, safeRemoveItem } from '../utils/storage'
 import { log } from '../utils/logger'
+import { isMigrationComplete } from '../utils/migrateLocalStorage'
 
 export default function useUserData(module, field, defaultValue = null, legacyKeys = []) {
   const { user } = useAuth()
@@ -26,9 +27,23 @@ export default function useUserData(module, field, defaultValue = null, legacyKe
   const [error, setError] = useState(null)
   const mountedRef = useRef(true)
   const migratedRef = useRef(false)
+  const [migrationDone, setMigrationDone] = useState(() => isMigrationComplete(userId))
 
   // Deriva la key de localStorage del módulo+field
   const localStorageKey = `pfc_u_${module}_${field}`
+
+  // Cuando la migración one-shot completado, recargar desde Supabase
+  useEffect(() => {
+    if (userId && !migrationDone) {
+      const interval = setInterval(() => {
+        if (isMigrationComplete(userId)) {
+          setMigrationDone(true)
+          clearInterval(interval)
+        }
+      }, 500)
+      return () => clearInterval(interval)
+    }
+  }, [userId, migrationDone])
 
   useEffect(() => {
     return () => { mountedRef.current = false }
@@ -43,6 +58,17 @@ export default function useUserData(module, field, defaultValue = null, legacyKe
 
     if (!userId) {
       // Sin sesión → solo localStorage
+      const local = safeGetJSON(localStorageKey, defaultValueRef.current)
+      if (mountedRef.current) {
+        setData(local)
+        setLoading(false)
+      }
+      return
+    }
+
+    // Si la migración one-shot no ha completado, solo usar localStorage
+    // para evitar sobreescribir datos en Supabase con defaults vacíos
+    if (!isMigrationComplete(userId)) {
       const local = safeGetJSON(localStorageKey, defaultValueRef.current)
       if (mountedRef.current) {
         setData(local)
@@ -81,7 +107,7 @@ export default function useUserData(module, field, defaultValue = null, legacyKe
     } finally {
       if (mountedRef.current) setLoading(false)
     }
-  }, [userId, module, field, localStorageKey])
+  }, [userId, module, field, localStorageKey, migrationDone])
 
   useEffect(() => {
     cargar()
@@ -123,6 +149,9 @@ export default function useUserData(module, field, defaultValue = null, legacyKe
     if (mountedRef.current) setData(newData)
 
     if (!userId) return // Sin sesión → solo localStorage
+
+    // No escribir a Supabase hasta que la migración one-shot completado
+    if (!isMigrationComplete(userId)) return
 
     try {
       const payload = {

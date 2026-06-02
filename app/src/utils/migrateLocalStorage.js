@@ -10,6 +10,20 @@ import { safeGetJSON } from './storage'
 
 const MIGRATION_KEY = 'pfc_migrated_to_supabase_v1'
 
+/**
+ * Comprueba si la migración ya se completó para un usuario dado.
+ * Lectura síncrona — usar antes de que los hooks hagan load/save a Supabase.
+ */
+export function isMigrationComplete(userId) {
+  if (!userId) return true
+  try {
+    const flags = safeGetJSON(MIGRATION_KEY, {})
+    return !!flags[userId]
+  } catch {
+    return false
+  }
+}
+
 const MODULES_TO_MIGRATE = [
   { module: 'fichas',       fields: [{ key: 'historial', lsSuffix: 'fichas_historial', default: [] }, { key: 'aiCache', lsSuffix: 'fichas_ai_cache', default: {} }] },
   { module: 'presupuestos', fields: [{ key: 'historial', lsSuffix: 'presupuestos_historial', default: [] }] },

@@ -47,6 +47,7 @@ export function useSonex() {
   const [refsTurno, setRefsTurno] = useState([]);
 
   const messagesEndRef = useRef(null);
+  const initializedRef = useRef(false)
 
   useEffect(() => { if (storedSessions) setSessionsState(storedSessions) }, [storedSessions])
 
@@ -80,18 +81,21 @@ export function useSonex() {
   }, [activeSessionId, persistSessions]);
 
   useEffect(() => {
+    if (initializedRef.current) return
     if (storedSessions && storedSessions.length > 0) {
+      initializedRef.current = true
       if (!activeSessionId) {
         const last = storedSessions[storedSessions.length - 1]
         setActiveSessionId(last.id)
         setMessages(normalizarMensajes(last.messages))
       }
-    } else {
+    } else if (storedSessions) {
+      initializedRef.current = true
       const session = createSessionObj([])
       setSessions([session])
       setActiveSessionId(session.id)
     }
-  }, [])
+  }, [storedSessions])
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
