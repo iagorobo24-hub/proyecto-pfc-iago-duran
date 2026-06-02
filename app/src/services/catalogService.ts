@@ -115,20 +115,47 @@ export async function getCategorias(): Promise<Category[]> {
   try {
     log('📂 Cargando familias desde products...');
 
-    // NOTA: Usamos limit alto porque Supabase defaultea a 1000 rows
-    // Con 4689 productos necesitamos al menos 5000 para cubrir todos
-    const { data, error } = await supabase
-      .from('products')
-      .select('familia')
-      .not('familia', 'is', null)
-      .limit(10000);
+    // NOTA: Supabase free tier tiene límite de 1000 rows por query
+    // Hacemos múltiples queries con offset para traer TODO el catálogo
+    // Estrategia: traer familia en chunks de 1000 hasta agotar
+    const batchSize = 1000;
+    const allFamilias: string[] = [];
+    let offset = 0;
+    let hasMore = true;
 
-    if (error) {
-      logError('❌ Error:', error);
-      return [];
+    while (hasMore) {
+      const { data, error } = await supabase
+        .from('products')
+        .select('familia')
+        .not('familia', 'is', null)
+        .range(offset, offset + batchSize - 1);
+
+      if (error) {
+        logError('❌ Error en batch:', error);
+        break;
+      }
+
+      if (!data || data.length === 0) {
+        hasMore = false;
+      } else {
+        const familiasBatch = (data as Array<{ familia: string }>)
+          .map(p => p.familia?.trim())
+          .filter(Boolean);
+        allFamilias.push(...familiasBatch);
+        
+        log(`📦 Batch ${offset / batchSize + 1}: ${data.length} rows`);
+        
+        if (data.length < batchSize) {
+          hasMore = false;
+        } else {
+          offset += batchSize;
+          // Small delay to avoid rate limiting
+          await new Promise(resolve => setTimeout(resolve, 100));
+        }
+      }
     }
 
-    const familiasUnicas = [...new Set((data as Array<{ familia: string }>)?.map(p => p.familia?.trim()).filter(Boolean))];
+    const familiasUnicas = [...new Set(allFamilias)];
 
     const categorias: Category[] = familiasUnicas.map(familia => ({
       id: familia,
