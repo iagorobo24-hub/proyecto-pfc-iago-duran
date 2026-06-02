@@ -4,7 +4,7 @@ import { useToast } from '../contexts/ToastContext'
 import { trackEvent } from '../hooks/useAnalytics'
 import useFichasTecnicas from '../hooks/useFichasTecnicas'
 import useNavegacionFichas from '../hooks/useNavegacionFichas'
-import { FULL_CATEGORY_INFO } from '../data/categoryMapping'
+import { getCategoriaMeta } from '../data/categoryMapping'
 import { Breadcrumb, ViewToggle } from '../components/ui/CircleLayout'
 import Button from '../components/ui/Button'
 import FichasTecnicasSidebar from '../components/fichas/FichasTecnicasSidebar'
@@ -39,7 +39,7 @@ export default function FichasTecnicas() {
 
   const [modo, setModo] = useState('navegacion')
 
-  const catInfo = useMemo(() => FULL_CATEGORY_INFO[categoria] || {}, [categoria])
+  const catInfo = useMemo(() => getCategoriaMeta(categoria), [categoria])
   const isCargando = navegacionCargando || busquedaIACargando
 
   const handleSugerenciaClick = useCallback((p) => {

@@ -1,15 +1,9 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { FULL_CATEGORY_INFO } from '../../data/categoryMapping'
+import { getCategoriaMeta } from '../../data/categoryMapping'
 import Button from '../ui/Button'
 import { usePresupuestosContext } from './PresupuestosContext'
 import styles from '../../tools/Presupuestos.module.css'
-
-const CATEGORIAS = Object.entries(FULL_CATEGORY_INFO).map(([key, info]) => ({
-  id: key,
-  label: info.label,
-  icon: info.icon,
-}))
 
 export default function PresupuestosEditor() {
   const navigate = useNavigate()
@@ -90,7 +84,7 @@ export default function PresupuestosEditor() {
         </button>
         <span className={styles.breadcrumb__sep}>›</span>
         <button className={styles.breadcrumb__link} onClick={() => navigate('/app/presupuestos')}>
-          {CATEGORIAS.find(c => c.id === categoria)?.label || 'Catálogo'}
+          {getCategoriaMeta(categoria).label || 'Catálogo'}
         </button>
         <span className={styles.breadcrumb__sep}>›</span>
         <span className={styles.breadcrumb__current}>Presupuesto</span>

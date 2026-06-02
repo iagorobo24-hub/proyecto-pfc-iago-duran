@@ -1,7 +1,8 @@
 import { useState, useEffect, useCallback } from 'react'
 import { Outlet, useSearchParams, useNavigate, useLocation } from 'react-router-dom'
 import { useToast } from '../../contexts/ToastContext'
-import { FULL_CATEGORY_INFO } from '../../data/categoryMapping'
+import catalogService from '../../services/catalogService'
+import { getCategoriaMeta } from '../../data/categoryMapping'
 import usePresupuestos from '../../hooks/usePresupuestos'
 import PresupuestosContext from './PresupuestosContext'
 import styles from '../../tools/Presupuestos.module.css'
@@ -11,12 +12,6 @@ const genNum = () => {
   return `SNP-${d.getFullYear()}${String(d.getMonth() + 1).padStart(2, '0')}-${String(Math.floor(Math.random() * 900) + 100)}`
 }
 
-const CATEGORIAS = Object.entries(FULL_CATEGORY_INFO).map(([key, info]) => ({
-  id: key,
-  label: info.label,
-  icon: info.icon,
-}))
-
 export default function PresupuestosLayout() {
   const navigate = useNavigate()
   const location = useLocation()
@@ -25,6 +20,17 @@ export default function PresupuestosLayout() {
 
   const hook = usePresupuestos()
   const [numPresupuesto, setNumPresupuesto] = useState(genNum())
+  const [categorias, setCategorias] = useState([])
+
+  useEffect(() => {
+    catalogService.getCategorias().then(dbCats => {
+      const enriched = dbCats.map(cat => {
+        const meta = getCategoriaMeta(cat.id)
+        return { id: cat.id, label: meta.label || cat.label || cat.id, icon: meta.icon || cat.icon || '📁' }
+      })
+      setCategorias(enriched)
+    }).catch(() => setCategorias([]))
+  }, [])
 
   useEffect(() => {
     const producto = searchParams.get('producto')
@@ -103,7 +109,7 @@ export default function PresupuestosLayout() {
         <aside className={styles.sidebar} aria-label="Presupuestos">
           <div className={styles.sidebar__label} id="presup-categories-label">Categorías</div>
           <nav aria-labelledby="presup-categories-label">
-            {CATEGORIAS.map(c => (
+            {categorias.map(c => (
               <button
                 key={c.id}
                 className={`${styles.sidebar__catBtn} ${isActive(c.id) ? styles.sidebar__catBtnActive : ''}`}
