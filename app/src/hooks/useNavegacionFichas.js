@@ -8,15 +8,15 @@ function construirGrupos(subfamiliasConTipos) {
   const grupos = {}
   for (const { subfamilia, tipo } of subfamiliasConTipos) {
     const mapping = getCategoria(subfamilia, tipo)
-    if (!mapping) continue
-    const { categoria, subcategoria } = mapping
-    if (!grupos[categoria]) {
-      grupos[categoria] = { icon: CATEGORIA_ICONOS[categoria] || '📁', subcategorias: {} }
+    const cat = mapping ? mapping.categoria : subfamilia
+    const subcat = mapping ? mapping.subcategoria : tipo || 'General'
+    if (!grupos[cat]) {
+      grupos[cat] = { icon: CATEGORIA_ICONOS[cat] || '📁', subcategorias: {} }
     }
-    if (!grupos[categoria].subcategorias[subcategoria]) {
-      grupos[categoria].subcategorias[subcategoria] = []
+    if (!grupos[cat].subcategorias[subcat]) {
+      grupos[cat].subcategorias[subcat] = []
     }
-    grupos[categoria].subcategorias[subcategoria].push({ subfamilia, tipo })
+    grupos[cat].subcategorias[subcat].push({ subfamilia, tipo })
   }
   return grupos
 }
@@ -191,6 +191,7 @@ useEffect(() => {
       setGrupos({})
       setCategoriaGrupo(null)
       setSubcategoria(null)
+      if (paso === 'marcas') setPaso('gamas')
     }
    } catch (err) {
     if (reqId !== requestIdRef.current) return
@@ -201,7 +202,7 @@ useEffect(() => {
    }
   }
   load()
-  }, [categoria, marca, paso])
+  }, [categoria, marca])
 
   useEffect(() => {
    if (!categoria || !marca || !gama) return;

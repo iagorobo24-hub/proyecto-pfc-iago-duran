@@ -1,4 +1,5 @@
 export const SUBCATEGORIA_ETIQUETAS = {
+  /* DP */
   'Magnetotérmico modular': 'Magnetotérmico modular',
   'Magnetotérmico MCCB': 'Magnetotérmico MCCB',
   'Diferencial': 'Diferencial',
@@ -31,11 +32,37 @@ export const SUBCATEGORIA_ETIQUETAS = {
   'Arrancador Suave': 'Arrancador Suave',
   'Sistema de Control': 'Sistema de Control',
   'Actuador de Válvula': 'Actuador de Válvula',
-  'Borniera': 'Borniera',
-  'Canal de Instalación': 'Canal de Instalación',
-  'Mini Canal': 'Mini Canal',
-  'Bandeja Portacables': 'Bandeja Portacables',
-  'Canalización': 'Canalización',
+  /* Iluminación */
+  'Luminarias emergencia': 'Luminarias de emergencia',
+  'Linternas': 'Linternas',
+  'Baterías': 'Baterías',
+  'Accesorios iluminación': 'Accesorios',
+  /* Instalación */
+  'Bornieras': 'Bornieras',
+  'Canales': 'Canales de instalación',
+  'Mini canal': 'Mini canal',
+  'Bandejas portacables': 'Bandejas portacables',
+  'Canalizaciones': 'Canalizaciones',
+  /* Vehículos eléctricos */
+  'Puntos de recarga': 'Puntos de recarga',
+  'Protección recarga': 'Protección para recarga',
+  'Accesorios recarga': 'Accesorios',
+  /* Fotovoltaica */
+  'Seccionadores CC': 'Seccionadores CC',
+  'Interruptores CC': 'Interruptores CC',
+  'Protecciones': 'Protecciones sobretensión',
+  'Cajas combinadoras': 'Cajas combinadoras',
+  'Accesorios solar': 'Accesorios',
+  /* Domótica */
+  'Dispositivos KNX': 'Dispositivos KNX',
+  'Actuadores HVAC': 'Actuadores HVAC',
+  'Hogar conectado': 'Hogar conectado',
+  'Seguridad': 'Seguridad',
+  'Telemando': 'Telemando',
+  /* Automatización */
+  'Módulos E/S': 'Módulos E/S',
+  'Módulos comunicación': 'Módulos de comunicación',
+  /* Legacy labels (ya existentes) */
   'Módulo de E/S': 'Módulo de E/S',
   'Módulo de Comunicación': 'Módulo de Comunicación',
   'Contador Eléctrico': 'Contador Eléctrico',

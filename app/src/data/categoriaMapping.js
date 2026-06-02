@@ -45,6 +45,51 @@ export const SUBCATEGORIA_A_CATEGORIA = {
   'Variador de Frecuencia': { categoria: 'Control Motor', subcategoria: 'Variador de Frecuencia' },
   'Sistema de Control': { categoria: 'Control Motor', subcategoria: 'Sistema de Control' },
   'Actuador de Válvula': { categoria: 'Control Motor', subcategoria: 'Actuador de Válvula' },
+
+  /* ── ILUMINACION ─────────────────────────────────────────────── */
+  'Luminaria Emergencia': { categoria: 'Iluminación', subcategoria: 'Luminarias emergencia' },
+  'Linterna': { categoria: 'Iluminación', subcategoria: 'Linternas' },
+  'Bateria': { categoria: 'Iluminación', subcategoria: 'Baterías' },
+
+  /* ── INSTALACION ────────────────────────────────────────────── */
+  'Borniera': { categoria: 'Instalación', subcategoria: 'Bornieras' },
+  'Canal de Instalación': { categoria: 'Instalación', subcategoria: 'Canales' },
+  'Mini Canal': { categoria: 'Instalación', subcategoria: 'Mini canal' },
+  'Bandeja Portacables': { categoria: 'Instalación', subcategoria: 'Bandejas portacables' },
+  'Canalización': { categoria: 'Instalación', subcategoria: 'Canalizaciones' },
+
+  /* ── VEHICULOS ELECTRICOS ───────────────────────────────────── */
+  'Puntos de recarga': { categoria: 'Vehículo Eléctrico', subcategoria: 'Puntos de recarga' },
+  'Protección para recarga': { categoria: 'Vehículo Eléctrico', subcategoria: 'Protección recarga' },
+
+  /* ── FOTOVOLTAICA ───────────────────────────────────────────── */
+  'Seccionador CC': { categoria: 'Energía Solar', subcategoria: 'Seccionadores CC' },
+  'Interruptores CC': { categoria: 'Energía Solar', subcategoria: 'Interruptores CC' },
+  'Protecciones sobretensión': { categoria: 'Energía Solar', subcategoria: 'Protecciones' },
+  'Cajas combinadoras': { categoria: 'Energía Solar', subcategoria: 'Cajas combinadoras' },
+
+  /* ── AUTOMATIZACION DE EDIFICIOS ────────────────────────────── */
+  'Acoplador KNX': { categoria: 'Domótica', subcategoria: 'Dispositivos KNX' },
+  'Actuador HVAC KNX': { categoria: 'Domótica', subcategoria: 'Actuadores HVAC' },
+  'Actuador HVAC': { categoria: 'Domótica', subcategoria: 'Actuadores HVAC' },
+  'Actuador KNX': { categoria: 'Domótica', subcategoria: 'Dispositivos KNX' },
+  'Base Conectada': { categoria: 'Domótica', subcategoria: 'Hogar conectado' },
+  'Compensador': { categoria: 'Domótica', subcategoria: 'Hogar conectado' },
+  'Controlador KNX': { categoria: 'Domótica', subcategoria: 'Dispositivos KNX' },
+  'Detector Movimiento': { categoria: 'Domótica', subcategoria: 'Hogar conectado' },
+  'Interface KNX': { categoria: 'Domótica', subcategoria: 'Dispositivos KNX' },
+  'Interruptor Rotulo': { categoria: 'Domótica', subcategoria: 'Seguridad' },
+  'Mando Smart': { categoria: 'Domótica', subcategoria: 'Hogar conectado' },
+  'Micromodulo Smart': { categoria: 'Domótica', subcategoria: 'Hogar conectado' },
+  'Pasarela KNX': { categoria: 'Domótica', subcategoria: 'Dispositivos KNX' },
+  'Pulsador Telemando': { categoria: 'Domótica', subcategoria: 'Telemando' },
+  'Router KNX': { categoria: 'Domótica', subcategoria: 'Dispositivos KNX' },
+  'Sensor KNX': { categoria: 'Domótica', subcategoria: 'Dispositivos KNX' },
+  'Telemando': { categoria: 'Domótica', subcategoria: 'Telemando' },
+
+  /* ── AUTOMATIZACION (completar faltantes) ────────────────────── */
+  'Módulo de E/S': { categoria: 'Control Motor', subcategoria: 'Módulos E/S' },
+  'Módulo de Comunicación': { categoria: 'Control Motor', subcategoria: 'Módulos comunicación' },
 }
 
 export function getCategoria(subfamilia, tipo) {
@@ -79,4 +124,10 @@ export const CATEGORIA_ICONOS = {
   'Iluminación': '💡',
   'Instalación': '📏',
   'Vehículo Eléctrico': '🚗',
+  'Cables': '🧶',
+  'Climatización': '🌡️',
+  'Comunicación': '📡',
+  'Herramientas': '🔨',
+  'Fontanería': '💧',
+  'Energías renovables': '🌱',
 }
