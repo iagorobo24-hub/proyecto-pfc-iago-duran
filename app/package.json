@@ -43,7 +43,6 @@
     "globals": "^16.5.0",
     "happy-dom": "^20.9.0",
     "pg": "^8.21.0",
-    "playwright": "^1.60.0",
     "puppeteer-core": "^24.43.1",
     "puppeteer-extra": "^3.3.6",
     "puppeteer-extra-plugin-stealth": "^2.11.2",

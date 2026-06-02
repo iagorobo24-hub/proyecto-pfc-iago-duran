@@ -41,7 +41,7 @@ export class AlmacenPage extends BasePage {
   }
 
   async clickGuardarPerfil() {
-    const btn = this.page.getByRole('button', { name: /guardar|continuar|siguiente/i })
+    const btn = this.page.getByRole('button', { name: /guardar|continuar|siguiente|iniciar simula/i })
     await btn.first().click()
     await this.page.waitForTimeout(1000)
   }

@@ -12,15 +12,15 @@ test.describe('Fichas Técnicas — Catálogo Completo', () => {
     })
   })
 
-  test('Carga de página con categorías', async ({ page }) => {
+  test('Carga de página con familias', async ({ page }) => {
     await page.goto(`${BASE}/app/fichas`, { waitUntil: 'networkidle', timeout: 30000 })
     await page.waitForTimeout(2000)
     await expect(page.locator('h1').filter({ hasText: 'Fichas Técnicas' })).toBeVisible()
-    await expect(page.getByText('Categorías')).toBeVisible()
+    await expect(page.getByText('Familias')).toBeVisible()
     const sidebarCats = page.locator('nav[aria-labelledby="categories-label"] button')
     await expect(sidebarCats.first()).toBeVisible({ timeout: 20000 })
     const count = await sidebarCats.count()
-    console.log(`Categorías visibles: ${count}`)
+    console.log(`Familias visibles: ${count}`)
     expect(count).toBeGreaterThanOrEqual(1)
   })
 

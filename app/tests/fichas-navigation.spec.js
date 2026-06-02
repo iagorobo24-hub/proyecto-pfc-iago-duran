@@ -13,7 +13,7 @@ test.describe('Fichas Técnicas — Funcionalidad', () => {
     await page.waitForTimeout(2000)
 
     await expect(page.locator('h1').filter({ hasText: 'Fichas Técnicas' })).toBeVisible({ timeout: 15000 })
-    await expect(page.getByText('Categorías')).toBeVisible()
+    await expect(page.getByText('Familias')).toBeVisible()
     await expect(page.getByPlaceholder('Buscar referencia o nombre...')).toBeVisible()
   })
 
@@ -25,15 +25,15 @@ test.describe('Fichas Técnicas — Funcionalidad', () => {
     await page.waitForTimeout(1000)
     await expect(page.locator('h1').filter({ hasText: 'Fichas Técnicas' })).toBeVisible({ timeout: 5000 })
 
-    await page.locator('[role="banner"] a', { hasText: 'Dashboard Incidencias' }).first().click()
+    await page.locator('[role="navigation"] a', { hasText: 'Dashboard Incidencias' }).first().click()
     await page.waitForTimeout(500)
     expect(page.url()).toContain('/incidencias')
 
-    await page.locator('[role="banner"] a', { hasText: 'Sonex' }).first().click()
+    await page.locator('[role="navigation"] a', { hasText: 'Sonex' }).first().click()
     await page.waitForTimeout(500)
     expect(page.url()).toContain('/sonex')
 
-    await page.locator('[role="banner"] a', { hasText: 'KPI Logístico' }).first().click()
+    await page.locator('[role="navigation"] a', { hasText: 'KPI Logístico' }).first().click()
     await page.waitForTimeout(500)
     expect(page.url()).toContain('/kpi')
 

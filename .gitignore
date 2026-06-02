@@ -68,8 +68,7 @@ scraper-data/
 referencias-*.json
 *report.json
 
-# Binary docs (use markdown instead)
-*.docx
+# Binary docs (allowed for now)
 
 # Firecrawl scraped data
 .firecrawl/

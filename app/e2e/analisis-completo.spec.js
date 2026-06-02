@@ -33,18 +33,19 @@ test.describe('Auditoría Completa — Proyecto PFC Iago Durán', () => {
     })
   })
 
-  /* ───────────── 2. TOPBAR ───────────── */
-  test.describe('2. Topbar', () => {
-    test('Topbar visible con todas las herramientas y home button', async ({ page }) => {
+  test.describe('2. Topbar & Sidebar', () => {
+    test('Topbar y Sidebar con herramientas visibles', async ({ page }) => {
       await page.goto(`${BASE}/app/fichas`, { waitUntil: 'networkidle' })
       const topbar = page.locator('[role="banner"]')
       await expect(topbar).toBeVisible()
+      const sidebar = page.locator('[role="navigation"]')
+      await expect(sidebar).toBeVisible()
       const tools = ['Fichas Técnicas', 'Simulador Almacén', 'Dashboard Incidencias', 'KPI Logístico', 'Presupuestos', 'Formación Interna', 'Sonex']
       for (const tool of tools) {
-        await expect(topbar.getByRole('link', { name: tool })).toBeVisible()
+        await expect(sidebar.getByRole('link', { name: tool })).toBeVisible()
       }
       await expect(page.getByTitle('Volver al inicio')).toBeVisible()
-      await takeScreenshot(page, '02-topbar')
+      await takeScreenshot(page, '02-topbar-sidebar')
     })
   })
 
@@ -67,7 +68,7 @@ test.describe('Auditoría Completa — Proyecto PFC Iago Durán', () => {
       ]
 
       for (const r of routes) {
-        await page.locator('[role="banner"] a', { hasText: r.link }).first().click()
+        await page.locator('[role="navigation"] a', { hasText: r.link }).first().click()
         await expect(page).toHaveURL(r.url, { timeout: 5000 })
         await page.waitForTimeout(300)
       }
@@ -157,7 +158,7 @@ test.describe('Auditoría Completa — Proyecto PFC Iago Durán', () => {
   test.describe('10. SONEX', () => {
     test('Chat y sugerencias visibles', async ({ page }) => {
       await page.goto(`${BASE}/app/sonex`, { waitUntil: 'networkidle' })
-      await expect(page.getByText('En que puedo ayudarte').first()).toBeVisible()
+      await expect(page.getByText(/¿En qué puedo ayudarte\?/i).first()).toBeVisible()
       await expect(page.getByPlaceholder(/consulta|pregunta|escribe/i)).toBeVisible()
       await takeScreenshot(page, '10-sonex')
     })

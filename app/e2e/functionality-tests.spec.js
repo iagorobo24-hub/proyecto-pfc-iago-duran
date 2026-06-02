@@ -266,16 +266,18 @@ test.describe('Tests de Funcionalidad Real — PFC Iago Durán', () => {
       
       // Fill perfil
       await almacen.fillOperarioNombre('Test User')
-      await almacen.selectOperarioTipo('Operario')
       await almacen.clickGuardarPerfil()
       await page.waitForTimeout(2000)
       
-      // Verify we're now in onboarding or simulation
+      // Click Entrenamiento to start simulation
+      const startBtn = page.getByRole('button', { name: /entrenamiento/i })
+      await expect(startBtn).toBeVisible()
+      await startBtn.click()
+      await page.waitForTimeout(2000)
+
+      // Verify we're now in simulation stage
       const pageText = await page.content()
-      const inSimulation = pageText.includes('onboarding') || 
-                          pageText.includes('pedido') ||
-                          pageText.includes('etapa')
-      
+      const inSimulation = pageText.includes('Etapa') || pageText.includes('etapa') || pageText.includes('Completar')
       expect(inSimulation).toBe(true)
     })
 
@@ -289,28 +291,54 @@ test.describe('Tests de Funcionalidad Real — PFC Iago Durán', () => {
       await almacen.clickGuardarPerfil()
       await page.waitForTimeout(1500)
       
-      // Start simulation if button exists
-      const startBtn = page.getByRole('button', { name: /iniciar|comenzar/i })
-      if (await startBtn.count() > 0) {
-        await startBtn.first().click()
-        await page.waitForTimeout(2000)
+      // Click Entrenamiento to start
+      const startBtn = page.getByRole('button', { name: /entrenamiento/i })
+      await expect(startBtn).toBeVisible()
+      await startBtn.click()
+      await page.waitForTimeout(1500)
+      
+      // Loop through all 5 stages of simulation
+      for (let stage = 0; stage < 5; stage++) {
+        // Wait for either an incident to pop up or the completar button to show
+        const incidentOptions = page.locator('[class*="incidenciaCard__opciones"]')
+        const compBtn = page.getByRole('button', { name: /Completar/i })
+        
+        const type = await Promise.race([
+          incidentOptions.waitFor({ state: 'visible', timeout: 3000 }).then(() => 'incident').catch(() => 'timeout'),
+          compBtn.waitFor({ state: 'visible', timeout: 3000 }).then(() => 'completar').catch(() => 'timeout')
+        ])
+        
+        if (type === 'incident') {
+          // Incident active! Click the first option with a retry mechanism
+          const opt = page.locator('button[class*="incidenciaCard__opcion"]').first()
+          await expect(opt).toBeVisible()
+          
+          const nextBtn = page.getByRole('button', { name: /Continuar/i })
+          let clicked = false
+          for (let attempt = 0; attempt < 5; attempt++) {
+            if (await nextBtn.isVisible().catch(() => false)) {
+              clicked = true
+              break
+            }
+            await opt.click().catch(() => {})
+            await page.waitForTimeout(1000)
+          }
+          await expect(nextBtn).toBeVisible({ timeout: 5000 })
+          await nextBtn.click()
+        }
+        
+        // Click the stage completion button
+        await expect(compBtn).toBeVisible({ timeout: 5000 })
+        await compBtn.click()
+        await page.waitForTimeout(1500)
       }
       
-      // Navigate through stages if possible
-      const avanzarBtn = page.getByRole('button', { name: /avanzar|continuar/i })
-      if (await avanzarBtn.count() > 0) {
-        await avanzarBtn.first().click()
-        await page.waitForTimeout(1000)
-      }
+      // Wait for AI results to load
+      await page.waitForTimeout(3000)
       
-      // App should not crash
-      const pageText = await page.content()
-      const hasCrash = pageText.includes('Cannot read') || pageText.includes('Uncaught')
-      expect(hasCrash).toBe(false)
-      
-      // Verify app still responsive
+      // Verify results screen
       const stats = await almacen.getSimulationStats()
-      expect(stats.hasStats || stats.hasScore || stats.hasTime).toBe(true)
+      expect(stats.hasScore || stats.hasTime).toBe(true)
     })
 
     test('Valores inválidos no rompen el simulador', async ({ page }) => {

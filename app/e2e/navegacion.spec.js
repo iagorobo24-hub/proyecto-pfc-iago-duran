@@ -17,19 +17,19 @@ test.describe('Navegación entre Herramientas', () => {
     await expect(page).toHaveURL(/\/app\/fichas/)
     await expect(page.locator('h1').filter({ hasText: 'Fichas Técnicas' })).toBeVisible()
 
-    await page.locator('[role="banner"] a', { hasText: 'Sonex' }).first().click()
+    await page.locator('[role="navigation"] a', { hasText: 'Sonex' }).first().click()
     await page.waitForTimeout(500)
     await expect(page).toHaveURL(/\/app\/sonex/)
 
-    await page.locator('[role="banner"] a', { hasText: 'KPI Logístico' }).first().click()
+    await page.locator('[role="navigation"] a', { hasText: 'KPI Logístico' }).first().click()
     await page.waitForTimeout(500)
     await expect(page).toHaveURL(/\/app\/kpi/)
 
-    await page.locator('[role="banner"] a', { hasText: 'Dashboard Incidencias' }).first().click()
+    await page.locator('[role="navigation"] a', { hasText: 'Dashboard Incidencias' }).first().click()
     await page.waitForTimeout(500)
     await expect(page).toHaveURL(/\/app\/incidencias/)
 
-    await page.locator('[role="banner"] a', { hasText: 'Fichas Técnicas' }).first().click()
+    await page.locator('[role="navigation"] a', { hasText: 'Fichas Técnicas' }).first().click()
     await page.waitForTimeout(500)
     await expect(page).toHaveURL(/\/app\/fichas/)
 

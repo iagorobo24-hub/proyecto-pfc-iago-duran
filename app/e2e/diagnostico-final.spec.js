@@ -88,7 +88,7 @@ test.describe('Diagnóstico Final', () => {
     ]
 
     for (const item of nav) {
-      await page.locator('[role="banner"] a', { hasText: item.name }).first().click()
+      await page.locator('[role="navigation"] a', { hasText: item.name }).first().click()
       await expect(page).toHaveURL(item.url, { timeout: 5000 })
       await page.waitForTimeout(300)
     }
@@ -98,7 +98,7 @@ test.describe('Diagnóstico Final', () => {
     await page.goto(`${BASE}/app/fichas`, { waitUntil: 'domcontentloaded' })
     await page.waitForTimeout(2000)
 
-    const hasCategories = await page.getByText('Categorías').isVisible()
+    const hasCategories = await page.getByText('Familias').isVisible()
     const hasSearch = await page.getByPlaceholder('Buscar referencia o nombre...').isVisible()
     const hasHeading = await page.locator('h1').filter({ hasText: 'Fichas Técnicas' }).isVisible()
 
@@ -107,14 +107,14 @@ test.describe('Diagnóstico Final', () => {
     expect(hasCategories).toBe(true)
     expect(hasSearch).toBe(true)
     expect(hasHeading).toBe(true)
-    console.log('Fichas Técnicas — Categorías:', hasCategories, '| Buscador:', hasSearch, '| Título:', hasHeading)
+    console.log('Fichas Técnicas — Familias:', hasCategories, '| Buscador:', hasSearch, '| Título:', hasHeading)
   })
 
   test('Diseño visual — SONEX', async ({ page }) => {
     await page.goto(`${BASE}/app/sonex`, { waitUntil: 'domcontentloaded' })
     await page.waitForTimeout(2000)
 
-    const hasSonexText = await page.getByText('En que puedo ayudarte').first().isVisible()
+    const hasSonexText = await page.getByText(/¿En qué puedo ayudarte\?/i).first().isVisible()
     const hasInput = await page.getByPlaceholder(/consulta|pregunta|escribe/i).isVisible()
 
     await page.screenshot({ path: 'e2e/screenshots/final-design-sonex.png', fullPage: true })

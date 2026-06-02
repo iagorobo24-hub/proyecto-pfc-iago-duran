@@ -210,7 +210,7 @@ export default async function handler(req, res) {
     const data = await response.json();
 
     if (!response.ok) {
-      console.error('[AI API] Provider error:', await response.json().catch(() => ({})));
+      console.error('[AI API] Provider error:', data);
       return res.status(502).json({ error: 'AI provider error. Please try again.' });
     }
 

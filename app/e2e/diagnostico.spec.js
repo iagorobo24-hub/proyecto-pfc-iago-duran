@@ -86,7 +86,7 @@ test.describe('Diagnóstico Rápido', () => {
     console.log('\nNavegación secuencial:')
     for (const item of navItems) {
       try {
-        await page.locator('[role="banner"] a', { hasText: item.name }).first().click()
+        await page.locator('[role="navigation"] a', { hasText: item.name }).first().click()
         await expect(page).toHaveURL(item.url, { timeout: 5000 })
         await page.waitForTimeout(300)
         console.log(`  ${item.name.padEnd(20)} → OK`)

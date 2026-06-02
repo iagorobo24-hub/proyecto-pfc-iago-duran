@@ -44,7 +44,7 @@ export class FichasPage extends BasePage {
     const input = this.page.getByPlaceholder(/buscar referen.*\.\.\./i)
     await expect(input).toBeVisible()
     await input.fill(ref)
-    await this.page.getByRole('button', { name: /buscar/i }).click()
+    await this.page.locator('aside').getByRole('button', { name: 'Buscar' }).click()
     await this.page.waitForTimeout(2000)
   }
 
@@ -52,19 +52,19 @@ export class FichasPage extends BasePage {
     const input = this.page.getByPlaceholder(/buscar referen.*\.\.\./i)
     await expect(input).toBeVisible()
     await input.fill(text)
-    await this.page.getByRole('button', { name: /buscar/i }).click()
+    await this.page.locator('aside').getByRole('button', { name: 'Buscar' }).click()
     await this.page.waitForTimeout(2000)
   }
 
   // Assertions
     async expectCategoryVisible() {
-      await expect(this.page.getByText('Categorías')).toBeVisible()
+      await expect(this.page.getByText('Familias')).toBeVisible()
     }
 
     async waitForContent(timeout = 30000) {
     // Wait for the categories label first with longer timeout
     try {
-      await this.page.getByText('Categorías').waitFor({ state: 'visible', timeout: 10000 });
+      await this.page.getByText('Familias').waitFor({ state: 'visible', timeout: 10000 });
     } catch {
       // If label not found, wait for any button in the sidebar
       console.log('Label not found, waiting for buttons directly...');

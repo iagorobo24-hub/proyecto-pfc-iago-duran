@@ -100,8 +100,21 @@ export const FULL_CATEGORY_INFO = {
 export function getCategoriaMeta(familia) {
   if (!familia) return { label: 'Sin categoría', icon: '📁', desc: '', tip: '' }
   if (FULL_CATEGORY_INFO[familia]) return FULL_CATEGORY_INFO[familia]
-  const upper = familia.toUpperCase()
-  if (FULL_CATEGORY_INFO[upper]) return FULL_CATEGORY_INFO[upper]
+  
+  const normalKey = familia.toUpperCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/\s+/g, ' ')
+    .trim()
+  
+  if (FULL_CATEGORY_INFO[normalKey]) return FULL_CATEGORY_INFO[normalKey]
+  
+  const underscoreKey = normalKey.replace(/\s+/g, '_')
+  if (FULL_CATEGORY_INFO[underscoreKey]) return FULL_CATEGORY_INFO[underscoreKey]
+  
+  const spaceKey = normalKey.replace(/_/g, ' ')
+  if (FULL_CATEGORY_INFO[spaceKey]) return FULL_CATEGORY_INFO[spaceKey]
+
   return { label: familia, icon: '📁', desc: '', tip: '' }
 }
 

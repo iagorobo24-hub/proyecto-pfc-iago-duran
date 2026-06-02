@@ -40,9 +40,6 @@ const etiquetasFamilias: Record<string, string> = {
   'DISTRIBUCION DE POTENCIA': 'Distribución de potencia',
   'POTENCIA': 'Distribución de potencia',
   
-  /* Fotovoltaica */
-  'FOTOVOLTAICA': 'Fotovoltaica',
-  
   /* Instalación */
   'INSTALACION': 'Instalación',
   'CANALIZACION': 'Instalación',
@@ -113,49 +110,22 @@ async function cargarMarcas(): Promise<Map<number, string>> {
 
 export async function getCategorias(): Promise<Category[]> {
   try {
-    log('📂 Cargando familias desde products...');
+    log('📂 Cargando familias desde vw_unique_families...');
 
-    // NOTA: Supabase free tier tiene límite de 1000 rows por query
-    // Hacemos múltiples queries con offset para traer TODO el catálogo
-    // Estrategia: traer familia en chunks de 1000 hasta agotar
-    const batchSize = 1000;
-    const allFamilias: string[] = [];
-    let offset = 0;
-    let hasMore = true;
+    // Usa la vista de BD que devuelve DISTINCT familia directamente
+    // (~14 filas en lugar de descargar miles de productos)
+    const { data, error } = await supabase
+      .from('vw_unique_families')
+      .select('familia');
 
-    while (hasMore) {
-      const { data, error } = await supabase
-        .from('products')
-        .select('familia')
-        .not('familia', 'is', null)
-        .range(offset, offset + batchSize - 1);
-
-      if (error) {
-        logError('❌ Error en batch:', error);
-        break;
-      }
-
-      if (!data || data.length === 0) {
-        hasMore = false;
-      } else {
-        const familiasBatch = (data as Array<{ familia: string }>)
-          .map(p => p.familia?.trim())
-          .filter(Boolean);
-        allFamilias.push(...familiasBatch);
-        
-        log(`📦 Batch ${offset / batchSize + 1}: ${data.length} rows`);
-        
-        if (data.length < batchSize) {
-          hasMore = false;
-        } else {
-          offset += batchSize;
-          // Small delay to avoid rate limiting
-          await new Promise(resolve => setTimeout(resolve, 100));
-        }
-      }
+    if (error) {
+      logError('❌ Error cargando familias:', error);
+      return [];
     }
 
-    const familiasUnicas = [...new Set(allFamilias)];
+    const familiasUnicas = (data as Array<{ familia: string }>)
+      .map(p => p.familia?.trim())
+      .filter(Boolean);
 
     const categorias: Category[] = familiasUnicas.map(familia => ({
       id: familia,

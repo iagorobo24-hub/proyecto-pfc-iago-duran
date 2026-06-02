@@ -20,7 +20,7 @@ test.describe('Verificación Visual Completa', () => {
     await page.waitForTimeout(2000)
 
     await expect(page.getByPlaceholder('Buscar referencia o nombre...')).toBeVisible({ timeout: 10000 })
-    await expect(page.getByText('Categorías')).toBeVisible()
+    await expect(page.getByText('Familias')).toBeVisible()
   })
 
   test('3. KPI Logístico — botones calcular y cargar ejemplo visibles', async ({ page }) => {

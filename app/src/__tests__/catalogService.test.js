@@ -45,7 +45,8 @@ function makeChain(resolveData) {
 
 describe('getCategorias', () => {
   it('returns categories from unique familias', async () => {
-    const data = [{ familia: 'CABLES' }, { familia: 'DISTRIBUCION DE POTENCIA' }, { familia: 'CABLES' }]
+    // vw_unique_families already returns DISTINCT values — no duplicates
+    const data = [{ familia: 'CABLES' }, { familia: 'DISTRIBUCION DE POTENCIA' }]
     mockFrom.mockReturnValue(makeChain(data))
 
     const { getCategorias } = await import('../services/catalogService')
