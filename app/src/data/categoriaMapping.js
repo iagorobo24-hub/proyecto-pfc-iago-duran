@@ -63,10 +63,9 @@ export const SUBCATEGORIA_A_CATEGORIA = {
   'Protección para recarga': { categoria: 'Vehículo Eléctrico', subcategoria: 'Protección recarga' },
 
   /* ── FOTOVOLTAICA ───────────────────────────────────────────── */
-  'Seccionador CC': { categoria: 'Energía Solar', subcategoria: 'Seccionadores CC' },
-  'Interruptores CC': { categoria: 'Energía Solar', subcategoria: 'Interruptores CC' },
-  'Protecciones sobretensión': { categoria: 'Energía Solar', subcategoria: 'Protecciones' },
-  'Cajas combinadoras': { categoria: 'Energía Solar', subcategoria: 'Cajas combinadoras' },
+  /* Sin mapping explícito — el fallback de construirGrupos agrupa
+     por nombre de subfamilia. Evitar duplicar claves con DP
+     (ej: 'Seccionador CC' colisiona entre DP y FV). */
 
   /* ── AUTOMATIZACION DE EDIFICIOS ────────────────────────────── */
   'Acoplador KNX': { categoria: 'Domótica', subcategoria: 'Dispositivos KNX' },
@@ -105,13 +104,6 @@ export function getCategoria(subfamilia, tipo) {
     categoria: entry.categoria,
     subcategoria: entry.subcategoria,
   }
-}
-
-export function getSubfamiliasPorCategoria(familia, categoria, subfamilias) {
-  return subfamilias.filter(sf => {
-    const entry = SUBCATEGORIA_A_CATEGORIA[sf]
-    return entry && entry.categoria === categoria
-  })
 }
 
 export const CATEGORIA_ICONOS = {

@@ -76,9 +76,7 @@ function construirGrupos(subfamiliasConTipos) {
  }, [saveAiCache])
   const aiCacheRef = useRef(aiCache)
   useEffect(() => { aiCacheRef.current = aiCache }, [aiCache])
-  const prevMarcaRef = useRef(null)
-  useEffect(() => { prevMarcaRef.current = marca }, [marca])
- const [aiCargando, setAiCargando] = useState(false)
+  const [aiCargando, setAiCargando] = useState(false)
  const [sugerenciasBusqueda, setSugerenciasBusqueda] = useState([])
  const [busquedaCargando, setBusquedaCargando] = useState(false)
 

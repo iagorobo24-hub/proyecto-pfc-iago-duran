@@ -36,7 +36,6 @@ export const SUBCATEGORIA_ETIQUETAS = {
   'Luminarias emergencia': 'Luminarias de emergencia',
   'Linternas': 'Linternas',
   'Baterías': 'Baterías',
-  'Accesorios iluminación': 'Accesorios',
   /* Instalación */
   'Bornieras': 'Bornieras',
   'Canales': 'Canales de instalación',
@@ -46,13 +45,6 @@ export const SUBCATEGORIA_ETIQUETAS = {
   /* Vehículos eléctricos */
   'Puntos de recarga': 'Puntos de recarga',
   'Protección recarga': 'Protección para recarga',
-  'Accesorios recarga': 'Accesorios',
-  /* Fotovoltaica */
-  'Seccionadores CC': 'Seccionadores CC',
-  'Interruptores CC': 'Interruptores CC',
-  'Protecciones': 'Protecciones sobretensión',
-  'Cajas combinadoras': 'Cajas combinadoras',
-  'Accesorios solar': 'Accesorios',
   /* Domótica */
   'Dispositivos KNX': 'Dispositivos KNX',
   'Actuadores HVAC': 'Actuadores HVAC',
@@ -62,10 +54,6 @@ export const SUBCATEGORIA_ETIQUETAS = {
   /* Automatización */
   'Módulos E/S': 'Módulos E/S',
   'Módulos comunicación': 'Módulos de comunicación',
-  /* Legacy labels (ya existentes) */
-  'Módulo de E/S': 'Módulo de E/S',
-  'Módulo de Comunicación': 'Módulo de Comunicación',
-  'Contador Eléctrico': 'Contador Eléctrico',
 }
 
 export function getEtiquetaSubcategoria(key) {

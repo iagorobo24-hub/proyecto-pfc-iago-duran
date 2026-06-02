@@ -105,52 +105,6 @@ export function getCategoriaMeta(familia) {
   return { label: familia, icon: '📁', desc: '', tip: '' }
 }
 
-export const SUBCATEGORY_LABELS = {
-  /* Vehículos eléctricos */
-  'Puntos de recarga': 'Puntos de recarga',
-  'Protección para recarga': 'Protección para recarga',
-  'Accesorios': 'Accesorios',
-  
-  /* Fotovoltaica */
-  'Inversores y reguladores': 'Inversores y reguladores',
-  'Seccionadores CC': 'Seccionadores CC',
-  'Cajas combinadoras': 'Cajas combinadoras',
-  'Protecciones sobretensión': 'Protecciones sobretensión',
-  'Interruptores CC': 'Interruptores CC',
-  
-  /* Automatización */
-  'Interruptor Magnetotérmico': 'Interruptor Magnetotérmico',
-  'Interruptor Diferencial': 'Interruptor Diferencial',
-  'Contactor': 'Contactor',
-  'Elemento de Control': 'Elemento de Control',
-  'Proteccion Sobretension': 'Protección Sobretensión',
-  'Interruptor Seccionador': 'Interruptor Seccionador',
-  'Rearmador': 'Rearmador Diferencial',
-  'Accesorio': 'Accesorio',
-  'Bloque Mando Osmoz': 'Bloque Mando Osmoz',
-  'Pulsador Osmoz': 'Pulsador Osmoz',
-  'Fuente Alimentacion': 'Fuente Alimentación',
-}
-
-export const TYPE_LABELS = {
-  /* Fotovoltaica */
-  'CARRIL DIN': 'Carril DIN',
-  'Controlador Solar': 'Controlador Solar',
-  'Monitor CC': 'Monitor CC',
-  'Cajas para FV': 'Cajas para FV',
-  
-  /* Vehículos eléctricos */
-  'RECARGA': 'Recarga',
-  
-  /* Iluminación */
-  'EMERGENCIA': 'Emergencia',
-  
-  /* General */
-  'CAJA MOLDEADA': 'Caja Moldeada',
-  'Piloto luminoso': 'Piloto Luminoso',
-  'Contador eléctrico': 'Contador Eléctrico',
-}
-
 /**
  * Mapeo completo de gamas comerciales por familia y subfamilia.
  * Generado automáticamente desde Supabase (scripts/generate_mapeo_consolidado.cjs)
@@ -249,15 +203,4 @@ export const GAMAS_POR_FAMILIA = {
     'Toma Corriente Industrial': ['Toma Industrial'],
     'Zumbador': ['Señalizacion Acustica'],
   },
-}
-
-export const CATEGORY_IDS = {
-  "cables": "Cables",
-  "potencia": "Distribución de potencia",
-  "automatizacion": "Automatización",
-  "domotica": "Automatización de edificios",
-  "fotovoltaica": "Fotovoltaica",
-  "iluminacion": "Iluminación",
-  "instalacion": "Instalación",
-  "vehiculos": "Vehículos eléctricos",
 }
