@@ -87,7 +87,7 @@ function construirGrupos(subfamiliasConTipos) {
    return key && aiCache[key] ? aiCache[key] : null
  }, [referencia, aiCache])
 
- async function cargarInfoIA(ficha) {
+ const cargarInfoIA = useCallback(async (ficha) => {
   const key = ficha.ref_fabricante || ficha.ref || ''
   if (aiCacheRef.current[key]) return
 
@@ -122,7 +122,7 @@ Dado un producto con su nombre, marca y referencia, busca mentalmente en tu cono
     console.warn('No se pudieron obtener datos por IA:', e)
   }
   setAiCargando(false)
-}
+}, [setAiCache])
 
 useEffect(() => {
   async function load() {
@@ -201,7 +201,7 @@ useEffect(() => {
    }
   }
   load()
- }, [categoria, marca])
+  }, [categoria, marca, paso])
 
   useEffect(() => {
    if (!categoria || !marca || !gama) return;
@@ -354,7 +354,7 @@ useEffect(() => {
   setReferencia(null)
   setPaso('marcas')
   setHistorial(prev => [...prev, { paso: 'categorias' }])
- }, [])
+ }, [setHistorial])
 
  const seleccionarMarca = useCallback((marcaNombre) => {
   setMarca(marcaNombre)
@@ -364,9 +364,9 @@ useEffect(() => {
   setHistorial(prev => [...prev, { paso: 'marcas' }])
   // Don't set paso here — the useEffect for [categoria, marca] will set it
   // to either 'categorias_grupo' (DP) or 'gamas' (legacy) based on data
- }, [])
+ }, [setHistorial])
 
- const seleccionarCategoriaGrupo = useCallback((cat) => {
+  const seleccionarCategoriaGrupo = useCallback((cat) => {
   setCategoriaGrupo(cat)
   setSubcategoria(null)
   setSubgama(null)
@@ -374,7 +374,7 @@ useEffect(() => {
   setReferencia(null)
   setPaso('subcategorias')
   setHistorial(prev => [...prev, { paso: 'categorias_grupo' }])
- }, [])
+ }, [setHistorial])
 
  const seleccionarSubcategoria = useCallback((subcat) => {
   if (!categoriaGrupo || !grupos[categoriaGrupo]) return
@@ -388,11 +388,11 @@ useEffect(() => {
   setReferencia(null)
   setReferenciasDisponibles([])
   setError(null)
-  setPaso('gamas_comerciales')
-  setHistorial(prev => [...prev, { paso: 'subcategorias' }])
- }, [categoriaGrupo, grupos])
+   setPaso('gamas_comerciales')
+   setHistorial(prev => [...prev, { paso: 'subcategorias' }])
+  }, [categoriaGrupo, grupos, setHistorial])
 
- const seleccionarGama = useCallback((gamaNombre) => {
+  const seleccionarGama = useCallback((gamaNombre) => {
   setGama(gamaNombre)
   setTipo(null)
   setSubgama(null)
@@ -400,9 +400,9 @@ useEffect(() => {
   setReferencia(null)
   setPaso('tipos')
   setHistorial(prev => [...prev, { paso: 'gamas' }])
- }, [])
+ }, [setHistorial])
 
- const seleccionarTipo = useCallback((tipoNombre) => {
+  const seleccionarTipo = useCallback((tipoNombre) => {
   setTipo(tipoNombre)
   setGamaComercial(null)
   setGamasComercialesDisponibles([])
@@ -412,9 +412,9 @@ useEffect(() => {
   setReferenciasDisponibles([])
   setPaso('gamas_comerciales')
   setHistorial(prev => [...prev, { paso: 'tipos' }])
- }, [])
+ }, [setHistorial])
 
- const seleccionarGamaComercial = useCallback((gc) => {
+  const seleccionarGamaComercial = useCallback((gc) => {
   setGamaComercial(gc)
   setSubgama(null)
   setSubgamasDisponibles([])
@@ -423,7 +423,7 @@ useEffect(() => {
   setError(null)
   setPaso('subgamas')
   setHistorial(prev => [...prev, { paso: 'gamas_comerciales' }])
- }, [])
+ }, [setHistorial])
 
  const seleccionarSubgama = useCallback(async (sg) => {
   setSubgama(sg)
@@ -446,8 +446,8 @@ useEffect(() => {
     console.error('Error cargando productos por subgama:', err)
     setError('Error al cargar productos')
   }
-  setCargando(false)
- }, [categoria, marca, categoriaGrupo, subcategoria, gama, tipo, gamaComercial, grupos])
+   setCargando(false)
+  }, [categoria, marca, categoriaGrupo, subcategoria, gama, tipo, gamaComercial, grupos, setHistorial])
 
  const seleccionarReferencia = useCallback(async (producto) => {
    setCargando(true)
@@ -470,7 +470,25 @@ useEffect(() => {
    } finally {
     setCargando(false)
    }
-  }, [])
+   }, [setHistorial, cargarInfoIA])
+
+ const reiniciar = useCallback(() => {
+  setPaso('categorias')
+  setCategoria(null)
+  setMarca(null)
+  setGamaComercial(null)
+  setSubgama(null)
+  setGama(null)
+  setTipo(null)
+  setCategoriaGrupo(null)
+  setSubcategoria(null)
+  setGamasComercialesDisponibles([])
+  setSubgamasDisponibles([])
+  setGrupos({})
+  setReferencia(null)
+  setReferenciasDisponibles([])
+  setHistorial([])
+ }, [setHistorial])
 
  const volver = useCallback(() => {
   const nuevoHistorial = [...historial]
@@ -505,7 +523,7 @@ useEffect(() => {
       setReferencia(null); setReferenciasDisponibles([])
       break
   }
- }, [historial])
+ }, [historial, reiniciar, setHistorial])
 
  const irAPaso = useCallback((breadcrumbIndex) => {
   // Build the list of steps from CURRENT STATE (not from historial)
@@ -598,25 +616,7 @@ useEffect(() => {
       setGamasDisponibles(data.map(g => g.nombre))
     }).catch(err => console.error('Error reloading gamas:', err))
   }
- }, [historial, categoria, marca, gama, tipo, categoriaGrupo, subcategoria, gamaComercial, subgama, referencia, grupos, gamasDisponibles])
-
- const reiniciar = useCallback(() => {
-  setPaso('categorias')
-  setCategoria(null)
-  setMarca(null)
-  setGamaComercial(null)
-  setSubgama(null)
-  setGama(null)
-  setTipo(null)
-  setCategoriaGrupo(null)
-  setSubcategoria(null)
-  setGamasComercialesDisponibles([])
-  setSubgamasDisponibles([])
-  setGrupos({})
-  setReferencia(null)
-  setReferenciasDisponibles([])
-  setHistorial([])
- }, [])
+ }, [historial, categoria, marca, gama, tipo, categoriaGrupo, subcategoria, gamaComercial, subgama, referencia, grupos, gamasDisponibles, setHistorial])
 
   const buscarReferenciaDirecta = useCallback(async (refId) => {
     if (!refId) return false
@@ -726,7 +726,7 @@ useEffect(() => {
     }
     setCargando(false)
     return false
-   }, [])
+   }, [setHistorial, cargarInfoIA])
 
  const buscarPorNombre = useCallback(async (termino) => {
    if (!termino || termino.trim().length < 2) {
