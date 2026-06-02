@@ -5,10 +5,10 @@ import Button from '../ui/Button'
 import { usePresupuestosContext } from './PresupuestosContext'
 import styles from '../../tools/Presupuestos.module.css'
 
-const CATEGORIAS = Object.keys(FULL_CATEGORY_INFO).map(key => ({
+const CATEGORIAS = Object.entries(FULL_CATEGORY_INFO).map(([key, info]) => ({
   id: key,
-  label: key,
-  icon: FULL_CATEGORY_INFO[key].icon,
+  label: info.label,
+  icon: info.icon,
 }))
 
 export default function PresupuestosEditor() {

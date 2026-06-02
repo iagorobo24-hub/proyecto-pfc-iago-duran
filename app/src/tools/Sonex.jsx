@@ -1,19 +1,13 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom'
 import { Clock, Plus, Trash2, MessageSquare, ChevronLeft } from 'lucide-react'
 import catalogService from '../services/catalogService'
 import { renderMarkdown } from '../utils/markdown'
-import { FULL_CATEGORY_INFO } from '../data/categoryMapping'
+import { getCategoriaMeta } from '../data/categoryMapping'
 import { useToast } from '../contexts/ToastContext'
 import { useSonex } from '../hooks/useSonex'
 import { trackEvent } from '../hooks/useAnalytics'
 import styles from './Sonex.module.css'
-
-const CATEGORIAS = Object.keys(FULL_CATEGORY_INFO).map(key => ({
-  id: key,
-  label: key,
-  icon: FULL_CATEGORY_INFO[key].icon
-}));
 
 const MODO_OBJETOS = [
   { id: "busqueda", label: "🔍 Búsqueda", desc: "Buscar referencias y especificaciones" },
@@ -35,6 +29,21 @@ export default function Sonex() {
     createNewSession, switchSession, deleteSession,
   } = useSonex();
   const [view, setView] = useState('chat');
+  const [categorias, setCategorias] = useState([]);
+
+  useEffect(() => {
+    catalogService.getCategorias().then(dbCats => {
+      const enriched = dbCats.map(cat => {
+        const meta = getCategoriaMeta(cat.id)
+        return {
+          id: cat.id,
+          label: meta.label || cat.label || cat.id,
+          icon: meta.icon || cat.icon || '📁',
+        }
+      })
+      setCategorias(enriched)
+    }).catch(() => setCategorias([]))
+  }, [])
 
   const extraerReferencias = async (texto) => {
     if (!texto) return [];
@@ -218,7 +227,7 @@ ${modoInstrucciones[modoActivo] || modoInstrucciones.busqueda}${categoriaTexto}`
             <div className={styles.seccion}>
               <div className={styles.seccionLabel}>CATEGORÍAS</div>
               <div className={styles.categoriasGrid}>
-                {CATEGORIAS.map(cat => (
+                {categorias.map(cat => (
                   <button key={cat.id} onClick={() => handleCategoriaClick(cat.id)} className={`${styles.catBtn} ${categoriaActiva === cat.id ? styles['catBtn--active'] : ''}`}>
                     <span className={styles.catBtnIcon}>{cat.icon}</span>
                     <span className={styles.catBtnLabel}>{cat.label}</span>

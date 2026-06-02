@@ -11,10 +11,10 @@ const genNum = () => {
   return `SNP-${d.getFullYear()}${String(d.getMonth() + 1).padStart(2, '0')}-${String(Math.floor(Math.random() * 900) + 100)}`
 }
 
-const CATEGORIAS = Object.keys(FULL_CATEGORY_INFO).map(key => ({
+const CATEGORIAS = Object.entries(FULL_CATEGORY_INFO).map(([key, info]) => ({
   id: key,
-  label: key,
-  icon: FULL_CATEGORY_INFO[key].icon,
+  label: info.label,
+  icon: info.icon,
 }))
 
 export default function PresupuestosLayout() {
