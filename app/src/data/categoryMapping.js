@@ -36,8 +36,29 @@ export const FULL_CATEGORY_INFO = {
   },
   "FOTOVOLTAICA": {
     icon: '☀️',
-    desc: 'Paneles solares, inversores, baterías y puntos de recarga para movilidad eléctrica.',
-    tip: 'Dimensiona el campo fotovoltaico según el consumo anual y la superficie disponible en cubierta.'
+    desc: 'Paneles solares, inversores, reguladores de carga, cajas combinadoras y protecciones para instalaciones fotovoltaicas.',
+    tip: 'Dimensiona el campo fotovoltaico según la potencia del inversor y verifica las protecciones en CC (sobretensión, seccionadores).',
+    /* 
+     * Estructura Fotovoltaica (24 productos):
+     * ├── Inversores y reguladores (19)
+     * │   ├─ Controlador Solar (18) - Schneider
+     * │   └─ Monitor CC (1) - Legrand
+     * ├── Seccionadores CC (aprox)
+     * │   └─ CARRIL DIN
+     * ├── Cajas combinadoras (6)
+     * │   └─ Cajas para FV - Legrand
+     * ├── Protecciones sobretensión (~2)
+     * │   └─ CARRIL DIN
+     * ├── Interruptores CC (~2)
+     * │   └─ CARRIL DIN
+     * └── Accesorios (~2)
+     *     └─ CARRIL DIN
+     */
+  },
+  "Fotovoltaica": {
+    icon: '☀️',
+    desc: 'Paneles solares, inversores, reguladores de carga, cajas combinadoras y protecciones para instalaciones fotovoltaicas.',
+    tip: 'Dimensiona el campo fotovoltaico según la potencia del inversor y verifica las protecciones en CC (sobretensión, seccionadores).',
   },
   "ILUMINACION": {
     icon: '💡',
@@ -97,6 +118,13 @@ export const SUBCATEGORY_LABELS = {
   'Protección para recarga': 'Protección para recarga',
   'Accesorios': 'Accesorios',
   
+  /* Fotovoltaica */
+  'Inversores y reguladores': 'Inversores y reguladores',
+  'Seccionadores CC': 'Seccionadores CC',
+  'Cajas combinadoras': 'Cajas combinadoras',
+  'Protecciones sobretensión': 'Protecciones sobretensión',
+  'Interruptores CC': 'Interruptores CC',
+  
   /* Automatización */
   'Interruptor Magnetotérmico': 'Interruptor Magnetotérmico',
   'Interruptor Diferencial': 'Interruptor Diferencial',
@@ -112,7 +140,13 @@ export const SUBCATEGORY_LABELS = {
 }
 
 export const TYPE_LABELS = {
+  /* Fotovoltaica */
   'CARRIL DIN': 'Carril DIN',
+  'Controlador Solar': 'Controlador Solar',
+  'Monitor CC': 'Monitor CC',
+  'Cajas para FV': 'Cajas para FV',
+  
+  /* General */
   'CAJA MOLDEADA': 'Caja Moldeada',
   'Piloto luminoso': 'Piloto Luminoso',
   'Contador eléctrico': 'Contador Eléctrico',

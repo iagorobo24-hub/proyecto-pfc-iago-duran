@@ -53,6 +53,12 @@ const etiquetasFamilias: Record<string, string> = {
   'ILUMINACION': 'Iluminación',
   'LUMINARIAS': 'Iluminación',
   
+  /* Fotovoltaica */
+  'FOTOVOLTAICA': 'Fotovoltaica',
+  'FOTOVOLTAICA SOLAR': 'Fotovoltaica',
+  'SOLAR': 'Fotovoltaica',
+  'PANELES SOLARES': 'Fotovoltaica',
+  
   /* Vehículos eléctricos */
   'VEHICULOS ELECTRICOS': 'Vehículos eléctricos',
   'VEHICULOS_ELECTRICOS': 'Vehículos eléctricos',
