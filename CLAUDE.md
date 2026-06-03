@@ -115,7 +115,7 @@ Optimize for search engine visibility and ranking. Use when asked to "improve SE
 
 # Proyecto PFC — Guía del Proyecto
 
-> 📖 **Referencia DB**: Antes de modificar consultas de catálogo, leer [DB_TAXONOMY.md](./DB_TAXONOMY.md) — documento maestro de la taxonomía de productos.
+> 📖 **Referencia DB**: [DB_TAXONOMY.md](./DB_TAXONOMY.md) es el documento maestro de la taxonomía de productos. Leer antes de modificar consultas, añadir familias, renombrar campos o reorganizar el catálogo. Al finalizar cambios en la DB, actualizarlo con el estado final.
 
 ## Resumen del Proyecto
 
@@ -364,6 +364,9 @@ Para DISTRIBUCION DE POTENCIA, el mapeo `subfamilia+tipo → (categoria, subcate
 5. **Testing** — Tests e2e con Playwright + tests unitarios con Vitest
 6. **Git** — `main` para producción, feature branches, conventional commits
 7. **DB Taxonomy** — Leer [DB_TAXONOMY.md](./DB_TAXONOMY.md) antes de tocar consultas de catálogo
+8. **Documentación en `docs/`** — Cualquier plan, análisis, auditoría o documento nuevo debe generarse dentro de `docs/`, organizado en la subcarpeta correspondiente (`planes/`, `auditorias/`, `fixes/`, `revisiones/`). Los planes estratégicos nuevos deben añadirse a `docs/planes/` con prefijo numérico cronológico y actualizar `000_INDICE.md`.
+9. **DB Taxonomy como referencia y compromiso** — Al trabajar con la base de datos (nuevas familias, renombrar campos, reorganizar catálogo, migraciones), usar [DB_TAXONOMY.md](./DB_TAXONOMY.md) como guía para mantener coherencia. Al finalizar, actualizar el documento con el estado final de la DB y añadir entrada al historial de cambios.
+10. **Registro en EVOLUCION.md** — Cada hito importante (nueva funcionalidad, migración, refactor grande, cambio de stack) debe documentarse como una nueva fase o entrada en [EVOLUCION.md](./EVOLUCION.md), siguiendo el formato de fases numeradas existente.
 
 ---
 
@@ -417,4 +420,4 @@ node scripts/normalize-legrand.mjs
 
 ---
 
-**Última actualización:** Mayo 2026
+**Última actualización:** Junio 2026
