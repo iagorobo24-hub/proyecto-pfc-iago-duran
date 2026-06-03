@@ -283,7 +283,7 @@ ${modoInstrucciones[modoActivo] || modoInstrucciones.busqueda}${categoriaTexto}$
               const isLastAssistant = idx === messages.length - 1 && message.role === 'assistant' && !message.content && streamingText;
               const displayContent = isLastAssistant ? streamingText : message.content;
               return (
-              <div key={message.id} className={`${styles.message} ${message.role === 'user' ? styles['message--user'] : ''}`}>
+              <div key={message.id} className={`${styles.message} ${message.role === 'user' ? styles['message--user'] : styles['message--assistant']}`}>
                 <div className={styles.message__avatar}>{message.role === 'user' ? 'T' : 'S'}</div>
                 <div className={styles.message__content}>
                   <div className={`${styles.message__bubble} ${message.role}`}>
