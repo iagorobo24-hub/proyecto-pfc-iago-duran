@@ -745,4 +745,169 @@ Los siguientes capítulos están bien desarrollados:
 
 ---
 
+## 🔍 ACTUALIZACIÓN: ANÁLISIS DEL MEMORIA_PFC_V5.docx
+
+*Análisis realizado el 03/06/2026 - Commit 65ce3cb*
+
+### 📊 Estadísticas del V5
+
+| Métrica | Valor | Comparativa vs V4 |
+|---------|-------|-------------------|
+| **Tamaño del archivo** | 13 MB | +225% (vs 4 MB) |
+| **Total de párrafos** | 2,149 | +272% (vs 577) |
+| **Total de caracteres** | ~101,128 | +579% |
+| **Total de tablas** | 113 | Nuevo |
+| **Heading 1 (capítulos)** | 14 | Mismo número |
+
+### 📋 Estructura Actualizada del V5
+
+El V5 mantiene la misma estructura base de 10 capítulos principales + anexos, pero con **contenido significativamente ampliado**:
+
+#### Capítulos por Extensión (caracteres)
+
+| Posición | Capítulo | Caracteres | Párrafos | Estado |
+|:---------|:---------|-----------:|---------:|:-------|
+| 1 | **A. FICHAS DE HERRAMIENTAS** | 17,630 | 240 | ✅ Completo |
+| 2 | **7. PROCESO DE DESARROLLO** | 14,110 | 254 | ✅ Completo |
+| 3 | **4. DISEÑO TÉCNICO** | 12,594 | 272 | ✅ Completo |
+| 4 | **6. HERRAMIENTAS E IA** | 9,728 | 44 | ⚠️ Listado |
+| 5 | **3. ANÁLISIS DE REQUISITOS** | 9,129 | 213 | ✅ Completo |
+| 6 | **5. CONTEXTO DE LA IA** | 6,259 | 33 | ⚠️ Mejorable |
+| 7 | **10. CONCLUSIONES** | 4,563 | 78 | ✅ Completo |
+| 8 | **2. ANÁLISIS DE LA EMPRESA** | 4,160 | 18 | ⚠️ Corto |
+| 9 | **8. MANUALES DE USO** | 3,787 | 100 | ✅ Completo |
+| 10 | **9. RESULTADOS** | 2,392 | 43 | ❌ Débil |
+| 11 | **1. INTRODUCCIÓN** | 2,071 | 20 | ⚠️ Corto |
+| 12 | **D. BIBLIOGRAFÍA** | 1,259 | 25 | ⚠️ Por completar |
+| 13 | **B. ANEXOS** | 0 | 0 | ❌ Vacío |
+| 14 | **C. AGRADECIMIENTOS** | 0 | 0 | ❌ Vacío |
+
+### 🎯 Estado Detallado por Capítulo
+
+#### ✅ CAPÍTULOS EXCELENTES (no requieren cambios)
+
+**Capítulo 7 - PROCESO DE DESARROLLO** (14KB, 254 párrafos)
+- 7.1 Metodología: Cómo trabajé con IA Generativa ✅
+- 7.2 Herramientas por fase ✅
+- 7.3 Cronología: 10 fases detalladas (Fase 0 a Fase 10) ✅
+- 7.4 Errores y Aciertos: Lecciones Aprendidas ✅
+- **Conclusión:** Es el capítulo más completo junto con el 4. Lista completa de fases desde marzo hasta mayo 2026.
+
+**Capítulo 4 - DISEÑO TÉCNICO** (12.5KB, 272 párrafos)
+- 4.1 Arquitectura del Sistema (diagramas, flujos, seguridad) ✅
+- 4.2 Stack Tecnológico (React 19, Vite 7, Supabase, Vercel) ✅
+- 4.3 Diseño UI/UX (sistema de diseño, modo oscuro, accesibilidad) ✅
+- 4.4 Modelo de Datos (tablas, comparativa Firestore vs Supabase) ✅
+- **Conclusión:** Muy completo, incluye justificaciones y alternativas.
+
+**Capítulo 3 - ANÁLISIS DE REQUISITOS** (9KB, 213 párrafos)
+- 3.1 Problemas Identificados (5 problemas + 3 restricciones) ✅
+- 3.2 Requisitos Funcionales (8 RF, 28 sub-requisitos) ✅
+- 3.3 Requisitos No Funcionales (8 RNF, 24 sub-requisitos) ✅
+- **Conclusión:** Exhaustivo y bien estructurado.
+
+**Anexo A - FICHAS DE HERRAMIENTAS** (17.6KB, 240 párrafos)
+- 10 fichas técnicas completas:
+  1. Claude Web (Anthropic) ✅
+  2. GitHub Copilot ✅
+  3. Vercel ✅
+  4. Windsurf IDE ✅
+  5. Qwen CLI ✅
+  6. Gemini CLI ✅
+  7. OpenCode CLI ✅
+  8. OpenRouter ✅
+  9. Firebase ✅
+  10. Supabase ✅
+- **Conclusión:** Excelente documentación de cada herramienta con ejemplos, ventajas, limitaciones y lecciones.
+
+#### ⚠️ CAPÍTULOS QUE NECESITAN AMPLIACIÓN
+
+**Capítulo 9 - RESULTADOS** (2.4KB, 43 párrafos) - **CRÍTICO**
+- 9.1 Resultados Cualitativos ✅ (tiene contenido)
+- 9.2 Resultados Cuantitativos ❌ (muy breve o ausente)
+- **Falta:**
+  - Capturas de pantalla de todos los módulos
+  - Métricas de rendimiento (Lighthouse scores)
+  - Bundle size y loading times
+  - Tablas resumen de funcionalidades implementadas
+  - Comparativa objetivos vs resultados reales
+- **Acción requerida:** Ampliar significativamente antes de la entrega final.
+
+**Capítulo 5 - CONTEXTO DE LA IA** (6.2KB, 33 párrafos)
+- 5.1 IA Generativa en Desarrollo Web ✅
+- 5.2 Herramientas en el mercado ⚠️ (listado básico)
+- 5.3 ¿Por qué IA generativa para desarrollo web? ⚠️
+- 5.4 Tendencias identificadas ⚠️
+- **Problema:** Párrafos muy largos, poco detalle en tendencias.
+- **Acción:** Profundizar en datos concretos del estado del arte 2026.
+
+**Capítulo 2 - ANÁLISIS DE LA EMPRESA** (4.1KB, 18 párrafos)
+- 2.1 Análisis de la Empresa: Sonepar ⚠️
+- 2.2 Estructura Organizativa y Organigrama ❓
+- 2.3 Recursos Humanos ❓
+- **Problema:** Muy corto, solo 18 párrafos para toda la empresa.
+- **Acción:** Ampliar con datos reales de Sonepar (facturación, empleados, estructura).
+
+**Capítulo 1 - INTRODUCCIÓN** (2KB, 20 párrafos)
+- 1.1 a 1.8 presentes pero muy breves ⚠️
+- **Acción:** Expandir justificación, objetivos e impacto esperado.
+
+#### ❌ CAPÍTULOS VACÍOS
+
+**Anexo B - ANEXOS** (0 caracteres)
+- Contenido esperado: Diagramas adicionales, capturas ampliadas, configuraciones técnicas, código destacado.
+
+**Anexo C - AGRADECIMIENTOS** (0 caracteres)
+- Contenido esperado: Agradecimientos formales a tutores, Sonepar, familia y compañeros.
+
+**Capítulo D - BIBLIOGRAFÍA** (1.2KB, 25 párrafos)
+- Tiene contenido pero probablemente incompleto.
+- **Acción:** Verificar y completar referencias bibliográficas.
+
+---
+
+### 📊 COMPARATIVA V4 vs V5
+
+| Aspecto | V4 (analizado anteriormente) | V5 (actual) | Mejora |
+|---------|-----------------------------|-------------|:-------|
+| **Tamaño** | 4 MB | 13 MB | +225% |
+| **Párrafos** | 577 | 2,149 | +272% |
+| **Capítulo 4 (Diseño)** | ~8KB | 12.5KB | +56% |
+| **Capítulo 7 (Proceso)** | ~10KB | 14KB | +40% |
+| **Anexo A (Herramientas)** | Esquema básico | 17.6KB completo | Nuevo |
+| **Capítulo 9 (Resultados)** | Similar estructura | 2.4KB (débil) | Igual |
+| **Anexos B y C** | Vacíos | Vacíos | Igual |
+
+---
+
+### 🎯 PRIORIDADES PARA LA ENTREGA FINAL
+
+#### 🔴 MÁXIMA PRIORIDAD (antes de generar V6)
+1. **Capítulo 9 - RESULTADOS**: Añadir métricas, capturas, tablas comparativas
+2. **Anexo B - ANEXOS**: Completar con material visual y técnico
+3. **Anexo C - AGRADECIMIENTOS**: Redactar agradecimientos formales
+
+#### 🟠 ALTA PRIORIDAD
+4. **Capítulo 2**: Ampliar información de Sonepar (datos, organigrama)
+5. **Capítulo 5**: Profundizar en contexto de IA y tendencias 2026
+
+#### 🟡 MEDIA PRIORIDAD
+6. **Capítulo 1**: Expandir introducción ligeramente
+7. **Capítulo D**: Completar bibliografía
+
+---
+
+### 💡 CONCLUSIÓN DEL ANÁLISIS V5
+
+**El V5 representa un salto cualitativo enorme** respecto al V4:
+- ✅ Los capítulos técnicos (3, 4, 7) están **excelentes**
+- ✅ El Anexo A de herramientas es **muy completo**
+- ✅ La estructura general está **bien consolidada**
+- ⚠️ Faltan **resultados cuantitativos** y **material visual** (capítulo 9 y anexos B/C)
+
+**Recomendación:** El documento base es sólido. Con completar el capítulo 9 y los anexos vacíos, estará listo para entrega.
+
+---
+
 *Reporte generado automáticamente - Miércoles, 3 de Junio de 2026*
+*Actualización V5 añadida: 03/06/2026 08:30*

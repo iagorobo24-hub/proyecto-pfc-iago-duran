@@ -423,6 +423,80 @@ Basado en la experiencia del proyecto, el workflow óptimo es:
 
 ---
 
+## 📝 NOTA DE ACTUALIZACIÓN: Capítulo 6 en el MEMORIA_PFC_V5.docx
+
+*Actualización realizada el 03/06/2026 - Commit 65ce3cb*
+
+### ✅ Estado del Capítulo 6 en el V5
+
+El documento `MEMORIA_PFC_V5.docx` **integra y expande** este contenido en dos ubicaciones:
+
+#### 1. **Capítulo 6 - HERRAMIENTAS E IA UTILIZADAS** (9.7KB, 44 párrafos)
+
+Lista las 10 herramientas principales usadas en el proyecto:
+- 6.1 Claude Web (Anthropic)
+- 6.2 GitHub Copilot
+- 6.3 Vercel
+- 6.4 Windsurf IDE
+- 6.5 Qwen CLI
+- 6.6 Gemini CLI
+- 6.7 OpenCode CLI
+- 6.8 OpenRouter
+- 6.9 Firebase
+- 6.10 Supabase
+
+**Estado:** Listado básico con descripciones. Menos detallado que este archivo.
+
+#### 2. **Anexo A - FICHAS DE HERRAMIENTAS** (17.6KB, 240 párrafos)
+
+**Excelentes fichas técnicas detalladas** para cada una de las 10 herramientas. Cada ficha incluye:
+- ¿Qué es?
+- ¿Para qué lo usé en el proyecto?
+- ¿Cómo lo usé? (flujo de trabajo)
+- Ejemplos de uso real
+- Ventajas y limitaciones encontradas
+- Lecciones aprendidas
+- Comparativa con alternativas
+- Referencias
+
+### 📊 Comparativa: Este Archivo vs Capítulo 6 + Anexo A del V5
+
+| Contenido | Este Archivo | V5 Capítulo 6 | V5 Anexo A | Mejor En |
+|-----------|-------------|--------------|------------|----------|
+| **Tabla comparativa general** | ✅ Completa | ❌ No tiene | ❌ No tiene | **Este archivo** |
+| **Puntuaciones (1-5)** | ✅ 15 herramientas | ❌ No tiene | ⚠️ Parcial | **Este archivo** |
+| **Matriz de decisión** | ✅ Rápida | ❌ No tiene | ❌ No tiene | **Este archivo** |
+| **Workflow integrado** | ✅ Detallado | ❌ No tiene | ⚠️ Parcial | **Este archivo** |
+| **Fichas individuales** | ⚠️ 8 herramientas | ⚠️ Listado | ✅ 10 fichas completas | **V5 Anexo A** |
+| **Ejemplos de prompts** | ✅ Varios | ❌ No tiene | ✅ Ejemplos reales | **V5 Anexo A** |
+| **Configuraciones técnicas** | ⚠️ Algunas | ⚠️ Básico | ✅ Completas | **V5 Anexo A** |
+| **Lecciones aprendidas** | ✅ Sí | ❌ No tiene | ✅ Detalladas | **V5 Anexo A** |
+
+### 💡 Valor de Este Archivo
+
+Este archivo `comparativa-final.md` **complementa perfectamente** al V5:
+
+1. **Visión panorámica**: Las tablas comparativas generales NO están en el V5
+2. **Puntuaciones objetivas**: El sistema de rating 1-5 por criterios no está en el V5
+3. **Matriz de decisión rápida**: La tabla final de "Si necesitas X, usa Y" no está en el V5
+4. **Workflow integrado de 5 pasos**: No documentado en el V5
+
+### 🎯 Recomendación
+
+**Mantener este archivo** como **herramienta de consulta rápida**:
+- ✅ Las tablas comparativas son únicas y valiosas
+- ✅ La matriz de decisión es útil para tomar decisiones rápidas
+- ✅ Las puntuaciones objetivas ayudan a priorizar inversiones
+
+**Para la memoria del PFC:** El V5 Anexo A es más completo en fichas individuales.
+
+**Para uso práctico:** Este archivo es mejor para decisiones rápidas.
+
+---
+
+*Archivo original creado: 03/06/2026 (sesión nocturna)*
+*Actualización V5: 03/06/2026 08:45*
+
 *Capítulo 06 — Comparativa Final de Herramientas IA*
 *Última actualización: Junio 2026*
 *Basado en 6 meses de uso intensivo con +15 herramientas evaluadas*

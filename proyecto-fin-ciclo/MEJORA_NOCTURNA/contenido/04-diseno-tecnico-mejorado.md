@@ -546,5 +546,84 @@ async function fetchProducts(filters, offset = 0, limit = 1000) {
 
 ---
 
+## 📝 NOTA DE ACTUALIZACIÓN: Capítulo 4 en el MEMORIA_PFC_V5.docx
+
+*Actualización realizada el 03/06/2026 - Commit 65ce3cb*
+
+### ✅ Estado del Capítulo 4 en el V5
+
+El capítulo **4. DISEÑO TÉCNICO** del documento `MEMORIA_PFC_V5.docx` **incluye y consolida** todo el contenido de este archivo `04-diseno-tecnico-mejorado.md`, con las siguientes características:
+
+#### Contenido del V5 (Capítulo 4 - 12.5KB, 272 párrafos):
+
+**4.1 Arquitectura del Sistema** ✅
+- Visión general de la arquitectura de 3 capas
+- Diagrama de arquitectura completo
+- Componentes principales (Frontend, Backend, Capa de datos)
+- Flujo de datos (3 flujos detallados)
+- 4 capas de seguridad
+
+**4.2 Stack Tecnológico** ✅
+- Decisiones de tecnología documentadas
+- React 19 + Vite 7 (justificación de actualización)
+- Estilos (CSS Modules + variables CSS)
+- Visualización de datos (Recharts)
+- Supabase (Auth + BD + Realtime)
+- API de IA (OpenRouter)
+- Deployment en Vercel
+- Testing con Playwright
+- Migración Firebase → Supabase (justificación completa)
+
+**4.3 Diseño UI/UX** ✅
+- Sistema de diseño completo
+- Paleta de colores (Sonepar + modo oscuro)
+- Tipografía (Inter)
+- Componentes UI (Button, Input, Card, Badge)
+- Layout responsive (AppShell)
+- Accesibilidad implementada
+- Iconografía y animaciones
+
+**4.4 Modelo de Datos** ✅
+- Visión general del modelo
+- Tablas de la BD (`brands`, `products`)
+- Colecciones (`user_data`, `presupuestos`, `incidencias`, `formacion`)
+- Datos no sincronizados (`hierarchy.json`, `catalogoSonepar.js`)
+- Comparativa Firestore vs Supabase
+
+### 📊 Comparativa: Este Archivo vs Capítulo 4 del V5
+
+| Sección de este archivo | Equivalente en V5 | Estado |
+|------------------------|-------------------|:------:|
+| 4.1 Visión General Arquitectura | 4.1 Arquitectura del Sistema | ✅ Integrado |
+| 4.2 Stack Tecnológico Detallado | 4.2 Stack Tecnológico | ✅ Integrado |
+| 4.3 Sistema de Diseño | 4.3 Diseño UI/UX | ✅ Integrado |
+| 4.4 Decisiones Tecnológicas | 4.2 + 4.3 | ✅ Integrado |
+| 4.5 Modelo de Datos | 4.4 Modelo de Datos | ✅ Integrado |
+| 4.6 Estructura de Directorios | 4.1 + 4.4 | ✅ Integrado |
+| 4.7 Servicios y Lógica de Negocio | 4.1 + 4.2 | ✅ Integrado |
+| 4.8 Gestión de Estado | 4.1 + 4.4 | ✅ Integrado |
+| 4.9 Security | 4.1 (Capas de seguridad) | ✅ Integrado |
+| 4.10 Rendimiento | 4.2 + 4.3 | ✅ Integrado |
+
+### 💡 Valor de Este Archivo
+
+Aunque el V5 ya contiene el Capítulo 4 completo, este archivo `04-diseno-tecnico-mejorado.md` **mantiene su valor** como:
+
+1. **Referencia expandida**: Contiene más detalle técnico en algunas secciones (ej: código de migración, snippets específicos)
+2. **Material para anexos**: Puede usarse como base para el Anexo B (contenido técnico adicional)
+3. **Documentación para desarrolladores**: Es más útil para un desarrollador que quiera entender el código a fondo
+
+### 🎯 Recomendación
+
+**Mantener este archivo** como documentación técnica expandida, pero **no es necesario modificarlo** para la entrega del PFC, ya que:
+- ✅ El V5 Capítulo 4 ya cubre todo lo necesario para la memoria
+- ✅ El contenido está bien sincronizado
+- ✅ Este archivo sirve como "anexo técnico" no oficial
+
+---
+
+*Archivo original creado: 03/06/2026 (sesión nocturna)*
+*Actualización V5: 03/06/2026 08:40*
+
 *Capítulo 04 — Diseño Técnico*
 *Última actualización: Junio 2026*

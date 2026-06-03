@@ -563,4 +563,136 @@ const {
 
 ---
 
+## 🔍 ACTUALIZACIÓN: CÓDIGO EN EL MEMORIA_PFC_V5.docx
+
+*Análisis realizado el 03/06/2026 - Commit 65ce3cb*
+
+### 📊 Reflejo del Código en la Memoria V5
+
+El análisis del documento `MEMORIA_PFC_V5.docx` revela que **el código fuente está excelentemente documentado** en los capítulos técnicos:
+
+#### ✅ Capítulo 4 - DISEÑO TÉCNICO (12.5KB)
+
+**4.1 Arquitectura del Sistema** documenta:
+- ✅ Diagrama de arquitectura completa (navegador → Vercel → Supabase → OpenRouter)
+- ✅ Componentes principales: Frontend (React 19 + Vite 7), Backend (Supabase), IA (OpenRouter)
+- ✅ Flujo de datos en 3 flujos principales:
+  - Flujo 1: Carga de catálogo (Supabase → frontend)
+  - Flujo 2: Chat con SONEX (frontend → Edge Function → OpenRouter)
+  - Flujo 3: Autenticación (Google OAuth → Supabase Auth)
+- ✅ 4 capas de seguridad: Autenticación, Autorización (RLS), Red (CSP), API (Edge Function)
+
+**4.2 Stack Tecnológico** documenta:
+- ✅ **React 19 + Vite 7**: Justificación de actualización desde React 18
+- ✅ **Estilos**: CSS Modules + CSS custom properties
+- ✅ **Visualización de datos**: Recharts para KPIs
+- ✅ **Supabase**: Auth + PostgreSQL + Realtime
+- ✅ **API de IA**: OpenRouter como gateway (anthropic/claude-3.5-haiku)
+- ✅ **Vercel**: Deployment + Edge Functions
+- ✅ **Playwright**: Testing E2E
+- ✅ **Migración Firebase → Supabase**: Justificación y estado
+
+**4.3 Diseño UI/UX** documenta:
+- ✅ Sistema de diseño con variables CSS
+- ✅ Paleta de colores corporativos Sonepar (#0055A4, #FCB315)
+- ✅ Modo oscuro implementado con View Transitions API
+- ✅ Tipografía: Inter como familia principal
+- ✅ Componentes UI: Button, Input, Card, Badge (todos con CSS Modules)
+- ✅ Layout: AppShell responsive con mobile-first
+- ✅ Accesibilidad: ARIA labels, keyboard navigation, focus management
+
+**4.4 Modelo de Datos** documenta:
+- ✅ Tablas Supabase: `brands`, `products`
+- ✅ Colecciones: `user_data`, `presupuestos`, `incidencias`, `formacion`
+- ✅ Datos locales: `hierarchy.json`, `catalogoSonepar.js`
+- ✅ Comparativa Firestore vs Supabase (motivos de migración)
+
+#### ✅ Capítulo 7 - PROCESO DE DESARROLLO (14KB)
+
+**7.3 Cronología** refleja la evolución del código:
+
+| Fase | Fecha | Qué se creó (código) | Herramienta IA |
+|------|-------|---------------------|----------------|
+| **Fase 0** | 7 mar 2026 | Artefactos HTML/JS individuales | Claude Web |
+| **Fase 1** | 7-15 mar 2026 | Proyecto Vite + rediseño profesional | Claude Web |
+| **Fase 2** | 15-16 mar 2026 | Componentes UI (Button, Input, Card) | Windsurf IDE |
+| **Fase 3** | 8-11 mar 2026 | SONEX v3 → v7 (evolución del chat) | Gemini CLI |
+| **Fase 4** | 21-22 mar 2026 | Flujos inter-herramientas + Catálogo | OpenCode CLI |
+| **Fase 5** | 22 mar 2026 | Modo oscuro + WelcomeState | OpenCode CLI |
+| **Fase 6** | 7 abr 2026 | Autenticación + Responsive | OpenCode CLI |
+| **Fase 7** | 7-8 abr 2026 | Migración a Firestore | OpenCode CLI |
+| **Fase 8** | 8-10 abr 2026 | Sistema de diseño circular + Catálogo masivo | OpenCode CLI |
+| **Fase 9** | 11-12 abr 2026 | Landing Page Hero (3 fases) | OpenCode CLI |
+| **Fase 10** | mayo 2026 | Migración a Supabase (en curso) | OpenCode CLI |
+
+**7.4 Errores y Aciertos** documenta:
+
+**Errores de implementación:**
+- ❌ Error 2: Exponer API key en el frontend → Solucionado con Edge Function en Vercel
+- ❌ Error 3: No hacer tests desde el principio → Playwright añadido en Fase 6
+- ❌ Error 6: Elegir Firebase antes de investigar alternativas → Migración a Supabase
+
+**Aciertos de implementación:**
+- ✅ Acierto 2: Usar CSS Modules desde el principio → mantenibilidad excelente
+- ✅ Acierto 4: Sistema de diseño consistente → reutilización de componentes
+- ✅ Acierto 7: Hacer scraping del catálogo real → datos reales de Sonepar
+
+#### ✅ Anexo A - FICHAS DE HERRAMIENTAS (17.6KB)
+
+Cada ficha incluye:
+- ✅ Qué es la herramienta
+- ✅ Cómo se usó en el proyecto (con ejemplos de código reales)
+- ✅ Ventajas y limitaciones encontradas
+- ✅ Lecciones aprendidas
+- ✅ Comparativa con alternativas
+
+**Ejemplos destacados:**
+- **OpenRouter**: Documenta la integración técnica completa (endpoint `/api/ai.js`, uso desde frontend, arquitectura de seguridad)
+- **Supabase**: Incluye scripts de migración creados, estructura de tablas, RLS
+- **Vercel**: Muestra el `vercel.json` completo con configuración de routes y headers
+
+---
+
+### 📊 COMPARATIVA: Código Real vs Documentación V5
+
+| Aspecto del Código | ¿Está en el V5? | Calidad de Documentación |
+|-------------------|-----------------|-------------------------|
+| **Arquitectura general** | ✅ Sí (4.1) | Excelente con diagramas |
+| **Stack tecnológico** | ✅ Sí (4.2) | Excelente con justificaciones |
+| **Modelo de datos** | ✅ Sí (4.4) | Muy completo |
+| **Sistema de diseño** | ✅ Sí (4.3) | Completo |
+| **Autenticación** | ✅ Sí (4.1 + 7.3 Fase 6) | Bien documentado |
+| **Evolución (fases)** | ✅ Sí (7.3) | Excelente cronología |
+| **Decisiones técnicas** | ✅ Sí (4.2 + 7.4) | Muy bien justificadas |
+| **Configuraciones** | ✅ Sí (Anexo A) | Ejemplos reales |
+| **Migración Firebase→Supabase** | ✅ Sí (4.2 + A.9→A.10) | Completa |
+| **Testing con Playwright** | ⚠️ Parcial (4.2) | Podría ampliarse |
+| **Estructura de directorios** | ❌ No explícita | Falta árbol de archivos |
+| **Snippets de código clave** | ⚠️ Parciales | Podría tener más ejemplos |
+
+---
+
+### 🎯 CONCLUSIÓN: DOCUMENTACIÓN DEL CÓDIGO EN V5
+
+**El V5 documenta EXCELENTAMENTE el código fuente:**
+
+✅ **Fortalezas:**
+- La arquitectura está perfectamente documentada con diagramas
+- El stack tecnológico tiene justificaciones sólidas
+- La evolución del código (10 fases) está detallada cronológicamente
+- Las decisiones técnicas (Firebase→Supabase, CSS Modules, etc.) están bien razonadas
+- Las herramientas IA usadas tienen fichas completas con ejemplos reales
+
+⚠️ **Mejoras menores posibles:**
+- Podría incluir un árbol de directorios explícito del proyecto
+- Podría tener más snippets de código clave (ej: configuración de Supabase, Edge Function de IA)
+- El testing con Playwright podría documentarse más (configuración, ejemplos de tests)
+
+**Veredicto:** El código está **muy bien documentado** en el V5. Un desarrollador podría entender la arquitectura completa y las decisiones técnicas leyendo sólo los capítulos 4 y 7.
+
+---
+
+*Análisis de código original: 2025*
+*Actualización V5 añadida: 03/06/2026 08:35*
+
 *Generado automáticamente por Hermes Agent — análisis estático del código fuente*
