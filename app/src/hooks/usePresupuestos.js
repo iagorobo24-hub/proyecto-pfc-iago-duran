@@ -93,7 +93,6 @@ export default function usePresupuestos() {
     guardando, setGuardando,
     historial,
     setHistorial,
-    loading,
     /* Acciones */
     guardarHistorial,
     calcularTotales,
