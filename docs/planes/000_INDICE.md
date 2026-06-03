@@ -34,57 +34,85 @@
 
 ---
 
-## 004 — Plan de Implementación General
+## 004 — Auditoría Completa
+**Fecha:** 2026-05-29
+**Archivo:** [`004_2026-05-29_AUDITORIA_COMPLETA.md`](./004_2026-05-29_AUDITORIA_COMPLETA.md)
+**Descripción:** Planning de auditoría completa — 112 hallazgos clasificados por severidad (12 críticos, 34 altos, 45 medios, 21 bajos).
+
+---
+
+## 005 — Plan de Implementación General
 **Fecha:** 2026-05-30
-**Archivo:** [`004_2026-05-30_IMPLEMENTACION.md`](./004_2026-05-30_IMPLEMENTACION.md)
+**Archivo:** [`005_2026-05-30_IMPLEMENTACION.md`](./005_2026-05-30_IMPLEMENTACION.md)
 **Descripción:** Plan de ejecución ordenado para llevar el código a producción limpia.
 
 ---
 
-## 005 — Auditoría Fase 3
+## 006 — Auditoría Fase 3
 **Fecha:** 2026-05-31
-**Archivo:** [`005_2026-05-31_AUDITORIA_FASE3.md`](./005_2026-05-31_AUDITORIA_FASE3.md)
+**Archivo:** [`006_2026-05-31_AUDITORIA_FASE3.md`](./006_2026-05-31_AUDITORIA_FASE3.md)
 **Descripción:** Auditoría técnica del proyecto — estado 6.5/10, deuda técnica, 272/272 tests passing.
 
 ---
 
-## 006 — Limpieza de BD y Clasificación
+## 007 — Limpieza de BD y Clasificación
 **Fecha:** 2026-06-01
-**Archivo:** [`006_2026-06-01_LIMPIEZA_CLASIFICACION.md`](./006_2026-06-01_LIMPIEZA_CLASIFICACION.md)
+**Archivo:** [`007_2026-06-01_LIMPIEZA_CLASIFICACION.md`](./007_2026-06-01_LIMPIEZA_CLASIFICACION.md)
 **Descripción:** Plan para garantizar coherencia en clasificación de productos y navegación de fichas técnicas.
 
 ---
 
-## 007 — Fixes Restantes
+## 008 — Fixes Restantes
 **Fecha:** 2026-06-01
-**Archivo:** [`007_2026-06-01_FIXES.md`](./007_2026-06-01_FIXES.md)
+**Archivo:** [`008_2026-06-01_FIXES.md`](./008_2026-06-01_FIXES.md)
 **Descripción:** Plan de fixes pendientes con estado de completado.
 
 ---
 
-## 008 — Migración de Familias
+## 009 — Migración de Familias
 **Fecha:** 2026-06-01
-**Archivo:** [`008_2026-06-01_MIGRACION_FAMILIAS.md`](./008_2026-06-01_MIGRACION_FAMILIAS.md)
+**Archivo:** [`009_2026-06-01_MIGRACION_FAMILIAS.md`](./009_2026-06-01_MIGRACION_FAMILIAS.md)
 **Descripción:** Unificación de nombres de familias en DB e interfaz.
 
 ---
 
-## 009 — Expansión Schneider
+## 010 — Expansión Schneider
 **Fecha:** 2026-06-03
-**Archivo:** [`009_2026-06-03_EXPANSION_SCHNEIDER/`](./009_2026-06-03_EXPANSION_SCHNEIDER/)
+**Archivo:** [`010_2026-06-03_EXPANSION_SCHNEIDER/`](./010_2026-06-03_EXPANSION_SCHNEIDER/)
 **Descripción:** Análisis de gap, plan de expansión y análisis completo para incorporación de Schneider Electric.
 | Documento | Contenido |
 |-----------|-----------|
-| [`GAP_ANALYSIS.md`](./009_2026-06-03_EXPANSION_SCHNEIDER/GAP_ANALYSIS.md) | Análisis de brechas Schneider vs estructura actual |
-| [`EXPANSION_PLAN.md`](./009_2026-06-03_EXPANSION_SCHNEIDER/EXPANSION_PLAN.md) | Plan de expansión para incorporar Schneider |
-| [`ANALISIS_COMPLETO.md`](./009_2026-06-03_EXPANSION_SCHNEIDER/ANALISIS_COMPLETO.md) | Análisis detallado de familias y productos Schneider |
+| [`GAP_ANALYSIS.md`](./010_2026-06-03_EXPANSION_SCHNEIDER/GAP_ANALYSIS.md) | Análisis de brechas Schneider vs estructura actual |
+| [`EXPANSION_PLAN.md`](./010_2026-06-03_EXPANSION_SCHNEIDER/EXPANSION_PLAN.md) | Plan de expansión para incorporar Schneider |
+| [`ANALISIS_COMPLETO.md`](./010_2026-06-03_EXPANSION_SCHNEIDER/ANALISIS_COMPLETO.md) | Análisis detallado de familias y productos Schneider |
+
+---
+
+## Auditorías Técnicas → `docs/auditorias/`
+
+| Archivo | Descripción |
+|---------|-------------|
+| [`001_DOMOTICA.md`](../auditorias/001_DOMOTICA.md) | Auditoría de productos DOMÓTICA / AUTOMATIZACION DE EDIFICIOS |
+| [`002_MODO_OSCURO.md`](../auditorias/002_MODO_OSCURO.md) | Auditoría de modo oscuro — 51 variables + 35 selectores dark faltantes |
+
+## Fixes → `docs/fixes/`
+
+| Archivo | Descripción |
+|---------|-------------|
+| [`001_FIX10_AUTOMATIZACION.md`](../fixes/001_FIX10_AUTOMATIZACION.md) | Fix 10: Automatización de Edificios — diagnóstico completado |
+| [`002_RESUMEN_EJECUTIVO.md`](../fixes/002_RESUMEN_EJECUTIVO.md) | Resumen ejecutivo de fixes — 13/14 completados |
+
+## Revisiones → `docs/revisiones/`
+
+| Archivo | Descripción |
+|---------|-------------|
+| [`001_CHANGES_V4.md`](../revisiones/001_CHANGES_V4.md) | Guía de actualización de la memoria PFC a V4 con datos corregidos |
+| [`002_MEJORAS_CONTEXTO_IA.md`](../revisiones/002_MEJORAS_CONTEXTO_IA.md) | Mejoras futuras: sliding window, resumen de contexto, conteo de tokens para SONEX |
 
 ---
 
 ## Notas
 
-- Los archivos marcados como **movidos** se trasladaron desde la raíz del proyecto para mantener el directorio raíz limpio.
-- Los archivos del Plan de Mejora (`planes/mejora/`) se conservan también en su ubicación original.
-- Los archivos de Schneider se conservan también en `docs/` raíz.
-- Los planes generados por Hermes AI se copiaron desde `/.hermes/plans/` y `/app/.hermes/plans/`.
 - **Última actualización del índice:** 2026-06-03
+- Todos los planes están organizados cronológicamente con prefijo numérico (001-010).
+- Las auditorías, fixes y revisiones están agrupados por tipo en subdirectorios separados.
