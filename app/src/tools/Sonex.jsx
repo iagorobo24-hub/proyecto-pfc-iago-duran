@@ -119,6 +119,11 @@ ${modoInstrucciones[modoActivo] || modoInstrucciones.busqueda}${categoriaTexto}$
 
       guardarMensaje({ id: aiMsgId, role: "assistant", content: '', timestamp: new Date(), referencias: [] });
 
+      const historial = messages
+        .filter(m => m.content)
+        .map(m => ({ role: m.role, content: m.content }));
+      historial.push({ role: "user", content: userMessage });
+
       let fullText = '';
       await callAnthropicAIStream(
         {
@@ -126,7 +131,7 @@ ${modoInstrucciones[modoActivo] || modoInstrucciones.busqueda}${categoriaTexto}$
           model: "anthropic/claude-3.5-haiku",
           max_tokens: 1000,
           system: buildSystemPrompt(catalogContext),
-          messages: [{ role: "user", content: userMessage }]
+          messages: historial,
         },
         (chunk) => {
           fullText += chunk;
