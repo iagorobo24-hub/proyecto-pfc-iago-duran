@@ -212,23 +212,167 @@ Evolución del sistema de logos:
 
 ---
 
-## Estado actual (Mayo 2026)
+## Fase 14 — Migración a Supabase (Mayo 2026)
+
+**Objetivo:** Superar los límites de Firestore (50K escrituras/día) y simplificar la infraestructura de datos.
+
+**Cambios realizados:**
+- Catálogo migrado de Firestore a **Supabase (PostgreSQL)** — tabla `products` + `brands`
+- `catalogService.ts` con 18 funciones y tipos completos (`Product`, `Brand`)
+- `supabaseClient.js` con conexión a Supabase
+- **Firebase Auth reemplazado por Supabase Auth** (Google Sign-In, OAuth)
+- Firestore relegado a legado solo para datos de usuario (`users/{userId}/...`)
+
+**Archivos creados:**
+- `app/src/supabase/supabaseClient.js` — cliente Supabase activo
+- `app/src/services/catalogService.ts` — servicio de catálogo con 18 funciones
+- `app/src/types/catalog.ts` — interfaces del catálogo
+
+**Documentación:** `DB_TAXONOMY.md` creado como documento maestro de la taxonomía de productos.
+
+---
+
+## Fase 15 — TypeScript Progresivo (Mayo 2026)
+
+**Objetivo:** Migrar gradualmente de JavaScript a TypeScript sin bloquear el desarrollo.
+
+**Estrategia:**
+- `tsconfig.json` con `strict: false`, `allowJs: true` — JS y TS coexisten
+- `moduleResolution: "bundler"` — Vite resuelve `.ts` desde imports `.js` sin cambiar rutas
+
+**Archivos migrados:**
+- `catalogService.ts` — servicio de catálogo con tipos completos
+- `anthropicService.ts` — funciones + streaming, tipos completos
+- `types/catalog.ts` — `Product`, `Brand`, `Category`, `SubfamiliaTipo`, `FiltroSubcategoria`
+- `types/ai.ts` — `AIRequestBody`, `AIResponse`, `AIFicha`
+
+**Reglas establecidas:**
+- Servicios nuevos en `.ts`, migrar existentes al tocarlos
+- Componentes JSX pueden seguir en `.jsx` (importar `.ts` funciona)
+- `any` permitido en casos complejos (ej: respuestas Supabase)
+
+---
+
+## Fase 16 — Normalización de Base de Datos y Fixes (Mayo-Junio 2026)
+
+**Objetivo:** Unificar la taxonomía de productos y corregir bugs de navegación reportados.
+
+### Normalización de familias (8 scripts)
+
+| Script | Propósito |
+|--------|-----------|
+| `00-backup-db.mjs` | Backup completo antes de migrar |
+| `01-clean-placeholders.mjs` | Limpiar placeholders |
+| `02-verify-taxonomy.mjs` | Verificar consistencia taxonómica |
+| `03-fix-contactores.mjs` | Corregir clasificación de contactores |
+| `04-fix-siemens-families.mjs` | Corregir familias Siemens |
+| `05-normalize-automatizacion.mjs` | Normalizar automatización |
+| `06-normalize-instalacion.mjs` | Normalizar instalación |
+| `07-normalize-ve-fv.mjs` | Normalizar vehículos eléctricos y fotovoltaica |
+| `08-normalize-tipos.mjs` | Normalizar tipos de producto |
+| `09-update-mapping-files.mjs` | Actualizar archivos de mapeo |
+
+### Fixes aplicados (14 reportados por usuario, 13 completados)
+
+| Fix | Descripción |
+|-----|-------------|
+| 1-2 | Nombres de familias unificados (DB + UI) |
+| 3 | "filtros" → "opciones" en UI |
+| 4 | Navegación duplicada eliminada de Topbar |
+| 5 | Logo en Sidebar colapsado (22px → 18px) |
+| 6 | Exportar PDF en KPI (ya funcionaba) |
+| 7 | Dashboard DB unificada (diferido) |
+| 8 | Grilla de referencias: max-width 800px → 1400px |
+| 9 | Breadcrumb en paso marcas |
+| 10 | DB Automatización de Edificios (49 productos) |
+| 11 | Unificación de categorías (6 categorías añadidas) |
+| 12 | Corrección de nombres de instalación |
+| 13 | Mapeo completo de Fotovoltaica |
+| 14 | Mapeo completo de Vehículos Eléctricos |
+
+**Archivos de migración SQL:** `migrations/001-004` con correcciones de nomenclatura y reclasificación.
+
+---
+
+## Fase 17 — Categorías Dinámicas y Limpieza de Duplicados (Mayo 2026)
+
+**Logros:**
+- Categorías dinámicas desde DB con `getCategorias()` usando `limit(10000)` para traer todas las familias
+- Limpieza de duplicados en el catálogo
+- Navegación corregida para todas las familias (DP agrupado + Legacy)
+- Unificación del sistema de categorías en todas las herramientas
+
+**Dual Mode de navegación:**
+- **Modo DP agrupado** (DISTRIBUCION DE POTENCIA): Marca → Categoría → Subcategoría → Referencias
+- **Modo Legacy** (resto): Marca → Gama → Tipo → Referencias
+
+---
+
+## Fase 18 — Documentación y Estructura del Repositorio (Junio 2026)
+
+**Objetivo:** Centralizar la documentación y eliminar el ruido de la raíz del proyecto.
+
+**Cambios realizados:**
+- `CLAUDE.md` creado con guía completa del proyecto + autoskills de IA
+- `DB_TAXONOMY.md` como documento maestro de base de datos
+- Todos los planes organizados cronológicamente en `docs/planes/` (001-010)
+- Auditorías técnicas en `docs/auditorias/`
+- Documentación de fixes en `docs/fixes/`
+- Guías de revisión en `docs/revisiones/`
+- `000_INDICE.md` como índice maestro de todos los planes
+- 6 documentos eliminados de la raíz del proyecto
+
+**Galería de logos:** 15 logos de fabricantes en `/public/logos/`.
+
+---
+
+## Fase 19 — Gateway IA Multi-Provider (Junio 2026)
+
+**Evolución del endpoint IA:**
+1. Proxy Anthropic directo (`api/anthropic.js`) — problemas CORS
+2. OpenRouter como gateway (Claude 3.5 Haiku, DeepSeek, Qwen)
+3. **Actual:** `app/api/ai.js` — Gateway unificado que soporta **OpenRouter, Groq y Gemini**
+
+**Características:**
+- Streaming de respuestas desde OpenRouter
+- Fallback entre proveedores
+- Enriquecimiento IA en Fichas Técnicas (características, aplicaciones, normas, manual, consejo)
+- System prompt con JSON estricto
+
+---
+
+## Estado actual (Junio 2026)
 
 **Stack:**
-- React 19 + Vite 7 + React Router DOM v7
-- CSS Modules + IBM Plex Sans
-- Firebase Auth (Google Sign-In)
-- Firestore (datos por usuario + catálogo)
-- OpenRouter API (gateway IA gratuito + enriquecimiento de fichas)
-- Vercel (deploy + edge functions)
+| Componente | Tecnología |
+|------------|------------|
+| Frontend | React 19 + Vite 7 + React Router DOM v7 |
+| Estilos | CSS Modules + Variables CSS + Framer Motion |
+| Autenticación | Supabase Auth (Google Sign-In, OAuth) |
+| Base de datos | Supabase (PostgreSQL) — tabla `products` + `brands` |
+| Datos de usuario | Firestore (legacy, en migración) |
+| IA | OpenRouter + Groq + Gemini vía Vercel Functions |
+| Testing | Playwright (E2E) + Vitest (unit) — ~119 tests |
+| Deploy | Vercel (Serverless Functions + SPA) |
+| Tipografía | IBM Plex Sans |
+| Iconos | lucide-react |
 
-**7 módulos funcionales + landing page + autenticación + modo oscuro + enriquecimiento IA en fichas técnicas.**
+**8 módulos funcionales + Landing Page:**
+- Fichas Técnicas (catálogo 6 niveles + búsqueda + enriquecimiento IA)
+- SONEX (chat IA streaming + detección de referencias)
+- Simulador Almacén (4 etapas logísticas)
+- Presupuestos (wizard 5 pasos + PDF)
+- Formación Interna (matriz de competencias)
+- Dashboard Incidencias (CRUD + diagnóstico IA)
+- KPI Logístico (6 KPIs + gráficos Recharts)
+- Landing Page (hero + roadmap + tech stack)
 
-**Próximos pasos planificados:**
-- Migrar catálogo de Firestore a Supabase (problemas con límites de Firestore)
-- Mantener Firebase solo para OAuth
-- Actualizar catálogo con datos reales completos
-- Caché de resultados IA por producto (para evitar re-consultas)
+**Métricas del proyecto:**
+- ~4.689 productos en DB
+- 15 logos de fabricantes
+- 8 categorías de producto
+- 119 scripts de utilidad
+- 0€ coste de infraestructura (free tiers)
 
 ---
 
@@ -240,21 +384,25 @@ Evolución del sistema de logos:
 | **VSCode** | Editor | Desarrollo local con GitHub Copilot | Activo |
 | **GitHub Copilot** | IA Code Assistant | Generar versiones y documentar cambios | Agotado |
 | **Vercel** | Deploy | Despliegue automático gratuito | Activo |
-| **GitHub** | Version Control | Branching workflow para no romper main | Activo |
+| **GitHub** | Version Control | Branching workflow + conventional commits | Activo |
 | **Windsurf** | IDE con IA | Modelos ilimitados gratuitos (tras agotar Copilot) | Activo |
 | **Gemini CLI** | CLI IA | Autenticación por cuentas/auth | Activo |
 | **Qwen CLI** | CLI IA | 1000 req/día gratis | Cerrado (15 abr 2026) |
 | **OpenCode** | CLI IA | Modelos MiniMax, BigPickle, NVIDIA Nemotron | Activo |
-| **OpenRouter** | API | Gateway API para modelos gratuitos en producción | Activo |
-| **Codex (OpenAI)** | IDE con IA | Alternativa probada (generó `.codex-deploy-fix/`) | Descartado |
+| **OpenRouter** | API | Gateway IA multi-modelo en producción | Activo |
+| **Groq** | API | Proveedor IA alternativo (vía gateway unificado) | Activo |
+| **Gemini API** | API | Proveedor IA alternativo (vía gateway unificado) | Activo |
+| **Supabase** | BBDD/Auth | PostgreSQL + OAuth (reemplaza Firebase) | Activo |
+| **Firebase Auth** | Autenticación | Google Sign-In OAuth (legado) | Legacy |
+| **Firestore** | Base de datos | Datos de usuario (legado, en migración) | Legacy |
+| **Playwright** | Testing E2E | Tests automatizados + scraping inicial | Activo |
+| **Vitest** | Testing Unit | Tests unitarios + cobertura | Activo |
+| **Codex (OpenAI)** | IDE con IA | Alternativa probada | Descartado |
 | **Cursor** | IDE con IA | Alternativa probada | Descartado |
 | **Trae** | IDE con IA | Alternativa probada | Descartado |
 | **Kiro** | IDE con IA | Alternativa probada | Descartado |
 | **Antigravity** | IDE con IA | Alternativa probada | Descartado |
 | **Devin (Cognition)** | IA Agente | Análisis de repo, limpieza, documentación | Activo |
-| **Playwright** | Scraping/Test | Web scraping catálogo Proyectos PFC.es | Activo |
-| **Firebase Auth** | Autenticación | Google Sign-In OAuth | Activo |
-| **Firestore** | Base de datos | Catálogo 75K productos + datos por usuario | Activo |
 
 ---
 
@@ -262,8 +410,11 @@ Evolución del sistema de logos:
 
 1. **Empezar simple funciona:** Los artefactos JSX sueltos permitieron prototipar rápido sin setup.
 2. **La migración a SPA es trabajo:** Pasar de 7 archivos sueltos a una app unificada requirió crear todo el scaffolding (router, layout, contexts, hooks).
-3. **Firestore tiene límites duros:** El plan gratuito Spark tiene 50K escrituras/día, lo que complicó la sincronización de un catálogo de 75K productos.
+3. **Firestore tiene límites duros:** El plan gratuito Spark tiene 50K escrituras/día — la migración a Supabase PostgreSQL eliminó este cuello de botella.
 4. **Las APIs de IA en producción son complejas:** CORS, configuración de Vercel, formatos de request/response, modelos deprecados... La batalla de la API duró 3 días.
-5. **Los modelos gratuitos son viables:** OpenRouter ofrece acceso a modelos como Claude 3.5 Haiku sin coste, ideal para proyectos educativos.
-6. **Los scrapers generan mucho código desechable:** De los 12+ scripts de scraping y sincronización, solo 1 sigue siendo útil.
+5. **Los modelos gratuitos son viables:** OpenRouter + Groq + Gemini ofrecen múltiples modelos sin coste, ideal para proyectos educativos.
+6. **Los scrapers generan mucho código desechable:** De los 12+ scripts de scraping y sincronización, solo unos pocos siguen siendo útiles.
 7. **El diseño iterativo funciona:** SONEX pasó por 7 versiones, cada una añadiendo funcionalidad basándose en el uso real.
+8. **TypeScript progresivo reduce fricción:** Migrar con `strict: false` y `allowJs: true` permite adoptar TS sin bloquear el desarrollo.
+9. **La normalización de DB es un proceso continuo:** Se necesitaron 10 scripts y múltiples iteraciones para unificar la taxonomía de 4.689 productos.
+10. **Documentar a medida que se construye ahorra horas:** El `CLAUDE.md` y la estructura `docs/` permiten a cualquier IA entender el proyecto en segundos.
