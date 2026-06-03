@@ -121,7 +121,7 @@ Auditar y corregir **14 problemas** reportados por el usuario en mensaje de voz 
 
 | Archivo | Propósito |
 |---------|-----------|
-| `FIXES_PLAN.md` | Plan inicial de fixes |
+| `docs/planes/007_2026-06-01_FIXES.md` | Plan inicial de fixes |
 | `AUDITORIA_DOMOTICA.md` | Guía de auditoría DB |
 | `FIX10_AUTOMATIZACION.md` | Estado del fix 10 |
 | `RESUMEN_EJECUTIVO_FIXES.md` | Este documento |
