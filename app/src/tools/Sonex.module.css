@@ -380,8 +380,9 @@
 .message--assistant .message__avatar { background: linear-gradient(135deg, var(--brand-primary), var(--brand-primary-dark)); color: var(--white); }
 .message--user .message__avatar { background: var(--gray-200); color: var(--gray-600); }
 
-.message__content { flex: 1; max-width: 75%; }
-.message--user .message__content { text-align: right; }
+.message__content { min-width: 0; max-width: 75%; }
+.message--user .message__content { flex: none; text-align: right; }
+.message--assistant .message__content { flex: none; }
 
 .message__bubble {
   padding: var(--space-3) var(--space-4);
