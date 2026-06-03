@@ -1,6 +1,6 @@
 import catalogService from './catalogService'
 
-const PATRON_REFERENCIA = /\b([A-Z]{2,}[\d]{1,}[A-Z0-9-]{3,})\b/
+const PATRON_REFERENCIA = /\b([A-Z]{1,}[\d]{1,}[A-Z0-9-]*)\b/
 
 function extractReference(text) {
   const match = text.match(PATRON_REFERENCIA)

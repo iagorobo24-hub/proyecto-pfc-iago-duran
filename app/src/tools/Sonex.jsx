@@ -84,7 +84,7 @@ export default function Sonex() {
       : '';
 
     const catalogSection = catalogContext
-      ? `\n\n## CONTEXTO REAL DEL CATÁLOGO\n\nA continuación tienes datos REALES extraídos de la base de datos del catálogo.\nDEBES basar tu respuesta en estos datos cuando sean relevantes.\nSi el usuario pregunta por productos, referencias, precios o disponibilidad, USA estos datos.\nSi la información no está en estos datos, indícalo y usa tu conocimiento técnico.\n\n${catalogContext}`
+      ? `\n\n## CONTEXTO REAL DEL CATÁLOGO\n\nA continuación tienes datos REALES extraídos de la base de datos del catálogo.\nDEBES basar tu respuesta en estos datos cuando sean relevantes.\nSi el usuario pregunta por productos, referencias, precios o disponibilidad, USA estos datos.\nCuando encuentres productos en estos datos, INDÍCALO explícitamente (ej: "Según los datos de nuestro catálogo..." o "disponemos en base de datos...").\nSi la información no está en estos datos, indícalo y usa tu conocimiento técnico.\n\n${catalogContext}`
       : '';
 
     return `Eres SONEX, un técnico superior del sector eléctrico con 20 años de experiencia en instalaciones industriales, automatización, domótica, climatización y energías renovables. Tu conocimiento abarca normativa vigente (REBT, UNE, IEC), productos de material eléctrico, sistemas de control y herramientas de medición.
