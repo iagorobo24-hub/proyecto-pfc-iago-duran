@@ -71,7 +71,7 @@ export default function Sonex() {
 
   const [streamingText, setStreamingText] = useState('');
 
-  const buildSystemPrompt = () => {
+  const buildSystemPrompt = (catalogContext = '') => {
     const modoInstrucciones = {
       busqueda: 'Modo BÚSQUEDA activado. Responde con referencias técnicas exactas, especificaciones detalladas y datos concretos de productos. Prioriza códigos de referencia, secciones, materiales y rangos de operación. Sé preciso y directo.',
       comparativa: 'Modo COMPARATIVA activado. Organiza la respuesta en tablas comparativas con pros y contras. Destaca diferencias técnicas clave, rendimiento, precio relativo y caso de uso ideal para cada opción. Concluye con una recomendación clara.',
@@ -81,6 +81,10 @@ export default function Sonex() {
 
     const categoriaTexto = categoriaActiva
       ? `\nEl usuario consulta desde la categoría: ${categoriaActiva}. Enfoca tu respuesta en productos y soluciones de esta familia técnica.`
+      : '';
+
+    const catalogSection = catalogContext
+      ? `\n\n## CONTEXTO REAL DEL CATÁLOGO\n\nA continuación tienes datos REALES extraídos de la base de datos del catálogo.\nDEBES basar tu respuesta en estos datos cuando sean relevantes.\nSi el usuario pregunta por productos, referencias, precios o disponibilidad, USA estos datos.\nSi la información no está en estos datos, indícalo y usa tu conocimiento técnico.\n\n${catalogContext}`
       : '';
 
     return `Eres SONEX, un técnico superior del sector eléctrico con 20 años de experiencia en instalaciones industriales, automatización, domótica, climatización y energías renovables. Tu conocimiento abarca normativa vigente (REBT, UNE, IEC), productos de material eléctrico, sistemas de control y herramientas de medición.
@@ -93,7 +97,7 @@ Directrices obligatorias:
 - Sé conciso: ve al grano sin rodeos.
 - Usa un tono formal pero cercano, como un compañero experto al que se le consulta en el mostrador técnico.
 
-${modoInstrucciones[modoActivo] || modoInstrucciones.busqueda}${categoriaTexto}`;
+${modoInstrucciones[modoActivo] || modoInstrucciones.busqueda}${categoriaTexto}${catalogSection}`;
   };
 
   const handleSendMessage = async () => {
@@ -108,7 +112,10 @@ ${modoInstrucciones[modoActivo] || modoInstrucciones.busqueda}${categoriaTexto}`
     trackEvent('ia', 'consulta', modoActivo, userMessage.length)
     try {
       const { callAnthropicAIStream } = await import('../services/anthropicService');
+      const { buildCatalogContext } = await import('../services/sonexCatalogContext');
       const aiMsgId = userMsgId + 1;
+
+      const catalogContext = await buildCatalogContext(userMessage, categoriaActiva);
 
       guardarMensaje({ id: aiMsgId, role: "assistant", content: '', timestamp: new Date(), referencias: [] });
 
@@ -118,7 +125,7 @@ ${modoInstrucciones[modoActivo] || modoInstrucciones.busqueda}${categoriaTexto}`
           provider: 'openrouter',
           model: "anthropic/claude-3.5-haiku",
           max_tokens: 1000,
-          system: buildSystemPrompt(),
+          system: buildSystemPrompt(catalogContext),
           messages: [{ role: "user", content: userMessage }]
         },
         (chunk) => {
