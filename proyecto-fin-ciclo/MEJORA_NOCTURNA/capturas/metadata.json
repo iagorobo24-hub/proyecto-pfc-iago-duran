@@ -1,0 +1,73 @@
+{
+  "timestamp": "2026-06-03T11:51:05.194211",
+  "base_url": "https://proyecto-pfc-iago-duran.vercel.app",
+  "modules": [
+    {
+      "id": "01-landing",
+      "name": "01-Landing-Page",
+      "path": "/",
+      "description": "Página de landing pública"
+    },
+    {
+      "id": "02-login",
+      "name": "02-Login",
+      "path": "/login",
+      "description": "Página de autenticación"
+    },
+    {
+      "id": "03-dashboard",
+      "name": "03-Dashboard",
+      "path": "/dashboard",
+      "description": "Dashboard principal con módulos"
+    },
+    {
+      "id": "04-fichas-tecnicas",
+      "name": "04-Fichas-Tecnicas",
+      "path": "/fichas",
+      "description": "Catálogo de productos"
+    },
+    {
+      "id": "05-ficha-detalle",
+      "name": "05-Ficha-Detalle",
+      "path": "/fichas/1",
+      "description": "Detalle de producto"
+    },
+    {
+      "id": "06-simulador",
+      "name": "06-Simulador-Almacen",
+      "path": "/simulador",
+      "description": "Simulador de almacén"
+    },
+    {
+      "id": "07-incidencias",
+      "name": "07-Incidencias",
+      "path": "/incidencias",
+      "description": "Dashboard de incidencias"
+    },
+    {
+      "id": "08-kpis",
+      "name": "08-KPIs",
+      "path": "/kpis",
+      "description": "Dashboard de KPIs logísticos"
+    },
+    {
+      "id": "09-presupuestos",
+      "name": "09-Presupuestos",
+      "path": "/presupuestos",
+      "description": "Generador de presupuestos"
+    },
+    {
+      "id": "10-formacion",
+      "name": "10-Formacion",
+      "path": "/formacion",
+      "description": "Matriz de formación"
+    },
+    {
+      "id": "11-sonex",
+      "name": "11-SONEX-Chat",
+      "path": "/sonex",
+      "description": "Asistente técnico SONEX"
+    }
+  ],
+  "output_dir": "/home/abu/github_repos/proyecto-pfc-iago-duran/proyecto-fin-ciclo/MEJORA_NOCTURNA/capturas"
+}

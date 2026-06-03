@@ -1,0 +1,86 @@
+import { readFileSync } from 'fs'
+const env = readFileSync('.env', 'utf-8').split('\n').reduce((a,l) => { 
+  const [k,v]=l.split('='); return k&&v?{...a,[k.trim()]:v.trim()}:a 
+}, {})
+
+const SUPABASE_URL = env.VITE_SUPABASE_URL
+const SUPABASE_ANON_KEY = env.VITE_SUPABASE_ANON_KEY
+
+console.log('🔍 Verificando estado actual en Supabase...\n')
+
+// Obtener primeros 5000 productos
+let todos = []
+let offset = 0
+
+while (offset < 5000) {
+  const resp = await fetch(`${SUPABASE_URL}/rest/v1/products?select=familia,subfamilia,tipo,marca,ref_fabricante,name&range=${offset}-${offset+999}`, {
+    headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY }
+  })
+  
+  const batch = await resp.json()
+  if (!Array.isArray(batch) || batch.length === 0) break
+  
+  todos.push(...batch)
+  offset += batch.length
+  if (batch.length < 1000) break
+}
+
+console.log(`📦 Productos leídos: ${todos.length}\n`)
+
+// Filtrar todo lo relacionado con vehículos
+const vehiculos = todos.filter(p => 
+  p.familia?.toLowerCase().includes('vehicul') ||
+  p.familia?.includes('VEHICULOS')
+)
+
+console.log(`🚗 Productos de automóviles encontrados: ${vehiculos.length}\n`)
+
+if (vehiculos.length > 0) {
+  console.log('📊 POR FAMILIA:')
+  const porFamilia = {}
+  vehiculos.forEach(p => {
+    porFamilia[p.familia] = (porFamilia[p.familia] || 0) + 1
+  })
+  Object.entries(porFamilia).forEach(([f,c]) => {
+    console.log(`  ${f.padEnd(35)} → ${c}`)
+  })
+  
+  console.log('\n📊 POR SUBFAMILIA:')
+  const porSub = {}
+  vehiculos.forEach(p => {
+    porSub[p.subfamilia] = (porSub[p.subfamilia] || 0) + 1
+  })
+  Object.entries(porSub).forEach(([s,c]) => {
+    console.log(`  ${s.padEnd(35)} → ${c}`)
+  })
+  
+  // Buscar específicamente los problemáticos
+  const problemáticos = vehiculos.filter(p => 
+    p.subfamilia?.includes('VEHICULOS') || 
+    p.subfamilia === p.familia
+  )
+  
+  if (problemáticos.length > 0) {
+    console.log(`\n⚠️  PRODUCTOS CON SUBFAMILIA MAL PUESTA: ${problemáticos.length}`)
+    problemáticos.forEach(p => {
+      console.log(`  • ${p.ref_fabricante} | ${p.marca} | subfamilia: "${p.subfamilia}"`)
+    })
+  } else {
+    console.log('\n✅ No hay productos con subfamilia mal puesta')
+  }
+  
+  // Verificar Schneider Electric
+  const schneider = vehiculos.filter(p => p.marca?.toLowerCase().includes('schneider'))
+  if (schneider.length > 0) {
+    console.log(`\n🔧 SCHNEIDER ELECTRIC: ${schneider.length} productos`)
+    console.log('Subfamilias:')
+    const subs = {}
+    schneider.forEach(p => subs[p.subfamilia] = (subs[p.subfamilia] || 0) + 1)
+    Object.entries(subs).forEach(([s,c]) => {
+      console.log(`  ${s.padEnd(35)} → ${c}`)
+    })
+  }
+} else {
+  console.log('❌ No se encontraron productos de vehículos en los primeros', offset, 'productos')
+  console.log('\n💡 Posible causa: Los productos están al final de la tabla (>5000)')
+}
