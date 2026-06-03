@@ -1,8 +1,8 @@
 import { useState, useCallback, useMemo, useEffect, useRef } from 'react'
 import catalogService from '../services/catalogService'
 import { callAnthropicAI, parseAIJsonResponse } from '../services/anthropicService'
-import { getCategoria, CATEGORIA_ICONOS } from '../data/categoriaMapping'
-import useUserData from './useUserData'
+import { getCategoria, CATEGORIA_ICONOS } from '../data/categories'
+import usePersistedState from './usePersistedState'
 
 function construirGrupos(subfamiliasConTipos) {
   const grupos = {}
@@ -24,13 +24,9 @@ function construirGrupos(subfamiliasConTipos) {
  export default function useNavegacionFichas() {
  const requestIdRef = useRef(0)
 
- const { data: storedHistorial, save: saveHistorial } = useUserData('fichas', 'historial', [], [
-   'pfc_fichas_historial',
- ])
- const { data: storedAiCache, save: saveAiCache } = useUserData('fichas', 'aiCache', {}, [
-   'pfc_fichas_ai_cache',
- ])
- 
+ const [historial, setHistorial] = usePersistedState('fichas', 'historial', [], ['pfc_fichas_historial'])
+ const [aiCache, setAiCache] = usePersistedState('fichas', 'aiCache', {}, ['pfc_fichas_ai_cache'])
+
  const [paso, setPaso] = useState('categorias')
  const [categorias, setCategorias] = useState([])
  const [categoria, setCategoria] = useState(null)
@@ -53,27 +49,6 @@ function construirGrupos(subfamiliasConTipos) {
  const [referenciasDisponibles, setReferenciasDisponibles] = useState([])
  const [cargando, setCargando] = useState(false)
  const [error, setError] = useState(null)
- const [historial, setHistorialState] = useState([])
- const [aiCache, setAiCacheState] = useState({})
-
- useEffect(() => { if (storedHistorial) setHistorialState(storedHistorial) }, [storedHistorial])
- useEffect(() => { if (storedAiCache) setAiCacheState(storedAiCache) }, [storedAiCache])
-
- const setHistorial = useCallback((val) => {
-   setHistorialState(prev => {
-     const next = typeof val === 'function' ? val(prev) : val
-     saveHistorial(next)
-     return next
-   })
- }, [saveHistorial])
-
- const setAiCache = useCallback((val) => {
-   setAiCacheState(prev => {
-     const next = typeof val === 'function' ? val(prev) : val
-     saveAiCache(next)
-     return next
-   })
- }, [saveAiCache])
   const aiCacheRef = useRef(aiCache)
   useEffect(() => { aiCacheRef.current = aiCache }, [aiCache])
   const [aiCargando, setAiCargando] = useState(false)
@@ -734,7 +709,7 @@ useEffect(() => {
    }
    setBusquedaCargando(true)
    try {
-    const results = await catalogService.buscarProductosConLimite(termino, 5)
+    const results = await catalogService.buscarProductos(termino, 5)
     setSugerenciasBusqueda(results)
    } catch {
     setSugerenciasBusqueda([])

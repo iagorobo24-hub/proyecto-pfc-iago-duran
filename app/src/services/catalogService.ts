@@ -552,24 +552,7 @@ function sanitizeSearchInput(t: string): string {
   return t.replace(/[(),]/g, '').replace(/[%_]/g, '\\$&')
 }
 
-export async function buscarProductos(termino: string): Promise<Product[]> {
-  try {
-    const t = sanitizeSearchInput(termino.trim());
-    const { data, error } = await supabase
-      .from('products')
-      .select('id, ref_fabricante, name, imagen, marca, familia, subfamilia, tipo, precio')
-      .or(`name.ilike.%${t}%,ref_fabricante.ilike.%${t}%`)
-      .limit(20);
-
-    if (error) throw error;
-    return ((data || []) as Record<string, unknown>[]).map(p => validateProduct(p) as unknown as Product);
-  } catch (error) {
-    logError('❌ Error buscarProductos:', error);
-    return [];
-  }
-}
-
-export async function buscarProductosConLimite(termino: string, limite: number = 5): Promise<Product[]> {
+export async function buscarProductos(termino: string, limite: number = 20): Promise<Product[]> {
   try {
     const t = sanitizeSearchInput(termino.trim());
     const { data, error } = await supabase
@@ -581,7 +564,7 @@ export async function buscarProductosConLimite(termino: string, limite: number =
     if (error) throw error;
     return ((data || []) as Record<string, unknown>[]).map(p => validateProduct(p) as unknown as Product);
   } catch (error) {
-    logError('❌ Error buscarProductosConLimite:', error);
+    logError('❌ Error buscarProductos:', error);
     return [];
   }
 }
@@ -620,6 +603,5 @@ export default {
   getSubgamasPorFiltro,
   getProductoPorRef,
   buscarProductos,
-  buscarProductosConLimite,
   getCatalogStats
 };

@@ -189,7 +189,7 @@ describe('buscarProductos', () => {
   })
 })
 
-describe('buscarProductosConLimite', () => {
+describe('buscarProductos (with limit)', () => {
   it('uses provided limit', async () => {
     let cap = null
     const chain = makeChain([])
@@ -198,12 +198,12 @@ describe('buscarProductosConLimite', () => {
     })
     mockFrom.mockReturnValue(chain)
 
-    const { buscarProductosConLimite } = await import('../services/catalogService')
-    await buscarProductosConLimite('test', 3)
+    const { buscarProductos } = await import('../services/catalogService')
+    await buscarProductos('test', 3)
     expect(cap).toBe(3)
   })
 
-  it('defaults to limit 5', async () => {
+  it('defaults to limit 20', async () => {
     let cap = null
     const chain = makeChain([])
     chain.select = () => ({
@@ -211,9 +211,9 @@ describe('buscarProductosConLimite', () => {
     })
     mockFrom.mockReturnValue(chain)
 
-    const { buscarProductosConLimite } = await import('../services/catalogService')
-    await buscarProductosConLimite('test')
-    expect(cap).toBe(5)
+    const { buscarProductos } = await import('../services/catalogService')
+    await buscarProductos('test')
+    expect(cap).toBe(20)
   })
 })
 

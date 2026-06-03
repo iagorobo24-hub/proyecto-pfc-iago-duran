@@ -1,8 +1,8 @@
 /**
  * Hook para Presupuestos - sincronización con Firestore
  */
-import { useState, useEffect, useReducer } from 'react'
-import useUserData from './useUserData'
+import { useState, useReducer } from 'react'
+import usePersistedState from './usePersistedState'
 
 const genNum = () => {
   const d = new Date()
@@ -51,25 +51,10 @@ export default function usePresupuestos() {
   const [generando, setGenerando] = useState(false)
   const [guardando, setGuardando] = useState(false)
 
-  /* Persistencia en Supabase + localStorage */
-  const {
-    data: storedHistorial,
-    loading,
-    save: saveHistorial,
-  } = useUserData('presupuestos', 'historial', EMPTY_ARRAY, ['pfc_presupuestos_historial'])
-
-  const [historial, setHistorial] = useState([])
-
-  useEffect(() => {
-    if (storedHistorial !== undefined && storedHistorial !== null) {
-      setHistorial(storedHistorial)
-    }
-  }, [storedHistorial])
+  const [historial, setHistorial] = usePersistedState('presupuestos', 'historial', EMPTY_ARRAY, ['pfc_presupuestos_historial'])
 
   const guardarHistorial = (presup) => {
-    const nuevo = [presup, ...historial].slice(0, 20)
-    setHistorial(nuevo)
-    saveHistorial(nuevo)
+    setHistorial(prev => [presup, ...(prev || [])].slice(0, 20))
   }
 
   const calcularTotales = () => {

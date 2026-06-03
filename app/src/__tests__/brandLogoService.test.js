@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { getBrandLogoData, getBrandLogo, getBrandColor } from '../services/brandLogoService'
+import { getBrandLogoData, getBrandColor } from '../services/brandService'
 
 describe('getBrandLogoData', () => {
   it('returns logo for Schneider Electric', () => {
@@ -65,13 +65,13 @@ describe('getBrandLogoData', () => {
   })
 })
 
-describe('getBrandLogo', () => {
+describe('getBrandLogoData.logo', () => {
   it('returns logo URL for existing brand', () => {
-    expect(getBrandLogo('Schneider Electric')).toBe('/logos/schneider.png')
+    expect(getBrandLogoData('Schneider Electric').logo).toBe('/logos/schneider.png')
   })
 
   it('returns null for unknown brand', () => {
-    expect(getBrandLogo('Unknown Brand')).toBeNull()
+    expect(getBrandLogoData('Unknown Brand').logo).toBeNull()
   })
 })
 

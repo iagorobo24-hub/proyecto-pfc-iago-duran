@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { getCategoriaMeta } from '../../data/categoryMapping'
+import { getCategoriaMeta } from '../../data/categories'
 import Button from '../ui/Button'
 import { usePresupuestosContext } from './PresupuestosContext'
 import styles from '../../tools/Presupuestos.module.css'

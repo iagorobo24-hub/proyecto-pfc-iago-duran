@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import useUserData from './useUserData';
+import usePersistedState from './usePersistedState';
 
 function generateId() {
   return `session_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`;
@@ -32,10 +32,7 @@ function createSessionObj(messages = []) {
 }
 
 export function useSonex() {
-  const { data: storedSessions, save: saveSessions } = useUserData('sonex', 'sesiones', [], [
-    'pfc_sonex_historial',
-  ])
-  const [sessions, setSessionsState] = useState([])
+  const [sessions, setSessions] = usePersistedState('sonex', 'sesiones', [], ['pfc_sonex_historial'])
   const [activeSessionId, setActiveSessionId] = useState(null);
   const [messages, setMessages] = useState([]);
   const messagesRef = useRef(messages);
@@ -49,20 +46,6 @@ export function useSonex() {
   const messagesEndRef = useRef(null);
   const initializedRef = useRef(false)
 
-  useEffect(() => { if (storedSessions) setSessionsState(storedSessions) }, [storedSessions])
-
-  const setSessions = useCallback((val) => {
-    setSessionsState(prev => {
-      const next = typeof val === 'function' ? val(prev) : val
-      saveSessions(next)
-      return next
-    })
-  }, [saveSessions])
-
-  const persistSessions = useCallback((updatedSessions) => {
-    setSessions(updatedSessions);
-  }, [setSessions]);
-
   const getActiveSession = useCallback(() => {
     return sessions.find(s => s.id === activeSessionId) || null;
   }, [sessions, activeSessionId]);
@@ -70,32 +53,29 @@ export function useSonex() {
   const saveCurrentMessages = useCallback((msgOverrides) => {
     setSessions(prev => {
       const msgs = msgOverrides !== undefined ? msgOverrides : messagesRef.current;
-      const updated = prev.map(s =>
+      return prev.map(s =>
         s.id === activeSessionId
           ? { ...s, messages: msgs.map(m => ({ ...m, timestamp: m.timestamp instanceof Date ? m.timestamp.toISOString() : m.timestamp })), title: msgs.length > 0 ? generateTitle(msgs) : s.title, updatedAt: new Date().toISOString() }
           : s
       );
-      persistSessions(updated);
-      return updated;
     });
-  }, [activeSessionId, persistSessions]);
+  }, [activeSessionId]);
 
   useEffect(() => {
     if (initializedRef.current) return
-    if (storedSessions && storedSessions.length > 0) {
-      initializedRef.current = true
+    initializedRef.current = true
+    if (sessions.length > 0) {
       if (!activeSessionId) {
-        const last = storedSessions[storedSessions.length - 1]
+        const last = sessions[sessions.length - 1]
         setActiveSessionId(last.id)
         setMessages(normalizarMensajes(last.messages))
       }
-    } else if (storedSessions) {
-      initializedRef.current = true
+    } else {
       const session = createSessionObj([])
       setSessions([session])
       setActiveSessionId(session.id)
     }
-  }, [storedSessions])
+  }, [sessions.length])
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -122,17 +102,13 @@ export function useSonex() {
   const createNewSession = useCallback(() => {
     saveCurrentMessages();
     const session = createSessionObj([]);
-    setSessions(prev => {
-      const updated = [...prev, session];
-      persistSessions(updated);
-      return updated;
-    });
+    setSessions(prev => [...prev, session]);
     setActiveSessionId(session.id);
     setMessages([]);
     setRefsTurno([]);
     setCategoriaActiva('');
     setModoActivo('busqueda');
-  }, [saveCurrentMessages, persistSessions]);
+  }, [saveCurrentMessages]);
 
   const switchSession = useCallback((sessionId) => {
     if (sessionId === activeSessionId) return;
@@ -146,11 +122,7 @@ export function useSonex() {
   }, [activeSessionId, sessions, saveCurrentMessages]);
 
   const deleteSession = useCallback((sessionId) => {
-    setSessions(prev => {
-      const updated = prev.filter(s => s.id !== sessionId);
-      persistSessions(updated);
-      return updated;
-    });
+    setSessions(prev => prev.filter(s => s.id !== sessionId));
     if (activeSessionId === sessionId) {
       const remaining = sessions.filter(s => s.id !== sessionId);
       if (remaining.length > 0) {
@@ -162,10 +134,9 @@ export function useSonex() {
         setSessions([session]);
         setActiveSessionId(session.id);
         setMessages([]);
-        persistSessions([session]);
       }
     }
-  }, [activeSessionId, sessions, persistSessions]);
+  }, [activeSessionId, sessions]);
 
   const limpiarChat = useCallback(() => {
     setMessages([]);

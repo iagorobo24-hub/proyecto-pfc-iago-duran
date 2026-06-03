@@ -1,8 +1,6 @@
 import React, { useState } from 'react'
-import { getBrandLogoData } from '../../services/brandLogoService'
-import { MARCAS } from '../../data/marcasLogos'
-import { getEtiquetaSubcategoria } from '../../data/etiquetasSubcategoria'
-import { getCategoriaMeta } from '../../data/categoryMapping'
+import { getBrandLogoData } from '../../services/brandService'
+import { getEtiquetaSubcategoria, getCategoriaMeta } from '../../data/categories'
 import Button from '../ui/Button'
 import FichasTecnicasSkeleton from './FichasTecnicasSkeleton'
 import StepReferencias from './StepReferencias'
@@ -110,14 +108,8 @@ function FichasTecnicasContent({
   // ── Paso: Marcas ───────────────────────────────────────────────────────────
   if (paso === 'marcas') {
     const marcasConLogo = marcasDisponibles.map(m => {
-      const logoData = getBrandLogoData(m.nombre)
-      return {
-        ...m,
-        logo: logoData.logo || '',
-        logoFallback: logoData.initials,
-        logoGradient: logoData.gradient,
-        color: MARCAS[m.nombre]?.color || logoData.gradient,
-      }
+      const { logo, initials, gradient } = getBrandLogoData(m.nombre)
+      return { ...m, logo: logo || '', logoFallback: initials, logoGradient: gradient }
     })
 
     const categoriaLabel = getCategoriaMeta(categoria).desc || catInfo.desc || 'Categoría'
@@ -138,7 +130,7 @@ function FichasTecnicasContent({
                     {m.logo ? (
                       <img src={m.logo} alt={m.nombre} loading="lazy" />
                     ) : (
-                      <div className={styles.brandCard__logoFallback} style={{ background: m.logoGradient || m.logoColor }}>
+                      <div className={styles.brandCard__logoFallback} style={{ background: m.logoGradient }}>
                         {m.logoFallback}
                       </div>
                     )}
