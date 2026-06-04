@@ -40,6 +40,13 @@ export default function FichasTecnicas() {
   const [modo, setModo] = useState('navegacion')
 
   const catInfo = useMemo(() => getCategoriaMeta(categoria), [categoria])
+  const categoriasConIconos = useMemo(() =>
+    (categorias || []).map(cat => {
+      const meta = getCategoriaMeta(cat.id)
+      return { ...cat, icon: meta.icon || cat.icon || '📁' }
+    }),
+    [categorias]
+  )
   const isCargando = navegacionCargando || busquedaIACargando
 
   const handleSugerenciaClick = useCallback((p) => {
@@ -88,7 +95,7 @@ export default function FichasTecnicas() {
         sugerenciasBusqueda={sugerenciasBusqueda}
         busquedaCargando={busquedaCargando}
         isCargando={isCargando}
-        categorias={categorias}
+        categorias={categoriasConIconos}
         categoria={categoria}
         onCategoriaClick={handleCategoriaClick}
         onSugerenciaClick={handleSugerenciaClick}
