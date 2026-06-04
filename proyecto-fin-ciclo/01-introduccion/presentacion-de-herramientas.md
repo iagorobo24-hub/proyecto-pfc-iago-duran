@@ -107,24 +107,24 @@
 ---
 
 ### Firebase
-**Rol:** Auth + Base de datos
+**Rol:** Backend legado (En desuso)
 
-- Firebase Auth (Google Sign-In)
-- Firestore para catálogo
-- Spark tier (gratis)
+- Firebase Auth y Firestore (catálogo original)
+- Sustituido por Supabase debido a límites de escritura
+- Actualmente se mantiene solo como referencia de migración en la documentación
 
-**Coste:** Gratis (límite 50K escrituras/día)
+**Coste:** 0€ (Sin uso activo en producción)
 
 ---
 
 ### Supabase
-**Rol:** Migración en curso
+**Rol:** Backend principal activo (Auth + Base de datos)
 
-- PostgreSQL como alternativa a Firestore
-- Mayor escalabilidad
-- Tier gratuito generoso
+- PostgreSQL para almacenar el catálogo unificado (~4.689 productos)
+- Supabase Auth (Google OAuth) para autenticación segura
+- Sincronización de datos de usuario en tiempo real con la tabla `user_data`
 
-**Coste:** Gratis
+**Coste:** Gratis (Free tier)
 
 ---
 
@@ -156,11 +156,9 @@
 
 ## Resumen de costes
 
-| Categoría | Herramienta | Coste real |
-|-----------|-------------|------------|
 | IDE + Coding | Windsurf | 0€ |
 | Hosting | Vercel | 0€ |
-| Auth + DB | Firebase | 0€ |
+| Auth + DB | Supabase | 0€ |
 | IA | OpenRouter | 0€ |
 | Control de versiones | GitHub | 0€ |
 | Testing | Playwright | 0€ |

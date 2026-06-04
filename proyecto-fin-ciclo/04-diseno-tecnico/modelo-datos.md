@@ -118,13 +118,13 @@ Algunos datos están directamente en el código del frontend:
 
 ## Comparativa rápida
 
-| Aspecto | Catálogo (Supabase) | Datos usuario (Firestore) |
+| Aspecto | Catálogo (Supabase) | Datos usuario (Supabase) |
 |---------|--------------------|---------------------------|
-| **Tipo** | SQL (PostgreSQL) | NoSQL |
-| **Tablas** | products, brands | users/{uid}/colecciones |
-| **Búsqueda** | ilike + OR conditions | Limitada |
-| **Auth** | Supabase OAuth | — |
-| **Estado** | ✅ Producción | ⏳ Legacy (pendiente migrar) |
+| **Tipo** | SQL (PostgreSQL) | SQL (PostgreSQL) |
+| **Tablas** | `products`, `brands` | `user_data` |
+| **Búsqueda** | `ilike` + `OR` + GIN Index | Clave exacta (`module` + `key`) |
+| **Auth** | Supabase OAuth | Supabase OAuth |
+| **Estado** | ✅ Producción | ✅ Producción ( localStorage offline fallback ) |
 
 ---
 

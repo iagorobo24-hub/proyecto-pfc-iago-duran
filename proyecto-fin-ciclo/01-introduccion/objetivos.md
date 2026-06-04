@@ -31,10 +31,10 @@ Desarrollar una **suite de herramientas web** funcional para técnicos del secto
 > Aplicar estándares profesionales de desarrollo web
 
 - [x] Arquitectura SPA con React 19 + Vite
-- [x] Autenticación con Firebase Auth
-- [x] Base de datos escalable con Firestore
+- [x] Autenticación con Supabase Auth (Google OAuth)
+- [x] Base de datos relacional y escalable con Supabase (PostgreSQL)
 - [x] Deploy automático en Vercel
-- [x] Tests E2E con Playwright
+- [x] Tests E2E con Playwright y unitarios con Vitest
 - [x] Diseño responsive (mobile/tablet/desktop)
 
 ### OE4 — Documentación
@@ -56,9 +56,6 @@ Desarrollar una **suite de herramientas web** funcional para técnicos del secto
 
 ## Objetivos no cumplidos (honestidad)
 
-| Objetivo | Estado | Razón |
-|----------|--------|-------|
-| Tests unitarios con Vitest | ❌ No hecho | Prioridad a funcionalidad |
 | CI/CD con GitHub Actions | ❌ Parcial | Solo deploy automático |
 | Validación con usuarios reales | ❌ Limitada | Solo pruebas propias |
 | Integración con SAP de la empresa | ❌ Descartado | Sin acceso a sistemas internos |

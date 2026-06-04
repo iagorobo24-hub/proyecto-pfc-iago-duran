@@ -92,3 +92,8 @@ docs/diagrams/*.html
 
 .vercel
 .env*.local
+
+# Scratch and database helper scripts
+scratch/
+app/db_stats.js
+

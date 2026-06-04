@@ -180,7 +180,7 @@ Catálogo detallado de cada herramienta del ecosistema IA explorado.
 ### 07 — Manuales de Uso
 > *"¿Cómo se usa cada módulo de la aplicación?"*
 
-Guías de usuario para los 6 módulos. Demuestra que el producto es usable por personal no técnico.
+Guías de usuario para los 7 módulos. Demuestra que el producto es usable por personal no técnico.
 
 - [x] `manual-sonex.md` — Asistente técnico con IA
 - [x] `manual-fichas-tecnicas.md` — Navegación del catálogo de productos
@@ -188,6 +188,7 @@ Guías de usuario para los 6 módulos. Demuestra que el producto es usable por p
 - [x] `manual-presupuestos.md` — Generador de presupuestos
 - [x] `manual-kpis.md` — Dashboard de indicadores logísticos
 - [x] `manual-formacion.md` — Matriz de competencias y formación
+- [x] `manual-incidencias.md` — Registro y diagnóstico de incidencias con IA
 
 ### 08 — Resultados
 > *"¿Funciona? ¿Mereció la pena?"*

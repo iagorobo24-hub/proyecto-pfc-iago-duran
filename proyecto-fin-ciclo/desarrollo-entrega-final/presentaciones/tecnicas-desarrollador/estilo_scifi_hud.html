@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Proyecto PFC — Sci-Fi Space HUD Deck</title>
+  <!-- Share Tech Mono & Orbitron -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-color: #02020a; /* Space Black */
+      --glow-cyan: #00ffff;
+      --glow-orange: #ff7700;
+      --glow-magenta: #ff00ff;
+      --panel-bg: rgba(6, 12, 38, 0.5);
+      --panel-border: rgba(0, 255, 255, 0.2);
+      --font-display: 'Orbitron', sans-serif;
+      --font-body: 'Share Tech Mono', monospace;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: #cbd5e1;
+      font-family: var(--font-body);
+      overflow: hidden;
+      height: 100vh;
+      width: 100vw;
+      position: relative;
+    }
+
+    /* Subtle background space grids & lines */
+    .bg-hud-lines {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: 
+        radial-gradient(circle at 50% 50%, transparent 60%, rgba(0, 255, 255, 0.03) 100%),
+        linear-gradient(to right, rgba(0, 255, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(0, 255, 255, 0.02) 1px, transparent 1px);
+      background-size: 100% 100%, 80px 80px, 80px 80px;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .scifi-scanner {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 6px;
+      background: linear-gradient(to bottom, rgba(0, 255, 255, 0.25), transparent);
+      animation: scan-line 6s infinite linear;
+      z-index: 10;
+      pointer-events: none;
+    }
+
+    @keyframes scan-line {
+      0% { top: -10px; }
+      100% { top: 110%; }
+    }
+
+    /* HUD Header Nav */
+    header.hud-nav {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      padding: 1.5rem 2.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 5;
+      border-bottom: 1px solid var(--panel-border);
+      background: rgba(2, 2, 10, 0.85);
+      backdrop-filter: blur(10px);
+    }
+
+    .hud-logo {
+      font-family: var(--font-display);
+      font-weight: 900;
+      font-size: 1.25rem;
+      color: var(--glow-cyan);
+      letter-spacing: 2px;
+      text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+    }
+
+    .hud-meta {
+      font-size: 0.8rem;
+      color: var(--glow-orange);
+      text-shadow: 0 0 5px rgba(255, 119, 0, 0.5);
+    }
+
+    /* Slide Deck Mechanics */
+    .deck-container {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
+    }
+
+    .slide {
+      position: absolute;
+      width: 85%;
+      max-width: 1100px;
+      height: 65vh;
+      opacity: 0;
+      transform: scale(1.1) translateY(40px);
+      transition: all 0.6s cubic-bezier(0.19, 1, 0.22, 1);
+      pointer-events: none;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 2.5rem;
+      background: var(--panel-bg);
+      border: 1px solid var(--panel-border);
+      border-radius: 8px;
+      box-shadow: 0 0 30px rgba(0, 255, 255, 0.05);
+      backdrop-filter: blur(8px);
+    }
+
+    /* Future Zoom-In transitions */
+    .slide.active {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+      pointer-events: auto;
+      z-index: 3;
+    }
+
+    .slide.past {
+      opacity: 0;
+      transform: scale(0.9) translateY(-40px);
+    }
+
+    /* Slide elements */
+    .slide-header {
+      border-left: 4px solid var(--glow-cyan);
+      padding-left: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .slide-kicker {
+      font-size: 0.75rem;
+      color: var(--glow-orange);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    .slide-title {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 2.1rem;
+      color: #ffffff;
+      text-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
+    }
+
+    .slide-content {
+      flex: 1;
+      display: flex;
+      align-items: center;
+    }
+
+    /* Sci-fi hud layouts */
+    .hud-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      width: 100%;
+    }
+
+    .hud-widget {
+      background: rgba(2, 2, 10, 0.7);
+      border: 1px solid rgba(0, 255, 255, 0.1);
+      padding: 1.5rem;
+      border-radius: 4px;
+      position: relative;
+    }
+
+    /* Corner HUD brackets decoration */
+    .hud-widget::before {
+      content: '';
+      position: absolute;
+      top: -1px;
+      left: -1px;
+      width: 12px;
+      height: 12px;
+      border-top: 2px solid var(--glow-cyan);
+      border-left: 2px solid var(--glow-cyan);
+    }
+    
+    .hud-widget::after {
+      content: '';
+      position: absolute;
+      bottom: -1px;
+      right: -1px;
+      width: 12px;
+      height: 12px;
+      border-bottom: 2px solid var(--glow-cyan);
+      border-right: 2px solid var(--glow-cyan);
+    }
+
+    .hud-widget h3 {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      color: var(--glow-cyan);
+      margin-bottom: 0.75rem;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .hud-widget p {
+      font-size: 0.85rem;
+      line-height: 1.6;
+    }
+
+    .hud-stat-hero {
+      font-family: var(--font-display);
+      font-size: 3rem;
+      font-weight: 900;
+      color: var(--glow-magenta);
+      text-shadow: 0 0 10px rgba(255, 0, 255, 0.4);
+      margin: 10px 0;
+    }
+
+    /* Telemetry data tables */
+    .hud-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.8rem;
+    }
+
+    .hud-table th {
+      text-align: left;
+      font-family: var(--font-display);
+      color: var(--glow-orange);
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--panel-border);
+    }
+
+    .hud-table td {
+      padding: 8px 0;
+      border-bottom: 1px dashed rgba(0, 255, 255, 0.08);
+    }
+
+    /* Telemetry animated circles */
+    .reticle-container {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      margin-top: 10px;
+    }
+
+    .hud-circle-svg {
+      width: 80px;
+      height: 80px;
+      animation: rotate-hud-ring 12s infinite linear;
+    }
+
+    @keyframes rotate-hud-ring {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .hud-ring-back {
+      fill: none;
+      stroke: rgba(0, 255, 255, 0.05);
+      stroke-width: 4;
+    }
+
+    .hud-ring-segment {
+      fill: none;
+      stroke: var(--glow-cyan);
+      stroke-width: 4;
+      stroke-dasharray: 200;
+      stroke-dashoffset: 60;
+    }
+
+    .progress-bar-hud {
+      width: 100%;
+      height: 6px;
+      background: rgba(0, 255, 255, 0.05);
+      border: 1px solid rgba(0, 255, 255, 0.15);
+      border-radius: 3px;
+      overflow: hidden;
+      margin-top: 5px;
+    }
+
+    .progress-fill-hud {
+      height: 100%;
+      background: linear-gradient(90deg, var(--glow-cyan), var(--glow-orange));
+      width: 0%;
+      transition: width 1s ease-in-out;
+    }
+
+    .fragment {
+      opacity: 0;
+      transform: scale(0.95);
+      transition: all 0.4s ease;
+    }
+
+    .fragment.visible {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    /* Controls hud overlay */
+    .hud-controls {
+      position: absolute;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      background: var(--panel-bg);
+      border: 1px solid var(--panel-border);
+      padding: 0.5rem 2rem;
+      border-radius: 4px;
+      z-index: 5;
+    }
+
+    .hud-btn {
+      background: transparent;
+      border: 1px solid var(--panel-border);
+      color: var(--glow-cyan);
+      padding: 0.3rem 1rem;
+      font-family: var(--font-body);
+      cursor: pointer;
+      font-size: 0.85rem;
+      transition: all 0.2s ease;
+    }
+
+    .hud-btn:hover {
+      background: rgba(0, 255, 255, 0.1);
+      box-shadow: 0 0 8px var(--glow-cyan);
+      border-color: var(--glow-cyan);
+    }
+
+    .hud-page-tag {
+      font-family: var(--font-display);
+      font-size: 0.85rem;
+      color: #ffffff;
+    }
+
+    @media (max-width: 800px) {
+      .hud-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+      .slide {
+        height: 75vh;
+        padding: 1.5rem;
+      }
+      .slide-title {
+        font-size: 1.6rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bg-hud-lines"></div>
+  <div class="scifi-scanner"></div>
+
+  <header class="hud-nav">
+    <div class="hud-logo">SYS_HUD // SEC_MONITOR</div>
+    <div class="hud-meta">SAT_LINK: ONLINE // DB_SYNC_STATUS: ACTIVE</div>
+  </header>
+
+  <!-- Slide Deck Container -->
+  <div class="deck-container">
+
+    <!-- SLIDE 1 -->
+    <div class="slide active" id="slide-0">
+      <div class="slide-header">
+        <div class="slide-kicker">TELEMETRY_LOG // CONCEPT</div>
+        <h2 class="slide-title">Proyecto PFC: Core Suite</h2>
+      </div>
+      <div class="slide-content">
+        <div class="hud-grid">
+          <div class="hud-widget fragment">
+            <h3>PROPUESTA OPERATIVA</h3>
+            <p>Ecosistema web estructurado en **8 módulos funcionales** optimizados para las operaciones diarias de electricistas industriales.</p>
+          </div>
+          <div class="hud-widget fragment">
+            <h3>ESTADÍSTICAS BÁSICAS</h3>
+            <div class="hud-stat-hero">0.00€</div>
+            <p>Inversión total del proyecto. Ejecución optimizada utilizando plataformas de alojamiento y servicios de IA en tier gratuito.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 2 -->
+    <div class="slide" id="slide-1">
+      <div class="slide-header">
+        <div class="slide-kicker">TELEMETRY_LOG // MODULES</div>
+        <h2 class="slide-title">Módulos en Escucha</h2>
+      </div>
+      <div class="slide-content">
+        <div class="hud-grid">
+          <div class="hud-widget fragment">
+            <h3>Lógica Operacional</h3>
+            <p style="margin-bottom: 6px;">• <strong>Fichas Técnicas:</strong> Indexación de catálogo.</p>
+            <p style="margin-bottom: 6px;">• <strong>Simulador Almacén:</strong> Entrenamiento de pedidos.</p>
+            <p style="margin-bottom: 6px;">• <strong>Incidencias:</strong> Diagnósticos asistidos.</p>
+            <p style="margin-bottom: 6px;">• <strong>KPI Logístico:</strong> KPI de turnos.</p>
+          </div>
+          <div class="hud-widget fragment">
+            <h3>Herramientas de Apoyo</h3>
+            <p style="margin-bottom: 6px;">• <strong>Presupuestos:</strong> Cotizaciones en PDF.</p>
+            <p style="margin-bottom: 6px;">• <strong>Formación:</strong> Matriz competencias.</p>
+            <p style="margin-bottom: 6px;">• <strong>Chatbot SONEX:</strong> Asistente de reglamentos.</p>
+            <p style="margin-bottom: 6px;">• <strong>Dashboard Global:</strong> Consolidado visual.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 3 -->
+    <div class="slide" id="slide-2">
+      <div class="slide-header">
+        <div class="slide-kicker">TELEMETRY_LOG // STACK</div>
+        <h2 class="slide-title">Estructura de Software</h2>
+      </div>
+      <div class="slide-content">
+        <div class="hud-grid">
+          <div class="hud-widget fragment">
+            <h3>Estructura Cliente</h3>
+            <p>• Compilación modular con <strong>React 19 &amp; Vite 7</strong>.</p>
+            <p style="margin-top: 6px;">• Enrutador modular con <strong>React Router v7</strong>.</p>
+            <p style="margin-top: 6px;">• Módulos CSS con variables personalizadas.</p>
+          </div>
+          <div class="hud-widget fragment">
+            <h3>Servidores en Nube</h3>
+            <p>• Catálogo relacional Postgres indexado en <strong>Supabase</strong>.</p>
+            <p style="margin-top: 6px;">• Consultas LLMs a través de <strong>OpenRouter API</strong>.</p>
+            <p style="margin-top: 6px;">• CD automatizado hospedado en <strong>Vercel</strong>.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 4 -->
+    <div class="slide" id="slide-3">
+      <div class="slide-header">
+        <div class="slide-kicker">TELEMETRY_LOG // DATABASE</div>
+        <h2 class="slide-title">Catálogo en Supabase</h2>
+      </div>
+      <div class="slide-content">
+        <div class="hud-grid">
+          <div class="hud-widget fragment">
+            <h3>Referencias Relacionales</h3>
+            <div class="reticle-container">
+              <svg class="hud-circle-svg" viewBox="0 0 110 110">
+                <circle class="hud-ring-back" cx="55" cy="55" r="45" />
+                <circle class="hud-ring-segment" cx="55" cy="55" r="45" />
+              </svg>
+              <div>
+                <div class="hud-stat-hero" style="font-size:2rem; margin:0;">4,689 Refs</div>
+                <p style="font-size:0.75rem;">Productos en base de datos relacional PostgreSQL.</p>
+              </div>
+            </div>
+          </div>
+          <div class="hud-widget fragment">
+            <h3>División por Fabricante</h3>
+            <table class="hud-table">
+              <thead>
+                <tr>
+                  <th>Marca</th>
+                  <th>Cantidad</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Schneider Electric</td>
+                  <td style="color:var(--glow-cyan)">2,380</td>
+                </tr>
+                <tr>
+                  <td>Siemens</td>
+                  <td style="color:var(--glow-cyan)">1,735</td>
+                </tr>
+                <tr>
+                  <td>Legrand</td>
+                  <td style="color:var(--glow-cyan)">574</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 5 -->
+    <div class="slide" id="slide-4">
+      <div class="slide-header">
+        <div class="slide-kicker">TELEMETRY_LOG // QUALITY</div>
+        <h2 class="slide-title">Pruebas y Estabilidad</h2>
+      </div>
+      <div class="slide-content">
+        <div class="hud-grid">
+          <div class="hud-widget fragment">
+            <h3>Unitarias (Vitest)</h3>
+            <div class="hud-stat-hero" style="color: var(--glow-cyan)">272 TESTS</div>
+            <p>Validación lógica de mapeadores de datos, hooks de presupuestos y almacenamiento persistente.</p>
+          </div>
+          <div class="hud-widget fragment">
+            <h3>End-to-End (Playwright)</h3>
+            <div class="hud-stat-hero" style="color: var(--glow-orange)">07 TESTS</div>
+            <p>Automatizaciones de flujos enteros del usuario en navegador real para comprobar interactividad.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 6 -->
+    <div class="slide" id="slide-5">
+      <div class="slide-header">
+        <div class="slide-kicker">TELEMETRY_LOG // CONCLUSIONES</div>
+        <h2 class="slide-title">Desarrollo con IA</h2>
+      </div>
+      <div class="slide-content">
+        <div class="hud-grid">
+          <div class="hud-widget fragment">
+            <h3>Metodología Ágil</h3>
+            <p>La IA permite delegar la sintaxis de programación para enfocar el esfuerzo en **modularidad del sistema**, taxonomía limpia y lógica relacional de base de datos.</p>
+          </div>
+          <div class="hud-widget fragment">
+            <h3>Puntos Críticos</h3>
+            <p>• La estructura y limpieza de los datos de origen es indispensable.</p>
+            <p style="margin-top: 6px;">• La cobertura del testing previene regresiones al refactorizar con IA.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- HUD Navigation Controls -->
+  <div class="hud-controls">
+    <button class="hud-btn" onclick="navigate(-1)">[ PREV ]</button>
+    <div class="hud-page-tag">SEC_0<span id="current-slide-num">1</span> // 06</div>
+    <button class="hud-btn" onclick="navigate(1)">[ NEXT ]</button>
+  </div>
+
+  <script>
+    const slides = document.querySelectorAll('.slide');
+    let currentSlide = 0;
+
+    function showSlide(index) {
+      if (index < 0) index = 0;
+      if (index >= slides.length) index = slides.length - 1;
+
+      slides.forEach((slide, i) => {
+        slide.classList.remove('active', 'past');
+        
+        if (i === index) {
+          slide.classList.add('active');
+          slide.querySelectorAll('.fragment').forEach((frag, idx) => {
+            setTimeout(() => {
+              frag.classList.add('visible');
+            }, (idx + 1) * 150);
+          });
+        } else if (i < index) {
+          slide.classList.add('past');
+        }
+      });
+
+      currentSlide = index;
+      document.getElementById('current-slide-num').textContent = currentSlide + 1;
+    }
+
+    function navigate(direction) {
+      showSlide(currentSlide + direction);
+    }
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ') {
+        navigate(1);
+      } else if (e.key === 'ArrowLeft') {
+        navigate(-1);
+      }
+    });
+
+    // Touch Swipe Navigation for Mobile
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    document.addEventListener('touchstart', e => {
+      touchStartX = e.changedTouches[0].screenX;
+    });
+
+    document.addEventListener('touchend', e => {
+      touchEndX = e.changedTouches[0].screenX;
+      handleGesture();
+    });
+
+    function handleGesture() {
+      const threshold = 50;
+      if (touchStartX - touchEndX > threshold) {
+        navigate(1); // Swipe left, next slide
+      } else if (touchEndX - touchStartX > threshold) {
+        navigate(-1); // Swipe right, prev slide
+      }
+    }
+
+    // Initialize first slide
+    window.addEventListener('load', () => {
+      showSlide(0);
+    });
+  </script>
+</body>
+</html>

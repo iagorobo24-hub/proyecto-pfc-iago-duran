@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Proyecto PFC — Neo-Brutalist Deck</title>
+  <!-- Google Fonts: Lexend Mega (for brutalist headings) & Archivo (for body) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;700;900&family=Lexend+Mega:wght@800;900&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-color: #ffde47; /* Neo-Brutalist Yellow */
+      --card-bg: #ffffff;
+      --accent-color: #39ff14; /* Toxic Green */
+      --accent-pink: #ff007f; /* Hot Pink */
+      --text-color: #000000;
+      --border-thick: 4px solid #000000;
+      --shadow-offset: 8px 8px 0px #000000;
+      --shadow-offset-hover: 12px 12px 0px #000000;
+      --font-display: 'Lexend Mega', sans-serif;
+      --font-body: 'Archivo', sans-serif;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      font-family: var(--font-body);
+      overflow: hidden;
+      height: 100vh;
+      width: 100vw;
+      position: relative;
+    }
+
+    /* Top Header */
+    header.brutalist-header {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      padding: 1.5rem 2rem;
+      background-color: #ffffff;
+      border-bottom: var(--border-thick);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 5;
+    }
+
+    .header-logo {
+      font-family: var(--font-display);
+      font-size: 1.2rem;
+      background: var(--accent-pink);
+      color: #ffffff;
+      padding: 0.4rem 1rem;
+      border: var(--border-thick);
+      box-shadow: 4px 4px 0px #000;
+      text-transform: uppercase;
+    }
+
+    .header-meta {
+      font-weight: 900;
+      text-transform: uppercase;
+      font-size: 0.9rem;
+      letter-spacing: 1px;
+    }
+
+    /* Slide Deck Mechanics */
+    .deck-container {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
+    }
+
+    .slide {
+      position: absolute;
+      width: 85%;
+      max-width: 1100px;
+      height: 65vh;
+      opacity: 0;
+      transform: scale(0.9) rotate(-3deg);
+      transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      pointer-events: none;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 2.5rem;
+      background: var(--card-bg);
+      border: var(--border-thick);
+      box-shadow: var(--shadow-offset);
+      border-radius: 0px; /* Pure geometric corners */
+    }
+
+    /* Elastic transition states */
+    .slide.active {
+      opacity: 1;
+      transform: scale(1) rotate(0deg);
+      pointer-events: auto;
+      z-index: 3;
+    }
+
+    .slide.past {
+      opacity: 0;
+      transform: translateX(-110%) rotate(-10deg);
+    }
+
+    .slide.future {
+      opacity: 0;
+      transform: translateX(110%) rotate(10deg);
+    }
+
+    /* Slide Layout Components */
+    .slide-header {
+      margin-bottom: 1.5rem;
+    }
+
+    .slide-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      background: var(--accent-color);
+      border: 2px solid #000000;
+      font-family: var(--font-display);
+      font-size: 0.75rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      margin-bottom: 0.75rem;
+      box-shadow: 2px 2px 0px #000000;
+    }
+
+    .slide-title {
+      font-family: var(--font-display);
+      font-size: 2.2rem;
+      text-transform: uppercase;
+      line-height: 1.1;
+      letter-spacing: -1.5px;
+    }
+
+    .slide-content {
+      flex: 1;
+      display: flex;
+      align-items: center;
+    }
+
+    /* Neo-Brutalist Layouts */
+    .brutalist-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 2rem;
+      width: 100%;
+    }
+
+    .brutalist-inner-card {
+      background: #ffffff;
+      border: var(--border-thick);
+      padding: 1.5rem;
+      box-shadow: 4px 4px 0px #000000;
+      transition: all 0.2s ease;
+    }
+
+    .brutalist-inner-card:hover {
+      transform: translate(-4px, -4px);
+      box-shadow: 8px 8px 0px #000000;
+    }
+
+    .brutalist-inner-card h3 {
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      text-transform: uppercase;
+      margin-bottom: 0.75rem;
+      background-color: var(--accent-color);
+      display: inline-block;
+      padding: 2px 6px;
+      border: 2px solid #000;
+      box-shadow: 2px 2px 0px #000;
+    }
+
+    .brutalist-inner-card p {
+      font-size: 0.95rem;
+      line-height: 1.5;
+      font-weight: 500;
+    }
+
+    .highlight-value {
+      font-family: var(--font-display);
+      font-size: 2.8rem;
+      background-color: var(--accent-pink);
+      color: #ffffff;
+      padding: 0.5rem 1rem;
+      border: var(--border-thick);
+      box-shadow: 4px 4px 0px #000;
+      display: inline-block;
+      margin: 10px 0;
+    }
+
+    .stats-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    .stats-table th {
+      text-align: left;
+      font-family: var(--font-display);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      padding: 6px;
+      border-bottom: var(--border-thick);
+    }
+
+    .stats-table td {
+      padding: 10px 6px;
+      border-bottom: 2px solid #000000;
+      font-weight: 700;
+    }
+
+    /* Controls Overlay */
+    .controls-panel {
+      position: absolute;
+      bottom: 2rem;
+      right: 2rem;
+      display: flex;
+      gap: 12px;
+      z-index: 5;
+    }
+
+    .ctrl-btn {
+      background: #ffffff;
+      border: var(--border-thick);
+      color: #000000;
+      width: 48px;
+      height: 48px;
+      font-family: var(--font-display);
+      font-size: 1.2rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 4px 4px 0px #000;
+      transition: all 0.1s ease;
+    }
+
+    .ctrl-btn:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: 6px 6px 0px #000;
+      background-color: var(--accent-color);
+    }
+
+    .ctrl-btn:active {
+      transform: translate(2px, 2px);
+      box-shadow: 2px 2px 0px #000;
+    }
+
+    .slide-progress-tag {
+      position: absolute;
+      bottom: 2rem;
+      left: 2rem;
+      background: #ffffff;
+      border: var(--border-thick);
+      padding: 0.5rem 1rem;
+      font-family: var(--font-display);
+      font-size: 0.9rem;
+      box-shadow: 4px 4px 0px #000;
+      font-weight: 900;
+    }
+
+    .fragment {
+      opacity: 0;
+      transform: scale(0.9) translateY(10px);
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .fragment.visible {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+
+    @media (max-width: 800px) {
+      .brutalist-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+      .slide {
+        height: 75vh;
+        padding: 1.5rem;
+      }
+      .slide-title {
+        font-size: 1.5rem;
+      }
+      .highlight-value {
+        font-size: 2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="brutalist-header">
+    <div class="header-logo">PFC // V8</div>
+    <div class="header-meta">MÉTODO: IA-PROMPTING</div>
+  </header>
+
+  <!-- Slide Deck Container -->
+  <div class="deck-container">
+
+    <!-- SLIDE 1 -->
+    <div class="slide active" id="slide-0">
+      <div class="slide-header">
+        <span class="slide-badge">CONCEPT</span>
+        <h2 class="slide-title">PROYECTO PFC: SUITE OPERATIVA</h2>
+      </div>
+      <div class="slide-content">
+        <div class="brutalist-grid">
+          <div class="brutalist-inner-card fragment">
+            <h3>PROPUESTA</h3>
+            <p>Implementación de un ecosistema que unifica <span style="text-decoration: underline; font-weight: 900;">8 herramientas web</span> enfocadas en resolver necesidades logísticas y técnicas de electricistas.</p>
+          </div>
+          <div class="brutalist-inner-card fragment" style="background-color: var(--accent-color)">
+            <h3>NÚMERO CLAVE</h3>
+            <div class="highlight-value">0.00 EUR</div>
+            <p>Coste financiero real del proyecto gracias al uso estratégico de tiers gratuitos e IA.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 2 -->
+    <div class="slide" id="slide-1">
+      <div class="slide-header">
+        <span class="slide-badge">MÓDULOS</span>
+        <h2 class="slide-title">LAS 8 HERRAMIENTAS</h2>
+      </div>
+      <div class="slide-content">
+        <div class="brutalist-grid">
+          <div class="brutalist-inner-card fragment">
+            <h3>LÓGICA OPERATIVA</h3>
+            <p>• <strong>Fichas Técnicas:</strong> Navegación de catálogo.</p>
+            <p>• <strong>Almacén:</strong> Simulador de pedidos dinámico.</p>
+            <p>• <strong>Incidencias:</strong> Diagnósticos de fallos por IA.</p>
+            <p>• <strong>KPIs Logísticos:</strong> Panel KPI con semáforos.</p>
+          </div>
+          <div class="brutalist-inner-card fragment">
+            <h3>SOPORTE Y CHAT</h3>
+            <p>• <strong>Presupuestos:</strong> Cotizador de catálogo en PDF.</p>
+            <p>• <strong>Formación:</strong> Matriz competencias con IA.</p>
+            <p>• <strong>Chatbot SONEX:</strong> Asistente conversacional.</p>
+            <p>• <strong>Dashboard Global:</strong> Resumen agregador.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 3 -->
+    <div class="slide" id="slide-2">
+      <div class="slide-header">
+        <span class="slide-badge">TECNOLOGÍA</span>
+        <h2 class="slide-title">ARQUITECTURA DESACOPLADA</h2>
+      </div>
+      <div class="slide-content">
+        <div class="brutalist-grid">
+          <div class="brutalist-inner-card fragment">
+            <h3>FRONTEND</h3>
+            <p>• Core SPA basado en <strong>React 19 y Vite 7</strong>.</p>
+            <p>• Enrutador modular con <strong>React Router 7</strong>.</p>
+            <p>• Módulos CSS aislados para modo oscuro nativo.</p>
+          </div>
+          <div class="brutalist-inner-card fragment">
+            <h3>BACKEND</h3>
+            <p>• <strong>Supabase Cloud</strong>: PostgreSQL para catálogo.</p>
+            <p>• <strong>OpenRouter API</strong>: Gateway de modelos LLM.</p>
+            <p>• <strong>Hosting Vercel</strong>: Servidor serverless y CDN global.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 4 -->
+    <div class="slide" id="slide-3">
+      <div class="slide-header">
+        <span class="slide-badge">BASE DE DATOS</span>
+        <h2 class="slide-title">DATOS EN SUPABASE</h2>
+      </div>
+      <div class="slide-content">
+        <div class="brutalist-grid">
+          <div class="brutalist-inner-card fragment">
+            <h3>CATÁLOGO INTEGRADO</h3>
+            <div class="highlight-value" style="background-color: var(--accent-color); color: #000;">4,689 REFERENCIAS</div>
+            <p>Registros validados en base de datos PostgreSQL, divididos en 3 principales marcas.</p>
+          </div>
+          <div class="brutalist-inner-card fragment">
+            <h3>FABRICANTES</h3>
+            <table class="stats-table">
+              <thead>
+                <tr>
+                  <th>Marca</th>
+                  <th>Prod.</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Schneider Electric</td>
+                  <td>2,380</td>
+                </tr>
+                <tr>
+                  <td>Siemens</td>
+                  <td>1,735</td>
+                </tr>
+                <tr>
+                  <td>Legrand</td>
+                  <td>574</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 5 -->
+    <div class="slide" id="slide-4">
+      <div class="slide-header">
+        <span class="slide-badge">PRUEBAS</span>
+        <h2 class="slide-title">COBERTURA DE TESTS</h2>
+      </div>
+      <div class="slide-content">
+        <div class="brutalist-grid">
+          <div class="brutalist-inner-card fragment" style="background-color: var(--accent-color);">
+            <h3>UNITARIOS</h3>
+            <div class="highlight-value" style="background-color:#fff; color:#000;">272 TESTS</div>
+            <p>Pruebas de comportamiento escritas con <strong>Vitest</strong> para garantizar la lógica de cotizaciones y el estado reactivo.</p>
+          </div>
+          <div class="brutalist-inner-card fragment" style="background-color: var(--accent-pink); color: #fff;">
+            <h3>E2E INTEGRACIÓN</h3>
+            <div class="highlight-value" style="background-color:#000; color:#fff;">7 FLUJOS</div>
+            <p>Pruebas de interfaz en navegador real con <strong>Playwright</strong> para verificar autenticación y simulador de pedidos.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 6 -->
+    <div class="slide" id="slide-5">
+      <div class="slide-header">
+        <span class="slide-badge">IA DEV</span>
+        <h2 class="slide-title">CONCURRENCIA E IA</h2>
+      </div>
+      <div class="slide-content">
+        <div class="brutalist-grid">
+          <div class="brutalist-inner-card fragment">
+            <h3>METODOLOGÍA</h3>
+            <p>La IA permite saltarse las barreras sintácticas del código tradicional. El programador enfoca su tiempo en la <strong>resolución lógica de problemas</strong>, delegando la escritura sintáctica a la IA.</p>
+          </div>
+          <div class="brutalist-inner-card fragment">
+            <h3>APRENDIZAJES</h3>
+            <p>• Mantener una estructura de base de datos normalizada es indispensable.</p>
+            <p>• Los tests automatizados son los únicos que permiten expandir código sin cometer errores.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="slide-progress-tag">DIAPOSITIVA: <span id="current-slide-num">1</span> OF 6</div>
+
+  <div class="controls-panel">
+    <button class="ctrl-btn" onclick="navigate(-1)">&lt;</button>
+    <button class="ctrl-btn" onclick="navigate(1)">&gt;</button>
+  </div>
+
+  <script>
+    const slides = document.querySelectorAll('.slide');
+    let currentSlide = 0;
+
+    function showSlide(index) {
+      if (index < 0) index = 0;
+      if (index >= slides.length) index = slides.length - 1;
+
+      slides.forEach((slide, i) => {
+        slide.classList.remove('active', 'past', 'future');
+        
+        if (i === index) {
+          slide.classList.add('active');
+          slide.querySelectorAll('.fragment').forEach((frag, idx) => {
+            setTimeout(() => {
+              frag.classList.add('visible');
+            }, (idx + 1) * 120);
+          });
+        } else if (i < index) {
+          slide.classList.add('past');
+        } else {
+          slide.classList.add('future');
+        }
+      });
+
+      currentSlide = index;
+      document.getElementById('current-slide-num').textContent = currentSlide + 1;
+    }
+
+    function navigate(direction) {
+      showSlide(currentSlide + direction);
+    }
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ') {
+        navigate(1);
+      } else if (e.key === 'ArrowLeft') {
+        navigate(-1);
+      }
+    });
+
+    // Touch Swipe Navigation for Mobile
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    document.addEventListener('touchstart', e => {
+      touchStartX = e.changedTouches[0].screenX;
+    });
+
+    document.addEventListener('touchend', e => {
+      touchEndX = e.changedTouches[0].screenX;
+      handleGesture();
+    });
+
+    function handleGesture() {
+      const threshold = 50;
+      if (touchStartX - touchEndX > threshold) {
+        navigate(1); // Swipe left, next slide
+      } else if (touchEndX - touchStartX > threshold) {
+        navigate(-1); // Swipe right, prev slide
+      }
+    }
+
+    // Initialize first slide
+    window.addEventListener('load', () => {
+      showSlide(0);
+    });
+  </script>
+</body>
+</html>

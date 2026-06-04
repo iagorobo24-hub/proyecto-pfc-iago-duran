@@ -22,7 +22,7 @@ Esta carpeta contiene la documentación completa del proyecto, organizada en 10 
 | 04 | Diseño técnico y arquitectura | 5 |
 | 05 | Proceso de desarrollo con IA | 4 |
 | 06 | Fichas técnicas de herramientas IA | 14 |
-| 07 | Manuales de uso de la app | 6 |
+| 07 | Manuales de uso de la app | 7 |
 | 08 | Resultados y validación | 3 |
 | 09 | Conclusiones y líneas futuras | 3 |
 | 10 | Manual para profesores | 5 |

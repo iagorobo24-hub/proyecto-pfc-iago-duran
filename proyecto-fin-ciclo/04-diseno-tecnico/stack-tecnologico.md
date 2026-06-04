@@ -143,8 +143,7 @@ Hay herramientas parecidas pero Playwright es la más moderna y la que mejor fun
 Lo que ve el usuario:     React 19 + Vite 7
 Estilos:                  CSS Modules + variables CSS (+ Framer Motion)
 Login:                    Supabase Auth (Google OAuth)
-Base de datos:            Supabase (PostgreSQL) — catálogo
-                          Firestore (legacy) — datos de usuario
+Base de datos:            Supabase (PostgreSQL) — catálogo y datos de usuario (con localStorage fallback)
 IA:                       OpenRouter (Claude 3.5 Haiku, DeepSeek, Qwen, Gemini)
 Servidor:                 Vercel Functions
 Publicación:              Vercel
@@ -158,7 +157,7 @@ Control de versiones:     GitHub
 
 | Tecnología | Por qué no la usé al final |
 |------------|---------------------------|
-| **TypeScript** | Tenía que aprender React primero, añadir tipos después era demasiado |
+| **TypeScript** | Adoptado de forma progresiva. Los archivos de servicio y tipos clave están en .ts para mayor robustez |
 | **Tailwind CSS** | Cuestión de gustos, prefiero CSS normal |
 | **Redux** | React Context hace lo mismo sin complicaciones |
 | **Next.js** | Para una web que no necesita aparecer en Google, sobra |
@@ -180,10 +179,9 @@ La autenticación ahora usa Supabase OAuth con Google. El cambio fue directo:
 Los 2.400+ productos del catálogo están en PostgreSQL (tablas `products` y `brands`).
 La estructura pasó de colecciones NoSQL flexibles a un esquema SQL fijo con columnas tipadas.
 
-### ⏳ Firestore → Supabase (datos de usuario — pendiente)
+### ✅ Firestore → Supabase (datos de usuario — completada)
 
-Los datos de usuario (fichas guardadas, presupuestos, incidencias, KPIs, formación) siguen en Firestore.
-Migrarlos requiere crear tablas relacionales y actualizar `firestoreService.js`.
+Los datos de usuario (fichas guardadas, presupuestos, incidencias, KPIs, formación) han sido migrados a la tabla `user_data` de Supabase. El hook `useUserData` gestiona de forma transparente la persistencia remota en Supabase y mantiene un fallback automático y offline en `localStorage`.
 
 ---
 

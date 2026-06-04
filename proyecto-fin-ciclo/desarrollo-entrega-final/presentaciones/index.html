@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Proyecto PFC — Portal de Presentaciones HTML</title>
+  <!-- Google Fonts: Plus Jakarta Sans & Montserrat -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-color: #05070f;
+      --card-bg: rgba(15, 20, 39, 0.5);
+      --card-border: rgba(255, 255, 255, 0.05);
+      --accent-color: #6366f1;
+      --text-main: #94a3b8;
+      --text-bright: #ffffff;
+      --font-body: 'Plus Jakarta Sans', sans-serif;
+      --font-display: 'Montserrat', sans-serif;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      font-family: var(--font-body);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 3rem 2rem;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Ambient background orbs */
+    .bg-orbs {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(140px);
+      opacity: 0.12;
+    }
+
+    .orb-left {
+      top: -20%;
+      left: -10%;
+      width: 60vw;
+      height: 60vw;
+      background: radial-gradient(circle, #4f46e5, transparent);
+    }
+
+    .orb-right {
+      bottom: -20%;
+      right: -10%;
+      width: 60vw;
+      height: 60vw;
+      background: radial-gradient(circle, #d946ef, transparent);
+    }
+
+    .container {
+      max-width: 1300px;
+      margin: 0 auto;
+      width: 100%;
+      z-index: 2;
+    }
+
+    /* Header styling */
+    header {
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+
+    .header-badge {
+      display: inline-block;
+      padding: 6px 16px;
+      background: rgba(99, 102, 241, 0.1);
+      border: 1px solid rgba(99, 102, 241, 0.2);
+      color: #818cf8;
+      border-radius: 99px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 1.5rem;
+    }
+
+    h1 {
+      font-family: var(--font-display);
+      font-size: 3rem;
+      font-weight: 800;
+      color: var(--text-bright);
+      line-height: 1.2;
+      letter-spacing: -1px;
+      margin-bottom: 1rem;
+    }
+
+    h1 span {
+      background: linear-gradient(135deg, #818cf8, #d946ef, #34d399);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    p.tagline {
+      font-size: 1.15rem;
+      max-width: 700px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    /* Category titles */
+    .category-section {
+      margin-bottom: 3.5rem;
+    }
+
+    .category-title {
+      font-family: var(--font-display);
+      font-size: 1.6rem;
+      color: var(--text-bright);
+      margin-bottom: 1.5rem;
+      border-left: 4px solid var(--accent-color);
+      padding-left: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* Launch Grid */
+    .launch-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+      gap: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .launch-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 2.2rem;
+      backdrop-filter: blur(12px);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .launch-card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(255, 255, 255, 0.15);
+      box-shadow: 0 10px 25px rgba(99, 102, 241, 0.08);
+    }
+
+    .card-meta {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 1rem;
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+
+    .launch-card.cyber .card-meta { background: rgba(0, 240, 255, 0.08); color: #00f0ff; }
+    .launch-card.glass .card-meta { background: rgba(217, 70, 239, 0.08); color: #d946ef; }
+    .launch-card.swiss .card-meta { background: rgba(255, 69, 0, 0.08); color: #ff4500; }
+    .launch-card.corp .card-meta { background: rgba(0, 114, 206, 0.08); color: #0072CE; }
+    .launch-card.dash .card-meta { background: rgba(16, 185, 129, 0.08); color: #10b981; }
+    .launch-card.brutal .card-meta { background: rgba(255, 222, 71, 0.15); color: #e6c200; }
+    .launch-card.retro .card-meta { background: rgba(51, 255, 51, 0.08); color: #33ff33; }
+    .launch-card.neu .card-meta { background: rgba(77, 124, 254, 0.08); color: #4d7cfe; }
+    .launch-card.lux .card-meta { background: rgba(197, 168, 128, 0.08); color: #c5a880; }
+    .launch-card.scifi .card-meta { background: rgba(255, 0, 255, 0.08); color: #ff00ff; }
+
+    .card-title {
+      font-family: var(--font-display);
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: var(--text-bright);
+      margin-bottom: 0.75rem;
+    }
+
+    .card-desc {
+      font-size: 0.9rem;
+      line-height: 1.6;
+      margin-bottom: 1.8rem;
+      flex: 1;
+    }
+
+    .btn-action {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-bright);
+      font-weight: 700;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: color 0.2s ease;
+    }
+
+    .launch-card:hover .btn-action {
+      color: #818cf8;
+    }
+
+    .btn-action::after {
+      content: '→';
+      display: inline-block;
+      transition: transform 0.2s ease;
+    }
+
+    .launch-card:hover .btn-action::after {
+      transform: translateX(4px);
+    }
+
+    /* Footer info */
+    footer {
+      text-align: center;
+      font-size: 0.85rem;
+      color: #475569;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      padding-top: 2rem;
+      margin-top: 2rem;
+    }
+
+    footer a {
+      color: var(--text-main);
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+
+    footer a:hover {
+      color: var(--text-bright);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bg-orbs">
+    <div class="orb orb-left"></div>
+    <div class="orb orb-right"></div>
+  </div>
+
+  <div class="container">
+    <header>
+      <span class="header-badge">Ecosistema Académico Organizado</span>
+      <h1>Portal de <span>Presentaciones HTML</span></h1>
+      <p class="tagline">Explora las 10 propuestas conceptuales de diseño interactivo organizadas por categoría operativa y estética.</p>
+    </header>
+
+    <!-- SECTION 1: TECNOLÓGICAS Y DESARROLLADOR -->
+    <div class="category-section">
+      <h2 class="category-title">Presentaciones Técnicas y de Desarrollo</h2>
+      <div class="launch-grid">
+        
+        <!-- DASHBOARD INTERACTIVE -->
+        <a href="tecnicas-desarrollador/estilo_dashboard.html" class="launch-card dash">
+          <div>
+            <span class="card-meta">01 // Dashboard / NOC Monitor</span>
+            <h2 class="card-title">Estilo Dashboard Activo</h2>
+            <p class="card-desc">Presentación integrada como un panel de control interactivo en tiempo real. Contiene gráficos de dona, barras de medidores, paneles laterales y un log simulado.</p>
+          </div>
+          <span class="btn-action">Iniciar diapositivas</span>
+        </a>
+
+        <!-- CYBERPUNK -->
+        <a href="tecnicas-desarrollador/estilo_cyberpunk.html" class="launch-card cyber">
+          <div>
+            <span class="card-meta">02 // Hacker / Developer</span>
+            <h2 class="card-title">Estilo Cyberpunk</h2>
+            <p class="card-desc">Visualización inspirada en terminales de comando. Fondos oscuros puros, textos fluorescentes con resplandor neón, scanlines analógicas y transiciones rápidas.</p>
+          </div>
+          <span class="btn-action">Iniciar diapositivas</span>
+        </a>
+
+        <!-- RETRO TERMINAL -->
+        <a href="tecnicas-desarrollador/estilo_retro_terminal.html" class="launch-card retro">
+          <div>
+            <span class="card-meta">03 // Terminal Retro / DOS</span>
+            <h2 class="card-title">Estilo Terminal Retro</h2>
+            <p class="card-desc">Réplica fiel de una consola de comandos de fósforo verde de los años 80. Cuenta con parpadeo de cursor, recuadros en arte ASCII, scanlines CRT y carga simulada.</p>
+          </div>
+          <span class="btn-action">Iniciar diapositivas</span>
+        </a>
+
+        <!-- SCIFI HUD -->
+        <a href="tecnicas-desarrollador/estilo_scifi_hud.html" class="launch-card scifi">
+          <div>
+            <span class="card-meta">04 // Sci-Fi / Space HUD</span>
+            <h2 class="card-title">Estilo Sci-Fi Space HUD</h2>
+            <p class="card-desc">Panel de control de nave espacial. Posee círculos de telemetría giratorios SVG, marcos estructurados en esquina con corchetes HUD, scanner dinámico y colores vibrantes.</p>
+          </div>
+          <span class="btn-action">Iniciar diapositivas</span>
+        </a>
+
+      </div>
+    </div>
+
+    <!-- SECTION 2: MODERNAS Y PREMIUM -->
+    <div class="category-section">
+      <h2 class="category-title">Diseños Modernos y Corporativos</h2>
+      <div class="launch-grid">
+
+        <!-- CORPORATE PREMIUM -->
+        <a href="modernas-premium/estilo_corporativo.html" class="launch-card corp">
+          <div>
+            <span class="card-meta">05 // Corporativo / Sonepar Blue</span>
+            <h2 class="card-title">Estilo Corporativo Premium</h2>
+            <p class="card-desc">Diseño institucional de alto nivel utilizando los colores corporativos. Tarjetas limpias de estadísticas con bordes sutiles en gradiente y barras animadas.</p>
+          </div>
+          <span class="btn-action">Iniciar diapositivas</span>
+        </a>
+
+        <!-- GLASSMORPHISM -->
+        <a href="modernas-premium/estilo_glassmorphism.html" class="launch-card glass">
+          <div>
+            <span class="card-meta">06 // Glassmorphism / iOS</span>
+            <h2 class="card-title">Estilo Premium Glass</h2>
+            <p class="card-desc">Diseño translúcido y limpio inspirado en las interfaces de Apple y Stripe. Fondos con malla de degradados animados, tarjetas desenfocadas e increíbles transiciones en 3D.</p>
+          </div>
+          <span class="btn-action">Iniciar diapositivas</span>
+        </a>
+
+        <!-- NEUMORPHISM -->
+        <a href="modernas-premium/estilo_neumorfismo.html" class="launch-card neu">
+          <div>
+            <span class="card-meta">07 / Neumorphic / Soft UI</span>
+            <h2 class="card-title">Estilo Neumórfico Soft</h2>
+            <p class="card-desc">Estilo basado en relieve e intrusión física con sombras difusas dobles. Proporciona una apariencia táctil neumática de botones y tarjetas con transiciones de escala.</p>
+          </div>
+          <span class="btn-action">Iniciar diapositivas</span>
+        </a>
+
+      </div>
+    </div>
+
+    <!-- SECTION 3: EDITORIALES Y CREATIVAS -->
+    <div class="category-section">
+      <h2 class="category-title">Estilos Editoriales y Creativos</h2>
+      <div class="launch-grid">
+
+        <!-- SWISS EDITORIAL -->
+        <a href="editoriales-creativas/estilo_minimalista.html" class="launch-card swiss">
+          <div>
+            <span class="card-meta">08 // Minimalista / Suizo</span>
+            <h2 class="card-title">Estilo Editorial Suizo</h2>
+            <p class="card-desc">Diseño tipográfico puro inspirado en el movimiento Bauhaus. Fondo crema asimétrico, fuentes grotescas de peso extremo y transiciones en corte con máscaras de revelado.</p>
+          </div>
+          <span class="btn-action">Iniciar diapositivas</span>
+        </a>
+
+        <!-- LUXURY -->
+        <a href="editoriales-creativas/estilo_luxury.html" class="launch-card lux">
+          <div>
+            <span class="card-meta">09 // Luxury Minimalist</span>
+            <h2 class="card-title">Estilo Luxury Minimalist</h2>
+            <p class="card-desc">Diseño editorial de ultra-lujo inspirado en marcas prémium. Fondos carbón mate oscuro, acentos en oro romano, tipografía serif estilizada y transiciones de zoom-in lentas.</p>
+          </div>
+          <span class="btn-action">Iniciar diapositivas</span>
+        </a>
+
+        <!-- BRUTALIST -->
+        <a href="editoriales-creativas/estilo_brutalista.html" class="launch-card brutal">
+          <div>
+            <span class="card-meta">10 // Neo-Brutalist</span>
+            <h2 class="card-title">Estilo Neo-Brutalista</h2>
+            <p class="card-desc">Diseño de vanguardia con bordes negros gruesos, sombras sólidas desfasadas, paleta tipográfica dura y colores llamativos en contraste. Diapositivas con transiciones elásticas.</p>
+          </div>
+          <span class="btn-action">Iniciar diapositivas</span>
+        </a>
+
+      </div>
+    </div>
+
+    <footer>
+      <p>Proyecto Fin de Ciclo — Automatización y Robótica Industrial &copy; 2026 // <a href="file:///c:/Users/iagui/AI%20Projects/Repos%20de%20GitHub/proyecto-pfc-iago-duran/proyecto-fin-ciclo/desarrollo-entrega-final/">Volver a Entrega Final</a></p>
+    </footer>
+  </div>
+
+</body>
+</html>

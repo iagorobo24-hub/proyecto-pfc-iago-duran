@@ -34,11 +34,11 @@ El catálogo se migró de Firestore a Supabase por estas razones:
 
 ### ✅ Migración completada
 
-- ✅ Catálogo en Supabase: tablas `products` (~2.400 productos) y `brands`
+- ✅ Catálogo en Supabase: tablas `products` (~4.689 productos) y `brands`
 - ✅ Autenticación: Supabase Auth con Google OAuth
-- ✅ Frontend conectado: `catalogService.js` usa `@supabase/supabase-js`
+- ✅ Frontend conectado: `catalogService.ts` usa `@supabase/supabase-js`
 - ✅ Dual navigation: agrupación por categoría (categoriaMapping.js) para DP
-- ❌ Datos de usuario: siguen en Firestore (pendiente migrar)
+- ✅ Datos de usuario: Migrados a la tabla `user_data` en Supabase con fallback local (`useUserData`)
 
 ### Tablas en Supabase
 
@@ -158,24 +158,16 @@ CREATE POLICY "Users can manage own data" ON user_data
 | Storage (free) | 1GB | 1GB |
 | Open source | ❌ | ✅ |
 
-## Scripts creados (pendientes de usar)
+## Scripts creados (utilizados para normalización y migración)
 
-| Script | Función |
-|--------|---------|
-| `verify-data.mjs` | Verificar productos en Supabase |
-| `debug-supabase.mjs` | Análisis de esquema |
-| `supabase-analyze.mjs` | Rendimiento de queries |
-| `sync-catalog-to-supabase.mjs` | Sincronizar catálogo |
-| `apply-schema.mjs` | Crear tablas |
+| Script | Función | Estado |
+|--------|---------|--------|
+| `verify-data.mjs` | Verificar productos en Supabase | ✅ Utilizado |
+| `sync-catalog-to-supabase.mjs` | Sincronizar catálogo | ✅ Utilizado |
+| `apply-schema.mjs` | Crear tablas en Supabase | ✅ Utilizado |
+| `00-backup-db.mjs` a `09-update-mapping-files.mjs` | Scripts de normalización de taxonomía | ✅ Utilizado |
 
-## Próximos pasos
-
-1. Desplegar el esquema en Supabase
-2. Ejecutar script de sincronización del catálogo
-3. Modificar `catalogService.js` para usar Supabase en lugar de Firestore
-4. Mantener Firebase Auth (o migrar a Supabase Auth)
-
-## Lecciones aprendidas (pre-migración)
+## Lecciones aprendidas
 
 1. **PostgreSQL > NoSQL para datos estructurados:** Un catálogo de productos tiene relaciones naturales (familia → marca → producto).
 2. **La búsqueda full-text cambia todo:** Ya no necesitas generar keywords manualmente.
@@ -190,4 +182,4 @@ CREATE POLICY "Users can manage own data" ON user_data
 ---
 
 **Fecha de elaboración de esta ficha:** Abril 2026
-**Estado:** Migración en desarrollo
+**Estado:** Migración completada y en producción en Vercel

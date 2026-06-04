@@ -1,11 +1,15 @@
 ---
 tool_id: DB-001
-nombre: Firebase
-version_observada: 2025-2026
-rol_principal: Autenticación (Google Sign-In) y base de datos (Firestore)
+nombre: Firebase (Legado)
+version_observada: 2025-2026 (Fuera de producción)
+rol_principal: Autenticación inicial y base de datos NoSQL inicial (Firestore)
 url: https://firebase.google.com
 ---
-Firebase es la plataforma de Google para backend sin servidor. En el proyecto la usé para dos cosas: el inicio de sesión con Google y guardar datos en Firestore. Es sencilla, tiene un plan gratis decente y funciona rápido.
+
+> [!IMPORTANT]
+> **Herramienta Legada:** Firebase fue el backend inicial del proyecto. Ha sido completamente sustituido en producción por **Supabase** (para autenticación y catálogo de productos) y sincronización remota de datos. Este archivo se conserva como registro histórico de la arquitectura y evolución del proyecto.
+
+Firebase es la plataforma de Google para backend sin servidor. En el proyecto la usé originalmente para dos cosas: el inicio de sesión con Google y guardar datos en Firestore.
 
 ## ¿Qué es?
 

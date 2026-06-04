@@ -182,9 +182,9 @@ app/
 
 ## Limitaciones de las métricas
 
-- Las métricas de Firebase son del entorno de desarrollo
-- No hay datos de producción (usuarios reales)
-- Los KPIs son simulados
+- Las métricas de base de datos y usuarios corresponden al entorno de desarrollo y pruebas locales.
+- No hay datos de producción masivos con usuarios reales.
+- Los KPIs son simulados en base a datos reales.
 
 ---
 

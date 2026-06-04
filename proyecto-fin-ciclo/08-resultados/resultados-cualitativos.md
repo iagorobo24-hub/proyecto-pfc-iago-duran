@@ -75,20 +75,20 @@ Los números están bien, pero no lo cuentan todo. Esto es lo que opina la gente
 | Objetivo | Estado | Evidencia |
 |----------|--------|-----------|
 | 7 módulos funcionales | ✅ | Todos implementados |
-| Catálogo con productos | ✅ | 400K+ productos |
-| Autenticación | ✅ | Firebase Auth |
+| Catálogo con productos | ✅ | ~4.689 productos en catálogo |
+| Autenticación | ✅ | Supabase Auth (Google OAuth) |
 | SONEX con IA | ✅ | OpenRouter |
 | Deploy en producción | ✅ | Vercel |
+| Tests unitarios y E2E | ✅ | 272 tests en Vitest y Playwright |
 | Documentación | ✅ | 10 capítulos |
 | Coste cero | ✅ | Todo gratis |
 
-### Objetivos no cumplidos
+### Objetivos no cumplidos o futuros
 
 | Objetivo | Estado | Razón |
 |----------|--------|-------|
-| Tests unitarios | ❌ | Prioridad a funcionalidad |
-| CI/CD completo | ❌ | Solo deploy automático |
-| Validación con usuarios | ❌ | Solo pruebas propias |
+| CI/CD completo | ❌ | Solo deploy automático en Vercel |
+| Validación masiva con usuarios | ❌ | Solo pruebas internas y demos |
 
 ---
 

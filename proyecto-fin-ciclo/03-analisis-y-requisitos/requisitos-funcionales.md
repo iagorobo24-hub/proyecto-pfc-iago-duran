@@ -22,7 +22,7 @@ Esto es lo que la aplicación tiene que poder hacer, visto desde el punto de vis
 > El sistema debe permitir cerrar sesión
 
 - Botón de logout en la interfaz
-- Cierre de sesión en Firebase Auth
+- Cierre de sesión en Supabase Auth
 - Redirección a página de login
 
 ### RF-01.3

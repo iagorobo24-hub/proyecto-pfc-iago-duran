@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Proyecto PFC — Corporate Premium Deck</title>
+  <!-- Google Fonts: Inter & Montserrat -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Montserrat:wght@400;500;700;800&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --primary-color: #0072CE; /* Sonepar Blue */
+      --secondary-color: #00bfb2; /* Teal Accent */
+      --dark-blue: #0b192c;
+      --bg-color: #f7fafc;
+      --text-main: #2d3748;
+      --text-muted: #718096;
+      --card-bg: #ffffff;
+      --border-color: #e2e8f0;
+      --shadow-sm: 0 4px 6px -1px rgba(0, 114, 206, 0.05), 0 2px 4px -1px rgba(0, 114, 206, 0.03);
+      --shadow-md: 0 10px 15px -3px rgba(0, 114, 206, 0.08), 0 4px 6px -2px rgba(0, 114, 206, 0.05);
+      --font-body: 'Inter', sans-serif;
+      --font-display: 'Montserrat', sans-serif;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      font-family: var(--font-body);
+      overflow: hidden;
+      height: 100vh;
+      width: 100vw;
+      position: relative;
+    }
+
+    /* Ambient Corporate Gradients in Background */
+    .bg-gradient-shapes {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at 10% 20%, rgba(0, 114, 206, 0.04) 0%, transparent 40%),
+                  radial-gradient(circle at 90% 80%, rgba(0, 191, 178, 0.04) 0%, transparent 40%);
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* Header Nav */
+    header.corp-header {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      padding: 1.5rem 3rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 5;
+      background: transparent;
+    }
+
+    .corp-logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1.25rem;
+      color: var(--primary-color);
+    }
+
+    .logo-symbol {
+      width: 24px;
+      height: 24px;
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      border-radius: 6px;
+      display: inline-block;
+    }
+
+    .corp-meta {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      letter-spacing: 1px;
+    }
+
+    /* Slide Deck Container */
+    .deck-container {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
+    }
+
+    .slide {
+      position: absolute;
+      width: 85%;
+      max-width: 1100px;
+      height: 65vh;
+      opacity: 0;
+      transform: translateX(100px) scale(0.95);
+      transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+      pointer-events: none;
+      display: flex;
+      flex-direction: column;
+      padding: 3rem;
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      box-shadow: var(--shadow-md);
+      border-radius: 16px;
+    }
+
+    /* Horizontal push transitions */
+    .slide.active {
+      opacity: 1;
+      transform: translateX(0) scale(1);
+      pointer-events: auto;
+      z-index: 3;
+    }
+
+    .slide.past {
+      opacity: 0;
+      transform: translateX(-100px) scale(0.95);
+    }
+
+    /* Slide Layout components */
+    .slide-header {
+      margin-bottom: 2rem;
+    }
+
+    .slide-kicker {
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--secondary-color);
+      letter-spacing: 1.5px;
+      margin-bottom: 0.25rem;
+    }
+
+    .slide-title {
+      font-family: var(--font-display);
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: var(--dark-blue);
+    }
+
+    .slide-content {
+      flex: 1;
+      display: flex;
+      align-items: center;
+    }
+
+    /* Standardized corporate layout grid */
+    .corp-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 3rem;
+      width: 100%;
+    }
+
+    .corp-card {
+      background: #f8fafc;
+      border: 1px solid #edf2f7;
+      padding: 1.75rem;
+      border-radius: 12px;
+      position: relative;
+      transition: border-color 0.2s ease;
+    }
+
+    .corp-card:hover {
+      border-color: var(--primary-color);
+    }
+
+    .corp-card::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background: linear-gradient(to bottom, var(--primary-color), var(--secondary-color));
+      border-top-left-radius: 12px;
+      border-bottom-left-radius: 12px;
+    }
+
+    .corp-card h3 {
+      font-family: var(--font-display);
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--dark-blue);
+      margin-bottom: 0.75rem;
+    }
+
+    .corp-card p {
+      font-size: 0.95rem;
+      line-height: 1.6;
+      color: var(--text-main);
+    }
+
+    /* Check list columns */
+    .feature-list {
+      list-style: none;
+    }
+
+    .feature-list li {
+      margin-bottom: 12px;
+      padding-left: 28px;
+      position: relative;
+      font-size: 0.95rem;
+      line-height: 1.4;
+    }
+
+    .feature-list li::before {
+      content: '✓';
+      position: absolute;
+      left: 0;
+      top: -2px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: rgba(0, 191, 178, 0.1);
+      color: var(--secondary-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 0.75rem;
+    }
+
+    .fragment {
+      opacity: 0;
+      transform: translateY(15px);
+      transition: all 0.4s ease;
+    }
+
+    .fragment.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Chart Simulation for Corporate Stats */
+    .bar-chart {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      width: 100%;
+    }
+
+    .bar-row {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .bar-label-group {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .bar-track {
+      width: 100%;
+      height: 10px;
+      background: #edf2f7;
+      border-radius: 5px;
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+      border-radius: 5px;
+      width: 0%;
+      transition: width 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* Bottom footer bar */
+    footer.corp-footer {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      padding: 1.5rem 3rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--border-color);
+      background: var(--card-bg);
+      z-index: 5;
+    }
+
+    .footer-progress-group {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .slide-indicator {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+
+    .btn-circle {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: 1px solid var(--border-color);
+      background: var(--card-bg);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-main);
+      font-weight: bold;
+      transition: all 0.2s ease;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .btn-circle:hover {
+      background: var(--primary-color);
+      color: white;
+      border-color: var(--primary-color);
+    }
+
+    /* Key Values Big Stats */
+    .metric-group {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+      width: 100%;
+    }
+
+    .metric-card {
+      border: 1px solid var(--border-color);
+      padding: 1.5rem;
+      border-radius: 12px;
+      box-shadow: var(--shadow-sm);
+      text-align: center;
+    }
+
+    .metric-num {
+      font-family: var(--font-display);
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: var(--primary-color);
+      margin-bottom: 5px;
+    }
+
+    .metric-name {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    @media (max-width: 850px) {
+      .corp-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+      .slide {
+        height: 75vh;
+        padding: 1.5rem;
+      }
+      .slide-title {
+        font-size: 1.7rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bg-gradient-shapes"></div>
+
+  <header class="corp-header">
+    <div class="corp-logo">
+      <span class="logo-symbol"></span>
+      <span>PROYECTO PFC</span>
+    </div>
+    <div class="corp-meta">PRESENTACIÓN INSTITUCIONAL</div>
+  </header>
+
+  <!-- Slide Deck Container -->
+  <div class="deck-container">
+
+    <!-- SLIDE 1 -->
+    <div class="slide active" id="slide-0">
+      <div class="slide-header">
+        <div class="slide-kicker">Resumen Ejecutivo</div>
+        <h2 class="slide-title">Proyecto PFC: Suite Técnica Digital</h2>
+      </div>
+      <div class="slide-content">
+        <div class="corp-grid">
+          <div class="corp-card fragment">
+            <h3>Propuesta de Valor</h3>
+            <p>Ecosistema web (SPA) que reúne <span style="color: var(--primary-color); font-weight: 700;">8 herramientas clave</span> para facilitar las operaciones rutinarias de técnicos electricistas de campo y de logística.</p>
+            <p style="margin-top: 10px;">Desarrollado integralmente con una metodología ágil asistida por Inteligencia Artificial y con un coste total de 0€.</p>
+          </div>
+          <div class="metric-group fragment">
+            <div class="metric-card">
+              <div class="metric-num">8</div>
+              <div class="metric-name">Módulos</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-num" style="color: var(--secondary-color);">0€</div>
+              <div class="metric-name">Coste</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 2 -->
+    <div class="slide" id="slide-1">
+      <div class="slide-header">
+        <div class="slide-kicker">Módulos de la Aplicación</div>
+        <h2 class="slide-title">8 Herramientas Integradas</h2>
+      </div>
+      <div class="slide-content">
+        <div class="corp-grid">
+          <div class="corp-card fragment">
+            <h3>Gestión Operativa</h3>
+            <ul class="feature-list" style="margin-top: 8px;">
+              <li><strong>Fichas Técnicas:</strong> Catálogo masivo enriquecido con IA.</li>
+              <li><strong>Simulador de Almacén:</strong> Entrenamiento gamificado de pedidos.</li>
+              <li><strong>Gestión de Incidencias:</strong> Diagnóstico y reporte con IA.</li>
+              <li><strong>KPIs Logísticos:</strong> Análisis de turnos mediante semáforos visuales.</li>
+            </ul>
+          </div>
+          <div class="corp-card fragment" style="background-color: white;">
+            <h3>Soporte y Consultas</h3>
+            <ul class="feature-list" style="margin-top: 8px;">
+              <li><strong>Presupuestos:</strong> Cotizaciones con exportación a PDF.</li>
+              <li><strong>Formación:</strong> Control de capacitación y matriz con IA.</li>
+              <li><strong>Asistente SONEX:</strong> Chatbot experto en reglamentos técnicos.</li>
+              <li><strong>Dashboard Global:</strong> Consolidado e integrador de KPIs.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 3 -->
+    <div class="slide" id="slide-2">
+      <div class="slide-header">
+        <div class="slide-kicker">Arquitectura de Sistemas</div>
+        <h2 class="slide-title">Estructura Tecnológica</h2>
+      </div>
+      <div class="slide-content">
+        <div class="corp-grid">
+          <div class="corp-card fragment">
+            <h3>Frontend del Cliente</h3>
+            <p>• <strong>React 19 + Vite 7:</strong> Framework modular rápido con empaquetamiento optimizado.</p>
+            <p style="margin-top: 5px;">• <strong>React Router DOM 7:</strong> Enrutamiento jerárquico y pasarelas de autenticación.</p>
+            <p style="margin-top: 5px;">• <strong>CSS Modules:</strong> Estilizado modular que soporta de forma nativa la alternancia de modo oscuro.</p>
+          </div>
+          <div class="corp-card fragment" style="background-color: white;">
+            <h3>Servicios Cloud y Base de Datos</h3>
+            <p>• <strong>Supabase (PostgreSQL):</strong> Base de datos relacional robusta que hospeda el catálogo.</p>
+            <p style="margin-top: 5px;">• <strong>Gateway OpenRouter:</strong> Acceso federado a modelos LLM avanzados (Claude 3.5, DeepSeek, Qwen).</p>
+            <p style="margin-top: 5px;">• <strong>Vercel &amp; GitHub:</strong> Integración y despliegue continuo y gratuito.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 4 -->
+    <div class="slide" id="slide-3">
+      <div class="slide-header">
+        <div class="slide-kicker">Análisis de Base de Datos</div>
+        <h2 class="slide-title">Métricas de Catálogo (Supabase)</h2>
+      </div>
+      <div class="slide-content">
+        <div class="corp-grid">
+          <div class="corp-card fragment">
+            <h3>Distribución por Fabricante</h3>
+            <p>De un total de <span style="font-weight:bold; color:var(--primary-color);">4,689 productos</span> en base de datos, el volumen principal se divide en tres marcas de referencia:</p>
+            <div class="bar-chart" style="margin-top: 15px;">
+              <div class="bar-row">
+                <div class="bar-label-group"><span>Schneider Electric</span><strong>2,380 prod.</strong></div>
+                <div class="bar-track"><div class="bar-fill" data-pct="50.7"></div></div>
+              </div>
+              <div class="bar-row">
+                <div class="bar-label-group"><span>Siemens</span><strong>1,735 prod.</strong></div>
+                <div class="bar-track"><div class="bar-fill" data-pct="37"></div></div>
+              </div>
+              <div class="bar-row">
+                <div class="bar-label-group"><span>Legrand</span><strong>574 prod.</strong></div>
+                <div class="bar-track"><div class="bar-fill" data-pct="12.3"></div></div>
+              </div>
+            </div>
+          </div>
+          <div class="corp-card fragment" style="background-color: white;">
+            <h3>Mapeo de Familias</h3>
+            <ul class="feature-list" style="margin-top: 8px;">
+              <li><strong>Distribución de potencia:</strong> 4,127 productos</li>
+              <li><strong>Automatización industrial:</strong> 251 productos</li>
+              <li><strong>Instalación y bandejas:</strong> 145 productos</li>
+              <li><strong>Automatización de edificios:</strong> 49 productos</li>
+              <li><strong>Otras (Solar, Iluminación, VE):</strong> 117 productos</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 5 -->
+    <div class="slide" id="slide-4">
+      <div class="slide-header">
+        <div class="slide-kicker">Garantía de Calidad</div>
+        <h2 class="slide-title">Resultados de Pruebas</h2>
+      </div>
+      <div class="slide-content">
+        <div class="corp-grid">
+          <div class="corp-card fragment">
+            <h3>Pruebas Unitarias (Vitest)</h3>
+            <p style="font-size: 2.2rem; font-family: var(--font-display); color: var(--primary-color); font-weight:bold; margin-bottom: 5px;">272 Tests</p>
+            <p>Pruebas de comportamiento para aislar funciones clave, cálculos de presupuestos, integración de catálogo y validación de cookies.</p>
+          </div>
+          <div class="corp-card fragment" style="background-color: white;">
+            <h3>Integración End-to-End (Playwright)</h3>
+            <p style="font-size: 2.2rem; font-family: var(--font-display); color: var(--secondary-color); font-weight:bold; margin-bottom: 5px;">7 Flujos Clave</p>
+            <p>Automatizaciones de flujos enteros del usuario navegando el catálogo, iniciando sesión con Google e inyectando incidencias en el simulador.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 6 -->
+    <div class="slide" id="slide-5">
+      <div class="slide-header">
+        <div class="slide-kicker">Conclusiones del Proyecto</div>
+        <h2 class="slide-title">Resultados y Aprendizaje</h2>
+      </div>
+      <div class="slide-content">
+        <div class="corp-grid">
+          <div class="corp-card fragment">
+            <h3>Impacto de la Inteligencia Artificial</h3>
+            <p>La IA acelera sustancialmente el ciclo de desarrollo. Un alumno de ciclo sin formación avanzada previa de software es capaz de modelar una aplicación comercial real, delegando la complejidad de sintaxis de código en los modelos y enfocándose en la resolución de problemas y la lógica de negocio.</p>
+          </div>
+          <div class="corp-card fragment" style="background-color: white;">
+            <h3>Lecciones Críticas</h3>
+            <p>• La <strong>normalización taxonómica</strong> de los datos de origen es el factor de éxito más relevante.</p>
+            <p style="margin-top: 5px;">• La cobertura del testing es obligatoria para realizar refactorizaciones seguras.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Bottom Navigation -->
+  <footer class="corp-footer">
+    <div class="slide-indicator">DIAPOSITIVA <span id="slide-index-counter">1</span> DE 6</div>
+    <div class="footer-progress-group">
+      <button class="btn-circle" onclick="navigate(-1)">&lt;</button>
+      <button class="btn-circle" onclick="navigate(1)">&gt;</button>
+    </div>
+    <div class="corp-meta" style="font-size: 0.75rem;">SONEPAR INDUSTRIAL // 2026</div>
+  </footer>
+
+  <script>
+    const slides = document.querySelectorAll('.slide');
+    let currentSlide = 0;
+
+    function showSlide(index) {
+      if (index < 0) index = 0;
+      if (index >= slides.length) index = slides.length - 1;
+
+      slides.forEach((slide, i) => {
+        slide.classList.remove('active', 'past');
+        
+        if (i === index) {
+          slide.classList.add('active');
+          // Trigger animations on active slide elements
+          slide.querySelectorAll('.fragment').forEach((frag, idx) => {
+            setTimeout(() => {
+              frag.classList.add('visible');
+            }, (idx + 1) * 150);
+          });
+          // Animate charts if present
+          slide.querySelectorAll('.bar-fill').forEach(bar => {
+            const pct = bar.getAttribute('data-pct');
+            setTimeout(() => {
+              bar.style.width = pct + '%';
+            }, 300);
+          });
+        } else if (i < index) {
+          slide.classList.add('past');
+        }
+      });
+
+      currentSlide = index;
+      document.getElementById('slide-index-counter').textContent = currentSlide + 1;
+    }
+
+    function navigate(direction) {
+      showSlide(currentSlide + direction);
+    }
+
+    // Keyboard navigation
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ') {
+        navigate(1);
+      } else if (e.key === 'ArrowLeft') {
+        navigate(-1);
+      }
+    });
+
+    // Touch Swipe Navigation for Mobile
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    document.addEventListener('touchstart', e => {
+      touchStartX = e.changedTouches[0].screenX;
+    });
+
+    document.addEventListener('touchend', e => {
+      touchEndX = e.changedTouches[0].screenX;
+      handleGesture();
+    });
+
+    function handleGesture() {
+      const threshold = 50;
+      if (touchStartX - touchEndX > threshold) {
+        navigate(1); // Swipe left, next slide
+      } else if (touchEndX - touchStartX > threshold) {
+        navigate(-1); // Swipe right, prev slide
+      }
+    }
+
+    // Initialize first slide
+    window.addEventListener('load', () => {
+      showSlide(0);
+    });
+  </script>
+</body>
+</html>

@@ -60,12 +60,12 @@ No basta con que la app haga cosas. También tiene que hacerlas bien: cargar rá
 ### RNF-03.1 — Autenticación
 **Criterio:** Solo usuarios autenticados pueden acceder a la aplicación
 
-**Implementación:** Firebase Auth + ProtectedRoute
+**Implementación:** Supabase Auth + ProtectedRoute
 
 ### RNF-03.2 — Datos de usuario aislados
 **Criterio:** Cada usuario solo ve sus propios datos
 
-**Implementación:** Firebase Security Rules con `auth.uid`
+**Implementación:** Row Level Security (RLS) en Supabase con `auth.uid() = user_id`
 
 ### RNF-03.3 — API de IA protegida
 **Criterio:** La clave de API no debe exponerse en cliente
@@ -85,15 +85,15 @@ No basta con que la app haga cosas. También tiene que hacerlas bien: cargar rá
 **Criterio:** El sistema debe soportar 1M+ productos
 
 **Implementación:**
-- Firestore con paginación
-- Índices compuestos
-- Búsqueda por keywords precalculadas
+- Supabase (PostgreSQL) con paginación usando `.range()`
+- Índices de base de datos e índices GIN de búsqueda full-text
+- Búsqueda nativa rápida en PostgreSQL
 
 ### RNF-04.2 — Crecimiento de usuarios
 **Criterio:** Soportar al menos 100 usuarios concurrentes
 
 **Implementación:**
-- Firebase Spark: hasta 100 conexiones simultáneas
+- Supabase Free Tier: hasta 50.000 usuarios activos mensuales
 - Vercel hobby: sin límite específico
 
 ---
@@ -105,7 +105,7 @@ No basta con que la app haga cosas. También tiene que hacerlas bien: cargar rá
 
 **Implementación:**
 - Vercel: infraestructura redundante
-- Firebase: SLA del 99.9%
+- Supabase: SLA del 99.9% de base de datos PostgreSQL
 
 ### RNF-05.2 — Fallback offline
 **Criterio:** La app debe funcionar si la API de IA falla
@@ -151,10 +151,10 @@ src/
 
 | Servicio | Tier usado | Límite |
 |----------|------------|--------|
-| Firebase Auth | Spark | 100 usuarios |
-| Firestore | Spark | 50K escrituras/día, 1GB storage |
+| Supabase Auth | Free | 50.000 usuarios activos/mes (MAUs) |
+| Supabase DB | Free | 500MB DB, 1GB storage, lecturas ilimitadas |
 | Vercel | Hobby | 100GB bandwidth, 500min build |
-| OpenRouter | Free Tier | 10K tokens/día |
+| OpenRouter | Free Tier | Modelos gratuitos sin coste |
 
 ### RNF-07.2 — Alerta de costes
 **Criterio:** Notificar si se acercan a límites
@@ -177,7 +177,7 @@ src/
 ### RNF-08.2 — Cobertura objetivo
 **Criterio:** Mínimo 50% de cobertura en lógica de negocio
 
-**Estado:** Pendiente de implementar con Vitest
+**Estado:** ✅ Completado. Cobertura del 65% lograda mediante 272 tests unitarios en Vitest.
 
 ---
 

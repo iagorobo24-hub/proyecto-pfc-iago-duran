@@ -21,7 +21,7 @@ Este capítulo documenta las 15+ herramientas de IA evaluadas durante el desarro
 ### Infraestructura
 - **Vercel** — CI/CD + hosting
 - **GitHub** — Repositorio
-- **Firebase** — Auth + DB
+- **Supabase** — Auth + DB (PostgreSQL)
 - **Playwright** — Scraping + E2E
 
 ---
