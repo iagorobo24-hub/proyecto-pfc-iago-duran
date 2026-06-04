@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { Outlet, useSearchParams, useNavigate, useLocation } from 'react-router-dom'
 import { useToast } from '../../contexts/ToastContext'
 import catalogService from '../../services/catalogService'
@@ -21,6 +21,10 @@ export default function PresupuestosLayout() {
   const hook = usePresupuestos()
   const [numPresupuesto, setNumPresupuesto] = useState(genNum())
   const [categorias, setCategorias] = useState([])
+  const [consulta, setConsulta] = useState('')
+  const [sugerenciasBusqueda, setSugerenciasBusqueda] = useState([])
+  const [busquedaCargando, setBusquedaCargando] = useState(false)
+  const debounceRef = useRef(null)
 
   useEffect(() => {
     catalogService.getCategorias().then(dbCats => {
@@ -31,6 +35,22 @@ export default function PresupuestosLayout() {
       setCategorias(enriched)
     }).catch(() => setCategorias([]))
   }, [])
+
+  useEffect(() => {
+    if (debounceRef.current) clearTimeout(debounceRef.current)
+    if (consulta.trim().length >= 2) {
+      setBusquedaCargando(true)
+      debounceRef.current = setTimeout(async () => {
+        const results = await catalogService.buscarProductos(consulta)
+        setSugerenciasBusqueda(results)
+        setBusquedaCargando(false)
+      }, 250)
+    } else {
+      setSugerenciasBusqueda([])
+      setBusquedaCargando(false)
+    }
+    return () => { if (debounceRef.current) clearTimeout(debounceRef.current) }
+  }, [consulta])
 
   useEffect(() => {
     const producto = searchParams.get('producto')
@@ -86,6 +106,20 @@ export default function PresupuestosLayout() {
     }
   }, [hook.setCategoria, navigate, location.pathname])
 
+  const handleSearchResultClick = useCallback((p) => {
+    const key = p.ref_fabricante || p.ref
+    hook.dispatchPartidas({ type: 'ADD_FROM_CATALOG', ref: key, desc: p.name || p.desc, precio: p.precio || 0 })
+    toast.show(`${key} añadido al presupuesto`, 'success')
+    setConsulta('')
+    setSugerenciasBusqueda([])
+  }, [hook.dispatchPartidas, toast])
+
+  const handleSearchKeyDown = useCallback((e) => {
+    if (e.key === 'Enter' && sugerenciasBusqueda.length > 0) {
+      handleSearchResultClick(sugerenciasBusqueda[0])
+    }
+  }, [sugerenciasBusqueda, handleSearchResultClick])
+
   const isActive = (catId) => hook.categoria === catId
   const isGestionActive = location.pathname.includes('gestion')
 
@@ -107,6 +141,37 @@ export default function PresupuestosLayout() {
     <PresupuestosContext.Provider value={value}>
       <div className={styles.layout}>
         <aside className={styles.sidebar} aria-label="Presupuestos">
+          <div className={styles.sidebar__search} role="search">
+            <input
+              className={styles.sidebar__searchInput}
+              value={consulta}
+              onChange={e => setConsulta(e.target.value)}
+              onKeyDown={handleSearchKeyDown}
+              placeholder="Buscar referencia..."
+              aria-label="Buscar producto por referencia o nombre"
+              aria-autocomplete="list"
+              autoComplete="off"
+            />
+            {sugerenciasBusqueda.length > 0 && (
+              <ul className={styles.sidebar__sugerencias} role="listbox" aria-label="Sugerencias de búsqueda">
+                {sugerenciasBusqueda.map(p => (
+                  <li
+                    key={p.id}
+                    className={styles.sidebar__sugerenciaItem}
+                    role="option"
+                    tabIndex={0}
+                    onClick={() => handleSearchResultClick(p)}
+                    onKeyDown={e => { if (e.key === 'Enter') handleSearchResultClick(p) }}
+                  >
+                    <span className={styles.sidebar__sugerenciaRef}>{p.ref_fabricante}</span>
+                    <span className={styles.sidebar__sugerenciaName}>{p.name}</span>
+                    <span className={styles.sidebar__sugerenciaMarca}>{p.marca}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+            {busquedaCargando && <div className={styles.sidebar__busquedaCargando}>Buscando...</div>}
+          </div>
           <div className={styles.sidebar__label} id="presup-categories-label">Categorías</div>
           <nav aria-labelledby="presup-categories-label">
             {categorias.map(c => (
