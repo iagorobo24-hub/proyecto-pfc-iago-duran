@@ -240,6 +240,9 @@ test.describe('Fichas Técnicas — Matriz de Selección Exhaustiva', () => {
 
         if (reachedFicha) {
           console.log(`    [OK] Flujo validado correctamente para esta marca.`)
+          // Captura de pantalla para validación visual
+          const fileName = `exhaustivo-${cat.name.replace(/[^a-zA-Z0-9]/g, '')}-${brand.name.replace(/[^a-zA-Z0-9]/g, '')}.png`
+          await page.screenshot({ path: `e2e/screenshots/${fileName}`, fullPage: true }).catch(() => {})
         } else {
           console.log(`    [Aviso] Se finalizó el camino antes de llegar a la ficha del producto.`)
         }
