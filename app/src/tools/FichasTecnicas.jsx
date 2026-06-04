@@ -1,11 +1,11 @@
-import { useState, useCallback, useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useToast } from '../contexts/ToastContext'
 import { trackEvent } from '../hooks/useAnalytics'
 import useFichasTecnicas from '../hooks/useFichasTecnicas'
 import useNavegacionFichas from '../hooks/useNavegacionFichas'
 import { getCategoriaMeta } from '../data/categories'
-import { Breadcrumb, ViewToggle } from '../components/ui/CircleLayout'
+import { Breadcrumb } from '../components/ui/CircleLayout'
 import Button from '../components/ui/Button'
 import FichasTecnicasSidebar from '../components/fichas/FichasTecnicasSidebar'
 import FichasTecnicasContent from '../components/fichas/FichasTecnicasContent'
@@ -37,9 +37,14 @@ export default function FichasTecnicas() {
     buscar,
   } = useFichasTecnicas()
 
-  const [modo, setModo] = useState('navegacion')
-
   const catInfo = useMemo(() => getCategoriaMeta(categoria), [categoria])
+  const categoriasConIconos = useMemo(() =>
+    (categorias || []).map(cat => {
+      const meta = getCategoriaMeta(cat.id)
+      return { ...cat, icon: meta.icon || cat.icon || '📁' }
+    }),
+    [categorias]
+  )
   const isCargando = navegacionCargando || busquedaIACargando
 
   const handleSugerenciaClick = useCallback((p) => {
@@ -61,7 +66,6 @@ export default function FichasTecnicas() {
 
   const handleCategoriaClick = useCallback((catId) => {
     seleccionarCategoria(catId)
-    setModo('navegacion')
   }, [seleccionarCategoria])
 
   const copiarReferencia = useCallback((ref) => {
@@ -88,7 +92,7 @@ export default function FichasTecnicas() {
         sugerenciasBusqueda={sugerenciasBusqueda}
         busquedaCargando={busquedaCargando}
         isCargando={isCargando}
-        categorias={categorias}
+        categorias={categoriasConIconos}
         categoria={categoria}
         onCategoriaClick={handleCategoriaClick}
         onSugerenciaClick={handleSugerenciaClick}
@@ -123,13 +127,6 @@ export default function FichasTecnicas() {
               {' '}
               {categoria ? categorias.find(c => c.id === categoria)?.label : 'Fichas Técnicas'}
             </h1>
-            {categoria && (
-              <ViewToggle
-                options={[{ label: 'Navegar', value: 'navegacion' }, { label: 'Buscar', value: 'busqueda' }]}
-                active={modo}
-                onChange={setModo}
-              />
-            )}
           </div>
 
           <section aria-live="polite">
@@ -158,7 +155,6 @@ export default function FichasTecnicas() {
               resultado={resultado}
               error={error}
               resultadosBusqueda={resultadosBusqueda}
-              modo={modo}
               catInfo={catInfo}
               onSeleccionarMarca={seleccionarMarca}
               onSeleccionarGama={seleccionarGama}
@@ -173,7 +169,7 @@ export default function FichasTecnicas() {
             />
           </section>
 
-          {(paso !== 'categorias' && paso !== 'busqueda' && categoria) && (
+          {(paso !== 'categorias' && categoria) && (
             <div className={styles.backWrap}>
               <Button variant="ghost" size="sm" onClick={volver} aria-label="Volver al paso anterior">
                 ← Volver

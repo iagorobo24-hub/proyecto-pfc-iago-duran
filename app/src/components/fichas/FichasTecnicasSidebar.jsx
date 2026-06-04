@@ -27,14 +27,14 @@ export default function FichasTecnicasSidebar({
 
   if (!categorias || categorias.length === 0) {
     return (
-      <aside className={styles.sidebar} aria-label="Familias de productos">
-        <div className={styles.empty}>Cargando familias...</div>
+      <aside className={styles.sidebar} aria-label="Categorías de productos">
+        <div className={styles.empty}>Cargando categorías...</div>
       </aside>
     )
   }
 
   return (
-    <aside className={styles.sidebar} aria-label="Familias de productos">
+    <aside className={styles.sidebar} aria-label="Categorías de productos">
       <div className={styles.search} role="search">
         <input
           id="catalog-search"
@@ -80,7 +80,7 @@ export default function FichasTecnicasSidebar({
         </Button>
       </div>
 
-      <div className={styles.label} id="categories-label">Familias</div>
+      <div className={styles.label} id="categories-label">Categorías</div>
       <nav aria-labelledby="categories-label">
         {categorias.map(cat => (
           <button

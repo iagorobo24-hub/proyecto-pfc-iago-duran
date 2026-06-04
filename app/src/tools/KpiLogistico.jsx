@@ -103,6 +103,11 @@ export default function KPILogistico() {
   };
 
   const datosGrafico = historial.slice(0, 7).reverse().map((h, i) => ({ name: `T${i + 1}`, pedidos_hora: parseFloat(h.kpis.pedidos_hora.toFixed(1)) }));
+  const datosBarras = kpis ? Object.entries(BENCHMARKS).map(([key, b]) => ({
+    name: b.label.split(' ')[0],
+    actual: parseFloat(kpis[key].toFixed(1)),
+    objetivo: b.bueno,
+  })) : [];
 
   const CAMPOS = [
     { key: "pedidos", label: "PEDIDOS COMPLETADOS", placeholder: "145" },
@@ -198,8 +203,24 @@ export default function KPILogistico() {
                     })}
                   </div>
 
-                  {/* Gráfico */}
-                  {datosGrafico.length > 1 && (
+                  {/* Comparativa KPIs */}
+                  {datosBarras.length > 0 && (
+                    <div style={{ maxWidth: 500, margin: '0 auto 24px', padding: '16px', background: 'var(--color-surface)', border: '1.5px solid var(--color-border)', borderRadius: 'var(--radius-lg)' }}>
+                      <div style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '12px' }}>Comparativa KPIs</div>
+                      <ResponsiveContainer width="100%" height={250}>
+                        <BarChart data={datosBarras}>
+                          <XAxis dataKey="name" tick={{ fontSize: 11 }} />
+                          <YAxis tick={{ fontSize: 11 }} />
+                          <Tooltip />
+                          <Bar dataKey="actual" fill="var(--color-brand)" name="Actual" radius={[4, 4, 0, 0]} />
+                          <Bar dataKey="objetivo" fill="var(--color-border)" name="Objetivo" radius={[4, 4, 0, 0]} />
+                        </BarChart>
+                      </ResponsiveContainer>
+                    </div>
+                  )}
+
+                  {/* Tendencia pedidos/hora */}
+                  {datosGrafico.length >= 1 && (
                     <div style={{ maxWidth: 500, margin: '0 auto 24px', padding: '16px', background: 'var(--color-surface)', border: '1.5px solid var(--color-border)', borderRadius: 'var(--radius-lg)' }}>
                       <div style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--gray-400)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '12px' }}>Tendencia pedidos/hora</div>
                       <ResponsiveContainer width="100%" height={180}>
