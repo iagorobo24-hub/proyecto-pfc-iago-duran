@@ -16,11 +16,11 @@ test.describe('Fichas Técnicas — Catálogo Completo', () => {
     await page.goto(`${BASE}/app/fichas`, { waitUntil: 'networkidle', timeout: 30000 })
     await page.waitForTimeout(2000)
     await expect(page.locator('h1').filter({ hasText: 'Fichas Técnicas' })).toBeVisible()
-    await expect(page.getByText('Familias')).toBeVisible()
+    await expect(page.getByText('Categorías')).toBeVisible()
     const sidebarCats = page.locator('nav[aria-labelledby="categories-label"] button')
     await expect(sidebarCats.first()).toBeVisible({ timeout: 20000 })
     const count = await sidebarCats.count()
-    console.log(`Familias visibles: ${count}`)
+    console.log(`Categorías visibles: ${count}`)
     expect(count).toBeGreaterThanOrEqual(1)
   })
 
@@ -136,7 +136,7 @@ test.describe('Fichas Técnicas — Catálogo Completo', () => {
       await page.waitForTimeout(2000)
     }
 
-    console.log(`Errores JS durante navegación: ${jsErrors.length}`)
     expect(jsErrors.length).toBe(0)
   })
+
 })
