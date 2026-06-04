@@ -40,7 +40,6 @@ function FichasTecnicasContent({
   resultado,
   error,
   resultadosBusqueda,
-  modo,
   catInfo,
   onSeleccionarMarca,
   onSeleccionarGama,
@@ -91,7 +90,7 @@ function FichasTecnicasContent({
   }
 
   // ── Empty state ─────────────────────────────────────────────────────────────
-  if (!categoria && modo === 'navegacion') {
+  if (!categoria) {
     return (
       <div className={styles.emptyState}>
         <div className={styles.emptyState__icon} aria-hidden="true">📋</div>
