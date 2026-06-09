@@ -1,3 +1,11 @@
+/**
+ * @file Sonex.jsx
+ * @description Pantalla de la herramienta "SONEX" (Asistente Técnico con IA).
+ * Proporciona un chat interactivo con soporte de streaming en tiempo real, selección de modos de operación
+ * (búsqueda, comparativa, asistencia, formación) e integración contextual del catálogo técnico (RAG).
+ * Utiliza importaciones dinámicas para diferir la carga de módulos pesados de IA y optimizar el bundle.
+ */
+
 import { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom'
 import { Clock, Plus, Trash2, MessageSquare, ChevronLeft } from 'lucide-react'
@@ -9,6 +17,7 @@ import { useSonex } from '../hooks/useSonex'
 import { trackEvent } from '../hooks/useAnalytics'
 import styles from './Sonex.module.css'
 
+// Modos de operación técnica disponibles en el panel lateral
 const MODO_OBJETOS = [
   { id: "busqueda", label: "🔍 Búsqueda", desc: "Buscar referencias y especificaciones" },
   { id: "comparativa", label: "⚖️ Comparativa", desc: "Comparar productos" },
@@ -16,9 +25,17 @@ const MODO_OBJETOS = [
   { id: "formacion", label: "📚 Formación", desc: "Instalación y uso" },
 ];
 
+/**
+ * Componente principal de la herramienta de asistente SONEX.
+ * 
+ * @export
+ * @returns {JSX.Element}
+ */
 export default function Sonex() {
   const navigate = useNavigate();
   const { toast } = useToast();
+  
+  // Extraer estados y funciones persistentes del hook de negocio
   const {
     sessions, activeSessionId,
     messages, input, setInput, isLoading, setIsLoading,
@@ -28,9 +45,11 @@ export default function Sonex() {
     guardarMensaje,
     createNewSession, switchSession, deleteSession,
   } = useSonex();
-  const [view, setView] = useState('chat');
+  
+  const [view, setView] = useState('chat'); // Estado de vista activo: 'chat' o 'history' (historial)
   const [categorias, setCategorias] = useState([]);
 
+  // Carga inicial y enriquecimiento de categorías técnicas desde la base de datos
   useEffect(() => {
     catalogService.getCategorias().then(dbCats => {
       const enriched = dbCats.map(cat => {
@@ -45,20 +64,28 @@ export default function Sonex() {
     }).catch(() => setCategorias([]))
   }, [])
 
+  /**
+   * Analiza el texto de respuesta de la IA mediante expresiones regulares para extraer referencias,
+   * valida su existencia consultando el catálogo y devuelve un array de productos válidos.
+   * 
+   * @param {string} texto - Respuesta de la IA
+   * @returns {Promise<Array>} Listado de referencias confirmadas existentes en la base de datos (máx 3)
+   */
   const extraerReferencias = async (texto) => {
     if (!texto) return [];
     
-    // Detectar patrones que parecen referencias (Alfanuméricos, mayúsculas, min 5 caracteres)
+    // RegExp para capturar strings alfanuméricos en mayúsculas de longitud 5-30 que contengan al menos un número
     const patron = /\b([A-Z]{2,}[\d]{1,}[A-Z0-9]{1,}[A-Z0-9-]*)\b/g;
     const matches = [...new Set(texto.match(patron) || [])].filter(ref => ref.length >= 5 && ref.length <= 30 && /\d/.test(ref));
     
     if (matches.length === 0) return [];
 
-    // Buscar los datos reales en Firestore para verificar existencia
     try {
+      // Validar la existencia de los códigos extraídos de forma concurrente (límite a los primeros 5)
       const resultados = await Promise.all(
         matches.slice(0, 5).map(ref => catalogService.getProductoPorRef(ref))
       );
+      // Retornar solo aquellos productos que existen de forma real (máximo 3 referencias)
       return resultados.filter(Boolean).slice(0, 3);
     } catch (error) {
       console.error("Error al extraer referencias de Firestore:", error);
@@ -66,11 +93,32 @@ export default function Sonex() {
     }
   };
 
-  const irAFicha = (referencia) => { navigate(`/app/fichas?ref=${encodeURIComponent(referencia)}`); toast.show(`Abriendo ficha de ${referencia}`, 'success'); };
-  const irAPresupuesto = (item) => { navigate(`/app/presupuestos?${new URLSearchParams({ producto: item.desc, referencia: item.ref })}`); toast.show(`${item.ref} añadido al presupuesto`, 'success'); };
+  /**
+   * Navega a la vista de fichas técnicas filtrando por una referencia determinada.
+   */
+  const irAFicha = (referencia) => { 
+    navigate(`/app/fichas?ref=${encodeURIComponent(referencia)}`); 
+    toast.show(`Abriendo ficha de ${referencia}`, 'success'); 
+  };
 
+  /**
+   * Redirige al asistente de presupuestos cargando el producto detectado.
+   */
+  const irAPresupuesto = (item) => { 
+    navigate(`/app/presupuestos?${new URLSearchParams({ producto: item.desc, referencia: item.ref })}`); 
+    toast.show(`${item.ref} añadido al presupuesto`, 'success'); 
+  };
+
+  // Texto acumulado durante el streaming de la respuesta de la IA
   const [streamingText, setStreamingText] = useState('');
 
+  /**
+   * Construye el prompt de sistema personalizado para la IA (Claude) basado en
+   * el modo de operación activo, la categoría filtrada y el contexto RAG del catálogo.
+   * 
+   * @param {string} [catalogContext=''] - Datos reales del catálogo inyectados dinámicamente
+   * @returns {string} Prompt final consolidado
+   */
   const buildSystemPrompt = (catalogContext = '') => {
     const modoInstrucciones = {
       busqueda: 'Modo BÚSQUEDA activado. Responde con referencias técnicas exactas, especificaciones detalladas y datos concretos de productos. Prioriza códigos de referencia, secciones, materiales y rangos de operación. Sé preciso y directo.',
@@ -88,7 +136,7 @@ export default function Sonex() {
       : '';
 
     return `Eres SONEX, un técnico superior del sector eléctrico con 20 años de experiencia en instalaciones industriales, automatización, domótica, climatización y energías renovables. Tu conocimiento abarca normativa vigente (REBT, UNE, IEC), productos de material eléctrico, sistemas de control y herramientas de medición.
-
+ 
 Directrices obligatorias:
 - Responde siempre con rigor técnico y lenguaje profesional.
 - Nunca inventes productos, referencias, especificaciones o soluciones que no estén basadas en la realidad.
@@ -96,10 +144,15 @@ Directrices obligatorias:
 - Prioriza la seguridad y el cumplimiento normativo en cada recomendación.
 - Sé conciso: ve al grano sin rodeos.
 - Usa un tono formal pero cercano, como un compañero experto al que se le consulta en el mostrador técnico.
-
+ 
 ${modoInstrucciones[modoActivo] || modoInstrucciones.busqueda}${categoriaTexto}${catalogSection}`;
   };
 
+  /**
+   * Manejador de envío de mensaje del usuario.
+   * Emplea importación dinámica de servicios pesados para diferir la descarga de código JavaScript
+   * hasta que sea estrictamente necesario.
+   */
   const handleSendMessage = async () => {
     if (!input.trim() || isLoading) return;
     const userMessage = input.trim();
@@ -111,12 +164,17 @@ ${modoInstrucciones[modoActivo] || modoInstrucciones.busqueda}${categoriaTexto}$
 
     trackEvent('ia', 'consulta', modoActivo, userMessage.length)
     try {
+      // ── BUNDLE SIZE OPTIMIZATION (Dynamic Imports) ──
+      // Importar dinámicamente servicios y contextos del catálogo bajo demanda de la primera consulta
       const { callAnthropicAIStream } = await import('../services/anthropicService');
       const { buildCatalogContext } = await import('../services/sonexCatalogContext');
+      
       const aiMsgId = userMsgId + 1;
-
+      
+      // Obtener bloque de contexto RAG del catálogo técnico
       const catalogContext = await buildCatalogContext(userMessage, categoriaActiva);
 
+      // Crear burbuja de mensaje vacía para recibir el streaming de la IA
       guardarMensaje({ id: aiMsgId, role: "assistant", content: '', timestamp: new Date(), referencias: [] });
 
       const historial = messages
@@ -125,6 +183,8 @@ ${modoInstrucciones[modoActivo] || modoInstrucciones.busqueda}${categoriaTexto}$
       historial.push({ role: "user", content: userMessage });
 
       let fullText = '';
+      
+      // Llamar al stream de la API de Claude
       await callAnthropicAIStream(
         {
           provider: 'openrouter',
@@ -135,10 +195,11 @@ ${modoInstrucciones[modoActivo] || modoInstrucciones.busqueda}${categoriaTexto}$
         },
         (chunk) => {
           fullText += chunk;
-          setStreamingText(fullText);
+          setStreamingText(fullText); // Actualizar el texto acumulado del streaming
         }
       );
 
+      // Una vez concluido el streaming, extraer y verificar referencias técnicas
       const refs = await extraerReferencias(fullText);
       guardarMensaje({ id: aiMsgId, role: "assistant", content: fullText, timestamp: new Date(), referencias: refs });
       if (refs.length > 0) setRefsTurno(prev => [...prev, ...refs]);
@@ -159,15 +220,22 @@ ${modoInstrucciones[modoActivo] || modoInstrucciones.busqueda}${categoriaTexto}$
     setModoActivo(modoId);
   };
 
-  const handleKeyPress = (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSendMessage(); } };
+  const handleKeyPress = (e) => { 
+    if (e.key === 'Enter' && !e.shiftKey) { 
+      e.preventDefault(); 
+      handleSendMessage(); 
+    } 
+  };
 
-  const sugerenciasMostrar = (sugerenciasPopulares || []).length > 0 ? sugerenciasPopulares : ["Buscar variadores 3kW", "Comparar contactores", "Recomendar iluminación LED", "Ayuda con instalación VE", "Especificaciones cuadro"];
+  const sugerenciasMostrar = (sugerenciasPopulares || []).length > 0 
+    ? sugerenciasPopulares 
+    : ["Buscar variadores 3kW", "Comparar contactores", "Recomendar iluminación LED", "Ayuda con instalación VE", "Especificaciones cuadro"];
 
   return (
     <div className={styles.layout}>
-      {/* Panel izquierdo */}
+      {/* Panel izquierdo: Controles e Historial */}
       <div className={styles.panelBusqueda}>
-        {/* Header SONEX */}
+        {/* Cabecera SONEX */}
         <div className={styles.sonexHeader}>
           <div className={styles.sonexIcon}>
             <span className={styles.sonexIconLetter}>S</span>
@@ -190,6 +258,7 @@ ${modoInstrucciones[modoActivo] || modoInstrucciones.busqueda}${categoriaTexto}$
         </div>
 
         {view === 'history' ? (
+          // Vista de Historial de Conversaciones
           <div className={styles.historyList}>
             {sessions.length === 0 ? (
               <div className={styles.historyEmpty}>
@@ -221,8 +290,9 @@ ${modoInstrucciones[modoActivo] || modoInstrucciones.busqueda}${categoriaTexto}$
             )}
           </div>
         ) : (
+          // Vista de Controles Activos del Chat
           <>
-            {/* Modos */}
+            {/* Selección del Modo */}
             <div className={styles.seccion}>
               <div className={styles.seccionLabel}>MODO DE OPERACIÓN</div>
               <div role="tablist" aria-label="Modo de operación">
@@ -235,7 +305,7 @@ ${modoInstrucciones[modoActivo] || modoInstrucciones.busqueda}${categoriaTexto}$
               </div>
             </div>
 
-            {/* Categorías */}
+            {/* Selección de Categoría Técnica */}
             <div className={styles.seccion}>
               <div className={styles.seccionLabel}>CATEGORÍAS</div>
               <div className={styles.categoriasGrid}>
@@ -248,7 +318,7 @@ ${modoInstrucciones[modoActivo] || modoInstrucciones.busqueda}${categoriaTexto}$
               </div>
             </div>
 
-            {/* Referencias */}
+            {/* Referencias Extraídas en el Turno Activo */}
             {refsTurno.length > 0 && (
               <div className={styles.seccion}>
                 <div className={styles.seccionLabel}>REFERENCIAS EN TURNO ({refsTurno.length})</div>
@@ -264,10 +334,11 @@ ${modoInstrucciones[modoActivo] || modoInstrucciones.busqueda}${categoriaTexto}$
         )}
       </div>
 
-      {/* Panel derecho — Chat */}
+      {/* Panel derecho: Área del Chat */}
       <div className={styles.chatContainer}>
         <div className={styles.chatMessages}>
           {messages.length === 0 ? (
+            // Mensaje de Bienvenida y Sugerencias de Consultas Rápidas
             <div className={styles.emptyChat}>
               <div className={styles.emptyChatAvatar}>S</div>
               <h2 className={styles.emptyChatTitle}>¿En qué puedo ayudarte?</h2>
@@ -284,37 +355,45 @@ ${modoInstrucciones[modoActivo] || modoInstrucciones.busqueda}${categoriaTexto}$
               )}
             </div>
           ) : (
+            // Mensajes Activos en la Conversación
             messages.map((message, idx) => {
               const isLastAssistant = idx === messages.length - 1 && message.role === 'assistant' && !message.content && streamingText;
               const displayContent = isLastAssistant ? streamingText : message.content;
               return (
-              <div key={message.id} className={`${styles.message} ${message.role === 'user' ? styles['message--user'] : styles['message--assistant']}`}>
-                <div className={styles.message__avatar}>{message.role === 'user' ? 'T' : 'S'}</div>
-                <div className={styles.message__content}>
-                  <div className={`${styles.message__bubble} ${message.role}`}>
-                    {message.role === 'user' ? displayContent : <div className={styles.markdownContent} dangerouslySetInnerHTML={{ __html: renderMarkdown(displayContent) }} />}
-                  </div>
-                  {message.role === 'assistant' && message.referencias && message.referencias.length > 0 && (
-                    <div className={styles.messageRefs}>
-                      {message.referencias.map(item => (
-                        <div key={item.ref} className={styles.messageRef}>
-                          <button onClick={() => irAFicha(item.ref)} className={styles.messageRefBtn}>
-                            📄 Ficha: {item.ref}
-                          </button>
-                          <button onClick={() => irAPresupuesto(item)} className={`${styles.messageRefBtn} ${styles.messageRefBtnSecondary}`}>
-                            💶 Añadir
-                          </button>
-                        </div>
-                      ))}
+                <div key={message.id} className={`${styles.message} ${message.role === 'user' ? styles['message--user'] : styles['message--assistant']}`}>
+                  <div className={styles.message__avatar}>{message.role === 'user' ? 'T' : 'S'}</div>
+                  <div className={styles.message__content}>
+                    <div className={`${styles.message__bubble} ${message.role}`}>
+                      {message.role === 'user' 
+                        ? displayContent 
+                        : <div className={styles.markdownContent} dangerouslySetInnerHTML={{ __html: renderMarkdown(displayContent) }} />
+                      }
                     </div>
-                  )}
-                    <div className={styles.message__time}>{message.timestamp.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}</div>
+                    {/* Botones de acción contextuales para referencias detectadas en el texto */}
+                    {message.role === 'assistant' && message.referencias && message.referencias.length > 0 && (
+                      <div className={styles.messageRefs}>
+                        {message.referencias.map(item => (
+                          <div key={item.ref} className={styles.messageRef}>
+                            <button onClick={() => irAFicha(item.ref)} className={styles.messageRefBtn}>
+                              📄 Ficha: {item.ref}
+                            </button>
+                            <button onClick={() => irAPresupuesto(item)} className={`${styles.messageRefBtn} ${styles.messageRefBtnSecondary}`}>
+                              💶 Añadir
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    <div className={styles.message__time}>
+                      {message.timestamp.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' })}
+                    </div>
+                  </div>
                 </div>
-              </div>
               );
             })
           )}
 
+          {/* Loader de burbuja mientras se espera la primera respuesta de red de la IA */}
           {isLoading && !streamingText && (
             <div className={styles.message}>
               <div className={styles.message__avatar} style={{ background: 'var(--blue-800)', color: 'var(--white)' }}>S</div>
@@ -331,7 +410,7 @@ ${modoInstrucciones[modoActivo] || modoInstrucciones.busqueda}${categoriaTexto}$
           <div ref={messagesEndRef} />
         </div>
 
-        {/* Input area */}
+        {/* Formulario de Entrada de Texto */}
         <div className={styles.chatInput}>
           <div className={styles.chatInputContainer}>
             <textarea
@@ -358,3 +437,4 @@ ${modoInstrucciones[modoActivo] || modoInstrucciones.busqueda}${categoriaTexto}$
     </div>
   );
 }
+

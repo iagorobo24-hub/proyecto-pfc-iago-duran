@@ -1,11 +1,26 @@
+/**
+ * @file catalogService.ts
+ * @description Servicio cliente para la interacción con el catálogo de productos eléctricos en Supabase.
+ * Permite buscar productos, consultar categorías (familias), marcas y gamas disponibles.
+ * Emplea caché interno para marcas y mapeos de categorización optimizados para velocidad O(1).
+ */
+
 import { supabase } from '../supabase/supabaseClient';
 import { validateProduct, validateBrand } from '../utils/validate';
 import { log, logWarn, logError } from '../utils/logger';
 import type { Product, Brand, Category, SubfamiliaTipo, FiltroSubcategoria } from '../types/catalog';
 
+// Caché en memoria para evitar consultas redundantes a la tabla de marcas (brands)
 let marcasCache: Map<number, string> | null = null;
 let marcasReverseCache: Map<string, number> | null = null;
 
+/**
+ * Busca el ID de una marca a partir de su nombre (ignorando espacios en los extremos).
+ * Utiliza el caché cargado para realizar una resolución O(1).
+ * 
+ * @param {string} marca - Nombre de la marca
+ * @returns {Promise<number|null>} ID de la marca o null si no se encuentra
+ */
 async function findBrandIdByName(marca: string): Promise<number | null> {
   const marcasMap = await cargarMarcas();
   if (!marcasReverseCache) {
@@ -17,7 +32,10 @@ async function findBrandIdByName(marca: string): Promise<number | null> {
   return marcasReverseCache.get(marca.trim()) ?? null;
 }
 
-/* Mapeo de variantes → nombre canónico (usado en DB desde migración 001) */
+/**
+ * Mapeo de variantes o etiquetas de familias recuperadas de la base de datos
+ * a nombres canónicos formateados para el usuario (Lookup O(1)).
+ */
 const etiquetasFamilias: Record<string, string> = {
   /* Cables */
   'CABLES': 'Cables',
@@ -89,6 +107,12 @@ const etiquetasFamilias: Record<string, string> = {
   'PLACAS SOLARES': 'Energías renovables',
 }
 
+/**
+ * Carga las marcas desde la base de datos de Supabase y las almacena en caché local.
+ * Valida la estructura de cada marca cargada.
+ * 
+ * @returns {Promise<Map<number, string>>} Mapa de ID a nombre de marca
+ */
 async function cargarMarcas(): Promise<Map<number, string>> {
   if (marcasCache) return marcasCache;
 
@@ -103,17 +127,29 @@ async function cargarMarcas(): Promise<Map<number, string>> {
 
   marcasCache = new Map();
   marcasReverseCache = null;
-  data?.forEach(b => { const valid = validateBrand(b as Record<string, unknown>); if (valid && valid.id) marcasCache!.set(valid.id as number, valid.name as string); });
+  data?.forEach(b => { 
+    const valid = validateBrand(b as Record<string, unknown>); 
+    if (valid && valid.id) {
+      marcasCache!.set(valid.id as number, valid.name as string); 
+    }
+  });
   log('✅ Marcas cargadas:', marcasCache.size);
   return marcasCache;
 }
 
+/**
+ * Obtiene todas las categorías principales (familias) de productos disponibles.
+ * Utiliza una vista optimizada en base de datos (`vw_unique_families`) para alto rendimiento.
+ * 
+ * @export
+ * @returns {Promise<Category[]>} Listado de categorías mapeadas
+ */
 export async function getCategorias(): Promise<Category[]> {
   try {
     log('📂 Cargando familias desde vw_unique_families...');
 
-    // Usa la vista de BD que devuelve DISTINCT familia directamente
-    // (~14 filas en lugar de descargar miles de productos)
+    // La vista vw_unique_families devuelve DISTINCT familias reduciendo
+    // el volumen de transferencia de datos de miles a unas pocas decenas de filas.
     const { data, error } = await supabase
       .from('vw_unique_families')
       .select('familia');
@@ -144,6 +180,13 @@ export async function getCategorias(): Promise<Category[]> {
   }
 }
 
+/**
+ * Recupera el listado de marcas que poseen productos dentro de una familia/categoría específica.
+ * 
+ * @export
+ * @param {string} familia - Nombre de la familia de productos
+ * @returns {Promise<{ nombre: string }[]>} Listado de marcas ordenadas
+ */
 export async function getMarcasPorCategoria(familia: string): Promise<{ nombre: string }[]> {
   try {
     log(`🏷️ Cargando marcas para: ${familia}`);
@@ -187,6 +230,14 @@ export async function getMarcasPorCategoria(familia: string): Promise<{ nombre: 
   }
 }
 
+/**
+ * Obtiene las subfamilias (gamas principales) de una marca específica dentro de una categoría.
+ * 
+ * @export
+ * @param {string} marca - Nombre de la marca
+ * @param {string} familia - Nombre de la categoría/familia
+ * @returns {Promise<{ nombre: string }[]>} Subfamilias encontradas
+ */
 export async function getGamasPorMarcaYCategoria(marca: string, familia: string): Promise<{ nombre: string }[]> {
   try {
     const brandId = await findBrandIdByName(marca);
@@ -219,6 +270,15 @@ export async function getGamasPorMarcaYCategoria(marca: string, familia: string)
   }
 }
 
+/**
+ * Obtiene los tipos específicos de productos que pertenecen a una gama, marca y familia dadas.
+ * 
+ * @export
+ * @param {string} gama - Subfamilia/gama
+ * @param {string} marca - Nombre de la marca
+ * @param {string} familia - Nombre de la familia
+ * @returns {Promise<string[]>} Tipos únicos encontrados ordenados
+ */
 export async function getTiposPorGamaMarcaYFamilia(gama: string, marca: string, familia: string): Promise<string[]> {
   try {
     const brandId = await findBrandIdByName(marca);
@@ -247,6 +307,18 @@ export async function getTiposPorGamaMarcaYFamilia(gama: string, marca: string, 
   }
 }
 
+/**
+ * Realiza una consulta filtrada de productos basada en todos los criterios del catálogo.
+ * 
+ * @export
+ * @param {string} familia - Categoría principal
+ * @param {string} marca - Marca del producto
+ * @param {string} gama - Subfamilia principal
+ * @param {string} tipo - Tipo de producto
+ * @param {string} [gamaComercial] - Gama comercial del fabricante
+ * @param {string} [subgama] - Subgama comercial
+ * @returns {Promise<Product[]>} Listado de productos filtrados y validados
+ */
 export async function getProductosPorFiltro(
   familia: string,
   marca: string,
@@ -289,6 +361,11 @@ export async function getProductosPorFiltro(
   }
 }
 
+/**
+ * Consulta las gamas comerciales asociadas a un determinado filtro del catálogo.
+ * 
+ * @export
+ */
 export async function getGamasPorFiltro(
   familia: string,
   marca: string,
@@ -322,6 +399,11 @@ export async function getGamasPorFiltro(
   }
 }
 
+/**
+ * Consulta las subgamas comerciales asociadas a un filtro y gama comercial dados.
+ * 
+ * @export
+ */
 export async function getSubgamasPorFiltro(
   familia: string,
   marca: string,
@@ -361,6 +443,11 @@ export async function getSubgamasPorFiltro(
   }
 }
 
+/**
+ * Recupera todas las combinaciones únicas de subfamilia y tipo para una marca y categoría.
+ * 
+ * @export
+ */
 export async function getSubfamiliasConTipos(marca: string, familia: string): Promise<SubfamiliaTipo[]> {
   try {
     const brandId = await findBrandIdByName(marca);
@@ -396,6 +483,11 @@ export async function getSubfamiliasConTipos(marca: string, familia: string): Pr
   }
 }
 
+/**
+ * Consulta productos usando múltiples filtros compuestos (filtros de subcategorías con tipo opcional).
+ * 
+ * @export
+ */
 export async function getProductosPorSubcategoria(
   familia: string,
   marca: string,
@@ -442,6 +534,11 @@ export async function getProductosPorSubcategoria(
   }
 }
 
+/**
+ * Obtiene las subgamas asociadas a una subcategoría con filtros dinámicos complejos.
+ * 
+ * @export
+ */
 export async function getSubgamasPorSubcategoria(
   familia: string,
   marca: string,
@@ -488,6 +585,11 @@ export async function getSubgamasPorSubcategoria(
   }
 }
 
+/**
+ * Obtiene las gamas asociadas a una subcategoría con filtros dinámicos complejos.
+ * 
+ * @export
+ */
 export async function getGamasPorSubcategoria(
   familia: string,
   marca: string,
@@ -528,6 +630,13 @@ export async function getGamasPorSubcategoria(
   }
 }
 
+/**
+ * Consulta un producto de forma unívoca a través de su referencia de fabricante.
+ * 
+ * @export
+ * @param {string} ref - Referencia del fabricante
+ * @returns {Promise<Product|null>} Datos del producto o null si no se encuentra
+ */
 export async function getProductoPorRef(ref: string): Promise<Product | null> {
   try {
     const { data, error } = await supabase
@@ -544,14 +653,28 @@ export async function getProductoPorRef(ref: string): Promise<Product | null> {
   }
 }
 
+/**
+ * Limpia caracteres especiales reservados de SQL/URL de los filtros para evitar inyecciones.
+ */
 function sanitizeFilterValue(v: string): string {
   return v.replace(/[().,]/g, '')
 }
 
+/**
+ * Escapa caracteres comodín de SQL (%, _) para búsquedas de texto seguras.
+ */
 function sanitizeSearchInput(t: string): string {
   return t.replace(/[(),]/g, '').replace(/[%_]/g, '\\$&')
 }
 
+/**
+ * Realiza una búsqueda libre de productos por término de búsqueda (nombre o referencia).
+ * 
+ * @export
+ * @param {string} termino - Texto a buscar
+ * @param {number} [limite=20] - Número máximo de registros a recuperar
+ * @returns {Promise<Product[]>} Productos encontrados validados
+ */
 export async function buscarProductos(termino: string, limite: number = 20): Promise<Product[]> {
   try {
     const t = sanitizeSearchInput(termino.trim());
@@ -569,6 +692,12 @@ export async function buscarProductos(termino: string, limite: number = 20): Pro
   }
 }
 
+/**
+ * Consulta las estadísticas agregadas del catálogo (total de productos).
+ * 
+ * @export
+ * @returns {Promise<{ totalProducts: number }>}
+ */
 export async function getCatalogStats(): Promise<{ totalProducts: number }> {
   try {
     const { count, error } = await supabase
@@ -583,6 +712,12 @@ export async function getCatalogStats(): Promise<{ totalProducts: number }> {
   }
 }
 
+/**
+ * Inicializa el catálogo precargando datos estables (marcas) en caché.
+ * 
+ * @export
+ * @returns {Promise<Record<string, never>>} Objeto vacío
+ */
 export async function initCatalog(): Promise<Record<string, never>> {
   await cargarMarcas();
   return {};
@@ -605,3 +740,4 @@ export default {
   buscarProductos,
   getCatalogStats
 };
+

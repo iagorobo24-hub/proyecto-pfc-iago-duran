@@ -1,8 +1,21 @@
+/**
+ * @file vite.config.js
+ * @description Configuración de Vite para el proyecto.
+ * Configura los plugins de compilación (React, PWA), validación de variables de entorno,
+ * estrategia de división de paquetes (manualChunks) para optimización del tamaño de bundle
+ * y configuración del servidor proxy de desarrollo y del entorno de pruebas (Vitest).
+ */
+
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 
-// ── Build-time env validation ──
+/**
+ * Plugin personalizado de Vite para validar variables de entorno obligatorias
+ * durante la resolución de la configuración de compilación.
+ * 
+ * @returns {object} Plugin de Vite
+ */
 function validateEnvVars() {
   return {
     name: 'validate-env-vars',
@@ -25,6 +38,8 @@ export default defineConfig({
   plugins: [
     react(),
     validateEnvVars(),
+    
+    // Configuración para convertir la aplicación en PWA (Progressive Web App)
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: ['icons/*.svg'],
@@ -64,6 +79,7 @@ export default defineConfig({
     }),
   ],
   build: {
+    // Evita precargar el bundle pesado de PDFs en cascada al inicializar la app.
     modulePreload: {
       resolveDependencies(url, deps) {
         return deps.filter(dep => !dep.includes('vendor-pdf'))
@@ -71,6 +87,8 @@ export default defineConfig({
     },
     rollupOptions: {
       output: {
+        // Estrategia de división de paquetes (manualChunks) para mejorar el rendimiento
+        // separando librerías grandes de terceros en bundles individuales.
         manualChunks(id) {
           if (id.includes('node_modules/react-dom') || id.includes('node_modules/react/') || id.includes('node_modules/react-router')) return 'vendor-react'
           if (id.includes('node_modules/framer-motion') || id.includes('node_modules/animate.css')) return 'vendor-animations'
@@ -85,6 +103,7 @@ export default defineConfig({
   server: {
     port: 5173,
     strictPort: true,
+    // Redirige llamadas API del backend local a localhost:3001 en desarrollo.
     proxy: {
       '/api': {
         target: 'http://localhost:3001',
@@ -92,8 +111,10 @@ export default defineConfig({
       },
     },
   },
+  // Configuración de las pruebas con Vitest
   test: {
     include: ['src/__tests__/**/*.test.js'],
     exclude: ['e2e/**', 'tests/**', 'node_modules/**'],
   },
 })
+

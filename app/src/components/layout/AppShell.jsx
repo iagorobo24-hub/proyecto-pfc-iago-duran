@@ -1,3 +1,10 @@
+/**
+ * @file AppShell.jsx
+ * @description Contenedor principal de diseño (layout) de la aplicación privada.
+ * Proporciona un shell responsivo con barra superior (Topbar), barra lateral (Sidebar) colapsable,
+ * atajos de teclado globales, overlay de búsqueda con auto-enfoque y soporte de accesibilidad (skip link).
+ */
+
 import { useState, useEffect, useRef } from 'react'
 import { Outlet, useLocation, useNavigate } from 'react-router-dom'
 import { ChevronLeft, ChevronRight, Search } from 'lucide-react'
@@ -11,7 +18,12 @@ import { safeGetItem, safeSetItem } from '../../utils/storage'
 import { trackEvent, trackPageView } from '../../hooks/useAnalytics'
 import styles from './AppShell.module.css'
 
-/* Hook para detectar si estamos en mobile/tablet */
+/**
+ * Hook utilitario interno para detectar si el dispositivo del cliente
+ * tiene dimensiones de tableta o móvil (ancho <= 1024px).
+ * 
+ * @returns {boolean} True si es móvil o tableta
+ */
 function useMobile() {
   const [isMobile, setIsMobile] = useState(() => window.innerWidth <= 1024)
   useEffect(() => {
@@ -22,7 +34,12 @@ function useMobile() {
   return isMobile
 }
 
-/* AppShell — contenedor principal con sidebar colapsable */
+/**
+ * Componente principal AppShell que estructura el layout de la app privada.
+ * 
+ * @export
+ * @returns {JSX.Element}
+ */
 export default function AppShell() {
   const { user } = useAuth()
   const location = useLocation()
@@ -32,7 +49,7 @@ export default function AppShell() {
     return safeGetItem('Proyectos PFC_sidebar_collapsed') === 'true'
   })
 
-  // Cargar estado sidebar desde Supabase al montar
+  // Cargar preferencia persistida del estado del sidebar desde Supabase al montar
   useEffect(() => {
     if (!user?.id) return
     supabase
@@ -50,9 +67,9 @@ export default function AppShell() {
       .catch(() => {})
   }, [user?.id])
 
+  // Sincronizar el estado del sidebar en localStorage y Supabase ante cambios
   useEffect(() => {
     safeSetItem('Proyectos PFC_sidebar_collapsed', collapsed ? 'true' : 'false')
-    // Sync a Supabase si hay sesión
     if (!user?.id) return
     Promise.resolve(
       supabase
@@ -67,6 +84,7 @@ export default function AppShell() {
     ).catch(() => {})
   }, [collapsed, user?.id])
 
+  // Trackear analíticas de visitas (page views) ante cambios de ruta
   useEffect(() => {
     trackPageView(location.pathname)
     trackEvent('herramienta', 'apertura', location.pathname)
@@ -77,6 +95,17 @@ export default function AppShell() {
   const searchRef = useRef(null)
   const mainRef = useRef(null)
 
+  // Auto-enfocar el campo de búsqueda cuando el buscador se hace visible
+  useEffect(() => {
+    if (searchVisible) {
+      const timer = setTimeout(() => {
+        searchRef.current?.focus()
+      }, 50)
+      return () => clearTimeout(timer)
+    }
+  }, [searchVisible])
+
+  // Registrar atajos de teclado globales
   useKeyboardShortcuts({
     onToggleSidebar: () => setCollapsed(c => !c),
     onToggleShortcuts: () => setShortcutsVisible(v => !v),
@@ -84,6 +113,11 @@ export default function AppShell() {
     shortcutsVisible,
   })
 
+  /**
+   * Facilita la navegación por teclado saltando directamente al contenedor principal (A11y).
+   * 
+   * @param {MouseEvent} e
+   */
   const saltarContenido = (e) => {
     e.preventDefault()
     mainRef.current?.focus()
@@ -95,7 +129,7 @@ export default function AppShell() {
       className={styles.shell}
       style={{ '--sidebar-w': collapsed ? '64px' : '240px' }}
     >
-      {/* Skip Link para accesibilidad */}
+      {/* Link de salto oculto para lectores de pantalla y navegación por teclado (Accesibilidad WCAG) */}
       <a
         href="#main-content"
         className={styles.skipLink}
@@ -104,14 +138,16 @@ export default function AppShell() {
         Saltar al contenido principal
       </a>
 
+      {/* Barra superior global */}
       <div className={styles.topbar}>
         <Topbar />
       </div>
 
-      {/* Sidebar solo en desktop — en mobile/tablet no se monta */}
+      {/* Barra lateral: se monta solo en pantallas de escritorio */}
       {!isMobile && (
         <div className={`${styles.sidebar} ${collapsed ? styles.sidebarCollapsed : ''}`}>
           <Sidebar collapsed={collapsed} />
+          {/* Botón flotante para contraer/expandir el sidebar */}
           <button
             className={styles.collapseBtn}
             onClick={() => setCollapsed(c => !c)}
@@ -122,14 +158,17 @@ export default function AppShell() {
         </div>
       )}
 
-<main className={styles.main} ref={mainRef} tabIndex="-1" id="main-content">
-          <Outlet />
-        </main>
+      {/* Contenedor principal para las páginas secundarias de la ruta activa */}
+      <main className={styles.main} ref={mainRef} tabIndex="-1" id="main-content">
+        <Outlet />
+      </main>
 
+      {/* Overlay modal explicativo de atajos de teclado */}
       {shortcutsVisible && (
         <KeyboardShortcutsOverlay onClose={() => setShortcutsVisible(false)} />
       )}
 
+      {/* Buscador global tipo Spotlight / Comando */}
       {searchVisible && (
         <div className={styles.searchOverlay} onClick={() => setSearchVisible(false)}>
           <div className={styles.searchPanel} onClick={e => e.stopPropagation()}>
@@ -155,4 +194,4 @@ export default function AppShell() {
       )}
     </div>
   )
-}
+}

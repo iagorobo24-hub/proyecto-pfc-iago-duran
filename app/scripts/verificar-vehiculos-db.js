@@ -1,4 +1,14 @@
+/**
+ * @file verificar-vehiculos-db.js
+ * @description Script utilitario local que se ejecuta en Node.js.
+ * Carga manualmente las variables de entorno, consume la API REST de Supabase directamente
+ * mediante peticiones fetch en batches (paginadas) y analiza el mapeo de familias y subfamilias
+ * de los productos de la categoría "Vehículos Eléctricos" para detectar posibles inconsistencias de datos.
+ */
+
 import { readFileSync } from 'fs'
+
+// Cargar y procesar sincrónicamente el archivo .env local para obtener las credenciales de Supabase
 const env = readFileSync('.env', 'utf-8').split('\n').reduce((a,l) => { 
   const [k,v]=l.split('='); return k&&v?{...a,[k.trim()]:v.trim()}:a 
 }, {})
@@ -8,11 +18,12 @@ const SUPABASE_ANON_KEY = env.VITE_SUPABASE_ANON_KEY
 
 console.log('🔍 Verificando estado actual en Supabase...\n')
 
-// Obtener primeros 5000 productos
+// Leer secuencialmente hasta 5000 productos del catálogo
 let todos = []
 let offset = 0
 
 while (offset < 5000) {
+  // Consumir el endpoint REST de Supabase de forma directa y paginada (de 1000 en 1000)
   const resp = await fetch(`${SUPABASE_URL}/rest/v1/products?select=familia,subfamilia,tipo,marca,ref_fabricante,name&range=${offset}-${offset+999}`, {
     headers: { 'apikey': SUPABASE_ANON_KEY, 'Authorization': 'Bearer ' + SUPABASE_ANON_KEY }
   })
@@ -27,7 +38,7 @@ while (offset < 5000) {
 
 console.log(`📦 Productos leídos: ${todos.length}\n`)
 
-// Filtrar todo lo relacionado con vehículos
+// Filtrar los productos que pertenecen al ámbito de "Vehículos Eléctricos"
 const vehiculos = todos.filter(p => 
   p.familia?.toLowerCase().includes('vehicul') ||
   p.familia?.includes('VEHICULOS')
@@ -36,6 +47,7 @@ const vehiculos = todos.filter(p =>
 console.log(`🚗 Productos de automóviles encontrados: ${vehiculos.length}\n`)
 
 if (vehiculos.length > 0) {
+  // Agrupar e imprimir la cantidad por cada Familia exacta encontrada
   console.log('📊 POR FAMILIA:')
   const porFamilia = {}
   vehiculos.forEach(p => {
@@ -45,6 +57,7 @@ if (vehiculos.length > 0) {
     console.log(`  ${f.padEnd(35)} → ${c}`)
   })
   
+  // Agrupar e imprimir la cantidad por cada Subfamilia exacta encontrada
   console.log('\n📊 POR SUBFAMILIA:')
   const porSub = {}
   vehiculos.forEach(p => {
@@ -54,7 +67,7 @@ if (vehiculos.length > 0) {
     console.log(`  ${s.padEnd(35)} → ${c}`)
   })
   
-  // Buscar específicamente los problemáticos
+  // Detectar productos con errores de asignación (donde la subfamilia se duplicó o es errónea)
   const problemáticos = vehiculos.filter(p => 
     p.subfamilia?.includes('VEHICULOS') || 
     p.subfamilia === p.familia
@@ -69,7 +82,7 @@ if (vehiculos.length > 0) {
     console.log('\n✅ No hay productos con subfamilia mal puesta')
   }
   
-  // Verificar Schneider Electric
+  // Verificar específicamente la distribución de productos de la marca Schneider Electric
   const schneider = vehiculos.filter(p => p.marca?.toLowerCase().includes('schneider'))
   if (schneider.length > 0) {
     console.log(`\n🔧 SCHNEIDER ELECTRIC: ${schneider.length} productos`)
@@ -83,4 +96,4 @@ if (vehiculos.length > 0) {
 } else {
   console.log('❌ No se encontraron productos de vehículos en los primeros', offset, 'productos')
   console.log('\n💡 Posible causa: Los productos están al final de la tabla (>5000)')
-}
+}

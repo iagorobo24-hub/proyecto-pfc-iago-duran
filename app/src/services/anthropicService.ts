@@ -1,15 +1,30 @@
+/**
+ * @file anthropicService.ts
+ * @description Servicio cliente para interactuar con la API de inteligencia artificial de Anthropic (Claude).
+ * Proporciona llamadas estándar de chat, streaming de respuestas de IA en tiempo real,
+ * parseo seguro de respuestas formateadas en JSON y limitación de tasa de peticiones (rate limiting) en el cliente.
+ */
+
 import type { AIRequestBody, AIResponse } from '../types/ai';
 import { logWarn, logError } from '../utils/logger';
 
+// Configuración del limitador de tasa de peticiones (Rate Limit) en el lado del cliente
 const CLIENT_RATE_LIMIT = {
-  maxCalls: 20,
-  windowMs: 60 * 1000,
+  maxCalls: 20,       // Máximo de llamadas permitidas
+  windowMs: 60 * 1000, // Ventana de tiempo (1 minuto)
 };
 
+// Almacén en memoria de los timestamps de las llamadas realizadas en el minuto activo
 const clientRateLimitStore: { calls: number[] } = { calls: [] };
 
+/**
+ * Verifica si el cliente excede la tasa límite de peticiones antes de disparar llamadas a la API de IA.
+ * 
+ * @returns {object} { allowed: boolean, remaining: number }
+ */
 function checkClientRateLimit(): { allowed: boolean; remaining: number } {
   const now = Date.now();
+  // Limpiar llamadas obsoletas fuera del rango de 1 minuto
   clientRateLimitStore.calls = clientRateLimitStore.calls.filter((t) => now - t < CLIENT_RATE_LIMIT.windowMs);
 
   if (clientRateLimitStore.calls.length >= CLIENT_RATE_LIMIT.maxCalls) {
@@ -20,6 +35,13 @@ function checkClientRateLimit(): { allowed: boolean; remaining: number } {
   return { allowed: true, remaining: CLIENT_RATE_LIMIT.maxCalls - clientRateLimitStore.calls.length };
 }
 
+/**
+ * Limpia bloques de código formateados (```json ... ```) de la respuesta de la IA
+ * e intenta parsear el string limpio como un objeto JSON válido.
+ * 
+ * @param {string} text - Texto bruto devuelto por la IA
+ * @returns {(Record<string, unknown> | null)} Objeto JSON parsed o null si falla
+ */
 function parseAIResponse(text: string): Record<string, unknown> | null {
   try {
     const cleaned = text.replace(/```json|```/g, '').trim();
@@ -30,6 +52,14 @@ function parseAIResponse(text: string): Record<string, unknown> | null {
   }
 }
 
+/**
+ * Desinfecta (sanitize) URLs devueltas por la IA para prevenir ataques XSS,
+ * validando protocolos seguros o devolviendo un enlace vacío '#'.
+ * 
+ * @export
+ * @param {string} url - URL cruda
+ * @returns {string} URL desinfectada
+ */
 export function sanitizeUrl(url: string): string {
   if (!url) return '';
   try {
@@ -41,6 +71,7 @@ export function sanitizeUrl(url: string): string {
   }
 }
 
+// Estructura interna de respuesta del endpoint local /api/ai
 interface AIResponseData {
   text?: string;
   error?: string;
@@ -50,6 +81,13 @@ interface AIResponseData {
   [key: string]: unknown;
 }
 
+/**
+ * Envía una petición estándar al servicio de Inteligencia Artificial para recibir una respuesta textual.
+ * 
+ * @export
+ * @param {AIRequestBody} body - Cuerpo de la petición (proveedor, modelo, mensajes, etc.)
+ * @returns {Promise<AIResponse>} Respuesta estructurada de la IA
+ */
 export async function callAnthropicAI(body: AIRequestBody): Promise<AIResponse> {
   const rateCheck = checkClientRateLimit();
   if (!rateCheck.allowed) {
@@ -101,6 +139,15 @@ export async function callAnthropicAI(body: AIRequestBody): Promise<AIResponse> 
   }
 }
 
+/**
+ * Ejecuta una petición de IA esperando recibir una respuesta en formato JSON estructurado
+ * y ejecuta una validación adicional si se especifica.
+ * 
+ * @export
+ * @param {string} text - Respuesta en texto bruto a parsear y validar
+ * @param {function} [validator] - Validador opcional que evalúa la estructura del JSON
+ * @returns {object} Estado indicando error, mensaje explicativo y los datos parseados
+ */
 export function parseAIJsonResponse(
   text: string,
   validator?: (data: Record<string, unknown>) => { valid: boolean; message?: string }
@@ -108,19 +155,28 @@ export function parseAIJsonResponse(
   const parsed = parseAIResponse(text);
 
   if (!parsed) {
-    return { error: true, message: 'La IA devolvio una respuesta invalida. Intenta de nuevo.' };
+    return { error: true, message: 'La IA devolvió una respuesta inválida. Intenta de nuevo.' };
   }
 
   if (validator) {
     const validation = validator(parsed);
     if (!validation.valid) {
-      return { error: true, message: validation.message || 'Respuesta invalida. Intenta de nuevo.' };
+      return { error: true, message: validation.message || 'Respuesta inválida. Intenta de nuevo.' };
     }
   }
 
   return { error: false, data: parsed };
 }
 
+/**
+ * Envía una petición de IA habilitando el flujo de streaming en tiempo real (Server-Sent Events).
+ * Invoca el callback de chunk conforme se leen los datos secuencialmente del stream.
+ * 
+ * @export
+ * @param {AIRequestBody} body - Parámetros de configuración de la petición
+ * @param {function} onChunk - Callback ejecutado ante la llegada de cada fragmento de texto
+ * @param {function} [onDone] - Callback opcional ejecutado al finalizar por completo el stream
+ */
 export async function callAnthropicAIStream(
   body: AIRequestBody,
   onChunk: (text: string) => void,
@@ -174,7 +230,7 @@ export async function callAnthropicAIStream(
               onChunk(parsed.content);
             }
           } catch {
-            // skip malformed lines
+            // Ignorar líneas malformadas
           }
         }
       }
@@ -193,3 +249,4 @@ export default {
   parseAIResponse,
   sanitizeUrl
 };
+

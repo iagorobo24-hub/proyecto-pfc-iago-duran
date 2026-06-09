@@ -1,17 +1,11 @@
 /**
- * Hook genérico de persistencia — Supabase (autenticado) + localStorage (fallback/offline).
- *
- * Reemplaza a useFirestoreSync. Cada módulo recibe su propio campo de datos.
- *
- * Uso:
- *   const { data, loading, save, remove } = useUserData('incidencias', 'listado', [], ['pfc_incidencias'])
- *
- *
- *   useEffect(() => { if (data) setState(data) }, [data])
- *
- *
- *   save([...newData])
+ * @file useUserData.js
+ * @description Hook genérico de persistencia híbrida: Supabase (para usuarios autenticados)
+ * y localStorage (como almacenamiento local offline/respaldo).
+ * Sincroniza automáticamente los datos locales con Supabase al iniciar sesión,
+ * maneja migraciones de versiones anteriores y evita la sobreescritura de datos durante cargas asíncronas.
  */
+
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { supabase } from '../supabase/supabaseClient'
 import { useAuth } from '../contexts/AuthContext'
@@ -19,20 +13,33 @@ import { safeGetJSON, safeSetJSON, safeRemoveItem } from '../utils/storage'
 import { log } from '../utils/logger'
 import { isMigrationComplete } from '../utils/migrateLocalStorage'
 
+/**
+ * Hook personalizado para persistencia híbrida local/remota.
+ * 
+ * @export
+ * @param {string} module - Módulo de la aplicación (ej: 'incidencias', 'presupuestos')
+ * @param {string} field - Campo de configuración o listado (ej: 'listado')
+ * @param {*} [defaultValue=null] - Valor inicial si no se encuentra registro persistido
+ * @param {string[]} [legacyKeys=[]] - Claves obsoletas en localStorage para auto-migrar
+ * @returns {object} { data, loading, error, save, remove, migrateFromLocal, reload }
+ */
 export default function useUserData(module, field, defaultValue = null, legacyKeys = []) {
   const { user } = useAuth()
   const userId = user?.id || null
   const [data, setData] = useState(defaultValue)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  
   const mountedRef = useRef(true)
   const migratedRef = useRef(false)
+  
+  // Verifica si el proceso de migración único (one-shot) ya finalizó para este usuario
   const [migrationDone, setMigrationDone] = useState(() => isMigrationComplete(userId))
 
-  // Deriva la key de localStorage del módulo+field
+  // Clave formateada para almacenamiento local
   const localStorageKey = `pfc_u_${module}_${field}`
 
-  // Cuando la migración one-shot completado, recargar desde Supabase
+  // Monitorea y detecta la finalización de la migración en segundo plano
   useEffect(() => {
     if (userId && !migrationDone) {
       const interval = setInterval(() => {
@@ -45,19 +52,24 @@ export default function useUserData(module, field, defaultValue = null, legacyKe
     }
   }, [userId, migrationDone])
 
+  // Lógica de descarte para evitar fugas de memoria al desmontar el componente
   useEffect(() => {
     return () => { mountedRef.current = false }
   }, [])
 
+  // Referencia para mantener el valor por defecto estable en callbacks asíncronos
   const defaultValueRef = useRef(defaultValue)
   defaultValueRef.current = defaultValue
 
+  /**
+   * Carga los datos desde Supabase (si el usuario está logueado y migrado) o desde localStorage.
+   */
   const cargar = useCallback(async () => {
     setLoading(true)
     setError(null)
 
     if (!userId) {
-      // Sin sesión → solo localStorage
+      // Sin sesión iniciada: cargar directamente de localStorage
       const local = safeGetJSON(localStorageKey, defaultValueRef.current)
       if (mountedRef.current) {
         setData(local)
@@ -66,8 +78,8 @@ export default function useUserData(module, field, defaultValue = null, legacyKe
       return
     }
 
-    // Si la migración one-shot no ha completado, solo usar localStorage
-    // para evitar sobreescribir datos en Supabase con defaults vacíos
+    // Si la migración global de localStorage -> Supabase está en proceso,
+    // solo leemos localmente para prevenir la sobreescritura con estados por defecto vacíos.
     if (!isMigrationComplete(userId)) {
       const local = safeGetJSON(localStorageKey, defaultValueRef.current)
       if (mountedRef.current) {
@@ -78,6 +90,7 @@ export default function useUserData(module, field, defaultValue = null, legacyKe
     }
 
     try {
+      // Consultar registro único del módulo y campo para el usuario actual
       const { data: rows, error: supError } = await supabase
         .from('user_data')
         .select('data')
@@ -91,17 +104,17 @@ export default function useUserData(module, field, defaultValue = null, legacyKe
       if (rows?.data !== undefined) {
         const parsed = rows.data
         if (mountedRef.current) setData(parsed)
-        // Cache en localStorage
+        // Actualizar caché de respaldo local
         safeSetJSON(localStorageKey, parsed)
       } else {
-        // No hay datos en Supabase, probar localStorage como respaldo
+        // No hay datos aún en Supabase: usar caché local como respaldo
         const local = safeGetJSON(localStorageKey, defaultValueRef.current)
         if (mountedRef.current) setData(local)
       }
     } catch (e) {
       console.warn(`[useUserData] Error cargando ${module}.${field} de Supabase:`, e.message)
       setError(e.message)
-      // Fallback a localStorage
+      // Recuperar de local en caso de error de conexión/servidor
       const local = safeGetJSON(localStorageKey, defaultValueRef.current)
       if (mountedRef.current) setData(local)
     } finally {
@@ -109,11 +122,12 @@ export default function useUserData(module, field, defaultValue = null, legacyKe
     }
   }, [userId, module, field, localStorageKey, migrationDone])
 
+  // Desencadenar la carga de datos iniciales o ante cambios de sesión
   useEffect(() => {
     cargar()
   }, [cargar])
 
-  // Auto-migrar datos desde claves legacy de localStorage
+  // Auto-migración de claves legacy antiguas individuales de localStorage a la base de datos
   useEffect(() => {
     if (!loading && userId && legacyKeys.length > 0 && !migratedRef.current) {
       migratedRef.current = true
@@ -129,11 +143,12 @@ export default function useUserData(module, field, defaultValue = null, legacyKe
               data: legacy,
               updated_at: new Date().toISOString(),
             }
+            // upsert ignorando duplicados para no sobreescribir datos más nuevos
             await supabase.from('user_data').upsert(payload, {
               onConflict: 'user_id, module, key',
-              ignoreDuplicates: true, // No sobrescribir si ya existe
+              ignoreDuplicates: true,
             })
-            safeRemoveItem(legacyKey)
+            safeRemoveItem(legacyKey) // Limpiar clave vieja
             log(`[useUserData] Migrados datos legacy '${legacyKey}' → ${module}.${field}`)
           } catch (e) {
             console.warn(`[useUserData] Error migrando '${legacyKey}':`, e.message)
@@ -143,14 +158,19 @@ export default function useUserData(module, field, defaultValue = null, legacyKe
     }
   }, [loading, userId, module, field, legacyKeys])
 
+  /**
+   * Guarda nueva información tanto local como remotamente (Supabase) de manera asíncrona.
+   * 
+   * @param {*} newData - Información a persistir
+   */
   const save = useCallback(async (newData) => {
-    // Siempre guardar en localStorage (offline/fallback)
+    // Primero persistir localmente para garantizar velocidad visual (optimistic UI)
     safeSetJSON(localStorageKey, newData)
     if (mountedRef.current) setData(newData)
 
-    if (!userId) return // Sin sesión → solo localStorage
+    if (!userId) return // Usuario anónimo -> finalizar aquí
 
-    // No escribir a Supabase hasta que la migración one-shot completado
+    // Evita subir a la nube si la migración global está pendiente
     if (!isMigrationComplete(userId)) return
 
     try {
@@ -162,6 +182,7 @@ export default function useUserData(module, field, defaultValue = null, legacyKe
         updated_at: new Date().toISOString(),
       }
 
+      // Guardar y pisar valor en Supabase
       const { error: supError } = await supabase
         .from('user_data')
         .upsert(payload, {
@@ -176,6 +197,9 @@ export default function useUserData(module, field, defaultValue = null, legacyKe
     }
   }, [userId, module, field, localStorageKey])
 
+  /**
+   * Elimina por completo los datos persistidos en ambos almacenamientos.
+   */
   const remove = useCallback(async () => {
     safeRemoveItem(localStorageKey)
     if (mountedRef.current) setData(defaultValueRef.current)
@@ -197,14 +221,15 @@ export default function useUserData(module, field, defaultValue = null, legacyKe
     }
   }, [userId, module, field, localStorageKey])
 
+  /**
+   * Forzar migración manual desde una clave legacy de localStorage.
+   */
   const migrateFromLocal = useCallback(async (legacyKey) => {
     if (!userId) return null
     const legacy = safeGetJSON(legacyKey)
     if (legacy === null || legacy === undefined) return null
 
-    // Guardar en Supabase
     await save(legacy)
-    // Borrar legacy key
     safeRemoveItem(legacyKey)
     return legacy
   }, [userId, save])
@@ -219,3 +244,4 @@ export default function useUserData(module, field, defaultValue = null, legacyKe
     reload: cargar,
   }
 }
+

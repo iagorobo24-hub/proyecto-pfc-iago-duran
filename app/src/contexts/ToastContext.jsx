@@ -1,35 +1,72 @@
-import { createContext, useContext, useState, useCallback } from 'react'
+/**
+ * @file ToastContext.jsx
+ * @description Proveedor de contexto para el sistema global de notificaciones emergentes (Toasts).
+ * Permite disparar notificaciones efímeras (info, success, error, warning) con auto-ocultado.
+ */
 
+import { createContext, useContext, useState, useCallback, useMemo } from 'react'
+
+// Creación del contexto de Toasts
 const ToastContext = createContext(null)
 
-/* ToastProvider — envuelve la app para dar acceso al sistema de notificaciones */
+/**
+ * Componente Proveedor que expone la función para mostrar Toasts y renderiza el contenedor flotante.
+ * 
+ * @export
+ * @param {object} props - Propiedades del componente
+ * @param {React.ReactNode} props.children - Componentes hijos
+ * @returns {JSX.Element}
+ */
 export function ToastProvider({ children }) {
   const [toasts, setToasts] = useState([])
 
+  /**
+   * Muestra un Toast agregándolo a la lista activa y programando su remoción.
+   * 
+   * @param {string} mensaje - Texto a mostrar
+   * @param {('info'|'success'|'error'|'warning')} [tipo='info'] - Estilo y severidad del toast
+   * @param {number} [duracion=3000] - Tiempo de vida en milisegundos
+   */
   const show = useCallback((mensaje, tipo = 'info', duracion = 3000) => {
     const id = Date.now()
     setToasts(prev => [...prev, { id, mensaje, tipo }])
+    
+    // Programar la remoción tras cumplirse la duración
     setTimeout(() => {
       setToasts(prev => prev.filter(t => t.id !== id))
     }, duracion)
   }, [])
 
+  // Memorizar el valor para evitar la recreación del objeto literal en cada render del proveedor
+  const value = useMemo(() => ({ show }), [show])
+
   return (
-    <ToastContext.Provider value={{ show }}>
+    <ToastContext.Provider value={value}>
       {children}
       <ToastContainer toasts={toasts} />
     </ToastContext.Provider>
   )
 }
 
-/* Hook para usar el toast desde cualquier componente */
+/**
+ * Hook personalizado para consumir el contexto de toasts.
+ * Expone un método simplificado `toast.show(msg, type)`.
+ * 
+ * @export
+ * @returns {object} { toast: { show: function } }
+ */
 export function useToast() {
   const ctx = useContext(ToastContext)
   if (!ctx) throw new Error('useToast debe usarse dentro de ToastProvider')
   return { toast: ctx }
 }
 
-/* Contenedor visual de los toasts */
+/**
+ * Contenedor visual de toasts con posicionamiento fijo.
+ * 
+ * @param {object} props - Propiedades
+ * @param {Array} props.toasts - Listado de notificaciones activas
+ */
 function ToastContainer({ toasts }) {
   if (!toasts.length) return null
 
@@ -50,6 +87,7 @@ function ToastContainer({ toasts }) {
   )
 }
 
+// Mapa de estilos de colores basado en tokens CSS de la app
 const TOAST_THEME = {
   info:    { bg: 'var(--color-surface)', color: 'var(--color-text)' },
   success: { bg: 'var(--success)', color: 'var(--gray-900)' },
@@ -57,7 +95,12 @@ const TOAST_THEME = {
   warning: { bg: 'var(--warning)', color: 'var(--gray-900)' },
 }
 
-/* Item individual de toast */
+/**
+ * Representa un mensaje de toast individual.
+ * 
+ * @param {object} props
+ * @param {object} props.toast - Datos de la notificación
+ */
 function ToastItem({ toast }) {
   const { bg, color } = TOAST_THEME[toast.tipo] || TOAST_THEME.info
 
@@ -78,3 +121,4 @@ function ToastItem({ toast }) {
     </div>
   )
 }
+
