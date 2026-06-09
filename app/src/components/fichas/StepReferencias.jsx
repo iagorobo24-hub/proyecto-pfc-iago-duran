@@ -7,6 +7,10 @@ import {
   getFrameworksDisponibles,
   filterProductsBy,
   supportsTableView,
+  CURVA_DESC,
+  SENSIBILIDAD_DESC,
+  ampToStandard,
+  extractSensitivity,
 } from '../../hooks/useProductTable'
 import VistaCurvaTipo from './VistaCurvaTipo'
 import VistaCardConImagen from './VistaCardConImagen'
@@ -15,6 +19,29 @@ import LinearRefCard from './LinearRefCard'
 import Button from '../ui/Button'
 
 const CURVE_ORDER = ['B', 'C', 'D', 'K', 'MA', 'TMD', 'Z']
+
+const sortRefs = (products) => {
+  return [...products].sort((a, b) => {
+    const polesA = extractPoles(a.name)
+    const polesB = extractPoles(b.name)
+    const idxA = POLA_ORDER.indexOf(polesA)
+    const idxB = POLA_ORDER.indexOf(polesB)
+    const orderA = idxA === -1 ? 999 : idxA
+    const orderB = idxB === -1 ? 999 : idxB
+
+    if (orderA !== orderB) {
+      return orderA - orderB
+    }
+
+    const ampsA = extractAmps(a.name)
+    const ampsB = extractAmps(b.name)
+    if (ampsA !== ampsB) {
+      return ampsA - ampsB
+    }
+
+    return (a.ref_fabricante || '').localeCompare(b.ref_fabricante || '')
+  })
+}
 
 export default function StepReferencias({
   referenciasDisponibles,
@@ -253,9 +280,9 @@ export default function StepReferencias({
               {productosFiltrados.length} referencias
             </span>
           </div>
-          {productosFiltrados.length <= 12 ? (
-            <div className={styles.cardGrid} role="list" aria-label="Referencias disponibles">
-              {productosFiltrados.map((p, i) => (
+          <div className={styles.refsScroll} style={{ width: '100%', padding: '0 16px', boxSizing: 'border-box' }}>
+            <div className={styles.fourColGrid} role="list" aria-label="Referencias disponibles">
+              {sortRefs(productosFiltrados).map((p, i) => (
                 <div
                   key={p.id}
                   style={{ animation: `fadeInUp 0.4s var(--ease-out) both`, animationDelay: `${i * 30}ms` }}
@@ -271,9 +298,7 @@ export default function StepReferencias({
                 </div>
               ))}
             </div>
-          ) : (
-            <ProductTable products={productosFiltrados} onSelect={onSeleccionarReferencia} />
-          )}
+          </div>
         </>
       )}
 
@@ -300,44 +325,102 @@ function StepReferenciasSimple({
 }) {
   const [refFilter, setRefFilter] = React.useState('')
 
-  const filteredRefs = refFilter
-    ? referenciasDisponibles.filter(p =>
-        (p.ref_fabricante || '').toLowerCase().includes(refFilter.toLowerCase()) ||
-        (p.name || '').toLowerCase().includes(refFilter.toLowerCase())
-      )
-    : referenciasDisponibles
-
-  const esMagnetotermico = referenciasDisponibles.every(
-    p => (p.subfamilia || '').trim() === 'Interruptor Magnetotérmico'
-  )
-  const soportaVistaAgrupada = supportsTableView(referenciasDisponibles)
-
-  const curveGroups = esMagnetotermico ? (() => {
-    const groups = {}
-    for (const p of referenciasDisponibles) {
-      const curve = extractCurve(p.name || '') || '?'
-      const amp = extractAmps(p.name || '')
-      const poles = extractPoles(p.name || '') || '?'
-      if (!groups[curve]) groups[curve] = { _poles: {} }
-      if (!groups[curve]._poles[poles]) groups[curve]._poles[poles] = []
-      groups[curve]._poles[poles].push({ ...p, _amp: amp })
-    }
-    for (const c of Object.keys(groups)) {
-      for (const pole of Object.keys(groups[c]._poles)) {
-        groups[c]._poles[pole].sort(
-          (a, b) => a._amp - b._amp || (a.ref_fabricante || '').localeCompare(b.ref_fabricante || '')
+  const sortedRefs = React.useMemo(() => {
+    const refs = refFilter
+      ? referenciasDisponibles.filter(p =>
+          (p.ref_fabricante || '').toLowerCase().includes(refFilter.toLowerCase()) ||
+          (p.name || '').toLowerCase().includes(refFilter.toLowerCase())
         )
-      }
-      groups[c]._count = Object.values(groups[c]._poles).reduce((sum, arr) => sum + arr.length, 0)
-    }
-    return groups
-  })() : null
+      : referenciasDisponibles
+
+    return sortRefs(refs)
+  }, [referenciasDisponibles, refFilter])
+
+  const specs = React.useMemo(() => {
+    const curves = {}
+    const poles = {}
+    const sens = {}
+
+    referenciasDisponibles.forEach(p => {
+      const c = extractCurve(p.name)
+      const pol = extractPoles(p.name)
+      const s = extractSensitivity(p.name)
+
+      if (c && c !== '?') curves[c] = (curves[c] || 0) + 1
+      if (pol && pol !== '?') poles[pol] = (poles[pol] || 0) + 1
+      if (s > 0) sens[s] = (sens[s] || 0) + 1
+    })
+
+    return { curves, poles, sens }
+  }, [referenciasDisponibles])
+
+  const renderSummary = () => {
+    const hasCurves = Object.keys(specs.curves).length > 0
+    const hasPoles = Object.keys(specs.poles).length > 0
+    const hasSens = Object.keys(specs.sens).length > 0
+
+    if (!hasCurves && !hasPoles && !hasSens) return null
+
+    return (
+      <div className={styles.summaryCard}>
+        <div className={styles.summaryTitle}>Distribución de la gama</div>
+        
+        {hasCurves && (
+          <div className={styles.summaryGroup}>
+            <span className={styles.summaryLabel}>Curvas:</span>
+            <div className={styles.summaryChips}>
+              {Object.entries(specs.curves).sort().map(([c, count]) => (
+                <span key={c} className={styles.summaryChip} title={CURVA_DESC[c] || ''}>
+                  <strong>Curva {c}</strong>: {count} {count === 1 ? 'ref.' : 'refs.'}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {hasSens && (
+          <div className={styles.summaryGroup}>
+            <span className={styles.summaryLabel}>Sensibilidad:</span>
+            <div className={styles.summaryChips}>
+              {Object.entries(specs.sens).sort((a, b) => Number(a[0]) - Number(b[0])).map(([s, count]) => (
+                <span key={s} className={styles.summaryChip} title={SENSIBILIDAD_DESC[s] || ''}>
+                  <strong>{s} mA</strong>: {count} {count === 1 ? 'ref.' : 'refs.'}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {hasPoles && (
+          <div className={styles.summaryGroup}>
+            <span className={styles.summaryLabel}>Polos:</span>
+            <div className={styles.summaryChips}>
+              {POLA_ORDER.filter(p => specs.poles[p]).map(pola => {
+                const count = specs.poles[pola]
+                const label = pola === '1P' ? '1 Polo' :
+                              pola === '1P+N' ? '1 Polo + Neutro' :
+                              pola === '2P' ? '2 Polos' :
+                              pola === '3P' ? '3 Polos' :
+                              pola === '3P+N' ? '3 Polos + Neutro' :
+                              pola === '4P' ? '4 Polos' : pola
+                return (
+                  <span key={pola} className={styles.summaryChip}>
+                    <strong>{label}</strong>: {count} {count === 1 ? 'ref.' : 'refs.'}
+                  </span>
+                )
+              })}
+            </div>
+          </div>
+        )}
+      </div>
+    )
+  }
 
   return (
     <div className={styles.linearLayout}>
       <div className={styles.sectionHeader} role="status">
         <span className={`${styles.label} ${styles['label--brand']}`}>
-          {filteredRefs.length} / {referenciasDisponibles.length} referencias
+          {sortedRefs.length} / {referenciasDisponibles.length} referencias
         </span>
         <h2 className={styles.sectionTitle}>
           {gamaComercial ? `${gamaComercial}${subgama ? ` — ${subgama}` : ''}` : subgama || (gama && tipo ? `${gama} — ${tipo}` : '')}
@@ -345,114 +428,42 @@ function StepReferenciasSimple({
       </div>
 
       {referenciasDisponibles.length > 12 && (
-        <div style={{ padding: '0 16px 8px', maxWidth: '400px' }}>
+        <div style={{ padding: '0 16px 8px', maxWidth: '400px', width: '100%', boxSizing: 'border-box' }}>
           <input
             type="text"
             placeholder="Filtrar referencias..."
             value={refFilter}
             onChange={e => setRefFilter(e.target.value)}
-            style={{
-              width: '100%', padding: '8px 12px', borderRadius: '8px',
-              border: '1.5px solid var(--gray-200)', fontSize: '0.875rem',
-              outline: 'none', boxSizing: 'border-box',
-            }}
+            className={styles.filterInput}
             aria-label="Filtrar referencias por código o nombre"
           />
         </div>
       )}
 
-      {esMagnetotermico ? (
-        <div className={styles.refsScroll}>
-          {Object.keys(curveGroups).length > 0 ? (
-            Object.keys(curveGroups)
-              .sort((a, b) => {
-                const ia = CURVE_ORDER.indexOf(a)
-                const ib = CURVE_ORDER.indexOf(b)
-                return (ia === -1 ? 99 : ia) - (ib === -1 ? 99 : ib)
-              })
-              .map(curve => {
-                const curveData = curveGroups[curve]
-                const poleKeys = Object.keys(curveData._poles).sort(
-                  (a, b) => {
-                    const ia = POLA_ORDER.indexOf(a)
-                    const ib = POLA_ORDER.indexOf(b)
-                    return (ia === -1 ? 99 : ia) - (ib === -1 ? 99 : ib)
-                  }
-                )
-                return (
-                  <div key={curve} className={styles.curveSection}>
-                    <div className={styles.curveHeader}>
-                      <span className={styles.curveBadge}>Curva {curve}</span>
-                      <span className={styles.curveCount}>{curveData._count} ref.</span>
-                    </div>
-                    {poleKeys.map(poles => (
-                      <div key={poles} className={styles.poleSection}>
-                        <div className={styles.poleHeader}>
-                          <span className={styles.poleBadge}>{poles}</span>
-                          <span className={styles.poleCount}>{curveData._poles[poles].length} ref.</span>
-                        </div>
-                        <div className={styles.curveGrid}>
-                          {curveData._poles[poles].map((p, i) => (
-                            <div key={p.id} style={{ animation: `fadeInUp 0.4s var(--ease-out) both`, animationDelay: `${i * 30}ms` }}>
-                              <LinearRefCard
-                                code={p.ref_fabricante}
-                                desc={p.name}
-                                price={p.precio}
-                                image={p.imagen}
-                                marca={p.marca}
-                                onClick={() => onSeleccionarReferencia(p)}
-                              />
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                )
-              })
-          ) : (
-            <div style={{ textAlign: 'center', padding: '40px', color: 'var(--gray-400)' }}>
-              No hay referencias disponibles
-            </div>
-          )}
-        </div>
-      ) : soportaVistaAgrupada ? (
-        <ProductTable
-          products={referenciasDisponibles}
-          onSelect={onSeleccionarReferencia}
-        />
-      ) : (
-        <div className={styles.refsScroll}>
-          {filteredRefs.length > 0 ? (
-            <div
-              style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))',
-                gap: '20px',
-                width: '100%',
-                padding: '16px',
-              }}
-            >
-              {filteredRefs.map((p, i) => (
-                <div key={p.id} role="listitem" style={{ display: 'flex', animation: `fadeInUp 0.4s var(--ease-out) both`, animationDelay: `${i * 30}ms` }}>
-                  <LinearRefCard
-                    code={p.ref_fabricante}
-                    desc={p.name}
-                    price={p.precio}
-                    image={p.imagen}
-                    marca={p.marca}
-                    onClick={() => onSeleccionarReferencia(p)}
-                  />
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div style={{ textAlign: 'center', padding: '40px', color: 'var(--gray-400)' }}>
-              {refFilter ? 'No hay referencias que coincidan con el filtro' : 'No hay referencias disponibles'}
-            </div>
-          )}
-        </div>
-      )}
+      {renderSummary()}
+
+      <div className={styles.refsScroll} style={{ width: '100%', padding: '0 16px', boxSizing: 'border-box' }}>
+        {sortedRefs.length > 0 ? (
+          <div className={styles.fourColGrid} role="list" aria-label="Referencias disponibles">
+            {sortedRefs.map((p, i) => (
+              <div key={p.id} style={{ animation: `fadeInUp 0.4s var(--ease-out) both`, animationDelay: `${i * 30}ms` }}>
+                <LinearRefCard
+                  code={p.ref_fabricante}
+                  desc={p.name}
+                  price={p.precio}
+                  image={p.imagen}
+                  marca={p.marca}
+                  onClick={() => onSeleccionarReferencia(p)}
+                />
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div style={{ textAlign: 'center', padding: '40px', color: 'var(--color-text-tertiary)' }}>
+            {refFilter ? 'No hay referencias que coincidan con el filtro' : 'No hay referencias disponibles'}
+          </div>
+        )}
+      </div>
     </div>
   )
 }
