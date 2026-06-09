@@ -125,6 +125,53 @@
       line-height: 1.6;
     }
 
+    /* Stats Grid */
+    .stats-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1.5rem;
+      margin: 2.5rem auto 0 auto;
+      max-width: 950px;
+    }
+
+    .stat-widget {
+      background: rgba(15, 20, 39, 0.4);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      border-radius: 12px;
+      padding: 1rem 1.5rem;
+      flex: 1;
+      min-width: 160px;
+      text-align: center;
+      backdrop-filter: blur(8px);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .stat-widget:hover {
+      background: rgba(15, 20, 39, 0.7);
+      border-color: rgba(99, 102, 241, 0.25);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(99, 102, 241, 0.08);
+    }
+
+    .stat-number {
+      font-family: var(--font-display);
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--text-bright);
+      background: linear-gradient(135deg, #818cf8, #34d399);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.25rem;
+    }
+
+    .stat-lbl {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--text-main);
+    }
+
     /* Category titles */
     .category-section {
       margin-bottom: 3.5rem;
@@ -190,6 +237,18 @@
     .launch-card.neu .card-meta { background: rgba(77, 124, 254, 0.08); color: #4d7cfe; }
     .launch-card.lux .card-meta { background: rgba(197, 168, 128, 0.08); color: #c5a880; }
     .launch-card.scifi .card-meta { background: rgba(255, 0, 255, 0.08); color: #ff00ff; }
+
+    /* Custom hover glowing shadows */
+    .launch-card.cyber:hover { border-color: #00f0ff; box-shadow: 0 10px 30px rgba(0, 240, 255, 0.12); }
+    .launch-card.glass:hover { border-color: #d946ef; box-shadow: 0 10px 30px rgba(217, 70, 239, 0.12); }
+    .launch-card.swiss:hover { border-color: #ff4500; box-shadow: 0 10px 30px rgba(255, 69, 0, 0.12); }
+    .launch-card.corp:hover { border-color: #0072CE; box-shadow: 0 10px 30px rgba(0, 114, 206, 0.12); }
+    .launch-card.dash:hover { border-color: #10b981; box-shadow: 0 10px 30px rgba(16, 185, 129, 0.12); }
+    .launch-card.brutal:hover { border-color: #e6c200; box-shadow: 0 10px 30px rgba(230, 194, 0, 0.12); }
+    .launch-card.retro:hover { border-color: #33ff33; box-shadow: 0 10px 30px rgba(51, 255, 51, 0.12); }
+    .launch-card.neu:hover { border-color: #4d7cfe; box-shadow: 0 10px 30px rgba(77, 124, 254, 0.12); }
+    .launch-card.lux:hover { border-color: #c5a880; box-shadow: 0 10px 30px rgba(197, 168, 128, 0.12); }
+    .launch-card.scifi:hover { border-color: #ff00ff; box-shadow: 0 10px 30px rgba(255, 0, 255, 0.12); }
 
     .card-title {
       font-family: var(--font-display);
@@ -264,116 +323,54 @@
     <header>
       <span class="header-badge">Ecosistema Académico Organizado</span>
       <h1>Portal de <span>Presentaciones HTML</span></h1>
-      <p class="tagline">Explora las 10 propuestas conceptuales de diseño interactivo organizadas por categoría operativa y estética.</p>
+      <p class="tagline">Explora las 3 propuestas seleccionadas para la presentación del proyecto.</p>
+      
+      <!-- Stats Container Widget -->
+      <div class="stats-container">
+        <div class="stat-widget">
+          <div class="stat-number">3</div>
+          <div class="stat-lbl">Estilos</div>
+        </div>
+        <div class="stat-widget">
+          <div class="stat-number">9-11</div>
+          <div class="stat-lbl">Diapositivas</div>
+        </div>
+        <div class="stat-widget">
+          <div class="stat-number">0.00€</div>
+          <div class="stat-lbl">Coste Infraestructura</div>
+        </div>
+        <div class="stat-widget">
+          <div class="stat-number">270</div>
+          <div class="stat-lbl">Vitest OK</div>
+        </div>
+        <div class="stat-widget">
+          <div class="stat-number">155</div>
+          <div class="stat-lbl">Playwright E2E</div>
+        </div>
+      </div>
     </header>
 
-    <!-- SECTION 1: TECNOLÓGICAS Y DESARROLLADOR -->
+    <!-- SECTION: PROPUESTAS DE DISEÑO SELECCIONADAS -->
     <div class="category-section">
-      <h2 class="category-title">Presentaciones Técnicas y de Desarrollo</h2>
+      <h2 class="category-title">Estilos Seleccionados para la Presentación</h2>
       <div class="launch-grid">
         
-        <!-- DASHBOARD INTERACTIVE -->
-        <a href="tecnicas-desarrollador/estilo_dashboard.html" class="launch-card dash">
-          <div>
-            <span class="card-meta">01 // Dashboard / NOC Monitor</span>
-            <h2 class="card-title">Estilo Dashboard Activo</h2>
-            <p class="card-desc">Presentación integrada como un panel de control interactivo en tiempo real. Contiene gráficos de dona, barras de medidores, paneles laterales y un log simulado.</p>
-          </div>
-          <span class="btn-action">Iniciar diapositivas</span>
-        </a>
-
-        <!-- CYBERPUNK -->
-        <a href="tecnicas-desarrollador/estilo_cyberpunk.html" class="launch-card cyber">
-          <div>
-            <span class="card-meta">02 // Hacker / Developer</span>
-            <h2 class="card-title">Estilo Cyberpunk</h2>
-            <p class="card-desc">Visualización inspirada en terminales de comando. Fondos oscuros puros, textos fluorescentes con resplandor neón, scanlines analógicas y transiciones rápidas.</p>
-          </div>
-          <span class="btn-action">Iniciar diapositivas</span>
-        </a>
-
-        <!-- RETRO TERMINAL -->
-        <a href="tecnicas-desarrollador/estilo_retro_terminal.html" class="launch-card retro">
-          <div>
-            <span class="card-meta">03 // Terminal Retro / DOS</span>
-            <h2 class="card-title">Estilo Terminal Retro</h2>
-            <p class="card-desc">Réplica fiel de una consola de comandos de fósforo verde de los años 80. Cuenta con parpadeo de cursor, recuadros en arte ASCII, scanlines CRT y carga simulada.</p>
-          </div>
-          <span class="btn-action">Iniciar diapositivas</span>
-        </a>
-
-        <!-- SCIFI HUD -->
-        <a href="tecnicas-desarrollador/estilo_scifi_hud.html" class="launch-card scifi">
-          <div>
-            <span class="card-meta">04 // Sci-Fi / Space HUD</span>
-            <h2 class="card-title">Estilo Sci-Fi Space HUD</h2>
-            <p class="card-desc">Panel de control de nave espacial. Posee círculos de telemetría giratorios SVG, marcos estructurados en esquina con corchetes HUD, scanner dinámico y colores vibrantes.</p>
-          </div>
-          <span class="btn-action">Iniciar diapositivas</span>
-        </a>
-
-      </div>
-    </div>
-
-    <!-- SECTION 2: MODERNAS Y PREMIUM -->
-    <div class="category-section">
-      <h2 class="category-title">Diseños Modernos y Corporativos</h2>
-      <div class="launch-grid">
-
         <!-- CORPORATE PREMIUM -->
         <a href="modernas-premium/estilo_corporativo.html" class="launch-card corp">
           <div>
-            <span class="card-meta">05 // Corporativo / Sonepar Blue</span>
+            <span class="card-meta">01 // Corporativo / Sonepar Blue</span>
             <h2 class="card-title">Estilo Corporativo Premium</h2>
             <p class="card-desc">Diseño institucional de alto nivel utilizando los colores corporativos. Tarjetas limpias de estadísticas con bordes sutiles en gradiente y barras animadas.</p>
           </div>
           <span class="btn-action">Iniciar diapositivas</span>
         </a>
 
-        <!-- GLASSMORPHISM -->
-        <a href="modernas-premium/estilo_glassmorphism.html" class="launch-card glass">
-          <div>
-            <span class="card-meta">06 // Glassmorphism / iOS</span>
-            <h2 class="card-title">Estilo Premium Glass</h2>
-            <p class="card-desc">Diseño translúcido y limpio inspirado en las interfaces de Apple y Stripe. Fondos con malla de degradados animados, tarjetas desenfocadas e increíbles transiciones en 3D.</p>
-          </div>
-          <span class="btn-action">Iniciar diapositivas</span>
-        </a>
-
-        <!-- NEUMORPHISM -->
-        <a href="modernas-premium/estilo_neumorfismo.html" class="launch-card neu">
-          <div>
-            <span class="card-meta">07 / Neumorphic / Soft UI</span>
-            <h2 class="card-title">Estilo Neumórfico Soft</h2>
-            <p class="card-desc">Estilo basado en relieve e intrusión física con sombras difusas dobles. Proporciona una apariencia táctil neumática de botones y tarjetas con transiciones de escala.</p>
-          </div>
-          <span class="btn-action">Iniciar diapositivas</span>
-        </a>
-
-      </div>
-    </div>
-
-    <!-- SECTION 3: EDITORIALES Y CREATIVAS -->
-    <div class="category-section">
-      <h2 class="category-title">Estilos Editoriales y Creativos</h2>
-      <div class="launch-grid">
-
         <!-- SWISS EDITORIAL -->
         <a href="editoriales-creativas/estilo_minimalista.html" class="launch-card swiss">
           <div>
-            <span class="card-meta">08 // Minimalista / Suizo</span>
+            <span class="card-meta">02 // Minimalista / Suizo</span>
             <h2 class="card-title">Estilo Editorial Suizo</h2>
             <p class="card-desc">Diseño tipográfico puro inspirado en el movimiento Bauhaus. Fondo crema asimétrico, fuentes grotescas de peso extremo y transiciones en corte con máscaras de revelado.</p>
-          </div>
-          <span class="btn-action">Iniciar diapositivas</span>
-        </a>
-
-        <!-- LUXURY -->
-        <a href="editoriales-creativas/estilo_luxury.html" class="launch-card lux">
-          <div>
-            <span class="card-meta">09 // Luxury Minimalist</span>
-            <h2 class="card-title">Estilo Luxury Minimalist</h2>
-            <p class="card-desc">Diseño editorial de ultra-lujo inspirado en marcas prémium. Fondos carbón mate oscuro, acentos en oro romano, tipografía serif estilizada y transiciones de zoom-in lentas.</p>
           </div>
           <span class="btn-action">Iniciar diapositivas</span>
         </a>
@@ -381,9 +378,9 @@
         <!-- BRUTALIST -->
         <a href="editoriales-creativas/estilo_brutalista.html" class="launch-card brutal">
           <div>
-            <span class="card-meta">10 // Neo-Brutalist</span>
+            <span class="card-meta">03 // Neo-Brutalist</span>
             <h2 class="card-title">Estilo Neo-Brutalista</h2>
-            <p class="card-desc">Diseño de vanguardia con bordes negros gruesos, sombras sólidas desfasadas, paleta tipográfica dura y colores llamativos en contraste. Diapositivas con transiciones elásticas.</p>
+            <p class="card-desc">Diseño de vanguardia con bordes negros gruesos, sombras sólidas desfasadas, paleta tipográfica dura y colores llamativos en contraste. Diapositivas con transiciones elásticas e interacciones OS retro.</p>
           </div>
           <span class="btn-action">Iniciar diapositivas</span>
         </a>
@@ -395,6 +392,5 @@
       <p>Proyecto Fin de Ciclo — Automatización y Robótica Industrial &copy; 2026 // <a href="file:///c:/Users/iagui/AI%20Projects/Repos%20de%20GitHub/proyecto-pfc-iago-duran/proyecto-fin-ciclo/desarrollo-entrega-final/">Volver a Entrega Final</a></p>
     </footer>
   </div>
-
 </body>
 </html>

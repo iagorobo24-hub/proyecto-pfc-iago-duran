@@ -35,7 +35,7 @@
       position: relative;
     }
 
-    /* Asymmetric Structural Grid Overlay (Saves that Swiss print look) */
+    /* Asymmetric Structural Grid Overlay */
     .grid-lines {
       position: absolute;
       top: 0;
@@ -102,7 +102,7 @@
       background-color: var(--bg-color);
     }
 
-    /* Editorial Slide Transitions (Wipe Upwards) */
+    /* Editorial Slide Transitions */
     .slide.active {
       opacity: 1;
       transform: translateY(0);
@@ -212,29 +212,6 @@
       transform: translateY(0);
     }
 
-    /* Tables & strict data */
-    table.swiss-table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 10px;
-    }
-
-    table.swiss-table th {
-      text-align: left;
-      font-family: var(--font-display);
-      font-size: 0.8rem;
-      text-transform: uppercase;
-      padding-bottom: 8px;
-      border-bottom: 2px solid var(--border-color);
-    }
-
-    table.swiss-table td {
-      padding: 10px 0;
-      border-bottom: 1px solid rgba(13, 13, 14, 0.15);
-      font-size: 0.95rem;
-      font-weight: 500;
-    }
-
     .swiss-accent-value {
       color: var(--accent-color);
       font-family: var(--font-display);
@@ -311,6 +288,11 @@
         grid-template-columns: 1fr;
       }
     }
+
+    /* Transition styles for Bauhaus color changes */
+    body, header.swiss-header, footer.swiss-footer, .slide, .editorial-box, .swiss-nav-btn, .swiss-nav-group, .slide-description {
+      transition: background-color 0.6s ease, color 0.6s ease, border-color 0.6s ease;
+    }
   </style>
 </head>
 <body>
@@ -318,179 +300,499 @@
   <div class="grid-lines"></div>
 
   <header class="swiss-header">
-    <div class="swiss-header-left">PROYECTO PFC V8</div>
-    <div class="swiss-header-right">CAPÍTULO_01 // INTRODUCCIÓN</div>
+    <div class="swiss-header-left">PROYECTO TFC PRESENTACIÓN</div>
+    <div class="swiss-header-right">INTRODUCCIÓN // PORTADA</div>
   </header>
 
   <!-- Slide Deck Container -->
   <div class="deck-container">
 
-    <!-- SLIDE 1 -->
+    <!-- SLIDE 1: Portada -->
     <div class="slide active" id="slide-0">
       <div class="slide-layout">
         <div class="slide-intro">
           <div class="slide-index-num">01</div>
-          <h2 class="slide-title slide-main-title">EL PROYECTO EN UNA FRASE.</h2>
-          <p class="slide-description">La integración del desarrollo web con la inteligencia artificial para ingenieros de campo.</p>
+          <h2 class="slide-title slide-main-title">SUITE WEB INDUSTRIAL B2B.</h2>
+          <p class="slide-description">Digitalización del Sector Eléctrico Asistida por Inteligencia Artificial.</p>
         </div>
-        <div class="slide-main-content">
+        <div class="slide-main-content" style="position: relative;">
           <div class="editorial-grid">
             <div class="editorial-box fragment">
-              <h3>[ CONCEPTO ]</h3>
-              <p>Diseño e implementación de una suite SPA web que contiene 8 herramientas industriales unificadas, dirigidas a mejorar la operación de los técnicos electricistas.</p>
+              <h3>PROPUESTA ÚNICA</h3>
+              <p>Desarrollo ágil de una suite comercial funcional en 3 meses a coste cero de licencias, en colaboración con Sonepar Ibérica.</p>
             </div>
             <div class="editorial-box accent-box fragment">
-              <h3>[ COSTES ]</h3>
-              <p style="font-size: 1.8rem; font-family: var(--font-display); line-height: 1; margin-bottom: 8px; color: var(--accent-color);">0.00 €</p>
-              <p>Desarrollo optimizado sin inversión financiera mediante tiers gratuitos y modelos de código abierto.</p>
+              <h3>METADATA</h3>
+              <p style="margin-bottom: 5px;">• <strong>Autor:</strong> Iago Durán Romera</p>
+              <p style="margin-bottom: 5px;">• <strong>Ciclo:</strong> Robótica Industrial</p>
+              <p>• <strong>Estado:</strong> Production Ready</p>
             </div>
+          </div>
+          <!-- Interactive Bauhaus Canvas -->
+          <div id="bauhaus-canvas" style="position: absolute; right: 2rem; bottom: 2rem; width: 220px; height: 180px; border: 2px dashed var(--border-color); z-index: 10; background: rgba(255,255,255,0.15); overflow: hidden; border-radius: 8px;">
+            <div style="position: absolute; font-size: 0.6rem; color: var(--text-color); font-weight: bold; top: 4px; left: 8px; text-transform: uppercase; letter-spacing: 0.5px; pointer-events: none;">Composición Bauhaus</div>
+            <div id="shape-circle" class="draggable-shape" style="position: absolute; left: 20px; top: 40px; width: 45px; height: 45px; border-radius: 50%; background: #ff4500; cursor: move; z-index: 11;"></div>
+            <div id="shape-square" class="draggable-shape" style="position: absolute; left: 130px; top: 60px; width: 45px; height: 45px; background: #0072ce; cursor: move; z-index: 11;"></div>
+            <div id="shape-triangle" class="draggable-shape" style="position: absolute; left: 75px; top: 100px; width: 0; height: 0; border-left: 25px solid transparent; border-right: 25px solid transparent; border-bottom: 50px solid #e6c200; cursor: move; z-index: 11;"></div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- SLIDE 2 -->
+    <!-- SLIDE 2: Capítulo 1 -->
     <div class="slide" id="slide-1">
       <div class="slide-layout">
         <div class="slide-intro">
           <div class="slide-index-num">02</div>
-          <h2 class="slide-title slide-main-title">MÓDULOS DE APLICACIÓN.</h2>
-          <p class="slide-description">8 herramientas diseñadas para solventar problemas del día a día industrial.</p>
+          <h2 class="slide-title slide-main-title">PRESENTACIÓN DEL PROYECTO.</h2>
+          <p class="slide-description">Concepto del proyecto, propuesta de valor y objetivos clave.</p>
         </div>
         <div class="slide-main-content">
           <div class="editorial-grid">
             <div class="editorial-box fragment">
-              <h3>OPERACIONES</h3>
-              <p><strong>• Fichas:</strong> Buscador de catálogo masivo con 400K+ refs.</p>
-              <p><strong>• Almacén:</strong> Simulador de pedidos gamificado con cronómetro.</p>
-              <p><strong>• Incidencias:</strong> Diagnósticos de fallos por IA.</p>
-              <p><strong>• KPIs:</strong> Análisis de turnos con semáforos.</p>
+              <h3>Concepto y Propuesta</h3>
+              <p>Suite web (SPA) con 8 herramientas para digitalizar el sector eléctrico. Su valor diferencial reside en documentar el flujo metodológico humano-IA para que otros estudiantes puedan replicarlo.</p>
             </div>
             <div class="editorial-box fragment">
-              <h3>APOYO Y CONSULTA</h3>
-              <p><strong>• Presupuestos:</strong> Cotizador dinámico en PDF.</p>
-              <p><strong>• Formación:</strong> Gestión de capacitación por IA.</p>
-              <p><strong>• SONEX Chat:</strong> Asistente experto en normativas.</p>
-              <p><strong>• Global Dashboard:</strong> Vista unificada de KPIs.</p>
+              <h3>Objetivos de Ingeniería</h3>
+              <p>⚡ <strong>OE1 (Funcionalidad):</strong> 7 módulos (catálogo, picking, incidencias, chatbot...).<br>🤖 <strong>OE2 (Metodología):</strong> Catalogar 15+ herramientas de IA y workflow CLI.<br>🔌 <strong>OE3/5 (Calidad/Coste):</strong> React 19 + Supabase a coste cero.</p>
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- SLIDE 3 -->
+    <!-- SLIDE 2B: Capítulo 1 - Alcance y Métricas -->
+    <div class="slide" id="slide-1b">
+      <div class="slide-layout">
+        <div class="slide-intro">
+          <div class="slide-index-num">02B</div>
+          <h2 class="slide-title slide-main-title">TECNOLOGÍAS Y ÁMBITO.</h2>
+          <p class="slide-description">Métricas, tecnologías principales y límites del proyecto.</p>
+        </div>
+        <div class="slide-main-content">
+          <div class="editorial-grid">
+            <div class="editorial-box fragment">
+              <h3>Métricas y Stack Core</h3>
+              <p>💻 <strong>Stack:</strong> React 19 + Vite 7 + Supabase + Vercel.<br>📊 <strong>Datos:</strong> 4.689 productos en base de datos y 7 herramientas SPA.<br>🧪 <strong>Testing:</strong> 425 tests (270 Vitest / 155 Playwright E2E).<br>💰 <strong>Coste:</strong> 0.00€ coste total de infraestructura.</p>
+            </div>
+            <div class="editorial-box fragment">
+              <h3>Límites del Proyecto</h3>
+              <p>✅ <strong>Incluido:</strong> Suite de 7 herramientas, scraping de catálogo, asistente SONEX AI, manual y rúbricas docentes.<br>❌ <strong>Excluye:</strong> App móvil nativa, integración directa a SAP y pasarelas de pago real.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 3: Capítulo 2 -->
     <div class="slide" id="slide-2">
       <div class="slide-layout">
         <div class="slide-intro">
           <div class="slide-index-num">03</div>
-          <h2 class="slide-title slide-main-title">ARQUITECTURA DE SOFTWARE.</h2>
-          <p class="slide-description">Estructura moderna desacoplada con comunicación asíncrona.</p>
+          <h2 class="slide-title slide-main-title">FUGAS DE PRODUCTIVIDAD.</h2>
+          <p class="slide-description">Estudio de campo en la distribuidora y 5 fugas críticas de soporte.</p>
         </div>
         <div class="slide-main-content">
           <div class="editorial-grid">
             <div class="editorial-box fragment">
-              <h3>FRONTEND</h3>
-              <p style="margin-bottom: 5px;"><strong>• Core:</strong> React 19 + Vite 7</p>
-              <p style="margin-bottom: 5px;"><strong>• Router:</strong> React Router v7</p>
-              <p><strong>• Estilos:</strong> CSS Modules scoped y variables</p>
+              <h3>Sonepar Ibérica</h3>
+              <p>Estudio de campo B2B durante las prácticas curriculares. La observación directa permitió identificar necesidades reales y estructurar los módulos de la aplicación.</p>
             </div>
             <div class="editorial-box fragment">
-              <h3>SERVICIOS CLOUD</h3>
-              <p style="margin-bottom: 5px;"><strong>• Base de Datos:</strong> Supabase PostgreSQL</p>
-              <p style="margin-bottom: 5px;"><strong>• IA:</strong> OpenRouter API proxy</p>
-              <p><strong>• Hosting:</strong> Vercel ( hobby tier )</p>
+              <h3>5 Cuellos de Botella</h3>
+              <p>🔍 <strong>Acceso a Fichas:</strong> PDFs y catálogos dispersos.<br>⚠️ <strong>Compatibilidad:</strong> Dudas de equivalencias de marcas.<br>📊 <strong>Presupuestos:</strong> Cotizaciones manuales en Excel.<br>🎓 <strong>Formación:</strong> Control de competencias descentralizado.<br>📝 <strong>Incidencias:</strong> Registro en papel sin histórico.</p>
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- SLIDE 4 -->
+    <!-- SLIDE 3B: Capítulo 2 - Restricciones y Stakeholders -->
+    <div class="slide" id="slide-2b">
+      <div class="slide-layout">
+        <div class="slide-intro">
+          <div class="slide-index-num">03B</div>
+          <h2 class="slide-title slide-main-title">RESTRICCIONES Y STAKEHOLDERS.</h2>
+          <p class="slide-description">Límites técnicos, presupuesto e impacto en las partes interesadas.</p>
+        </div>
+        <div class="slide-main-content">
+          <div class="editorial-grid">
+            <div class="editorial-box fragment">
+              <h3>Restricciones</h3>
+              <p>🚫 <strong>Sin SAP:</strong> Sistemas internos inaccesibles; scraping de datos públicos.<br>💰 <strong>Presupuesto 0.00€:</strong> Uso obligatorio de planes y hosting gratuitos.<br>⏱️ <strong>Tiempo:</strong> Límite académico de 3 meses.</p>
+            </div>
+            <div class="editorial-box fragment">
+              <h3>Stakeholders</h3>
+              <p>⚡ <strong>Técnicos (Finales):</strong> Demandan agilidad operativa (Alta).<br>👥 <strong>Comerciales (Secundarios):</strong> Cotizaciones rápidas (Media).<br>🎓 <strong>Tutores (Evaluación):</strong> Cumplimiento de objetivos del ciclo (Alta).</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 4: Capítulo 3 -->
     <div class="slide" id="slide-3">
       <div class="slide-layout">
         <div class="slide-intro">
           <div class="slide-index-num">04</div>
-          <h2 class="slide-title slide-main-title">DATOS DE BASE DE DATOS.</h2>
-          <p class="slide-description">Números reales obtenidos del catálogo alojado en Supabase.</p>
+          <h2 class="slide-title slide-main-title">REQUISITOS FUNCIONALES.</h2>
+          <p class="slide-description">Priorización de los 22 requerimientos y módulos de la suite.</p>
         </div>
         <div class="slide-main-content">
-          <div class="editorial-box fragment" style="margin-bottom: 1.5rem;">
-            <h3>RESUMEN DEL CATÁLOGO</h3>
-            <p>El catálogo en PostgreSQL cuenta con <span class="swiss-accent-value">4,689 referencias</span> funcionales divididas entre 3 fabricantes líderes:</p>
-            <table class="swiss-table">
-              <thead>
-                <tr>
-                  <th>Fabricante</th>
-                  <th>Cantidad de Referencias</th>
-                  <th>Porcentaje</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Schneider Electric</td>
-                  <td class="swiss-accent-value">2,380</td>
-                  <td>50.7%</td>
-                </tr>
-                <tr>
-                  <td>Siemens</td>
-                  <td class="swiss-accent-value">1,735</td>
-                  <td>37.0%</td>
-                </tr>
-                <tr>
-                  <td>Legrand</td>
-                  <td class="swiss-accent-value">574</td>
-                  <td>12.3%</td>
-                </tr>
-              </tbody>
-            </table>
+          <div class="editorial-grid">
+            <div class="editorial-box fragment">
+              <h3>Prioridad Alta (12 RF)</h3>
+              <p>🔑 <strong>Login:</strong> Google OAuth y protección de rutas.<br>🔍 <strong>Catálogo:</strong> Búsqueda predictiva y fichas con IA.<br>📄 <strong>Presupuestos:</strong> Cotizador dinámico con IVA (21%).<br>🤖 <strong>SONEX:</strong> Chatbot con detección de referencias.</p>
+            </div>
+            <div class="editorial-box fragment">
+              <h3>Prioridad Media/Baja (10 RF)</h3>
+              <p>📦 <strong>Almacén:</strong> Simulación de flujo gamificado.<br>📝 <strong>Incidencias:</strong> Registro e histórico con niveles.<br>📊 <strong>KPIs:</strong> Indicadores logísticos de control.<br>🎓 <strong>Formación:</strong> Matriz de competencias técnicas.</p>
+            </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- SLIDE 5 -->
+    <!-- SLIDE 4B: Capítulo 3 - Requisitos No Funcionales -->
+    <div class="slide" id="slide-3b">
+      <div class="slide-layout">
+        <div class="slide-intro">
+          <div class="slide-index-num">04B</div>
+          <h2 class="slide-title slide-main-title">REQUISITOS NO FUNCIONALES.</h2>
+          <p class="slide-description">Criterios de calidad, seguridad de datos, rendimiento y testing.</p>
+        </div>
+        <div class="slide-main-content">
+          <div class="editorial-grid">
+            <div class="editorial-box fragment">
+              <h3>Rendimiento y Seguridad</h3>
+              <p>⚡ <strong>Velocidad:</strong> Carga principal &lt;3s (virtualización).<br>🔒 <strong>Seguridad:</strong> Aislamiento de datos Supabase RLS y CSP.<br>🔌 <strong>Disponibilidad:</strong> 99.9% Uptime y resiliencia offline local.</p>
+            </div>
+            <div class="editorial-box fragment">
+              <h3>Sostenibilidad y Pruebas</h3>
+              <p>💰 <strong>Coste Cero:</strong> Tiers gratuitos (Supabase, Vercel, OpenRouter).<br>🧪 <strong>Testing:</strong> Tests E2E Playwright y unitarios Vitest.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 5: Capítulo 4 -->
     <div class="slide" id="slide-4">
       <div class="slide-layout">
         <div class="slide-intro">
           <div class="slide-index-num">05</div>
-          <h2 class="slide-title slide-main-title">TESTING AUTOMATIZADO.</h2>
-          <p class="slide-description">Asegurando la tolerancia a fallos en el código asistido.</p>
+          <h2 class="slide-title slide-main-title">ARQUITECTURA Y STACK.</h2>
+          <p class="slide-description">Estructura cliente SPA modular y migración a base de datos unificada.</p>
         </div>
         <div class="slide-main-content">
           <div class="editorial-grid">
             <div class="editorial-box fragment">
-              <h3>VITEST</h3>
-              <p style="font-size: 2.2rem; font-family: var(--font-display); color: var(--accent-color); line-height: 1; margin-bottom: 5px;">272 Tests</p>
-              <p>Pruebas unitarias de comportamiento, mapeadores, hooks de cotizaciones y estado persistente.</p>
+              <h3>Estructura Cliente</h3>
+              <p>Aplicación SPA construida con React 19 y Vite 7. Acceso protegido unificado bajo un AppShell que gestiona 14 rutas internas de negocio mediante CSS Modules aislados.</p>
             </div>
             <div class="editorial-box fragment">
-              <h3>PLAYWRIGHT</h3>
-              <p style="font-size: 2.2rem; font-family: var(--font-display); color: var(--accent-color); line-height: 1; margin-bottom: 5px;">7 Specs</p>
-              <p>Pruebas funcionales e2e automatizadas para asegurar flujos de usuario y rutas protegidas.</p>
+              <h3>Backend y Datos</h3>
+              <p>Migración completa de Firestore a Supabase (PostgreSQL + Auth). Consultas relacionales optimizadas con paginación `.range()` y búsquedas nativas con GIN full-text indexes.</p>
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- SLIDE 6 -->
-    <div class="slide" id="slide-5">
+    <!-- SLIDE 5B: Capítulo 4 - Resiliencia y Seguridad -->
+    <div class="slide" id="slide-4b">
       <div class="slide-layout">
         <div class="slide-intro">
-          <div class="slide-index-num">06</div>
-          <h2 class="slide-title slide-main-title">DESARROLLO CON IA.</h2>
-          <p class="slide-description">Cambio de paradigma en la construcción de software.</p>
+          <div class="slide-index-num">05B</div>
+          <h2 class="slide-title slide-main-title">RESILIENCIA Y SEGURIDAD.</h2>
+          <p class="slide-description">Tolerancia a cortes de red, aislamiento RLS y diseño UI/UX.</p>
         </div>
         <div class="slide-main-content">
           <div class="editorial-grid">
             <div class="editorial-box fragment">
-              <h3>METODOLOGÍA</h3>
-              <p>Utilización de herramientas como Windsurf IDE, Claude y Gemini para saltar la barrera sintáctica clásica de la programación.</p>
+              <h3>Resiliencia de Red</h3>
+              <p>Proxy <strong>`createStubClient`</strong> que intercepta caídas de Supabase y desvía llamadas a Mock Data local de forma transparente. Sincronización offline en localStorage.</p>
             </div>
             <div class="editorial-box fragment">
-              <h3>CONSEJOS CLAVE</h3>
-              <p>• Mantener una taxonomía clara en la base de datos es obligatorio.</p>
-              <p>• Los tests automatizados son los que permiten refactorizar con seguridad.</p>
+              <h3>Seguridad y Diseño</h3>
+              <p>Aislamiento estricto de datos con Row Level Security (RLS) en base de datos. Serverless gateway proxy en Vercel para API key y rate limiting. Transiciones animadas de modo oscuro.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 6: Capítulo 5 -->
+    <div class="slide" id="slide-5">
+      <div class="slide-layout">
+        <div class="slide-intro">
+          <div class="slide-index-num">06</div>
+          <h2 class="slide-title slide-main-title">ECOSISTEMA DE IA.</h2>
+          <p class="slide-description">Evolución temporal de LLMs y categorización funcional.</p>
+        </div>
+        <div class="slide-main-content">
+          <div class="editorial-grid">
+            <div class="editorial-box fragment">
+              <h3>Evolución Temporal</h3>
+              <p>• <strong>2020-22:</strong> Inicios de GPT-3 y autocompletado en Copilot.<br>• <strong>2023-25:</strong> Comprensión lógica y razonamiento complejo.<br>• <strong>2026:</strong> Agentes CLI locales autónomos.</p>
+            </div>
+            <div class="editorial-box fragment">
+              <h3>Matriz de Selección</h3>
+              <p>• <strong>Chat Web (Claude):</strong> Arquitectura y diseño conceptual.<br>• <strong>IDEs (Windsurf):</strong> Codificación con contexto del repositorio.<br>• <strong>Agentes CLI (OpenCode):</strong> Refactorización y depurado en terminal.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 6B: Capítulo 5B -->
+    <div class="slide" id="slide-5b">
+      <div class="slide-layout">
+        <div class="slide-intro">
+          <div class="slide-index-num">06B</div>
+          <h2 class="slide-title slide-main-title">LECCIONES Y FUTURO.</h2>
+          <p class="slide-description">Aprendizajes prácticos y las 5 tendencias en ingeniería.</p>
+        </div>
+        <div class="slide-main-content">
+          <div class="editorial-grid">
+            <div class="editorial-box fragment">
+              <h3>Aprendizajes Clave</h3>
+              <p>• <strong>Estrategia híbrida:</strong> Combinar herramientas optimiza el desarrollo (Claude + Windsurf + OpenCode).<br>• <strong>Sostenibilidad:</strong> Los planes y tiers gratuitos son 100% viables para software industrial.</p>
+            </div>
+            <div class="editorial-box fragment">
+              <h3>Tendencias Clave</h3>
+              <p>• Agentes con memoria persistente y auto-refinamiento real.<br>• Automatización de flujos extremo a extremo (E2E).<br>• Integración de asistentes en CAD, Excel y PLCs (TIA Portal/CODESYS).</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 7: Capítulo 6 -->
+    <div class="slide" id="slide-6">
+      <div class="slide-layout">
+        <div class="slide-intro">
+          <div class="slide-index-num">07</div>
+          <h2 class="slide-title slide-main-title">EVALUACIÓN DE IA.</h2>
+          <p class="slide-description">Valoración metodológica y perfiles detallados de las herramientas base.</p>
+        </div>
+        <div class="slide-main-content">
+          <div class="editorial-grid">
+            <div class="editorial-box fragment">
+              <h3>Perfiles Clave</h3>
+              <p>• <strong>Claude.ai (4.4):</strong> Razonamiento lógico superior y arquitectura.<br>• <strong>Hermes Agent (4.8):</strong> Memoria contextual y auto-aprendizaje.<br>• <strong>Windsurf IDE (4.2):</strong> Edición Cascade flow-aware.<br>• <strong>OpenCode CLI (4.2):</strong> Modos plan/build, LSP/MCP.</p>
+            </div>
+            <div class="editorial-box fragment">
+              <h3>Infraestructura</h3>
+              <p>• <strong>OpenRouter:</strong> Pasarela unificada multi-modelo y failover a coste cero.<br>• <strong>Supabase:</strong> DB relacional con RLS para el catálogo B2B.<br>• <strong>Vercel:</strong> Hosting y CI/CD en la nube para despliegues.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 7B: Capítulo 6B -->
+    <div class="slide" id="slide-6b">
+      <div class="slide-layout">
+        <div class="slide-intro">
+          <div class="slide-index-num">07B</div>
+          <h2 class="slide-title slide-main-title">WORKFLOW Y MATRIZ.</h2>
+          <p class="slide-description">Flujo integrado de ingeniería y matriz de decisión por tarea.</p>
+        </div>
+        <div class="slide-main-content">
+          <div class="editorial-grid">
+            <div class="editorial-box fragment">
+              <h3>Workflow de Trabajo</h3>
+              <p>• <strong>1. Diseño (Claude):</strong> Definir lógica y especificaciones.<br>• <strong>2. Código (Windsurf):</strong> Cascade e implementaciones inline.<br>• <strong>3. Depuración (OpenCode/Gemini):</strong> Tests y refactor CLI.</p>
+            </div>
+            <div class="editorial-box fragment">
+              <h3>Matriz de Decisión</h3>
+              <p>• <strong>Arquitectura:</strong> Claude Web.<br>• <strong>Coding rutinario:</strong> Copilot / Windsurf.<br>• <strong>Depurar error:</strong> Claude + OpenCode CLI.<br>• <strong>Generación de tests:</strong> Gemini CLI.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 8: Capítulo 7 -->
+    <div class="slide" id="slide-7">
+      <div class="slide-layout">
+        <div class="slide-intro">
+          <div class="slide-index-num">08</div>
+          <h2 class="slide-title slide-main-title">PROCESO Y PRUEBAS.</h2>
+          <p class="slide-description">Metodología de codificación ágil asistida y cobertura de testing.</p>
+        </div>
+        <div class="slide-main-content">
+          <div class="editorial-grid">
+            <div class="editorial-box fragment">
+              <h3>Workflow de Iteración</h3>
+              <p>• <strong>Prompting estructurado:</strong> Inputs/Outputs definidos.<br>• <strong>Métricas:</strong> 500+ prompts, 100+ horas de IA y ~80% código generado.<br>• <strong>Revisión:</strong> Validación en local y auditoría manual del flujo.</p>
+            </div>
+            <div class="editorial-box fragment">
+              <h3>Tests Automatizados</h3>
+              <p>• 🧪 <strong>270 Tests en Vitest:</strong> Validación de cálculos de presupuestos, descuentos, IVAs e IndexedDB.<br>• 🌐 <strong>155 Tests Playwright E2E:</strong> Regresión visual pixel-a-pixel y seguridad contra inyección SQL.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 8B: Capítulo 7B -->
+    <div class="slide" id="slide-7b">
+      <div class="slide-layout">
+        <div class="slide-intro">
+          <div class="slide-index-num">08B</div>
+          <h2 class="slide-title slide-main-title">CRONOLOGÍA.</h2>
+          <p class="slide-description">Las 12 fases incrementales del ciclo de desarrollo.</p>
+        </div>
+        <div class="slide-main-content">
+          <div class="editorial-grid">
+            <div class="editorial-box fragment">
+              <h3>Fases Iniciales (0-5)</h3>
+              <p>• <strong>Fases 0-2 (Inicio):</strong> Prototipos JSX autocontenidos unificados en AppShell SPA (React 19 + Vite 7).<br>• <strong>Fases 3-5 (Evolución):</strong> Streaming de SONEX e integración de temas con View Transitions API.</p>
+            </div>
+            <div class="editorial-box fragment">
+              <h3>Fases de Escala (6-11)</h3>
+              <p>• <strong>Fases 6-8 (Datos):</strong> Scrapers en Playwright y Firestore (Spark limit).<br>• <strong>Fases 10-11 (Calidad):</strong> Migración a Supabase PostgreSQL y auditoría de código de 40 archivos.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 8C: Capítulo 7C -->
+    <div class="slide" id="slide-7c">
+      <div class="slide-layout">
+        <div class="slide-intro">
+          <div class="slide-index-num">08C</div>
+          <h2 class="slide-title slide-main-title">ERRORES Y APRENDIZAJES.</h2>
+          <p class="slide-description">Resolución de fallos críticos y lecciones de arquitectura.</p>
+        </div>
+        <div class="slide-main-content">
+          <div class="editorial-grid">
+            <div class="editorial-box fragment">
+              <h3>Casos de Estudio</h3>
+              <p>• 🔑 <strong>API Key expuesta:</strong> Clave en cliente web. Solución: Proxy Serverless en Vercel.<br>• 📦 <strong>Escala de BD:</strong> Límites y timeouts de Firestore. Solución: Migración completa a Supabase.</p>
+            </div>
+            <div class="editorial-box fragment">
+              <h3>Bugs y Aciertos</h3>
+              <p>• 🐛 <strong>Validador Fichas:</strong> Callback de tipo array en lugar de boolean. Resuelto por Code Review.<br>• 💡 <strong>Aciertos:</strong> Modularidad con Custom Hooks y CSS Modules sin runtime overhead.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 9: Capítulo 8 // MANUALES DE USO - OPERATIVA CORE -->
+    <div class="slide" id="slide-8">
+      <div class="slide-layout">
+        <div class="slide-intro">
+          <div class="slide-index-num">09</div>
+          <h2 class="slide-title slide-main-title">OPERATIVA CORE.</h2>
+          <p class="slide-description">Manuales de uso para los procesos diarios de la suite de negocio.</p>
+        </div>
+        <div class="slide-main-content">
+          <div class="editorial-grid">
+            <div class="editorial-box fragment">
+              <h3>Fichas y Presupuestos</h3>
+              <p>• 🔍 <strong>Fichas Técnicas:</strong> Catálogo interactivo de 8 niveles. Buscador rápido y fichas técnicas enriquecidas por IA con estados de carga/completado/fallback.<br>• 📄 <strong>Presupuestos:</strong> Cotización rápida vinculando el catálogo. Cálculos automáticos de IVA (21%) y descarga PDF en 1 clic.</p>
+            </div>
+            <div class="editorial-box fragment">
+              <h3>Formación y KPIs</h3>
+              <p>• 🎓 <strong>Competencias:</strong> Matriz de capacitación laboral para registrar cursos y recomendar planes de formación.<br>• 📊 <strong>Semáforo de KPIs:</strong> Panel de control logístico con estados tricolor (Verde = Mantener, Amarillo = Monitorizar, Rojo = Actuar).</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 9B: Capítulo 8 // MANUALES DE USO - MÓDULOS AVANZADOS -->
+    <div class="slide" id="slide-8b">
+      <div class="slide-layout">
+        <div class="slide-intro">
+          <div class="slide-index-num">09B</div>
+          <h2 class="slide-title slide-main-title">MÓDULOS AVANZADOS.</h2>
+          <p class="slide-description">Instrucciones de explotación de herramientas interactivas e IA.</p>
+        </div>
+        <div class="slide-main-content">
+          <div class="editorial-grid">
+            <div class="editorial-box fragment">
+              <h3>Simulación y Chatbot</h3>
+              <p>• 👥 <strong>Simulador Almacén:</strong> Picking cooperativo interactivo de 4 etapas con presencia y cursores realtime vía Supabase (&lt;100ms).<br>• 🤖 <strong>Chatbot SONEX:</strong> Asistente con 4 modos (Búsqueda, Comparativa, Asistencia, Formación), streaming de respuestas y estados de chat (🤖, ✓, ✓✓).</p>
+            </div>
+            <div class="editorial-box fragment">
+              <h3>Incidencias y Alertas</h3>
+              <p>• ⚠️ <strong>Gestión de Incidencias:</strong> Registro y diagnóstico de averías industriales en tiempo real mediante recomendaciones asistidas por IA.<br>• 🚨 <strong>Banner de Seguridad:</strong> Alerta visual crítica de alta prioridad que resalta en el panel si hay incidencias sin resolver durante más de 2 horas.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 10: Capítulo 9 // RESULTADOS CUANTITATIVOS -->
+    <div class="slide" id="slide-9">
+      <div class="slide-layout">
+        <div class="slide-intro">
+          <div class="slide-index-num">10</div>
+          <h2 class="slide-title slide-main-title">RESULTADOS CUANTITATIVOS.</h2>
+          <p class="slide-description">Evaluación económica, rendimiento y métricas del código.</p>
+        </div>
+        <div class="slide-main-content">
+          <div class="editorial-grid">
+            <div class="editorial-box fragment">
+              <h3>ROI y Presupuesto</h3>
+              <p>• Coste de infraestructura: <strong>0.00 €</strong>.<br>• Ahorro SaaS estimado: 792 €/año.<br>• Coste externo: <strong>19.000 €</strong> (380h a 50€/h).<br>• Lighthouse: FCP 1.2s, LCP 2.1s, TTI 2.8s.</p>
+            </div>
+            <div class="editorial-box fragment">
+              <h3>Actividad y Bundle</h3>
+              <p>• Código: ~12.000 LOC, 100+ componentes React, 13 hooks, 400+ commits.<br>• Calidad: Cobertura de 270 tests unitarios y 155 Playwright E2E (425 total).<br>• Bundle Size: ~170 KB (JS 150KB + CSS 20KB gzipped).</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 10B: Capítulo 9 // RESULTADOS CUALITATIVOS -->
+    <div class="slide" id="slide-9b">
+      <div class="slide-layout">
+        <div class="slide-intro">
+          <div class="slide-index-num">10B</div>
+          <h2 class="slide-title slide-main-title">VALIDACIÓN Y VALOR.</h2>
+          <p class="slide-description">Valoración de metas logradas, límites del proyecto y aprendizaje.</p>
+        </div>
+        <div class="slide-main-content">
+          <div class="editorial-grid">
+            <div class="editorial-box fragment">
+              <h3>Logros y Valor</h3>
+              <p>• 7 de 7 módulos plenamente operativos.<br>• Catálogo real de 4.000+ productos indexado.<br>• Chatbot SONEX activo con streaming e indicadores.<br>• Viabilidad demostrada de desarrollo ágil con IA.</p>
+            </div>
+            <div class="editorial-box fragment">
+              <h3>Límites y Habilidades</h3>
+              <p>• Sin integración ERP real (SAP) por carácter académico.<br>• Validación con usuarios finales limitada a demos internas.<br>• Habilidades: Nivel Alto en IA, resolución de problemas y documentación.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 11: Capítulo 10 // CONCLUSIONES -->
+    <div class="slide" id="slide-10">
+      <div class="slide-layout">
+        <div class="slide-intro">
+          <div class="slide-index-num">11</div>
+          <h2 class="slide-title slide-main-title">CONCLUSIONES Y FUTURO.</h2>
+          <p class="slide-description">Legado de la memoria y hoja de ruta de desarrollo futura.</p>
+        </div>
+        <div class="slide-main-content">
+          <div class="editorial-grid">
+            <div class="editorial-box fragment">
+              <h3>Transferencia Docente</h3>
+              <p>• Rúbricas de evaluación del uso ético de la IA en FP.<br>• 15 fichas de análisis de herramientas de IA.<br>• Plan formativo docente de 4 sesiones para profesores.</p>
+            </div>
+            <div class="editorial-box fragment">
+              <h3>Hoja de Ruta Futura</h3>
+              <p>• *Corto:* Imágenes en catálogo Supabase.<br>• *Medio:* App móvil (PWA/React Native) y offline local con IndexedDB.<br>• *Largo:* Agentes autónomos para mantenimiento de código.</p>
             </div>
           </div>
         </div>
@@ -500,7 +802,7 @@
   </div>
 
   <footer class="swiss-footer">
-    <div class="footer-section">DIAPOSITIVA <span id="current-slide-num">1</span> // 6</div>
+    <div class="footer-section">DIAPOSITIVA <span id="current-slide-num">1</span> // <span id="total-slides-num">11</span></div>
     <div class="swiss-nav-group">
       <button class="swiss-nav-btn" onclick="navigate(-1)">Atrás</button>
       <button class="swiss-nav-btn" onclick="navigate(1)">Siguiente</button>
@@ -512,9 +814,34 @@
     const slides = document.querySelectorAll('.slide');
     let currentSlide = 0;
 
+    function updateColorsForSlide(index) {
+      const root = document.documentElement;
+      if (index === 0 || index === 1 || index === 2 || index === 3 || index === 4 || index === 5 || index === 7 || index === 8 || index === 9 || index === 10 || index === 11 || index === 12 || index === 14 || index === 15 || index === 16 || index === 17 || index === 18 || index === 19) {
+        // Cream Bauhaus (Cream bg, black text, red/orange accent)
+        root.style.setProperty('--bg-color', '#f6f5f2');
+        root.style.setProperty('--text-color', '#0d0d0e');
+        root.style.setProperty('--border-color', '#0d0d0e');
+        root.style.setProperty('--accent-color', '#ff4500');
+      } else if (index === 6 || index === 13) {
+        // Black solid with white/red text
+        root.style.setProperty('--bg-color', '#0d0d0e');
+        root.style.setProperty('--text-color', '#ffffff');
+        root.style.setProperty('--border-color', '#ffffff');
+        root.style.setProperty('--accent-color', '#ff4500');
+      } else if (index === 20) {
+        // Orange/red Bauhaus with white text (Conclusions slide)
+        root.style.setProperty('--bg-color', '#ff4500');
+        root.style.setProperty('--text-color', '#ffffff');
+        root.style.setProperty('--border-color', '#ffffff');
+        root.style.setProperty('--accent-color', '#ffffff');
+      }
+    }
+
     function showSlide(index) {
       if (index < 0) index = 0;
       if (index >= slides.length) index = slides.length - 1;
+
+      updateColorsForSlide(index);
 
       slides.forEach((slide, i) => {
         slide.classList.remove('active', 'past');
@@ -527,13 +854,53 @@
               frag.classList.add('visible');
             }, (idx + 1) * 150);
           });
-        } else if (i < index) {
-          slide.classList.add('past');
+        } else {
+          if (i < index) {
+            slide.classList.add('past');
+          }
+          // Reset fragments so they animate again when slide is re-entered
+          slide.querySelectorAll('.fragment').forEach(frag => {
+            frag.classList.remove('visible');
+          });
         }
       });
 
       currentSlide = index;
       document.getElementById('current-slide-num').textContent = currentSlide + 1;
+      
+      const totalSlidesNum = document.getElementById('total-slides-num');
+      if (totalSlidesNum) {
+        totalSlidesNum.textContent = slides.length;
+      }
+
+      // Update header metadata dynamically
+      const slideHeaderLabels = [
+        "INTRODUCCIÓN // PORTADA",
+        "CAPÍTULO 01 // INTRODUCCIÓN",
+        "CAPÍTULO 01 // ALCANCE Y STACK",
+        "CAPÍTULO 02 // FUGAS Y CONTEXTO",
+        "CAPÍTULO 02 // RESTRICCIONES Y STAKEHOLDERS",
+        "CAPÍTULO 03 // REQUISITOS FUNCIONALES",
+        "CAPÍTULO 03 // REQUISITOS NO FUNCIONALES",
+        "CAPÍTULO 04 // ARQUITECTURA Y STACK",
+        "CAPÍTULO 04 // RESILIENCIA Y SEGURIDAD",
+        "CAPÍTULO 05 // CONTEXTO IA",
+        "CAPÍTULO 05 // TENDENCIAS Y FUTURO",
+        "CAPÍTULO 06 // EVALUACIÓN IA",
+        "CAPÍTULO 06 // WORKFLOW Y LECCIONES",
+        "CAPÍTULO 07 // PROCESO Y PRUEBAS",
+        "CAPÍTULO 07 // CRONOLOGÍA",
+        "CAPÍTULO 07 // ERRORES Y APRENDIZAJES",
+        "CAPÍTULO 08 // MANUALES USO",
+        "CAPÍTULO 08 // MÓDULOS AVANZADOS",
+        "CAPÍTULO 09 // RESULTADOS Y ROI",
+        "CAPÍTULO 09 // VALIDACIÓN CUALITATIVA",
+        "CAPÍTULO 10 // CONCLUSIONES"
+      ];
+      const headerRight = document.querySelector('.swiss-header-right');
+      if (headerRight && slideHeaderLabels[currentSlide]) {
+        headerRight.textContent = slideHeaderLabels[currentSlide];
+      }
     }
 
     function navigate(direction) {
@@ -571,10 +938,45 @@
       }
     }
 
-    // Initialize first slide
+    // Initialize first slide and drag-drop shapes
     window.addEventListener('load', () => {
       showSlide(0);
+      makeShapesDraggable();
     });
+
+    // Drag and Drop for Bauhaus Shapes
+    function makeShapesDraggable() {
+      const draggables = document.querySelectorAll('.draggable-shape');
+      draggables.forEach(el => {
+        let isDragging = false;
+        let startX, startY, initialLeft, initialTop;
+        
+        el.addEventListener('mousedown', (e) => {
+          isDragging = true;
+          startX = e.clientX;
+          startY = e.clientY;
+          initialLeft = el.offsetLeft;
+          initialTop = el.offsetTop;
+          el.style.zIndex = 100;
+          e.preventDefault();
+        });
+        
+        document.addEventListener('mousemove', (e) => {
+          if (!isDragging) return;
+          const dx = e.clientX - startX;
+          const dy = e.clientY - startY;
+          el.style.left = `${initialLeft + dx}px`;
+          el.style.top = `${initialTop + dy}px`;
+        });
+        
+        document.addEventListener('mouseup', () => {
+          if (isDragging) {
+            isDragging = false;
+            el.style.zIndex = 11;
+          }
+        });
+      });
+    }
   </script>
 </body>
 </html>

@@ -58,11 +58,12 @@
       font-family: var(--font-display);
       font-size: 1.2rem;
       background: var(--accent-pink);
-      color: #ffffff;
+      color: #000000; /* High contrast black text */
       padding: 0.4rem 1rem;
       border: var(--border-thick);
       box-shadow: 4px 4px 0px #000;
       text-transform: uppercase;
+      font-weight: 900;
     }
 
     .header-meta {
@@ -136,6 +137,7 @@
       text-transform: uppercase;
       margin-bottom: 0.75rem;
       box-shadow: 2px 2px 0px #000000;
+      color: #000000;
     }
 
     .slide-title {
@@ -183,6 +185,7 @@
       padding: 2px 6px;
       border: 2px solid #000;
       box-shadow: 2px 2px 0px #000;
+      color: #000000;
     }
 
     .brutalist-inner-card p {
@@ -195,12 +198,13 @@
       font-family: var(--font-display);
       font-size: 2.8rem;
       background-color: var(--accent-pink);
-      color: #ffffff;
+      color: #000000; /* High contrast black text on pink highlight */
       padding: 0.5rem 1rem;
       border: var(--border-thick);
       box-shadow: 4px 4px 0px #000;
       display: inline-block;
       margin: 10px 0;
+      font-weight: 900;
     }
 
     .stats-table {
@@ -227,7 +231,7 @@
     /* Controls Overlay */
     .controls-panel {
       position: absolute;
-      bottom: 2rem;
+      bottom: 4.5rem;
       right: 2rem;
       display: flex;
       gap: 12px;
@@ -247,12 +251,12 @@
       align-items: center;
       justify-content: center;
       box-shadow: 4px 4px 0px #000;
-      transition: all 0.1s ease;
+      transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.45, 1.6), box-shadow 0.4s cubic-bezier(0.175, 0.885, 0.45, 1.6), background-color 0.2s ease;
     }
 
     .ctrl-btn:hover {
-      transform: translate(-2px, -2px);
-      box-shadow: 6px 6px 0px #000;
+      transform: translate(-4px, -4px) scale(1.15);
+      box-shadow: 8px 8px 0px #000;
       background-color: var(--accent-color);
     }
 
@@ -263,7 +267,7 @@
 
     .slide-progress-tag {
       position: absolute;
-      bottom: 2rem;
+      bottom: 4.5rem;
       left: 2rem;
       background: #ffffff;
       border: var(--border-thick);
@@ -272,6 +276,49 @@
       font-size: 0.9rem;
       box-shadow: 4px 4px 0px #000;
       font-weight: 900;
+    }
+
+    /* Running Marquee */
+    .brutalist-marquee {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: var(--accent-pink);
+      color: #000000; /* Legible black text on marquee background */
+      border-top: var(--border-thick);
+      overflow: hidden;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      height: 48px;
+      font-family: var(--font-display);
+      font-size: 0.9rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      z-index: 4;
+      box-shadow: 0px -4px 0px #000;
+    }
+
+    .marquee-track {
+      display: flex;
+      width: max-content;
+      animation: marquee 20s linear infinite;
+    }
+
+    .marquee-content {
+      display: flex;
+      gap: 3rem;
+      padding-right: 3rem;
+    }
+
+    .marquee-content span {
+      display: inline-block;
+    }
+
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
     }
 
     .fragment {
@@ -300,170 +347,1053 @@
       .highlight-value {
         font-size: 2rem;
       }
+    } /* Closed media query correctly */
+
+    /* Stickers */
+    .brutalist-sticker {
+      position: absolute;
+      padding: 0.6rem 1.2rem;
+      font-family: var(--font-display);
+      font-size: 0.85rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      border: var(--border-thick);
+      box-shadow: 5px 5px 0px #000000;
+      cursor: grab;
+      user-select: none;
+      z-index: 10;
+      transition: transform 0.1s ease, box-shadow 0.1s ease;
+    }
+    .brutalist-sticker:hover {
+      transform: scale(1.05) rotate(var(--rot, 0deg)) !important;
+    }
+    .brutalist-sticker:active {
+      cursor: grabbing;
+      transform: scale(1.1) rotate(var(--rot, 0deg)) !important;
+      box-shadow: 8px 8px 0px #000000;
+      z-index: 100;
+    }
+
+    /* Color Switcher Button */
+    .color-switcher-btn {
+      background: #ffffff; /* White background to stand out as an interactive element */
+      color: #000000;
+      border: var(--border-thick);
+      padding: 0.4rem 1rem;
+      font-family: var(--font-display);
+      font-size: 0.8rem;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 4px 4px 0px #000;
+      transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      text-transform: uppercase;
+    }
+    .color-switcher-btn:hover {
+      transform: translate(-3px, -3px);
+      box-shadow: 7px 7px 0px #000;
+      background-color: var(--accent-pink); /* Hover transitions to pink */
+      color: #000000;
+    }
+    .color-switcher-btn:active {
+      transform: translate(1px, 1px);
+      box-shadow: 2px 2px 0px #000;
+    }
+
+    /* System Windows (OS Retro popups) */
+    .brutalist-window {
+      background: #ffffff;
+      border: var(--border-thick);
+      box-shadow: 6px 6px 0px #000000;
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .brutalist-window:hover {
+      transform: translate(-4px, -4px) scale(1.02);
+      box-shadow: 10px 10px 0px #000000;
+    }
+    .window-bar {
+      background: var(--text-color);
+      color: #ffffff;
+      border-bottom: var(--border-thick);
+      padding: 0.4rem 0.8rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-family: var(--font-display);
+      font-size: 0.75rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    .window-title {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      flex: 1;
+      min-width: 0;
+      margin-right: 12px;
+      text-align: left;
+    }
+    .window-actions {
+      display: flex;
+      gap: 6px;
+    }
+    .window-btn {
+      background: #ffffff;
+      color: #000000;
+      border: 2px solid #000000;
+      width: 18px;
+      height: 18px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.6rem;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 1px 1px 0px #000;
+    }
+    .window-btn:hover {
+      background: var(--accent-pink);
+      color: #000000;
+    }
+    .window-body {
+      padding: 1.5rem;
+      flex: 1;
+    }
+
+    /* Glitch/Panic Mode & Shake Effect */
+    @keyframes shake {
+      0% { transform: translate(1px, 1px) rotate(0deg); }
+      10% { transform: translate(-1px, -2px) rotate(-1deg); }
+      20% { transform: translate(-3px, 0px) rotate(1deg); }
+      30% { transform: translate(0px, 2px) rotate(0deg); }
+      40% { transform: translate(1px, -1px) rotate(1deg); }
+      50% { transform: translate(-1px, 2px) rotate(-1deg); }
+      60% { transform: translate(-3px, 1px) rotate(0deg); }
+      70% { transform: translate(2px, 1px) rotate(-1deg); }
+      80% { transform: translate(-1px, -1px) rotate(1deg); }
+      90% { transform: translate(2px, 2px) rotate(0deg); }
+      100% { transform: translate(1px, -2px) rotate(-1deg); }
+    }
+    .header-chapter-box {
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      background: var(--accent-color); /* Toxic Green to contrast with Pink logo */
+      color: #000000; /* High contrast black text */
+      padding: 0.4rem 1rem;
+      border: var(--border-thick);
+      box-shadow: 4px 4px 0px #000;
+      text-transform: uppercase;
+      font-weight: 900;
+      transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    /* Typing Cursor & Text Glitch on Title */
+    .slide-title::after {
+      content: '▋';
+      animation: blink-cursor 0.8s infinite;
+      margin-left: 5px;
+      color: var(--accent-pink);
+    }
+    @keyframes blink-cursor {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+    .slide-title:hover {
+      text-shadow: 3px 3px 0px var(--accent-pink), -3px -3px 0px var(--accent-color);
+      transform: skewX(-3deg);
+    }
+
+    /* Draggable Stickers Animations */
+    @keyframes drop-in-sticker {
+      0% {
+        transform: translateY(-200px) rotate(-30deg) scale(0.5);
+        opacity: 0;
+      }
+      70% {
+        transform: translateY(20px) rotate(var(--rot)) scale(1.1);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(0) rotate(var(--rot)) scale(1);
+      }
+    }
+    .brutalist-sticker.animate-in {
+      animation: drop-in-sticker 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+
+    @media (max-width: 800px) {
+      .brutalist-sticker {
+        font-size: 0.7rem;
+        padding: 0.4rem 0.8rem;
+      }
+      .header-chapter-box {
+        display: none;
+      }
+      .brutalist-window {
+        box-shadow: 3px 3px 0px #000000;
+      }
+      .window-body {
+        padding: 0.8rem;
+      }
+      .window-bar {
+        font-size: 0.65rem;
+        padding: 0.3rem 0.6rem;
+      }
     }
   </style>
 </head>
 <body>
 
+  <!-- Draggable Neo-Brutalist Stickers -->
+  <div class="brutalist-sticker" id="sticker-0" style="top:15%;left:8%;" data-rotation="-5"></div>
+  <div class="brutalist-sticker" id="sticker-1" style="top:22%;right:5%;" data-rotation="8"></div>
+  <div class="brutalist-sticker" id="sticker-2" style="bottom:18%;left:6%;" data-rotation="-10"></div>
+  <div class="brutalist-sticker" id="sticker-3" style="top:75%;right:12%;" data-rotation="4"></div>
+  <div class="brutalist-sticker" id="sticker-4" style="top:45%;left:3%;" data-rotation="12"></div>
+  <div class="brutalist-sticker" id="sticker-5" style="bottom:25%;right:4%;" data-rotation="-6"></div>
+
   <header class="brutalist-header">
-    <div class="header-logo">PFC // V8</div>
-    <div class="header-meta">MÉTODO: IA-PROMPTING</div>
+    <div style="display: flex; gap: 15px; align-items: center;">
+      <div class="header-logo">PRESENTACIÓN TFC</div>
+      <button class="color-switcher-btn" id="switcher-btn">CAMBIAR PALETA</button>
+    </div>
+    <div class="header-chapter-box" id="header-chapter">INTRODUCCIÓN</div>
   </header>
 
   <!-- Slide Deck Container -->
   <div class="deck-container">
 
-    <!-- SLIDE 1 -->
+    <!-- SLIDE 0: PORTADA -->
     <div class="slide active" id="slide-0">
       <div class="slide-header">
-        <span class="slide-badge">CONCEPT</span>
-        <h2 class="slide-title">PROYECTO PFC: SUITE OPERATIVA</h2>
+        <span class="slide-badge">PORTADA ACADÉMICA // PFC 2026</span>
+        <h2 class="slide-title">SUITE WEB B2B SECTOR ELÉCTRICO</h2>
       </div>
       <div class="slide-content">
         <div class="brutalist-grid">
-          <div class="brutalist-inner-card fragment">
-            <h3>PROPUESTA</h3>
-            <p>Implementación de un ecosistema que unifica <span style="text-decoration: underline; font-weight: 900;">8 herramientas web</span> enfocadas en resolver necesidades logísticas y técnicas de electricistas.</p>
+          <div class="brutalist-window fragment">
+            <div class="window-bar">
+              <span class="window-title">DATOS DEL AUTOR</span>
+              <div class="window-actions">
+                <span class="window-btn">&minus;</span>
+                <span class="window-btn">&times;</span>
+              </div>
+            </div>
+            <div class="window-body">
+              <p style="margin-bottom: 0.8rem;"><strong>Autor:</strong> Iago Durán Romera</p>
+              <p style="margin-bottom: 0.8rem;"><strong>Ciclo:</strong> Automatización y Robótica Industrial</p>
+              <p><strong>Colaborador:</strong> Prácticas en Sonepar Ibérica (Distribuidor B2B líder)</p>
+            </div>
           </div>
-          <div class="brutalist-inner-card fragment" style="background-color: var(--accent-color)">
-            <h3>NÚMERO CLAVE</h3>
-            <div class="highlight-value">0.00 EUR</div>
-            <p>Coste financiero real del proyecto gracias al uso estratégico de tiers gratuitos e IA.</p>
+          <div class="brutalist-window fragment" style="background-color: var(--accent-color)">
+            <div class="window-bar" style="background-color: #000; color: var(--accent-color);">
+              <span class="window-title">RESUMEN EJECUTIVO</span>
+              <div class="window-actions">
+                <span class="window-btn">&minus;</span>
+                <span class="window-btn">&times;</span>
+              </div>
+            </div>
+            <div class="window-body">
+              <div class="highlight-value" style="font-size: 1.6rem; margin: 5px 4px; display: inline-block; max-width: calc(100% - 8px);">7 HERRAMIENTAS</div>
+              <p>Digitalización de procesos de campo mediante desarrollo web ágil guiado por Inteligencia Artificial.</p>
+            </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- SLIDE 2 -->
+    <!-- SLIDE 1: CAPÍTULO 1 // PRESENTACIÓN DEL PROYECTO -->
     <div class="slide" id="slide-1">
       <div class="slide-header">
-        <span class="slide-badge">MÓDULOS</span>
-        <h2 class="slide-title">LAS 8 HERRAMIENTAS</h2>
+        <span class="slide-badge">CAPÍTULO 1 // INTRODUCCIÓN Y ENFOQUE</span>
+        <h2 class="slide-title">PRESENTACIÓN DEL PROYECTO</h2>
       </div>
       <div class="slide-content">
         <div class="brutalist-grid">
-          <div class="brutalist-inner-card fragment">
-            <h3>LÓGICA OPERATIVA</h3>
-            <p>• <strong>Fichas Técnicas:</strong> Navegación de catálogo.</p>
-            <p>• <strong>Almacén:</strong> Simulador de pedidos dinámico.</p>
-            <p>• <strong>Incidencias:</strong> Diagnósticos de fallos por IA.</p>
-            <p>• <strong>KPIs Logísticos:</strong> Panel KPI con semáforos.</p>
+          <div class="brutalist-window fragment">
+            <div class="window-bar">
+              <span class="window-title">CONCEPTO Y PROPUESTA</span>
+              <div class="window-actions">
+                <span class="window-btn">&minus;</span>
+                <span class="window-btn">&times;</span>
+              </div>
+            </div>
+            <div class="window-body">
+              <p style="margin-bottom: 0.8rem; line-height: 1.5;"><strong>Proyecto PFC:</strong> Aplicación web (SPA) con 8 herramientas para técnicos del sector de distribución eléctrica.</p>
+              <p style="line-height: 1.5;"><strong>Diferenciador:</strong> Metodología de desarrollo asistida por IA (humano-IA) con lecciones documentadas para otros estudiantes.</p>
+            </div>
           </div>
-          <div class="brutalist-inner-card fragment">
-            <h3>SOPORTE Y CHAT</h3>
-            <p>• <strong>Presupuestos:</strong> Cotizador de catálogo en PDF.</p>
-            <p>• <strong>Formación:</strong> Matriz competencias con IA.</p>
-            <p>• <strong>Chatbot SONEX:</strong> Asistente conversacional.</p>
-            <p>• <strong>Dashboard Global:</strong> Resumen agregador.</p>
+          <div class="brutalist-window fragment" style="background-color: var(--accent-pink); color: #000000;">
+            <div class="window-bar" style="background-color: #000; color: var(--accent-pink);">
+              <span class="window-title">OBJETIVOS TÉCNICOS</span>
+              <div class="window-actions">
+                <span class="window-btn">&minus;</span>
+                <span class="window-btn">&times;</span>
+              </div>
+            </div>
+            <div class="window-body">
+              <p style="margin-bottom: 0.5rem;">⚡ <strong>OE1 (Funcionalidad):</strong> 7 módulos (catálogo, picking, incidencias, KPIs, presupuestos, competencias y chatbot).</p>
+              <p style="margin-bottom: 0.5rem;">🤖 <strong>OE2 (Metodología):</strong> Catalogar 15+ herramientas IA y definir workflow CLI.</p>
+              <p>🔌 <strong>OE3/5 (Calidad/Coste):</strong> React 19 + Supabase PostgreSQL con coste de 0.00€.</p>
+            </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- SLIDE 3 -->
+    <!-- SLIDE 1B: CAPÍTULO 1 // ALCANCE Y MÉTRICAS -->
+    <div class="slide" id="slide-1b">
+      <div class="slide-header">
+        <span class="slide-badge">CAPÍTULO 1 // ALCANCE Y TECNOLOGÍAS</span>
+        <h2 class="slide-title">TECNOLOGÍAS Y ÁMBITO</h2>
+      </div>
+      <div class="slide-content">
+        <div class="brutalist-grid">
+          <div class="brutalist-window fragment">
+            <div class="window-bar">
+              <span class="window-title">MÉTRICAS Y STACK CORE</span>
+              <div class="window-actions">
+                <span class="window-btn">&minus;</span>
+                <span class="window-btn">&times;</span>
+              </div>
+            </div>
+            <div class="window-body">
+              <p style="margin-bottom: 0.6rem;">💻 <strong>Core Stack:</strong> React 19 + Vite 7 + Supabase + Vercel.</p>
+              <p style="margin-bottom: 0.6rem;">📊 <strong>Métricas:</strong> 4.689 productos indexados y 7 herramientas SPA.</p>
+              <p style="margin-bottom: 0.6rem;">🧪 <strong>Testing:</strong> 425 tests (270 Vitest / 155 Playwright E2E).</p>
+              <p>💰 <strong>Presupuesto:</strong> 0.00€ coste de licencias e infraestructura.</p>
+            </div>
+          </div>
+          <div class="brutalist-window fragment" style="background-color: var(--accent-color); color: #000000;">
+            <div class="window-bar" style="background-color: #000; color: var(--accent-color);">
+              <span class="window-title">ÁMBITO DEL PROYECTO</span>
+              <div class="window-actions">
+                <span class="window-btn">&minus;</span>
+                <span class="window-btn">&times;</span>
+              </div>
+            </div>
+            <div class="window-body">
+              <p style="margin-bottom: 0.5rem;">✅ <strong>Incluye:</strong> Suite de 7 herramientas funcionales, scraping de catálogo real, chatbot SONEX y legado didáctico docente.</p>
+              <p>❌ <strong>Excluye:</strong> App móvil nativa, integración directa con el SAP de Sonepar y pasarelas de pago real.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 2: CAPÍTULO 2 // ANÁLISIS DE LA EMPRESA -->
     <div class="slide" id="slide-2">
       <div class="slide-header">
-        <span class="slide-badge">TECNOLOGÍA</span>
-        <h2 class="slide-title">ARQUITECTURA DESACOPLADA</h2>
+        <span class="slide-badge">CAPÍTULO 2 // ANÁLISIS DE LA EMPRESA</span>
+        <h2 class="slide-title">FUGAS DE PRODUCTIVIDAD</h2>
       </div>
       <div class="slide-content">
         <div class="brutalist-grid">
-          <div class="brutalist-inner-card fragment">
-            <h3>FRONTEND</h3>
-            <p>• Core SPA basado en <strong>React 19 y Vite 7</strong>.</p>
-            <p>• Enrutador modular con <strong>React Router 7</strong>.</p>
-            <p>• Módulos CSS aislados para modo oscuro nativo.</p>
+          <div class="brutalist-window fragment">
+            <div class="window-bar">
+              <span class="window-title">CONTEXTO Y PRÁCTICAS</span>
+              <div class="window-actions">
+                <span class="window-btn">&minus;</span>
+                <span class="window-btn">&times;</span>
+              </div>
+            </div>
+            <div class="window-body">
+              <p style="line-height: 1.6;">Estudio de campo en <strong>Sonepar Ibérica</strong> (distribución B2B de material eléctrico profesional con 500+ empleados). La observación directa durante las prácticas reveló cuellos de botella severos en los procesos logísticos y de soporte técnico.</p>
+            </div>
           </div>
-          <div class="brutalist-inner-card fragment">
-            <h3>BACKEND</h3>
-            <p>• <strong>Supabase Cloud</strong>: PostgreSQL para catálogo.</p>
-            <p>• <strong>OpenRouter API</strong>: Gateway de modelos LLM.</p>
-            <p>• <strong>Hosting Vercel</strong>: Servidor serverless y CDN global.</p>
+          <div class="brutalist-window fragment" style="background-color: var(--accent-pink); color: #000000;">
+            <div class="window-bar" style="background-color: #000; color: var(--accent-pink);">
+              <span class="window-title">5 INEFICIENCIAS</span>
+              <div class="window-actions">
+                <span class="window-btn">&minus;</span>
+                <span class="window-btn">&times;</span>
+              </div>
+            </div>
+            <div class="window-body">
+              <p style="margin-bottom: 0.4rem;">🔍 <strong>1. Fichas Técnicas:</strong> Búsqueda lenta en catálogos y PDFs dispersos.</p>
+              <p style="margin-bottom: 0.4rem;">⚠️ <strong>2. Compatibilidad:</strong> Dudas constantes de equivalencias de marcas.</p>
+              <p style="margin-bottom: 0.4rem;">📊 <strong>3. Presupuestos:</strong> Cotizaciones manuales y lentas en Excel.</p>
+              <p style="margin-bottom: 0.4rem;">🎓 <strong>4. Formación:</strong> Control descentralizado y opaco de competencias.</p>
+              <p>📝 <strong>5. Incidencias:</strong> Registro en papel sin histórico ni trazabilidad.</p>
+            </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- SLIDE 4 -->
+    <!-- SLIDE 2B: CAPÍTULO 2 // RESTRICCIONES Y STAKEHOLDERS -->
+    <div class="slide" id="slide-2b">
+      <div class="slide-header">
+        <span class="slide-badge">CAPÍTULO 2 // LIMITACIONES Y AUDIENCIA</span>
+        <h2 class="slide-title">RESTRICCIONES Y STAKEHOLDERS</h2>
+      </div>
+      <div class="slide-content">
+        <div class="brutalist-grid">
+          <div class="brutalist-window fragment">
+            <div class="window-bar">
+              <span class="window-title">RESTRICCIONES OPERATIVAS</span>
+              <div class="window-actions">
+                <span class="window-btn">&minus;</span>
+                <span class="window-btn">&times;</span>
+              </div>
+            </div>
+            <div class="window-body">
+              <p style="margin-bottom: 0.6rem;">🚫 <strong>Sin Conexión SAP:</strong> Sistemas internos inaccesibles; uso de catálogo extraído por scraping público.</p>
+              <p style="margin-bottom: 0.6rem;">💰 <strong>Presupuesto 0.00€:</strong> Obligatoriedad de usar planes y tiers gratuitos de base de datos y hosting.</p>
+              <p>⏱️ <strong>Tiempo Límite:</strong> Plazo estricto de 3 meses para el desarrollo.</p>
+            </div>
+          </div>
+          <div class="brutalist-window fragment" style="background-color: var(--accent-color); color: #000000;">
+            <div class="window-bar" style="background-color: #000; color: var(--accent-color);">
+              <span class="window-title">MAPA DE STAKEHOLDERS</span>
+              <div class="window-actions">
+                <span class="window-btn">&minus;</span>
+                <span class="window-btn">&times;</span>
+              </div>
+            </div>
+            <div class="window-body">
+              <p style="margin-bottom: 0.6rem;">⚡ <strong>Técnicos (Usuarios Finales):</strong> Demandan acceso instantáneo a fichas e incidencias (Influencia Alta).</p>
+              <p style="margin-bottom: 0.6rem;">👥 <strong>Comerciales (Secundarios):</strong> Requieren cotizaciones rápidas (Influencia Media).</p>
+              <p>🎓 <strong>Tutores y Centro (Evaluadores):</strong> Foco en cumplimiento y viabilidad (Influencia Alta).</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 3: CAPÍTULO 3 // REQUISITOS FUNCIONALES -->
     <div class="slide" id="slide-3">
       <div class="slide-header">
-        <span class="slide-badge">BASE DE DATOS</span>
-        <h2 class="slide-title">DATOS EN SUPABASE</h2>
+        <span class="slide-badge">CAPÍTULO 3 // REQUISITOS FUNCIONALES</span>
+        <h2 class="slide-title">PRIORIZACIÓN Y MÓDULOS</h2>
       </div>
       <div class="slide-content">
         <div class="brutalist-grid">
-          <div class="brutalist-inner-card fragment">
-            <h3>CATÁLOGO INTEGRADO</h3>
-            <div class="highlight-value" style="background-color: var(--accent-color); color: #000;">4,689 REFERENCIAS</div>
-            <p>Registros validados en base de datos PostgreSQL, divididos en 3 principales marcas.</p>
+          <div class="brutalist-window fragment">
+            <div class="window-bar">
+              <span class="window-title">PRIORIDAD ALTA (12 RF)</span>
+              <div class="window-actions">
+                <span class="window-btn">&minus;</span>
+                <span class="window-btn">&times;</span>
+              </div>
+            </div>
+            <div class="window-body">
+              <p style="margin-bottom: 0.5rem;">🔑 <strong>Login:</strong> Google OAuth y protección de rutas.</p>
+              <p style="margin-bottom: 0.5rem;">🔍 <strong>Catálogo:</strong> Búsqueda predictiva y fichas con IA.</p>
+              <p style="margin-bottom: 0.5rem;">📄 <strong>Presupuestos:</strong> Cotizaciones automáticas con IVA (21%).</p>
+              <p>🤖 <strong>SONEX:</strong> Chatbot con detección de referencias.</p>
+            </div>
           </div>
-          <div class="brutalist-inner-card fragment">
-            <h3>FABRICANTES</h3>
-            <table class="stats-table">
-              <thead>
-                <tr>
-                  <th>Marca</th>
-                  <th>Prod.</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Schneider Electric</td>
-                  <td>2,380</td>
-                </tr>
-                <tr>
-                  <td>Siemens</td>
-                  <td>1,735</td>
-                </tr>
-                <tr>
-                  <td>Legrand</td>
-                  <td>574</td>
-                </tr>
-              </tbody>
-            </table>
+          <div class="brutalist-window fragment" style="background-color: var(--accent-pink); color: #000000;">
+            <div class="window-bar" style="background-color: #000; color: var(--accent-pink);">
+              <span class="window-title">PRIORIDAD MEDIA Y BAJA</span>
+              <div class="window-actions">
+                <span class="window-btn">&minus;</span>
+                <span class="window-btn">&times;</span>
+              </div>
+            </div>
+            <div class="window-body">
+              <p style="margin-bottom: 0.5rem;">📦 <strong>Almacén:</strong> Flujo completo de pedido gamificado.</p>
+              <p style="margin-bottom: 0.5rem;">📝 <strong>Incidencias:</strong> Registro y control de severidad.</p>
+              <p style="margin-bottom: 0.5rem;">📊 <strong>KPIs:</strong> Semáforos logísticos de control de turno.</p>
+              <p>🎓 <strong>Formación:</strong> Matriz de competencias técnicas.</p>
+            </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- SLIDE 5 -->
+    <!-- SLIDE 3B: CAPÍTULO 3 // REQUISITOS NO FUNCIONALES -->
+    <div class="slide" id="slide-3b">
+      <div class="slide-header">
+        <span class="slide-badge">CAPÍTULO 3 // CALIDAD Y RENDIMIENTO</span>
+        <h2 class="slide-title">CALIDAD DE INGENIERÍA</h2>
+      </div>
+      <div class="slide-content">
+        <div class="brutalist-grid">
+          <div class="brutalist-window fragment">
+            <div class="window-bar">
+              <span class="window-title">RENDIMIENTO Y SEGURIDAD</span>
+              <div class="window-actions">
+                <span class="window-btn">&minus;</span>
+                <span class="window-btn">&times;</span>
+              </div>
+            </div>
+            <div class="window-body">
+              <p style="margin-bottom: 0.5rem;">⚡ <strong>Rendimiento:</strong> Carga <3s e interacción <100ms (virtualización).</p>
+              <p style="margin-bottom: 0.5rem;">🔒 <strong>Seguridad RLS:</strong> Datos aislados en Supabase y cabeceras CSP.</p>
+              <p>🔌 <strong>Disponibilidad:</strong> 99.9% Uptime y resiliencia offline local.</p>
+            </div>
+          </div>
+          <div class="brutalist-window fragment" style="background-color: var(--accent-color); color: #000000;">
+            <div class="window-bar" style="background-color: #000; color: var(--accent-color);">
+              <span class="window-title">SOSTENIBILIDAD Y QA</span>
+              <div class="window-actions">
+                <span class="window-btn">&minus;</span>
+                <span class="window-btn">&times;</span>
+              </div>
+            </div>
+            <div class="window-body">
+              <p style="margin-bottom: 0.6rem;">💰 <strong>Coste Cero:</strong> Tiers gratuitos (Supabase, Vercel, OpenRouter).</p>
+              <p>🧪 <strong>Testing:</strong> Tests E2E Playwright y unitarios Vitest.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 4: CAPÍTULO 4 // ARQUITECTURA Y STACK -->
     <div class="slide" id="slide-4">
       <div class="slide-header">
-        <span class="slide-badge">PRUEBAS</span>
-        <h2 class="slide-title">COBERTURA DE TESTS</h2>
+        <span class="slide-badge">CAPÍTULO 4 // ARQUITECTURA Y STACK</span>
+        <h2 class="slide-title">ARQUITECTURA Y STACK</h2>
       </div>
       <div class="slide-content">
         <div class="brutalist-grid">
-          <div class="brutalist-inner-card fragment" style="background-color: var(--accent-color);">
-            <h3>UNITARIOS</h3>
-            <div class="highlight-value" style="background-color:#fff; color:#000;">272 TESTS</div>
-            <p>Pruebas de comportamiento escritas con <strong>Vitest</strong> para garantizar la lógica de cotizaciones y el estado reactivo.</p>
+          <div class="brutalist-window fragment">
+            <div class="window-bar">
+              <span class="window-title">ESTRUCTURA CLIENTE (SPA)</span>
+              <div class="window-actions">
+                <span class="window-btn">&minus;</span>
+                <span class="window-btn">&times;</span>
+              </div>
+            </div>
+            <div class="window-body">
+              <p style="margin-bottom: 0.6rem;">📱 <strong>AppShell Unificado:</strong> Esqueleto común con Sidebar y Topbar.</p>
+              <p style="margin-bottom: 0.6rem;">🛡️ <strong>Rutas Protegidas:</strong> Control de 14 rutas internas de negocio.</p>
+              <p>🎨 <strong>Estilos Aislados:</strong> Modularidad estricta mediante CSS Modules.</p>
+            </div>
           </div>
-          <div class="brutalist-inner-card fragment" style="background-color: var(--accent-pink); color: #fff;">
-            <h3>E2E INTEGRACIÓN</h3>
-            <div class="highlight-value" style="background-color:#000; color:#fff;">7 FLUJOS</div>
-            <p>Pruebas de interfaz en navegador real con <strong>Playwright</strong> para verificar autenticación y simulador de pedidos.</p>
+          <div class="brutalist-window fragment" style="background-color: var(--accent-color); color: #000000;">
+            <div class="window-bar" style="background-color: #000; color: var(--accent-color);">
+              <span class="window-title">BACKEND Y BD UNIFICADA</span>
+              <div class="window-actions">
+                <span class="window-btn">&minus;</span>
+                <span class="window-btn">&times;</span>
+              </div>
+            </div>
+            <div class="window-body">
+              <p style="margin-bottom: 0.6rem;">💾 <strong>Supabase:</strong> Migración de NoSQL (Firestore) a SQL relacional.</p>
+              <p style="margin-bottom: 0.6rem;">🔍 <strong>Optimización:</strong> Full-text search nativa con índices GIN en Postgres.</p>
+              <p>💰 <strong>Sostenibilidad:</strong> Plan 100% gratuito sin costes de hosting.</p>
+            </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- SLIDE 6 -->
-    <div class="slide" id="slide-5">
+    <!-- SLIDE 4B: CAPÍTULO 4 // RESILIENCIA Y SEGURIDAD -->
+    <div class="slide" id="slide-4b">
       <div class="slide-header">
-        <span class="slide-badge">IA DEV</span>
-        <h2 class="slide-title">CONCURRENCIA E IA</h2>
+        <span class="slide-badge">CAPÍTULO 4 // SEGURIDAD Y RESILIENCIA</span>
+        <h2 class="slide-title">RESILIENCIA Y SEGURIDAD</h2>
       </div>
       <div class="slide-content">
         <div class="brutalist-grid">
-          <div class="brutalist-inner-card fragment">
-            <h3>METODOLOGÍA</h3>
-            <p>La IA permite saltarse las barreras sintácticas del código tradicional. El programador enfoca su tiempo en la <strong>resolución lógica de problemas</strong>, delegando la escritura sintáctica a la IA.</p>
+          <div class="brutalist-window fragment">
+            <div class="window-bar">
+              <span class="window-title">RESILIENCIA DE RED</span>
+              <div class="window-actions">
+                <span class="window-btn">&minus;</span>
+                <span class="window-btn">&times;</span>
+              </div>
+            </div>
+            <div class="window-body">
+              <p style="margin-bottom: 0.6rem;">🔌 <strong>StubClient Proxy:</strong> Fallback automático a Mock Data local si Supabase falla.</p>
+              <p style="margin-bottom: 0.6rem;">💾 <strong>Offline Sync:</strong> Guardado en local con localStorage.</p>
+              <p>🔄 <strong>Persistencia:</strong> Sincronización automática de datos al recuperar red.</p>
+            </div>
           </div>
-          <div class="brutalist-inner-card fragment">
-            <h3>APRENDIZAJES</h3>
-            <p>• Mantener una estructura de base de datos normalizada es indispensable.</p>
-            <p>• Los tests automatizados son los únicos que permiten expandir código sin cometer errores.</p>
+          <div class="brutalist-window fragment" style="background-color: var(--accent-color); color: #000000;">
+            <div class="window-bar" style="background-color: #000; color: var(--accent-color);">
+              <span class="window-title">SEGURIDAD Y DISEÑO UI</span>
+              <div class="window-actions">
+                <span class="window-btn">&minus;</span>
+                <span class="window-btn">&times;</span>
+              </div>
+            </div>
+            <div class="window-body">
+              <p style="margin-bottom: 0.6rem;">🔒 <strong>Políticas RLS:</strong> Datos aislados por usuario mediante reglas Row Level Security.</p>
+              <p style="margin-bottom: 0.6rem;">🌐 <strong>Vercel Serverless:</strong> Proxy de API para ocultar la clave de OpenRouter.</p>
+              <p>🌓 <strong>UI/UX:</strong> Paleta corporativa Sonepar y transiciones de modo oscuro fluidas.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 5: CAPÍTULO 5 // CONTEXTO DE LA IA GENERATIVA -->
+    <div class="slide" id="slide-5">
+      <div class="slide-header">
+        <span class="slide-badge">CAPÍTULO 5 // CONTEXTO DE LA IA GENERATIVA</span>
+        <h2 class="slide-title">ECOSISTEMA Y ELECCIÓN DE HERRAMIENTAS</h2>
+      </div>
+      <div class="slide-content">
+        <div class="brutalist-grid">
+          <div class="brutalist-window fragment">
+            <div class="window-bar">
+              <span class="window-title">EVOLUCIÓN TEMPORAL</span>
+              <div class="window-actions">
+                <span class="window-btn">&minus;</span>
+                <span class="window-btn">&times;</span>
+              </div>
+            </div>
+            <div class="window-body">
+              <p style="margin-bottom: 0.6rem;">⏳ <strong>2020-2022:</strong> Inicios con GPT-3 y autocompletado en Copilot.</p>
+              <p style="margin-bottom: 0.6rem;">🚀 <strong>2023-2025:</strong> Comprensión lógica de problemas complejos y chats web.</p>
+              <p>🤖 <strong>2026 (Actual):</strong> Agentes CLI que operan en local editando código y ejecutando tests.</p>
+            </div>
+          </div>
+          <div class="brutalist-window fragment" style="background-color: var(--accent-pink); color: #000000;">
+            <div class="window-bar" style="background-color: #000; color: var(--accent-pink);">
+              <span class="window-title">MATRIZ DE SELECCIÓN</span>
+              <div class="window-actions">
+                <span class="window-btn">&minus;</span>
+                <span class="window-btn">&times;</span>
+              </div>
+            </div>
+            <div class="window-body">
+              <p style="margin-bottom: 0.6rem;">💬 <strong>Chatbots Web:</strong> Claude/Gemini para conceptualización y arquitectura.</p>
+              <p style="margin-bottom: 0.6rem;">💻 <strong>IDEs con IA:</strong> Windsurf/Cursor para desarrollo central y contexto.</p>
+              <p>🐚 <strong>Agentes CLI:</strong> OpenCode/Hermes para refactor y depurado en terminal.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 5B: CAPÍTULO 5 // LECCIONES Y TENDENCIAS A FUTURO -->
+    <div class="slide" id="slide-5b">
+      <div class="slide-header">
+        <span class="slide-badge">CAPÍTULO 5 // TENDENCIAS A FUTURO</span>
+        <h2 class="slide-title">LECCIONES Y TENDENCIAS INDUSTRIALES</h2>
+      </div>
+      <div class="slide-content">
+        <div class="brutalist-grid">
+          <div class="brutalist-window fragment">
+            <div class="window-bar">
+              <span class="window-title">APRENDIZAJES CLAVE</span>
+              <div class="window-actions">
+                <span class="window-btn">&minus;</span>
+                <span class="window-btn">&times;</span>
+              </div>
+            </div>
+            <div class="window-body">
+              <p style="margin-bottom: 0.6rem;">⚙️ <strong>Combinación de Herramientas:</strong> Claude (pensar) + Windsurf (escribir) + OpenCode (corregir).</p>
+              <p>💸 <strong>Tier Gratuito Suficiente:</strong> Viabilidad total de construir una suite comercial robusta sin licencias de pago.</p>
+            </div>
+          </div>
+          <div class="brutalist-window fragment" style="background-color: var(--accent-color); color: #000000;">
+            <div class="window-bar" style="background-color: #000; color: var(--accent-color);">
+              <span class="window-title">TENDENCIAS A FUTURO</span>
+              <div class="window-actions">
+                <span class="window-btn">&minus;</span>
+                <span class="window-btn">&times;</span>
+              </div>
+            </div>
+            <div class="window-body">
+              <p style="margin-bottom: 0.4rem;">🧠 <strong>Agentes con Memoria:</strong> Persistencia contextual y estilo de código.</p>
+              <p style="margin-bottom: 0.4rem;">🔄 <strong>Auto-refinamiento:</strong> Modelos que aprenden en tiempo real de la interacción.</p>
+              <p style="margin-bottom: 0.4rem;">🏢 <strong>Automatización E2E:</strong> De la orden CLI al despliegue en la nube.</p>
+              <p>🔌 <strong>IA en Campo:</strong> Asistentes en CAD, Excel y PLCs (TIA Portal/CODESYS).</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 6: CAPÍTULO 6 // HERRAMIENTAS DE IA UTILIZADAS -->
+    <div class="slide" id="slide-6">
+      <div class="slide-header">
+        <span class="slide-badge">CAPÍTULO 6 // HERRAMIENTAS DE IA DEL PROYECTO</span>
+        <h2 class="slide-title">EVALUACIÓN Y SELECCIÓN DE HERRAMIENTAS</h2>
+      </div>
+      <div class="slide-content">
+        <div class="brutalist-grid">
+          <div class="brutalist-window fragment">
+            <div class="window-bar">
+              <span class="window-title">VALORACIÓN DE SOLUCIONES</span>
+              <div class="window-actions">
+                <span class="window-btn">&minus;</span>
+                <span class="window-btn">&times;</span>
+              </div>
+            </div>
+            <div class="window-body">
+              <p style="margin-bottom: 0.5rem;">💬 <strong>Claude.ai (Web - 4.4):</strong> Excelente en razonamiento lógico y diseño arquitectónico.</p>
+              <p style="margin-bottom: 0.5rem;">💻 <strong>Windsurf IDE (Cascade - 4.2):</strong> Edición agéntica inteligente con Cascade.</p>
+              <p style="margin-bottom: 0.5rem;">🐚 <strong>OpenCode (CLI - 4.2):</strong> Modos plan/build, LSP/MCP, 100% open source.</p>
+              <p>🧠 <strong>Hermes Agent (Local - 4.8):</strong> Memoria persistente a largo plazo y auto-aprendizaje.</p>
+            </div>
+          </div>
+          <div class="brutalist-window fragment" style="background-color: var(--accent-pink); color: #000000;">
+            <div class="window-bar" style="background-color: #000; color: var(--accent-pink);">
+              <span class="window-title">INFRAESTRUCTURA</span>
+              <div class="window-actions">
+                <span class="window-btn">&minus;</span>
+                <span class="window-btn">&times;</span>
+              </div>
+            </div>
+            <div class="window-body">
+              <p style="margin-bottom: 0.6rem;">🔌 <strong>OpenRouter:</strong> Pasarela unificada multi-modelo y failover a coste cero.</p>
+              <p style="margin-bottom: 0.6rem;">📦 <strong>Supabase:</strong> DB PostgreSQL con RLS y virtualización para el catálogo B2B.</p>
+              <p>🌐 <strong>Vercel:</strong> Hosting y CI/CD en la nube para despliegues instantáneos.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 6B: CAPÍTULO 6 // WORKFLOW Y LECCIONES DE INTEGRACIÓN -->
+    <div class="slide" id="slide-6b">
+      <div class="slide-header">
+        <span class="slide-badge">CAPÍTULO 6 // WORKFLOW Y LECCIONES</span>
+        <h2 class="slide-title">CICLO DE DESARROLLO Y MATRIZ DE IA</h2>
+      </div>
+      <div class="slide-content">
+        <div class="brutalist-grid">
+          <div class="brutalist-window fragment">
+            <div class="window-bar">
+              <span class="window-title">WORKFLOW DE TRABAJO</span>
+              <div class="window-actions">
+                <span class="window-btn">&minus;</span>
+                <span class="window-btn">&times;</span>
+              </div>
+            </div>
+            <div class="window-body">
+              <p style="margin-bottom: 0.5rem;">🎨 <strong>1. Diseño (Claude.ai):</strong> Definir especificaciones y modularidad.</p>
+              <p style="margin-bottom: 0.5rem;">🛠️ <strong>2. Desarrollo (Windsurf/Copilot):</strong> Autocompletado inline y Cascade.</p>
+              <p>🧪 <strong>3. Depuración (OpenCode/Gemini):</strong> Tests unitarios/E2E y refactor CLI.</p>
+            </div>
+          </div>
+          <div class="brutalist-window fragment" style="background-color: var(--accent-color); color: #000000;">
+            <div class="window-bar" style="background-color: #000; color: var(--accent-color);">
+              <span class="window-title">MATRIZ DE DECISIÓN</span>
+              <div class="window-actions">
+                <span class="window-btn">&minus;</span>
+                <span class="window-btn">&times;</span>
+              </div>
+            </div>
+            <div class="window-body">
+              <p style="margin-bottom: 0.4rem;">🎯 <strong>Arquitectura:</strong> Claude Web</p>
+              <p style="margin-bottom: 0.4rem;">⚙️ <strong>Coding rutinario:</strong> Copilot / Windsurf</p>
+              <p style="margin-bottom: 0.4rem;">🔧 <strong>Depurar error:</strong> Claude + OpenCode</p>
+              <p>💡 <strong>Lección clave:</strong> Hibridar y orquestar IAs para coste real de 0.00€.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 7: CAPÍTULO 7 // PROCESO DE DESARROLLO Y CALIDAD -->
+    <div class="slide" id="slide-7">
+      <div class="slide-header">
+        <span class="slide-badge">CAPÍTULO 7 // PROCESO DE DESARROLLO Y CALIDAD</span>
+        <h2 class="slide-title">METODOLOGÍA Y PRUEBAS AUTOMATIZADAS</h2>
+      </div>
+      <div class="slide-content">
+        <div class="brutalist-grid">
+          <div class="brutalist-window fragment">
+            <div class="window-bar">
+              <span class="window-title">CICLO Y METODOLOGÍA</span>
+              <div class="window-actions">
+                <span class="window-btn">&minus;</span>
+                <span class="window-btn">&times;</span>
+              </div>
+            </div>
+            <div class="window-body">
+              <p style="margin-bottom: 0.6rem;">🔄 <strong>Workflow sistemático:</strong> Prompt estructurado (Entradas/Salidas) ➔ Código asistido ➔ Validación local ➔ Refinamiento.</p>
+              <p>📊 <strong>Métricas de codificación:</strong> 500+ prompts, 100+ horas acumuladas con IA y ~80% código base amplificado por agentes.</p>
+            </div>
+          </div>
+          <div class="brutalist-window fragment" style="background-color: var(--accent-color); color: #000;">
+            <div class="window-bar" style="background-color: #000; color: var(--accent-color);">
+              <span class="window-title">COBERTURA Y TESTS</span>
+              <div class="window-actions">
+                <span class="window-btn">&minus;</span>
+                <span class="window-btn">&times;</span>
+              </div>
+            </div>
+            <div class="window-body">
+              <p style="margin-bottom: 0.5rem;">🧪 <strong>270 Tests en Vitest:</strong> Validación de cálculos matemáticos de presupuestos, descuentos, IVAs e IndexedDB local.</p>
+              <p>🌐 <strong>155 Tests en Playwright:</strong> Flujos interactivos E2E, regresión visual pixel-a-pixel y seguridad contra inyección SQL.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 7B: CAPÍTULO 7 // CRONOLOGÍA DE DESARROLLO -->
+    <div class="slide" id="slide-7b">
+      <div class="slide-header">
+        <span class="slide-badge">CAPÍTULO 7 // CRONOLOGÍA DE DESARROLLO</span>
+        <h2 class="slide-title">12 FASES DE EVOLUCIÓN INCREMENTAL</h2>
+      </div>
+      <div class="slide-content">
+        <div class="brutalist-grid">
+          <div class="brutalist-window fragment">
+            <div class="window-bar">
+              <span class="window-title">FASES DE INTEGRACIÓN</span>
+              <div class="window-actions">
+                <span class="window-btn">&minus;</span>
+                <span class="window-btn">&times;</span>
+              </div>
+            </div>
+            <div class="window-body">
+              <p style="margin-bottom: 0.5rem;">⚙️ <strong>Fases 0-2 (Marzo):</strong> 7 prototipos JSX autocontenidos unificados en AppShell SPA (React 19 + Vite 7).</p>
+              <p>🎓 <strong>Fases 3-5 (Marzo):</strong> Iteración de SONEX (v3 a v7 streaming y PDF) e integración de tema oscuro (View Transitions API).</p>
+            </div>
+          </div>
+          <div class="brutalist-window fragment" style="background-color: var(--accent-pink); color: #000000;">
+            <div class="window-bar" style="background-color: #000; color: var(--accent-pink);">
+              <span class="window-title">ESCALABILIDAD Y CALIDAD</span>
+              <div class="window-actions">
+                <span class="window-btn">&minus;</span>
+                <span class="window-btn">&times;</span>
+              </div>
+            </div>
+            <div class="window-body">
+              <p style="margin-bottom: 0.5rem;">📦 <strong>Fases 6-8 (Abril):</strong> Scrapers en Playwright para catálogo real y migración a base de datos Firestore (Spark limit 50K).</p>
+              <p>🔒 <strong>Fases 10-11 (Mayo):</strong> Backend principal migrado a Supabase PostgreSQL y auditoría de código CTO (40 archivos corregidos).</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 7C: CAPÍTULO 7 // APRENDIZAJES Y ERRORES DE INGENIERÍA -->
+    <div class="slide" id="slide-7c">
+      <div class="slide-header">
+        <span class="slide-badge">CAPÍTULO 7 // APRENDIZAJES Y ERRORES</span>
+        <h2 class="slide-title">DEPURACIÓN REAL Y CASOS DE ESTUDIO</h2>
+      </div>
+      <div class="slide-content">
+        <div class="brutalist-grid">
+          <div class="brutalist-window fragment">
+            <div class="window-bar">
+              <span class="window-title">ERRORES CRÍTICOS Y SOLUCIÓN</span>
+              <div class="window-actions">
+                <span class="window-btn">&minus;</span>
+                <span class="window-btn">&times;</span>
+              </div>
+            </div>
+            <div class="window-body">
+              <p style="margin-bottom: 0.6rem;">🔑 <strong>API Key expuesta:</strong> Clave hardcodeada en frontend. Solución: Proxy Serverless en Vercel.</p>
+              <p>📦 <strong>Base de Datos:</strong> Bloqueo por límites de escritura Firestore e importaciones fallidas. Solución: Normalización y migración a Supabase.</p>
+            </div>
+          </div>
+          <div class="brutalist-window fragment" style="background-color: var(--accent-color); color: #000000;">
+            <div class="window-bar" style="background-color: #000; color: var(--accent-color);">
+              <span class="window-title">BUGS Y APRENDIZAJES</span>
+              <div class="window-actions">
+                <span class="window-btn">&minus;</span>
+                <span class="window-btn">&times;</span>
+              </div>
+            </div>
+            <div class="window-body">
+              <p style="margin-bottom: 0.6rem;">🐛 <strong>Bug del Validador:</strong> El callback devolvía array en lugar de boolean, descartando respuestas de SONEX. Resuelto por Code Review.</p>
+              <p>💡 <strong>Aciertos:</strong> Uso de CSS Modules (cero runtime overhead) y modularización por hooks personalizados.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 8: CAPÍTULO 8 // MANUALES Y USO DE LA WEB - OPERATIVA CORE -->
+    <div class="slide" id="slide-8">
+      <div class="slide-header">
+        <span class="slide-badge">CAPÍTULO 8 // MANUALES DE USO — OPERATIVA CORE</span>
+        <h2 class="slide-title">EXPLOTACIÓN DE MÓDULOS CORE Y PRESUPUESTOS</h2>
+      </div>
+      <div class="slide-content">
+        <div class="brutalist-grid">
+          <div class="brutalist-window fragment">
+            <div class="window-bar">
+              <span class="window-title">CATÁLOGO Y PRESUPUESTOS</span>
+              <div class="window-actions">
+                <span class="window-btn">&minus;</span>
+                <span class="window-btn">&times;</span>
+              </div>
+            </div>
+            <div class="window-body">
+              <p style="margin-bottom: 0.6rem;">🔍 <strong>Fichas Técnicas:</strong> Navegación jerárquica en 8 niveles y autocompletado en catálogo. Integración con información extendida por IA (cargando, completado, fallback silencioso).</p>
+              <p>📄 <strong>Presupuestos:</strong> Enlace directo de productos sin búsquedas previas de referencias. Cálculos automáticos de Subtotal, IVA (21%) y Total con exportación PDF en un clic.</p>
+            </div>
+          </div>
+          <div class="brutalist-window fragment" style="background-color: var(--accent-pink); color: #000000;">
+            <div class="window-bar" style="background-color: #000; color: var(--accent-pink);">
+              <span class="window-title">CONTROL DE RENDIMIENTO</span>
+              <div class="window-actions">
+                <span class="window-btn">&minus;</span>
+                <span class="window-btn">&times;</span>
+              </div>
+            </div>
+            <div class="window-body">
+              <p style="margin-bottom: 0.6rem;">🎓 <strong>Gestión de Formación:</strong> Matriz de competencias en tiempo real para visualizar cursos completados por empleados y sugerir planes de formación personalizados.</p>
+              <p>📊 <strong>Dashboard de KPIs:</strong> Semáforo tricolor de control logístico: Verde (dentro del objetivo - mantener), Amarillo (cerca del límite - monitorizar) y Rojo (fuera del objetivo - actuar).</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 8B: CAPÍTULO 8 // MANUALES Y USO DE LA WEB - MÓDULOS AVANZADOS -->
+    <div class="slide" id="slide-8b">
+      <div class="slide-header">
+        <span class="slide-badge">CAPÍTULO 8 // MANUALES DE USO — MÓDULOS AVANZADOS</span>
+        <h2 class="slide-title">SIMULACIÓN LOGÍSTICA, CHATBOT E INCIDENCIAS AI</h2>
+      </div>
+      <div class="slide-content">
+        <div class="brutalist-grid">
+          <div class="brutalist-window fragment">
+            <div class="window-bar">
+              <span class="window-title">SIMULADOR Y ASISTENTE IA</span>
+              <div class="window-actions">
+                <span class="window-btn">&minus;</span>
+                <span class="window-btn">&times;</span>
+              </div>
+            </div>
+            <div class="window-body">
+              <p style="margin-bottom: 0.6rem;">👥 <strong>Simulador de Almacén:</strong> Picking cooperativo en 4 etapas (recepción a expedición). Cursores multijugador y presencia realtime con Supabase (<100ms).</p>
+              <p>🤖 <strong>Chatbot SONEX:</strong> Asistente con 4 modos (Búsqueda, Comparativa, Asistencia, Formación), streaming de respuestas e indicadores visuales de entrega (🤖, ✓, ✓✓).</p>
+            </div>
+          </div>
+          <div class="brutalist-window fragment" style="background-color: var(--accent-color); color: #000000;">
+            <div class="window-bar" style="background-color: #000; color: var(--accent-color);">
+              <span class="window-title">INCIDENCIAS Y ALERTAS</span>
+              <div class="window-actions">
+                <span class="window-btn">&minus;</span>
+                <span class="window-btn">&times;</span>
+              </div>
+            </div>
+            <div class="window-body">
+              <p style="margin-bottom: 0.6rem;">⚠️ <strong>Diagnóstico de Incidencias:</strong> Registro y diagnóstico de averías en tiempo real asistido por IA para recomendar soluciones inmediatas.</p>
+              <p>🚨 <strong>Banner Crítico:</strong> Indicador de seguridad prioritario en color de alerta que resalta en el panel si detecta incidencias críticas sin resolver durante más de 2 horas.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+       <!-- SLIDE 9: CAPÍTULO 9 // RESULTADOS CUANTITATIVOS Y ROI -->
+    <div class="slide" id="slide-9">
+      <div class="slide-header">
+        <span class="slide-badge">CAPÍTULO 9 // ANÁLISIS ECONÓMICO Y ROI</span>
+        <h2 class="slide-title">MÉTRICAS CUANTITATIVAS Y RETORNO FINANCIERO</h2>
+      </div>
+      <div class="slide-content">
+        <div class="brutalist-grid">
+          <div class="brutalist-window fragment">
+            <div class="window-bar">
+              <span class="window-title">PRESUPUESTO Y RETORNO (ROI)</span>
+              <div class="window-actions">
+                <span class="window-btn">&minus;</span>
+                <span class="window-btn">&times;</span>
+              </div>
+            </div>
+            <div class="window-body">
+              <p style="margin-bottom: 0.5rem;">💶 <strong>Coste de Desarrollo Real:</strong> 0.00 € (Free Tiers).</p>
+              <p style="margin-bottom: 0.5rem;">💸 <strong>Ahorro SaaS de Licencias:</strong> 792 €/año (~855€ estimado).</p>
+              <p style="margin-bottom: 0.5rem;">💼 <strong>Desarrollo Externo:</strong> 19.000 € (basado en 380h a 50€/h).</p>
+              <p>⚡ <strong>Rendimiento Lighthouse:</strong> FCP 1.2s, LCP 2.1s, TTI 2.8s (Todo Verde).</p>
+            </div>
+          </div>
+          <div class="brutalist-window fragment" style="background-color: var(--accent-color);">
+            <div class="window-bar" style="background-color: #000; color: var(--accent-color);">
+              <span class="window-title">MÉTRICAS DE CÓDIGO</span>
+              <div class="window-actions">
+                <span class="window-btn">&minus;</span>
+                <span class="window-btn">&times;</span>
+              </div>
+            </div>
+            <div class="window-body">
+              <div class="highlight-value" style="background-color:#fff; color:#000; font-size:1.35rem; padding:0.4rem 0.8rem; margin:2px 0;">+400% PRODUCTIVIDAD IA</div>
+              <p style="margin-bottom: 0.5rem; line-height: 1.4;">📦 <strong>Código:</strong> ~12.000 líneas (app/), 100+ componentes, 13 hooks, 400+ commits en 3 meses.</p>
+              <p style="line-height: 1.4;">💾 <strong>Bundle Size:</strong> ~170 KB en primera carga (150 KB JS + 20 KB CSS gzipped).</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 9B: CAPÍTULO 9 // RESULTADOS CUALITATIVOS Y VALIDACIÓN -->
+    <div class="slide" id="slide-9b">
+      <div class="slide-header">
+        <span class="slide-badge">CAPÍTULO 9 // VALOR Y VALIDACIÓN</span>
+        <h2 class="slide-title">VALORACIÓN CUALITATIVA DE OBJETIVOS Y LÍMITES</h2>
+      </div>
+      <div class="slide-content">
+        <div class="brutalist-grid">
+          <div class="brutalist-window fragment">
+            <div class="window-bar">
+              <span class="window-title">VALOR APORTADO Y OBJETIVOS</span>
+              <div class="window-actions">
+                <span class="window-btn">&minus;</span>
+                <span class="window-btn">&times;</span>
+              </div>
+            </div>
+            <div class="window-body">
+              <p style="margin-bottom: 0.5rem;">✅ <strong>7 de 7 Módulos:</strong> Implementación y funcionamiento pleno de toda la suite.</p>
+              <p style="margin-bottom: 0.5rem;">📁 <strong>Catálogo Centralizado:</strong> ~4.689 productos indexados con Supabase.</p>
+              <p style="margin-bottom: 0.5rem;">🤖 <strong>SONEX con IA:</strong> Asistente activo con streaming vía APIs de OpenRouter.</p>
+              <p>🧪 <strong>Testing de Calidad:</strong> 270 tests Vitest + 155 Playwright E2E (425 total).</p>
+            </div>
+          </div>
+          <div class="brutalist-window fragment" style="background-color: var(--accent-pink); color: #000000;">
+            <div class="window-bar" style="background-color: #000; color: var(--accent-pink);">
+              <span class="window-title">LIMITACIONES Y VALOR</span>
+              <div class="window-actions">
+                <span class="window-btn">&minus;</span>
+                <span class="window-btn">&times;</span>
+              </div>
+            </div>
+            <div class="window-body">
+              <p style="margin-bottom: 0.5rem;">❌ <strong>Sin Integración SAP/ERP:</strong> Por carácter académico del proyecto.</p>
+              <p style="margin-bottom: 0.5rem;">❌ <strong>Sin Validación con Usuarios:</strong> Solo pruebas internas y demostraciones.</p>
+              <p style="margin-bottom: 0.5rem;">🎓 <strong>Habilidades del Alumno:</strong> Nivel Alto en IA, resolución de problemas y documentación.</p>
+              <p>💡 <strong>Viabilidad:</strong> Demuestra el potencial de desarrollo rápido FP con IA.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 10: CAPÍTULO 10 // CONCLUSIONES Y HOJA DE RUTA -->
+    <div class="slide" id="slide-10">
+      <div class="slide-header">
+        <span class="slide-badge">CAPÍTULO 10 // CONCLUSIONES Y LEGADO</span>
+        <h2 class="slide-title">CONCLUSIONES, HOJA DE RUTA Y TRANSFERENCIA</h2>
+      </div>
+      <div class="slide-content">
+        <div class="brutalist-grid">
+          <div class="brutalist-window fragment">
+            <div class="window-bar">
+              <span class="window-title">CUMPLIMIENTO Y LEGADO</span>
+              <div class="window-actions">
+                <span class="window-btn">&minus;</span>
+                <span class="window-btn">&times;</span>
+              </div>
+            </div>
+            <div class="window-body">
+              <p style="margin-bottom: 0.5rem;">🎯 <strong>Objetivos Generales:</strong> OG1-OG5 y OE1-OE7 cumplidos con éxito.</p>
+              <p style="margin-bottom: 0.5rem;">📖 <strong>Legado Pedagógico:</strong> 15 fichas de análisis de herramientas de IA.</p>
+              <p>🏫 <strong>Manual Docente:</strong> Plan pedagógico de 4 sesiones formativas para profesores de FP.</p>
+            </div>
+          </div>
+          <div class="brutalist-window fragment" style="background-color: var(--accent-color); color: #000000;">
+            <div class="window-bar" style="background-color: #000; color: var(--accent-color);">
+              <span class="window-title">HOJA DE RUTA FUTURA</span>
+              <div class="window-actions">
+                <span class="window-btn">&minus;</span>
+                <span class="window-btn">&times;</span>
+              </div>
+            </div>
+            <div class="window-body">
+              <p style="margin-bottom: 0.5rem;">🛠️ <strong>Corto Plazo:</strong> Incorporar imágenes en catálogo Supabase.</p>
+              <p style="margin-bottom: 0.5rem;">🔄 <strong>Medio Plazo:</strong> App móvil (PWA/React Native) y offline local con IndexedDB.</p>
+              <p>🤖 <strong>Largo Plazo:</strong> Agentes autónomos de IA para el mantenimiento del repositorio.</p>
+            </div>
           </div>
         </div>
       </div>
@@ -471,7 +1401,31 @@
 
   </div>
 
-  <div class="slide-progress-tag">DIAPOSITIVA: <span id="current-slide-num">1</span> OF 6</div>
+  <!-- Running Marquee in the base -->
+  <div class="brutalist-marquee">
+    <div class="marquee-track">
+      <div class="marquee-content">
+        <span>★ 400K+ Referencias técnicas ★</span>
+        <span>★ 270 Tests Unitarios (Vitest) Pasados ★</span>
+        <span>★ 155 Tests E2E (Playwright) Verificados ★</span>
+        <span>★ Suite en producción a Coste 0.00 € ★</span>
+        <span>★ Colaboración Sonepar Ibérica ★</span>
+        <span>★ 14 Rutas Protegidas en SPA ★</span>
+        <span>★ SONEX Asistente Inteligente Activo ★</span>
+      </div>
+      <div class="marquee-content">
+        <span>★ 400K+ Referencias técnicas ★</span>
+        <span>★ 270 Tests Unitarios (Vitest) Pasados ★</span>
+        <span>★ 155 Tests E2E (Playwright) Verificados ★</span>
+        <span>★ Suite en producción a Coste 0.00 € ★</span>
+        <span>★ Colaboración Sonepar Ibérica ★</span>
+        <span>★ 14 Rutas Protegidas en SPA ★</span>
+        <span>★ SONEX Asistente Inteligente Activo ★</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide-progress-tag">DIAPOSITIVA: <span id="current-slide-num">1</span> DE <span id="total-slides-num">11</span></div>
 
   <div class="controls-panel">
     <button class="ctrl-btn" onclick="navigate(-1)">&lt;</button>
@@ -496,15 +1450,282 @@
               frag.classList.add('visible');
             }, (idx + 1) * 120);
           });
-        } else if (i < index) {
-          slide.classList.add('past');
         } else {
-          slide.classList.add('future');
+          if (i < index) {
+            slide.classList.add('past');
+          } else {
+            slide.classList.add('future');
+          }
+          // Reset fragments so they animate again when slide is re-entered
+          slide.querySelectorAll('.fragment').forEach(frag => {
+            frag.classList.remove('visible');
+          });
         }
       });
 
       currentSlide = index;
       document.getElementById('current-slide-num').textContent = currentSlide + 1;
+      
+      const totalSlidesNum = document.getElementById('total-slides-num');
+      if (totalSlidesNum) {
+        totalSlidesNum.textContent = slides.length;
+      }
+
+      // Update header chapter box dynamically
+      const slideChapters = [
+        "INTRODUCCIÓN",
+        "CAPÍTULO 1",
+        "CAPÍTULO 1",
+        "CAPÍTULO 2",
+        "CAPÍTULO 2",
+        "CAPÍTULO 3",
+        "CAPÍTULO 3",
+        "CAPÍTULO 4",
+        "CAPÍTULO 4",
+        "CAPÍTULO 5",
+        "CAPÍTULO 5",
+        "CAPÍTULO 6",
+        "CAPÍTULO 6",
+        "CAPÍTULO 7",
+        "CAPÍTULO 7",
+        "CAPÍTULO 7",
+        "CAPÍTULO 8",
+        "CAPÍTULO 8",
+        "CAPÍTULO 9",
+        "CAPÍTULO 9",
+        "CAPÍTULO 10"
+      ];
+      const headerChapter = document.getElementById('header-chapter');
+      if (headerChapter && slideChapters[currentSlide]) {
+        headerChapter.textContent = slideChapters[currentSlide];
+      }
+
+      // Dynamic stickers: content, position and color per slide
+      const slideStickers = [
+        // 0 — PORTADA
+        [
+          { text: "★ PFC 2026 ★",   top: "15%", left: "8%",   bg: "var(--accent-color)",  color: "#000" },
+          { text: "0.00€ REAL",      top: "22%", right: "5%",  bg: "var(--accent-pink)",   color: "#000" },
+          { text: "SONEPAR B2B",     bottom:"18%",left: "6%",  bg: "#00e5ff",              color: "#000" },
+          { text: "IA ~80%",         top: "75%", right:"12%",  bg: "var(--bg-color)",      color: "#000" },
+          { text: "7 HERRAMIENTAS",  top: "45%", left: "3%",   bg: "#ff9100",              color: "#000" },
+          { text: "270 TESTS ✓",     bottom:"25%",right:"4%",  bg: "#00ff66",              color: "#000" }
+        ],
+        // 1 — CAP 1: Presentación del Proyecto
+        [
+          { text: "SPA REACT 19",    top: "15%", left: "8%",   bg: "var(--accent-color)",  color: "#000" },
+          { text: "7 MÓDULOS",       top: "22%", right: "5%",  bg: "var(--accent-pink)",   color: "#000" },
+          { text: "PFC 2026",        bottom:"18%",left: "6%",  bg: "#00e5ff",              color: "#000" },
+          { text: "OG1-OG5 ✓",       top: "75%", right:"12%",  bg: "var(--bg-color)",      color: "#000" },
+          { text: "CLI + IA",         top: "45%", left: "3%",   bg: "#ff9100",              color: "#000" },
+          { text: "0.00€ LICENCIAS", bottom:"25%",right:"4%",  bg: "#00ff66",              color: "#000" }
+        ],
+        // 2 — CAP 1b: Tecnologías y Ámbito
+        [
+          { text: "VITE 7",          top: "15%", left: "8%",   bg: "var(--accent-color)",  color: "#000" },
+          { text: "SUPABASE SQL",    top: "22%", right: "5%",  bg: "var(--accent-pink)",   color: "#000" },
+          { text: "VERCEL FREE",     bottom:"18%",left: "6%",  bg: "#00e5ff",              color: "#000" },
+          { text: "4.689 PRODS",     top: "75%", right:"12%",  bg: "var(--bg-color)",      color: "#000" },
+          { text: "270 TESTS",       top: "45%", left: "3%",   bg: "#ff9100",              color: "#000" },
+          { text: "155 PLAYWRIGHT",  bottom:"25%",right:"4%",  bg: "#00ff66",              color: "#000" }
+        ],
+        // 3 — CAP 2: Fugas de Productividad
+        [
+          { text: "5 INEFICIENCIAS", top: "15%", left: "8%",   bg: "var(--accent-color)",  color: "#000" },
+          { text: "SONEPAR 500+",    top: "22%", right: "5%",  bg: "var(--accent-pink)",   color: "#000" },
+          { text: "B2B ELÉCTRICO",   bottom:"18%",left: "6%",  bg: "#00e5ff",              color: "#000" },
+          { text: "PDF CAÓTICOS",    top: "75%", right:"12%",  bg: "var(--bg-color)",      color: "#000" },
+          { text: "EXCEL LENTO",     top: "45%", left: "3%",   bg: "#ff9100",              color: "#000" },
+          { text: "PAPEL SIN HIST",  bottom:"25%",right:"4%",  bg: "#00ff66",              color: "#000" }
+        ],
+        // 4 — CAP 2b: Restricciones y Stakeholders
+        [
+          { text: "3 STAKEHOLDERS",  top: "15%", left: "8%",   bg: "var(--accent-color)",  color: "#000" },
+          { text: "SIN SAP REAL",    top: "22%", right: "5%",  bg: "var(--accent-pink)",   color: "#000" },
+          { text: "GDPR CUMPLIDO",   bottom:"18%",left: "6%",  bg: "#00e5ff",              color: "#000" },
+          { text: "TÉCNICOS CAMPO",  top: "75%", right:"12%",  bg: "var(--bg-color)",      color: "#000" },
+          { text: "ROI VALIDADO",    top: "45%", left: "3%",   bg: "#ff9100",              color: "#000" },
+          { text: "RESPONSABLE TI",  bottom:"25%",right:"4%",  bg: "#00ff66",              color: "#000" }
+        ],
+        // 5 — CAP 3: Requisitos Funcionales
+        [
+          { text: "12 RF ALTA",      top: "15%", left: "8%",   bg: "var(--accent-color)",  color: "#000" },
+          { text: "RF PICKING",      top: "22%", right: "5%",  bg: "var(--accent-pink)",   color: "#000" },
+          { text: "CHATBOT SONEX",   bottom:"18%",left: "6%",  bg: "#00e5ff",              color: "#000" },
+          { text: "RF KPIs LOG",     top: "75%", right:"12%",  bg: "var(--bg-color)",      color: "#000" },
+          { text: "RF CATÁLOGO",     top: "45%", left: "3%",   bg: "#ff9100",              color: "#000" },
+          { text: "RF PRESUPUESTO",  bottom:"25%",right:"4%",  bg: "#00ff66",              color: "#000" }
+        ],
+        // 6 — CAP 3b: Requisitos No Funcionales
+        [
+          { text: "FCP 1.2s ⚡",     top: "15%", left: "8%",   bg: "var(--accent-color)",  color: "#000" },
+          { text: "LIGHTHOUSE ✓",    top: "22%", right: "5%",  bg: "var(--accent-pink)",   color: "#000" },
+          { text: "270 UNIT TESTS",  bottom:"18%",left: "6%",  bg: "#00e5ff",              color: "#000" },
+          { text: "RNF SEGURIDAD",   top: "75%", right:"12%",  bg: "var(--bg-color)",      color: "#000" },
+          { text: "CI/CD VERCEL",    top: "45%", left: "3%",   bg: "#ff9100",              color: "#000" },
+          { text: "0 REGRESIONES",   bottom:"25%",right:"4%",  bg: "#00ff66",              color: "#000" }
+        ],
+        // 7 — CAP 4: Arquitectura y Stack
+        [
+          { text: "REACT 19 ⚡",     top: "15%", left: "8%",   bg: "var(--accent-color)",  color: "#000" },
+          { text: "SUPABASE SQL",    top: "22%", right: "5%",  bg: "var(--accent-pink)",   color: "#000" },
+          { text: "14 RUTAS SPA",    bottom:"18%",left: "6%",  bg: "#00e5ff",              color: "#000" },
+          { text: "ZUSTAND STATE",   top: "75%", right:"12%",  bg: "var(--bg-color)",      color: "#000" },
+          { text: "VITE 7 BUILD",    top: "45%", left: "3%",   bg: "#ff9100",              color: "#000" },
+          { text: "GIN INDEX FTS",   bottom:"25%",right:"4%",  bg: "#00ff66",              color: "#000" }
+        ],
+        // 8 — CAP 4b: Resiliencia, Seguridad y UI/UX
+        [
+          { text: "OFFLINE MODE",    top: "15%", left: "8%",   bg: "var(--accent-color)",  color: "#000" },
+          { text: "JWT + RLS 🔒",    top: "22%", right: "5%",  bg: "var(--accent-pink)",   color: "#000" },
+          { text: "SHADCN UI",       bottom:"18%",left: "6%",  bg: "#00e5ff",              color: "#000" },
+          { text: "DARK MODE ✓",     top: "75%", right:"12%",  bg: "var(--bg-color)",      color: "#000" },
+          { text: "RETRY LOGIC",     top: "45%", left: "3%",   bg: "#ff9100",              color: "#000" },
+          { text: "RESPONSIVE ✓",    bottom:"25%",right:"4%",  bg: "#00ff66",              color: "#000" }
+        ],
+        // 9 — CAP 5: Contexto de la IA
+        [
+          { text: "GPT-4o MINI",     top: "15%", left: "8%",   bg: "var(--accent-color)",  color: "#000" },
+          { text: "2020→2026 IA",    top: "22%", right: "5%",  bg: "var(--accent-pink)",   color: "#000" },
+          { text: "OPENROUTER",      bottom:"18%",left: "6%",  bg: "#00e5ff",              color: "#000" },
+          { text: "LLM SELECTO",     top: "75%", right:"12%",  bg: "var(--bg-color)",      color: "#000" },
+          { text: "GEMINI CLI",      top: "45%", left: "3%",   bg: "#ff9100",              color: "#000" },
+          { text: "RAG CONTEXT",     bottom:"25%",right:"4%",  bg: "#00ff66",              color: "#000" }
+        ],
+        // 10 — CAP 5b: Lecciones y Tendencias IA
+        [
+          { text: "AGENTES 2026",    top: "15%", left: "8%",   bg: "var(--accent-color)",  color: "#000" },
+          { text: "PROMPT ENGR",     top: "22%", right: "5%",  bg: "var(--accent-pink)",   color: "#000" },
+          { text: "MCP TOOLS",       bottom:"18%",left: "6%",  bg: "#00e5ff",              color: "#000" },
+          { text: "IA ~80% CODE",    top: "75%", right:"12%",  bg: "var(--bg-color)",      color: "#000" },
+          { text: "MULTIMODAL",      top: "45%", left: "3%",   bg: "#ff9100",              color: "#000" },
+          { text: "NO SILVER BULL",  bottom:"25%",right:"4%",  bg: "#00ff66",              color: "#000" }
+        ],
+        // 11 — CAP 6: Herramientas IA Comparativa
+        [
+          { text: "15 FICHAS IA",    top: "15%", left: "8%",   bg: "var(--accent-color)",  color: "#000" },
+          { text: "CURSOR IDE",      top: "22%", right: "5%",  bg: "var(--accent-pink)",   color: "#000" },
+          { text: "GEMINI CLI ★",    bottom:"18%",left: "6%",  bg: "#00e5ff",              color: "#000" },
+          { text: "COPILOT VS",      top: "75%", right:"12%",  bg: "var(--bg-color)",      color: "#000" },
+          { text: "AIDER + GIT",     top: "45%", left: "3%",   bg: "#ff9100",              color: "#000" },
+          { text: "EVALUADAS 6+",    bottom:"25%",right:"4%",  bg: "#00ff66",              color: "#000" }
+        ],
+        // 12 — CAP 6b: Workflow y Lecciones
+        [
+          { text: "CLI WORKFLOW",    top: "15%", left: "8%",   bg: "var(--accent-color)",  color: "#000" },
+          { text: "TASK DRIVEN",     top: "22%", right: "5%",  bg: "var(--accent-pink)",   color: "#000" },
+          { text: "GIT COMMITS",     bottom:"18%",left: "6%",  bg: "#00e5ff",              color: "#000" },
+          { text: "NO LOCK-IN",      top: "75%", right:"12%",  bg: "var(--bg-color)",      color: "#000" },
+          { text: "PAIR PROGR",      top: "45%", left: "3%",   bg: "#ff9100",              color: "#000" },
+          { text: "HUMAN→IA",        bottom:"25%",right:"4%",  bg: "#00ff66",              color: "#000" }
+        ],
+        // 13 — CAP 7: Proceso Desarrollo Metodología
+        [
+          { text: "400+ COMMITS",    top: "15%", left: "8%",   bg: "var(--accent-color)",  color: "#000" },
+          { text: "AGILE + IA",      top: "22%", right: "5%",  bg: "var(--accent-pink)",   color: "#000" },
+          { text: "SPRINTS 2SEM",    bottom:"18%",left: "6%",  bg: "#00e5ff",              color: "#000" },
+          { text: "270 VITEST",      top: "75%", right:"12%",  bg: "var(--bg-color)",      color: "#000" },
+          { text: "155 PLAYWRIGHT",  top: "45%", left: "3%",   bg: "#ff9100",              color: "#000" },
+          { text: "CI VERDE ✓",      bottom:"25%",right:"4%",  bg: "#00ff66",              color: "#000" }
+        ],
+        // 14 — CAP 7b: Fases y Evolución
+        [
+          { text: "FASE 1: AUTH",    top: "15%", left: "8%",   bg: "var(--accent-color)",  color: "#000" },
+          { text: "FASE 2: CATÁL",   top: "22%", right: "5%",  bg: "var(--accent-pink)",   color: "#000" },
+          { text: "FASE 3: IA",      bottom:"18%",left: "6%",  bg: "#00e5ff",              color: "#000" },
+          { text: "FASE 4: TESTS",   top: "75%", right:"12%",  bg: "var(--bg-color)",      color: "#000" },
+          { text: "3 MESES DEV",     top: "45%", left: "3%",   bg: "#ff9100",              color: "#000" },
+          { text: "REFACTOR ✓",      bottom:"25%",right:"4%",  bg: "#00ff66",              color: "#000" }
+        ],
+        // 15 — CAP 7c: Aprendizajes y Errores
+        [
+          { text: "BUG → LESSON",    top: "15%", left: "8%",   bg: "var(--accent-color)",  color: "#000" },
+          { text: "FIRESTORE→SQL",   top: "22%", right: "5%",  bg: "var(--accent-pink)",   color: "#000" },
+          { text: "RACE COND FIX",   bottom:"18%",left: "6%",  bg: "#00e5ff",              color: "#000" },
+          { text: "STALE CLOSURE",   top: "75%", right:"12%",  bg: "var(--bg-color)",      color: "#000" },
+          { text: "ZUSTAND WIN",     top: "45%", left: "3%",   bg: "#ff9100",              color: "#000" },
+          { text: "LESSON LEARNT",   bottom:"25%",right:"4%",  bg: "#00ff66",              color: "#000" }
+        ],
+        // 16 — CAP 8: Manuales Operativa Core
+        [
+          { text: "8 NIVELES NAV",   top: "15%", left: "8%",   bg: "var(--accent-color)",  color: "#000" },
+          { text: "PDF EXPORT ✓",    top: "22%", right: "5%",  bg: "var(--accent-pink)",   color: "#000" },
+          { text: "IVA 21% AUTO",    bottom:"18%",left: "6%",  bg: "#00e5ff",              color: "#000" },
+          { text: "KPI SEMÁFORO",    top: "75%", right:"12%",  bg: "var(--bg-color)",      color: "#000" },
+          { text: "PICKING BULK",    top: "45%", left: "3%",   bg: "#ff9100",              color: "#000" },
+          { text: "FORMACIÓN ✓",     bottom:"25%",right:"4%",  bg: "#00ff66",              color: "#000" }
+        ],
+        // 17 — CAP 8b: Módulos Avanzados
+        [
+          { text: "REALTIME <100ms", top: "15%", left: "8%",   bg: "var(--accent-color)",  color: "#000" },
+          { text: "SONEX 4 MODOS",   top: "22%", right: "5%",  bg: "var(--accent-pink)",   color: "#000" },
+          { text: "SUPABASE PRES",   bottom:"18%",left: "6%",  bg: "#00e5ff",              color: "#000" },
+          { text: "IA STREAMING",    top: "75%", right:"12%",  bg: "var(--bg-color)",      color: "#000" },
+          { text: "MULTIJUGADOR",    top: "45%", left: "3%",   bg: "#ff9100",              color: "#000" },
+          { text: "ALERTAS 2H ⚠",   bottom:"25%",right:"4%",  bg: "#00ff66",              color: "#000" }
+        ],
+        // 18 — CAP 9: Métricas Cuantitativas ROI
+        [
+          { text: "0.00€ REAL",      top: "15%", left: "8%",   bg: "var(--accent-color)",  color: "#000" },
+          { text: "792€/AÑO AHORRO", top: "22%", right: "5%",  bg: "var(--accent-pink)",   color: "#000" },
+          { text: "19.000€ VALOR",   bottom:"18%",left: "6%",  bg: "#00e5ff",              color: "#000" },
+          { text: "170 KB BUNDLE",   top: "75%", right:"12%",  bg: "var(--bg-color)",      color: "#000" },
+          { text: "+400% PROD IA",   top: "45%", left: "3%",   bg: "#ff9100",              color: "#000" },
+          { text: "12K LÍNEAS CODE", bottom:"25%",right:"4%",  bg: "#00ff66",              color: "#000" }
+        ],
+        // 19 — CAP 9b: Resultados Cualitativos
+        [
+          { text: "7/7 MÓDULOS ✓",   top: "15%", left: "8%",   bg: "var(--accent-color)",  color: "#000" },
+          { text: "4.689 PRODS",     top: "22%", right: "5%",  bg: "var(--accent-pink)",   color: "#000" },
+          { text: "SONEX ACTIVO",    bottom:"18%",left: "6%",  bg: "#00e5ff",              color: "#000" },
+          { text: "SIN ERP REAL",    top: "75%", right:"12%",  bg: "var(--bg-color)",      color: "#000" },
+          { text: "270+155 TESTS",   top: "45%", left: "3%",   bg: "#ff9100",              color: "#000" },
+          { text: "DEMO VALIDADA",   bottom:"25%",right:"4%",  bg: "#00ff66",              color: "#000" }
+        ],
+        // 20 — CAP 10: Conclusiones
+        [
+          { text: "OG1-OG5 ✓",       top: "15%", left: "8%",   bg: "var(--accent-color)",  color: "#000" },
+          { text: "15 FICHAS IA",    top: "22%", right: "5%",  bg: "var(--accent-pink)",   color: "#000" },
+          { text: "4 SESIONES FP",   bottom:"18%",left: "6%",  bg: "#00e5ff",              color: "#000" },
+          { text: "APP MÓVIL PWA",   top: "75%", right:"12%",  bg: "var(--bg-color)",      color: "#000" },
+          { text: "INDEXEDDB →",     top: "45%", left: "3%",   bg: "#ff9100",              color: "#000" },
+          { text: "AGENTES IA ★",    bottom:"25%",right:"4%",  bg: "#00ff66",              color: "#000" }
+        ]
+      ];
+
+      const currentStickers = slideStickers[Math.min(index, slideStickers.length - 1)];
+      const stickerEls = [0,1,2,3,4,5].map(i => document.getElementById('sticker-' + i));
+
+      stickerEls.forEach((el, i) => {
+        if (!el) return;
+        const s = currentStickers[i];
+        el.textContent = s.text;
+        el.style.backgroundColor = s.bg;
+        el.style.color = s.color || '#000';
+        // Position: clear all then set only defined props
+        el.style.top    = s.top    || '';
+        el.style.bottom = s.bottom || '';
+        el.style.left   = s.left   || '';
+        el.style.right  = s.right  || '';
+        // Reset transform with rotation
+        const rot = el.getAttribute('data-rotation') || '0';
+        el.style.setProperty('--rot', rot + 'deg');
+        el.style.transform = 'rotate(' + rot + 'deg)';
+        // Trigger drop-in animation
+        el.classList.remove('animate-in');
+        void el.offsetWidth;
+        el.classList.add('animate-in');
+      });
+
+      // Reset window states
+      document.querySelectorAll('.brutalist-window').forEach(windowEl => {
+        windowEl.style.opacity = '';
+        windowEl.style.transform = '';
+        windowEl.style.visibility = '';
+        windowEl.classList.remove('minimized');
+        const bodyEl = windowEl.querySelector('.window-body');
+        if (bodyEl) bodyEl.style.display = '';
+      });
     }
 
     function navigate(direction) {
@@ -541,6 +1762,128 @@
         navigate(-1); // Swipe right, prev slide
       }
     }
+
+    // Draggable stickers implementation
+    const stickers = document.querySelectorAll('.brutalist-sticker');
+    stickers.forEach(sticker => {
+      // Initialize rotation custom property
+      const rotation = sticker.getAttribute('data-rotation') || '0';
+      sticker.style.setProperty('--rot', rotation + 'deg');
+      
+      let isDragging = false;
+      let startX, startY, initialLeft, initialTop;
+      
+      sticker.addEventListener('mousedown', startDrag);
+      sticker.addEventListener('touchstart', startDrag, { passive: false });
+      
+      function startDrag(e) {
+        // Ignore clicks on header switcher or action buttons if they bubble
+        if (e.target.tagName === 'BUTTON') return;
+
+        isDragging = true;
+        // Bring to front
+        stickers.forEach(s => s.style.zIndex = '10');
+        sticker.style.zIndex = '20';
+        
+        const clientX = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
+        const clientY = e.type === 'touchstart' ? e.touches[0].clientY : e.clientY;
+        
+        startX = clientX;
+        startY = clientY;
+        
+        initialLeft = sticker.offsetLeft;
+        initialTop = sticker.offsetTop;
+        
+        document.addEventListener('mousemove', drag);
+        document.addEventListener('touchmove', drag, { passive: false });
+        document.addEventListener('mouseup', stopDrag);
+        document.addEventListener('touchend', stopDrag);
+        
+        if (e.type === 'touchstart') {
+          e.preventDefault(); // Prevent scrolling while dragging
+        }
+      }
+      
+      function drag(e) {
+        if (!isDragging) return;
+        const clientX = e.type === 'touchmove' ? e.touches[0].clientX : e.clientX;
+        const clientY = e.type === 'touchmove' ? e.touches[0].clientY : e.clientY;
+        
+        const dx = clientX - startX;
+        const dy = clientY - startY;
+        
+        sticker.style.left = `${initialLeft + dx}px`;
+        sticker.style.top = `${initialTop + dy}px`;
+      }
+      
+      function stopDrag() {
+        isDragging = false;
+        document.removeEventListener('mousemove', drag);
+        document.removeEventListener('touchmove', drag);
+        document.removeEventListener('mouseup', stopDrag);
+        document.removeEventListener('touchend', stopDrag);
+      }
+    });
+
+    // Color Switcher logic
+    const palettes = [
+      { bg: '#ffde47', accent: '#39ff14', pink: '#ff007f' }, // Yellow, Green, Pink
+      { bg: '#39ff14', accent: '#ff007f', pink: '#00e5ff' }, // Green, Pink, Cyan
+      { bg: '#ff007f', accent: '#ffff00', pink: '#39ff14' }, // Pink, Yellow, Green
+      { bg: '#00e5ff', accent: '#ff007f', pink: '#ffff00' }, // Cyan, Pink, Yellow
+      { bg: '#ff7c00', accent: '#39ff14', pink: '#00e5ff' }  // Orange, Green, Cyan
+    ];
+    let currentPaletteIdx = 0;
+    const switcherBtn = document.getElementById('switcher-btn');
+    if (switcherBtn) {
+      switcherBtn.addEventListener('click', () => {
+        currentPaletteIdx = (currentPaletteIdx + 1) % palettes.length;
+        const palette = palettes[currentPaletteIdx];
+        
+        document.documentElement.style.setProperty('--bg-color', palette.bg);
+        document.documentElement.style.setProperty('--accent-color', palette.accent);
+        document.documentElement.style.setProperty('--accent-pink', palette.pink);
+        
+        // Add a temporary scale effect to switcher button
+        switcherBtn.style.transform = 'scale(0.9) rotate(3deg)';
+        setTimeout(() => {
+          switcherBtn.style.transform = '';
+        }, 150);
+      });
+    }
+
+    // Window popup minimize/close simulation
+    document.querySelectorAll('.brutalist-window').forEach(windowEl => {
+      const closeBtn = windowEl.querySelector('.window-actions .window-btn:nth-child(2)');
+      const minBtn = windowEl.querySelector('.window-actions .window-btn:nth-child(1)');
+      
+      if (closeBtn) {
+        closeBtn.addEventListener('click', (e) => {
+          e.stopPropagation(); // Prevent drag triggering
+          windowEl.style.transition = 'all 0.3s ease';
+          windowEl.style.opacity = '0';
+          windowEl.style.transform = 'scale(0.8) translateY(50px)';
+          setTimeout(() => {
+            windowEl.style.visibility = 'hidden';
+          }, 300);
+        });
+      }
+      
+      if (minBtn) {
+        minBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          windowEl.style.transition = 'all 0.3s ease';
+          if (windowEl.classList.contains('minimized')) {
+            windowEl.classList.remove('minimized');
+            windowEl.style.height = '';
+            windowEl.querySelector('.window-body').style.display = '';
+          } else {
+            windowEl.classList.add('minimized');
+            windowEl.querySelector('.window-body').style.display = 'none';
+          }
+        });
+      }
+    });
 
     // Initialize first slide
     window.addEventListener('load', () => {
