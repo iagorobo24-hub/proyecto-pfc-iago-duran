@@ -52,13 +52,7 @@ function FichasTecnicasContent({
   onCopiarReferencia,
   onAnadirPresupuesto,
 }) {
-  const [vistas, setVistas] = useState({ framework: null, curva: null, tipo: null, polos: null, calibre: null, sensibilidad: null })
-  const setVistaFramework = (v) => setVistas(prev => ({ ...prev, framework: v }))
-  const setVistaCurva = (v) => setVistas(prev => ({ ...prev, curva: v }))
-  const setVistaTipo = (v) => setVistas(prev => ({ ...prev, tipo: v }))
-  const setVistaPolos = (v) => setVistas(prev => ({ ...prev, polos: v }))
-  const setVistaCalibre = (v) => setVistas(prev => ({ ...prev, calibre: v }))
-  const setVistaSensibilidad = (v) => setVistas(prev => ({ ...prev, sensibilidad: v }))
+
 
   // ── Resultados de búsqueda ──────────────────────────────────────────────────
   if (resultadosBusqueda && resultadosBusqueda.length > 0) {
@@ -318,12 +312,6 @@ function FichasTecnicasContent({
         subgama={subgama}
         gama={gama}
         tipo={tipo}
-        vistaFramework={vistas.framework} setVistaFramework={setVistaFramework}
-        vistaCurva={vistas.curva} setVistaCurva={setVistaCurva}
-        vistaTipo={vistas.tipo} setVistaTipo={setVistaTipo}
-        vistaPolos={vistas.polos} setVistaPolos={setVistaPolos}
-        vistaCalibre={vistas.calibre} setVistaCalibre={setVistaCalibre}
-        vistaSensibilidad={vistas.sensibilidad} setVistaSensibilidad={setVistaSensibilidad}
         onSeleccionarReferencia={onSeleccionarReferencia}
       />
     )
