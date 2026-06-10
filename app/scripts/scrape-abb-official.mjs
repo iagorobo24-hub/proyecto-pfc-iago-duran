@@ -540,6 +540,182 @@ const FALLBACK_CATALOG = [
     pdf_url: 'https://search.abb.com/library/Download.aspx?DocumentID=6AGC082157&LanguageCode=es&DocumentPartId=&Action=Launch',
     imagen: 'https://new.abb.com/images/librariesprovider8/default-album/terra-ac-wallbox-charger.jpg',
     precio: 890.00
+  },
+
+  // VARIADORES DE FRECUENCIA (Automatización -> Variador velocidad)
+  {
+    sku: '3AXD50000035043',
+    name: 'Variador de frecuencia ACS380-040S-02A6-4 1.1kW 400V trifásico',
+    familia: 'Automatización',
+    subfamilia: 'Variador velocidad',
+    tipo: 'CARRIL DIN',
+    Gama: 'ACS380',
+    Subgama: 'ACS380-040S',
+    pdf_url: 'https://search.abb.com/library/Download.aspx?DocumentID=3AXD50000035043&LanguageCode=es&Action=Launch',
+    imagen: 'https://new.abb.com/images/librariesprovider8/default-album/acs380-machinery-drive.jpg',
+    precio: 345.00
+  },
+  {
+    sku: '3AXD50000038952',
+    name: 'Variador de frecuencia ACS580-01-09A5-4 4kW 400V trifásico IP21',
+    familia: 'Automatización',
+    subfamilia: 'Variador velocidad',
+    tipo: 'MONTAJE EN PARED',
+    Gama: 'ACS580',
+    Subgama: 'ACS580-01',
+    pdf_url: 'https://search.abb.com/library/Download.aspx?DocumentID=3AXD50000038952&LanguageCode=es&Action=Launch',
+    imagen: 'https://new.abb.com/images/librariesprovider8/default-album/acs580-general-purpose-drive.jpg',
+    precio: 520.00
+  },
+
+  // CAJA MOLDEADA TMAX XT (Distribución de potencia -> Interruptor Caja Moldeada)
+  {
+    sku: '1SDA066803R1',
+    name: 'Interruptor automático en caja moldeada Tmax XT1B 160 TMD 160A 3 polos',
+    familia: 'Distribución de potencia',
+    subfamilia: 'Interruptor Caja Moldeada',
+    tipo: 'CAJA MOLDEADA',
+    Gama: 'Tmax XT',
+    Subgama: 'XT1',
+    pdf_url: 'https://search.abb.com/library/Download.aspx?DocumentID=1SDA066803R1&LanguageCode=es&Action=Launch',
+    imagen: 'https://new.abb.com/images/librariesprovider8/default-album/tmax-xt-molded-case-circuit-breakers.jpg',
+    precio: 215.00
+  },
+  {
+    sku: '1SDA067022R1',
+    name: 'Interruptor automático en caja moldeada Tmax XT2N 160 TMD 125A 3 polos',
+    familia: 'Distribución de potencia',
+    subfamilia: 'Interruptor Caja Moldeada',
+    tipo: 'CAJA MOLDEADA',
+    Gama: 'Tmax XT',
+    Subgama: 'XT2',
+    pdf_url: 'https://search.abb.com/library/Download.aspx?DocumentID=1SDA067022R1&LanguageCode=es&Action=Launch',
+    imagen: 'https://new.abb.com/images/librariesprovider8/default-album/tmax-xt-molded-case-circuit-breakers.jpg',
+    precio: 295.00
+  },
+
+  // MÁS MAGNETOTÉRMICOS S200 (Distribución de potencia -> Interruptor Magnetotérmico)
+  {
+    sku: '2CDS253001R0324',
+    name: 'Interruptor magnetotérmico S203-C32 3 polos 32A 6kA',
+    familia: 'Distribución de potencia',
+    subfamilia: 'Interruptor Magnetotérmico',
+    tipo: 'CARRIL DIN',
+    Gama: 'S200',
+    Subgama: 'S203',
+    pdf_url: 'https://search.abb.com/library/Download.aspx?DocumentID=2CDS253001R0324&LanguageCode=es&Action=Launch',
+    imagen: 'https://new.abb.com/images/librariesprovider8/default-album/s200-miniature-circuit-breakers.jpg',
+    precio: 62.10
+  },
+  {
+    sku: '2CDS253001R0404',
+    name: 'Interruptor magnetotérmico S203-C40 3 polos 40A 6kA',
+    familia: 'Distribución de potencia',
+    subfamilia: 'Interruptor Magnetotérmico',
+    tipo: 'CARRIL DIN',
+    Gama: 'S200',
+    Subgama: 'S203',
+    pdf_url: 'https://search.abb.com/library/Download.aspx?DocumentID=2CDS253001R0404&LanguageCode=es&Action=Launch',
+    imagen: 'https://new.abb.com/images/librariesprovider8/default-album/s200-miniature-circuit-breakers.jpg',
+    precio: 68.90
+  },
+  {
+    sku: '2CDS254001R0324',
+    name: 'Interruptor magnetotérmico S204-C32 4 polos 32A 6kA',
+    familia: 'Distribución de potencia',
+    subfamilia: 'Interruptor Magnetotérmico',
+    tipo: 'CARRIL DIN',
+    Gama: 'S200',
+    Subgama: 'S204',
+    pdf_url: 'https://search.abb.com/library/Download.aspx?DocumentID=2CDS254001R0324&LanguageCode=es&Action=Launch',
+    imagen: 'https://new.abb.com/images/librariesprovider8/default-album/s200-miniature-circuit-breakers.jpg',
+    precio: 82.50
+  },
+  {
+    sku: '2CDS254001R0404',
+    name: 'Interruptor magnetotérmico S204-C40 4 polos 40A 6kA',
+    familia: 'Distribución de potencia',
+    subfamilia: 'Interruptor Magnetotérmico',
+    tipo: 'CARRIL DIN',
+    Gama: 'S200',
+    Subgama: 'S204',
+    pdf_url: 'https://search.abb.com/library/Download.aspx?DocumentID=2CDS254001R0404&LanguageCode=es&Action=Launch',
+    imagen: 'https://new.abb.com/images/librariesprovider8/default-album/s200-miniature-circuit-breakers.jpg',
+    precio: 89.90
+  },
+
+  // ROBÓTICA ABB (Robótica -> Robot Industrial, Controlador, Accesorio)
+  {
+    sku: 'ABB-IRB-120',
+    name: 'Brazo robótico industrial de 6 ejes ABB IRB 120 3kg',
+    familia: 'Robótica',
+    subfamilia: 'Robot Industrial',
+    tipo: '6 EJES',
+    Gama: 'IRB 120',
+    Subgama: 'IRB 120-3/0.6',
+    pdf_url: 'https://search.abb.com/library/Download.aspx?DocumentID=PR10398EN_Low&LanguageCode=en&Action=Launch',
+    imagen: 'https://new.abb.com/images/librariesprovider8/default-album/irb-120-industrial-robot.jpg',
+    precio: 18500.00
+  },
+  {
+    sku: 'ABB-IRB-1200-5',
+    name: 'Brazo robótico industrial ABB IRB 1200 5kg alcance 0.9m',
+    familia: 'Robótica',
+    subfamilia: 'Robot Industrial',
+    tipo: '6 EJES',
+    Gama: 'IRB 1200',
+    Subgama: 'IRB 1200-5/0.9',
+    pdf_url: 'https://search.abb.com/library/Download.aspx?DocumentID=PR10399EN_Low&LanguageCode=en&Action=Launch',
+    imagen: 'https://new.abb.com/images/librariesprovider8/default-album/irb-1200-industrial-robot.jpg',
+    precio: 24500.00
+  },
+  {
+    sku: 'ABB-OMNICORE-C30',
+    name: 'Controlador de robot industrial compacto ABB OmniCore C30',
+    familia: 'Robótica',
+    subfamilia: 'Controlador de Robot',
+    tipo: 'CONTROLADOR',
+    Gama: 'OmniCore',
+    Subgama: 'OmniCore C30',
+    pdf_url: 'https://search.abb.com/library/Download.aspx?DocumentID=3HAC065036-005&LanguageCode=en&Action=Launch',
+    imagen: 'https://new.abb.com/images/librariesprovider8/default-album/omnicore-c30-robot-controller.jpg',
+    precio: 6500.00
+  },
+  {
+    sku: 'ABB-OMNICORE-V250XT',
+    name: 'Controlador de robot industrial ABB OmniCore V250XT',
+    familia: 'Robótica',
+    subfamilia: 'Controlador de Robot',
+    tipo: 'CONTROLADOR',
+    Gama: 'OmniCore',
+    Subgama: 'OmniCore V250XT',
+    pdf_url: 'https://search.abb.com/library/Download.aspx?DocumentID=3HAC078456-005&LanguageCode=en&Action=Launch',
+    imagen: 'https://new.abb.com/images/librariesprovider8/default-album/omnicore-v250xt-robot-controller.jpg',
+    precio: 9200.00
+  },
+  {
+    sku: '3HAC064000-001',
+    name: 'Consola de programación manual ABB FlexPendant para OmniCore',
+    familia: 'Robótica',
+    subfamilia: 'Accesorio de Robot',
+    tipo: 'CONSOLA',
+    Gama: 'FlexPendant',
+    Subgama: 'FlexPendant V5',
+    pdf_url: 'https://search.abb.com/library/Download.aspx?DocumentID=3HAC064000-001&LanguageCode=en&Action=Launch',
+    imagen: 'https://new.abb.com/images/librariesprovider8/default-album/flexpendant-robot-teach-pendant.jpg',
+    precio: 2950.00
+  },
+  {
+    sku: 'ABB-IRC5-SINGLE',
+    name: 'Controlador de robot industrial modular ABB IRC5 Single Cabinet',
+    familia: 'Robótica',
+    subfamilia: 'Controlador de Robot',
+    tipo: 'CONTROLADOR',
+    Gama: 'IRC5',
+    Subgama: 'IRC5 Single',
+    pdf_url: 'https://search.abb.com/library/Download.aspx?DocumentID=3HAC047400-005&LanguageCode=en&Action=Launch',
+    imagen: 'https://new.abb.com/images/librariesprovider8/default-album/irc5-robot-controller.jpg',
+    precio: 7800.00
   }
 ];
 

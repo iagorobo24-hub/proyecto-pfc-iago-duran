@@ -90,6 +90,10 @@ export const SUBCATEGORIA_A_CATEGORIA: Record<string, CategoryMapping> = {
   'Canalización prefabricada': { categoria: 'Instalación', subcategoria: 'Canalizaciones' },
   'Caja Combinadora': { categoria: 'Energía Solar', subcategoria: 'Cajas combinadoras' },
   'Termostato': { categoria: 'Climatización', subcategoria: 'Termostatos' },
+  // Robótica ABB
+  'Robot Industrial': { categoria: 'Robótica', subcategoria: 'Robot Industrial' },
+  'Controlador de Robot': { categoria: 'Robótica', subcategoria: 'Controlador de Robot' },
+  'Accesorio de Robot': { categoria: 'Robótica', subcategoria: 'Accesorio de Robot' },
 }
 
 export function getCategoria(subfamilia: string, tipo: string): { categoria: string; subcategoria: string } | null {
@@ -108,7 +112,7 @@ export const CATEGORIA_ICONOS: Record<string, string> = {
   'Protección': '🛡️', 'Seccionamiento': '🔌', 'Accesorios': '🔧', 'Control Motor': '⚙️',
   'Domótica': '🏘️', 'Energía Solar': '☀️', 'Iluminación': '💡', 'Instalación': '📏',
   'Vehículo Eléctrico': '🚗', 'Cables': '🧶', 'Climatización': '🌡️', 'Comunicación': '📡',
-  'Herramientas': '🔨', 'Fontanería': '💧', 'Energías renovables': '🌱',
+  'Herramientas': '🔨', 'Fontanería': '💧', 'Energías renovables': '🌱', 'Robótica': '🤖',
 }
 
 export const SUBCATEGORIA_ETIQUETAS: Record<string, string> = {
@@ -138,6 +142,9 @@ export const SUBCATEGORIA_ETIQUETAS: Record<string, string> = {
   'Variador de Frecuencia': 'Variador de Frecuencia',
   'Cajas combinadoras': 'Cajas combinadoras',
   'Termostatos': 'Termostatos',
+  // Robótica
+  'Robot Industrial': 'Robot Industrial', 'Controlador de Robot': 'Controlador de Robot',
+  'Accesorio de Robot': 'Accesorio de Robot',
 }
 
 export function getEtiquetaSubcategoria(key: string): string {
@@ -159,6 +166,7 @@ export const FULL_CATEGORY_INFO: Record<string, CategoryMeta> = {
   "PROTECCION": { label: 'Protección', icon: '🛡️', desc: 'Equipos de protección individual (EPIs) y seguridad eléctrica.', tip: 'Usa siempre el EPI adecuado para el trabajo y verifica su estado antes de usarlo.' },
   "FONTANERIA": { label: 'Fontanería', icon: '💧', desc: 'Equipos y materiales para instalaciones de fontanería y saneamiento.', tip: 'Selecciona los materiales según el tipo de fluido y la presión de trabajo.' },
   "ENERGIAS RENOVABLES": { label: 'Energías renovables', icon: '🌱', desc: 'Sistemas de energía renovable: solar, eólica y otras fuentes limpias.', tip: 'Estudia el recurso disponible (sol, viento) antes de dimensionar la instalación.' },
+  "ROBOTICA": { label: 'Robótica', icon: '🤖', desc: 'Brazos robóticos industriales, controladores de robot y accesorios de automatización de gama alta.', tip: 'Selecciona el robot según la capacidad de carga (payload), el alcance máximo y el tipo de controlador.' },
 }
 
 export function getCategoriaMeta(familia: string): CategoryMeta {
