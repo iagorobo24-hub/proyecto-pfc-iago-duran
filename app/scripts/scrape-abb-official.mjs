@@ -1,650 +1,26 @@
 /**
- * SCRAPER ABB OFFICIAL — PRODUCTOS ELÉCTRICOS (Playwright & Catálogo de Fallback)
+ * SCRAPER ABB OFFICIAL — CATÁLOGO COMPLETO (Sonepar & Robótica)
  * 
- * Target: https://new.abb.com/es
- * Cuenta con un catálogo precompilado de fallback de 55 referencias reales para garantizar
- * la inserción masiva y consistente de productos correctos sin errores de taxonomía
- * y superando las restricciones de WAF / HTTP2 de la web corporativa.
+ * Diseñado para extraer e importar todo el catálogo disponible de ABB (7.000+ productos)
+ * a partir de los chunks de Sonepar España y el catálogo oficial de robótica en una sola ejecución.
  * 
  * Uso:
  *   node scripts/scrape-abb-official.mjs
  *   node scripts/scrape-abb-official.mjs --dry-run
  */
 
-import { chromium } from 'playwright';
 import { insertProduct, checkRefExists, getBrands } from './lib/supabase-sonex.js';
 import fs from 'fs';
 import path from 'path';
 
 const MARCA = 'ABB';
-const BRAND_ID = 463; // ID verificado para ABB tras su inserción en la tabla brands
-const WEBSITE_URL = 'https://new.abb.com/es';
+const BRAND_ID = 463; // ID verificado para ABB en la base de datos
+const CHUNKS_DIR = path.join(import.meta.dirname, '../sonepar-catalog-scraper');
+const LOG_FILE = path.join(import.meta.dirname, 'scrape-abb-official.log');
+const REPORT_FILE = path.join(import.meta.dirname, 'scrape-abb-official-report.json');
 
-// Catálogo de fallback impecable con taxonomía oficial en minúsculas
-const FALLBACK_CATALOG = [
-  // MAGNETOTÉRMICOS S200 (Distribución de potencia -> Interruptor Magnetotérmico)
-  {
-    sku: '2CDS251001R0064',
-    name: 'Interruptor magnetotérmico S201-C6 1 polo 6A 6kA',
-    familia: 'Distribución de potencia',
-    subfamilia: 'Interruptor Magnetotérmico',
-    tipo: 'CARRIL DIN',
-    Gama: 'S200',
-    Subgama: 'S201',
-    pdf_url: 'https://search.abb.com/library/Download.aspx?DocumentID=2CDS251001R0064&LanguageCode=es&DocumentPartId=&Action=Launch',
-    imagen: 'https://new.abb.com/images/librariesprovider8/default-album/s200-miniature-circuit-breakers.jpg',
-    precio: 14.50
-  },
-  {
-    sku: '2CDS251001R0104',
-    name: 'Interruptor magnetotérmico S201-C10 1 polo 10A 6kA',
-    familia: 'Distribución de potencia',
-    subfamilia: 'Interruptor Magnetotérmico',
-    tipo: 'CARRIL DIN',
-    Gama: 'S200',
-    Subgama: 'S201',
-    pdf_url: 'https://search.abb.com/library/Download.aspx?DocumentID=2CDS251001R0104&LanguageCode=es&DocumentPartId=&Action=Launch',
-    imagen: 'https://new.abb.com/images/librariesprovider8/default-album/s200-miniature-circuit-breakers.jpg',
-    precio: 14.80
-  },
-  {
-    sku: '2CDS251001R0164',
-    name: 'Interruptor magnetotérmico S201-C16 1 polo 16A 6kA',
-    familia: 'Distribución de potencia',
-    subfamilia: 'Interruptor Magnetotérmico',
-    tipo: 'CARRIL DIN',
-    Gama: 'S200',
-    Subgama: 'S201',
-    pdf_url: 'https://search.abb.com/library/Download.aspx?DocumentID=2CDS251001R0164&LanguageCode=es&DocumentPartId=&Action=Launch',
-    imagen: 'https://new.abb.com/images/librariesprovider8/default-album/s200-miniature-circuit-breakers.jpg',
-    precio: 15.20
-  },
-  {
-    sku: '2CDS251001R0204',
-    name: 'Interruptor magnetotérmico S201-C20 1 polo 20A 6kA',
-    familia: 'Distribución de potencia',
-    subfamilia: 'Interruptor Magnetotérmico',
-    tipo: 'CARRIL DIN',
-    Gama: 'S200',
-    Subgama: 'S201',
-    pdf_url: 'https://search.abb.com/library/Download.aspx?DocumentID=2CDS251001R0204&LanguageCode=es&DocumentPartId=&Action=Launch',
-    imagen: 'https://new.abb.com/images/librariesprovider8/default-album/s200-miniature-circuit-breakers.jpg',
-    precio: 15.90
-  },
-  {
-    sku: '2CDS251001R0254',
-    name: 'Interruptor magnetotérmico S201-C25 1 polo 25A 6kA',
-    familia: 'Distribución de potencia',
-    subfamilia: 'Interruptor Magnetotérmico',
-    tipo: 'CARRIL DIN',
-    Gama: 'S200',
-    Subgama: 'S201',
-    pdf_url: 'https://search.abb.com/library/Download.aspx?DocumentID=2CDS251001R0254&LanguageCode=es&DocumentPartId=&Action=Launch',
-    imagen: 'https://new.abb.com/images/librariesprovider8/default-album/s200-miniature-circuit-breakers.jpg',
-    precio: 16.50
-  },
-  {
-    sku: '2CDS251001R0324',
-    name: 'Interruptor magnetotérmico S201-C32 1 polo 32A 6kA',
-    familia: 'Distribución de potencia',
-    subfamilia: 'Interruptor Magnetotérmico',
-    tipo: 'CARRIL DIN',
-    Gama: 'S200',
-    Subgama: 'S201',
-    pdf_url: 'https://search.abb.com/library/Download.aspx?DocumentID=2CDS251001R0324&LanguageCode=es&DocumentPartId=&Action=Launch',
-    imagen: 'https://new.abb.com/images/librariesprovider8/default-album/s200-miniature-circuit-breakers.jpg',
-    precio: 19.30
-  },
-  {
-    sku: '2CDS251001R0404',
-    name: 'Interruptor magnetotérmico S201-C40 1 polo 40A 6kA',
-    familia: 'Distribución de potencia',
-    subfamilia: 'Interruptor Magnetotérmico',
-    tipo: 'CARRIL DIN',
-    Gama: 'S200',
-    Subgama: 'S201',
-    pdf_url: 'https://search.abb.com/library/Download.aspx?DocumentID=2CDS251001R0404&LanguageCode=es&DocumentPartId=&Action=Launch',
-    imagen: 'https://new.abb.com/images/librariesprovider8/default-album/s200-miniature-circuit-breakers.jpg',
-    precio: 24.10
-  },
-  {
-    sku: '2CDS252001R0164',
-    name: 'Interruptor magnetotérmico S202-C16 2 polos 16A 6kA',
-    familia: 'Distribución de potencia',
-    subfamilia: 'Interruptor Magnetotérmico',
-    tipo: 'CARRIL DIN',
-    Gama: 'S200',
-    Subgama: 'S202',
-    pdf_url: 'https://search.abb.com/library/Download.aspx?DocumentID=2CDS252001R0164&LanguageCode=es&DocumentPartId=&Action=Launch',
-    imagen: 'https://new.abb.com/images/librariesprovider8/default-album/s200-miniature-circuit-breakers.jpg',
-    precio: 36.80
-  },
-  {
-    sku: '2CDS252001R0254',
-    name: 'Interruptor magnetotérmico S202-C25 2 polos 25A 6kA',
-    familia: 'Distribución de potencia',
-    subfamilia: 'Interruptor Magnetotérmico',
-    tipo: 'CARRIL DIN',
-    Gama: 'S200',
-    Subgama: 'S202',
-    pdf_url: 'https://search.abb.com/library/Download.aspx?DocumentID=2CDS252001R0254&LanguageCode=es&DocumentPartId=&Action=Launch',
-    imagen: 'https://new.abb.com/images/librariesprovider8/default-album/s200-miniature-circuit-breakers.jpg',
-    precio: 39.50
-  },
-  {
-    sku: '2CDS253001R0164',
-    name: 'Interruptor magnetotérmico S203-C16 3 polos 16A 6kA',
-    familia: 'Distribución de potencia',
-    subfamilia: 'Interruptor Magnetotérmico',
-    tipo: 'CARRIL DIN',
-    Gama: 'S200',
-    Subgama: 'S203',
-    pdf_url: 'https://search.abb.com/library/Download.aspx?DocumentID=2CDS253001R0164&LanguageCode=es&DocumentPartId=&Action=Launch',
-    imagen: 'https://new.abb.com/images/librariesprovider8/default-album/s200-miniature-circuit-breakers.jpg',
-    precio: 52.40
-  },
-  {
-    sku: '2CDS253001R0254',
-    name: 'Interruptor magnetotérmico S203-C25 3 polos 25A 6kA',
-    familia: 'Distribución de potencia',
-    subfamilia: 'Interruptor Magnetotérmico',
-    tipo: 'CARRIL DIN',
-    Gama: 'S200',
-    Subgama: 'S203',
-    pdf_url: 'https://search.abb.com/library/Download.aspx?DocumentID=2CDS253001R0254&LanguageCode=es&DocumentPartId=&Action=Launch',
-    imagen: 'https://new.abb.com/images/librariesprovider8/default-album/s200-miniature-circuit-breakers.jpg',
-    precio: 55.70
-  },
-  {
-    sku: '2CDS254001R0164',
-    name: 'Interruptor magnetotérmico S204-C16 4 polos 16A 6kA',
-    familia: 'Distribución de potencia',
-    subfamilia: 'Interruptor Magnetotérmico',
-    tipo: 'CARRIL DIN',
-    Gama: 'S200',
-    Subgama: 'S204',
-    pdf_url: 'https://search.abb.com/library/Download.aspx?DocumentID=2CDS254001R0164&LanguageCode=es&DocumentPartId=&Action=Launch',
-    imagen: 'https://new.abb.com/images/librariesprovider8/default-album/s200-miniature-circuit-breakers.jpg',
-    precio: 72.90
-  },
-  {
-    sku: '2CDS254001R0254',
-    name: 'Interruptor magnetotérmico S204-C25 4 polos 25A 6kA',
-    familia: 'Distribución de potencia',
-    subfamilia: 'Interruptor Magnetotérmico',
-    tipo: 'CARRIL DIN',
-    Gama: 'S200',
-    Subgama: 'S204',
-    pdf_url: 'https://search.abb.com/library/Download.aspx?DocumentID=2CDS254001R0254&LanguageCode=es&DocumentPartId=&Action=Launch',
-    imagen: 'https://new.abb.com/images/librariesprovider8/default-album/s200-miniature-circuit-breakers.jpg',
-    precio: 76.50
-  },
-
-  // INTERRUPTORES DIFERENCIALES FH200 (Distribución de potencia -> Interruptor Diferencial)
-  {
-    sku: '2CSF202006R1250',
-    name: 'Interruptor diferencial FH202 AC-25/0.03 2 polos 25A 30mA clase AC',
-    familia: 'Distribución de potencia',
-    subfamilia: 'Interruptor Diferencial',
-    tipo: 'CARRIL DIN',
-    Gama: 'FH200',
-    Subgama: 'FH202',
-    pdf_url: 'https://search.abb.com/library/Download.aspx?DocumentID=2CSF202006R1250&LanguageCode=es&DocumentPartId=&Action=Launch',
-    imagen: 'https://new.abb.com/images/librariesprovider8/default-album/fh200-residual-current-devices.jpg',
-    precio: 29.90
-  },
-  {
-    sku: '2CSF202006R1400',
-    name: 'Interruptor diferencial FH202 AC-40/0.03 2 polos 40A 30mA clase AC',
-    familia: 'Distribución de potencia',
-    subfamilia: 'Interruptor Diferencial',
-    tipo: 'CARRIL DIN',
-    Gama: 'FH200',
-    Subgama: 'FH202',
-    pdf_url: 'https://search.abb.com/library/Download.aspx?DocumentID=2CSF202006R1400&LanguageCode=es&DocumentPartId=&Action=Launch',
-    imagen: 'https://new.abb.com/images/librariesprovider8/default-album/fh200-residual-current-devices.jpg',
-    precio: 31.40
-  },
-  {
-    sku: '2CSF202006R1630',
-    name: 'Interruptor diferencial FH202 AC-63/0.03 2 polos 63A 30mA clase AC',
-    familia: 'Distribución de potencia',
-    subfamilia: 'Interruptor Diferencial',
-    tipo: 'CARRIL DIN',
-    Gama: 'FH200',
-    Subgama: 'FH202',
-    pdf_url: 'https://search.abb.com/library/Download.aspx?DocumentID=2CSF202006R1630&LanguageCode=es&DocumentPartId=&Action=Launch',
-    imagen: 'https://new.abb.com/images/librariesprovider8/default-album/fh200-residual-current-devices.jpg',
-    precio: 49.50
-  },
-  {
-    sku: '2CSF204006R1250',
-    name: 'Interruptor diferencial FH204 AC-25/0.03 4 polos 25A 30mA clase AC',
-    familia: 'Distribución de potencia',
-    subfamilia: 'Interruptor Diferencial',
-    tipo: 'CARRIL DIN',
-    Gama: 'FH200',
-    Subgama: 'FH204',
-    pdf_url: 'https://search.abb.com/library/Download.aspx?DocumentID=2CSF204006R1250&LanguageCode=es&DocumentPartId=&Action=Launch',
-    imagen: 'https://new.abb.com/images/librariesprovider8/default-album/fh200-residual-current-devices.jpg',
-    precio: 48.50
-  },
-  {
-    sku: '2CSF204006R1400',
-    name: 'Interruptor diferencial FH204 AC-40/0.03 4 polos 40A 30mA clase AC',
-    familia: 'Distribución de potencia',
-    subfamilia: 'Interruptor Diferencial',
-    tipo: 'CARRIL DIN',
-    Gama: 'FH200',
-    Subgama: 'FH204',
-    pdf_url: 'https://search.abb.com/library/Download.aspx?DocumentID=2CSF204006R1400&LanguageCode=es&DocumentPartId=&Action=Launch',
-    imagen: 'https://new.abb.com/images/librariesprovider8/default-album/fh200-residual-current-devices.jpg',
-    precio: 49.90
-  },
-  {
-    sku: '2CSF204006R1630',
-    name: 'Interruptor diferencial FH204 AC-63/0.03 4 polos 63A 30mA clase AC',
-    familia: 'Distribución de potencia',
-    subfamilia: 'Interruptor Diferencial',
-    tipo: 'CARRIL DIN',
-    Gama: 'FH200',
-    Subgama: 'FH204',
-    pdf_url: 'https://search.abb.com/library/Download.aspx?DocumentID=2CSF204006R1630&LanguageCode=es&DocumentPartId=&Action=Launch',
-    imagen: 'https://new.abb.com/images/librariesprovider8/default-album/fh200-residual-current-devices.jpg',
-    precio: 68.20
-  },
-  {
-    sku: '2CSF204006R1800',
-    name: 'Interruptor diferencial FH204 AC-80/0.03 4 polos 80A 30mA clase AC',
-    familia: 'Distribución de potencia',
-    subfamilia: 'Interruptor Diferencial',
-    tipo: 'CARRIL DIN',
-    Gama: 'FH200',
-    Subgama: 'FH204',
-    pdf_url: 'https://search.abb.com/library/Download.aspx?DocumentID=2CSF204006R1800&LanguageCode=es&DocumentPartId=&Action=Launch',
-    imagen: 'https://new.abb.com/images/librariesprovider8/default-album/fh200-residual-current-devices.jpg',
-    precio: 115.00
-  },
-
-  // CONTACTORES AF (Automatización -> Contactor)
-  {
-    sku: '1SBL137001R1310',
-    name: 'Contactor de potencia AF09-30-10-13 3 polos 9A 4kW 230V CA/CC',
-    familia: 'Automatización',
-    subfamilia: 'Contactor',
-    tipo: 'CARRIL DIN',
-    Gama: 'AF',
-    Subgama: 'AF09',
-    pdf_url: 'https://search.abb.com/library/Download.aspx?DocumentID=1SBL137001R1310&LanguageCode=es&DocumentPartId=&Action=Launch',
-    imagen: 'https://new.abb.com/images/librariesprovider8/default-album/af-contactors-block.jpg',
-    precio: 38.20
-  },
-  {
-    sku: '1SBL157001R1310',
-    name: 'Contactor de potencia AF12-30-10-13 3 polos 12A 5.5kW 230V CA/CC',
-    familia: 'Automatización',
-    subfamilia: 'Contactor',
-    tipo: 'CARRIL DIN',
-    Gama: 'AF',
-    Subgama: 'AF12',
-    pdf_url: 'https://search.abb.com/library/Download.aspx?DocumentID=1SBL157001R1310&LanguageCode=es&DocumentPartId=&Action=Launch',
-    imagen: 'https://new.abb.com/images/librariesprovider8/default-album/af-contactors-block.jpg',
-    precio: 42.10
-  },
-  {
-    sku: '1SBL177001R1310',
-    name: 'Contactor de potencia AF16-30-10-13 3 polos 16A 7.5kW 230V CA/CC',
-    familia: 'Automatización',
-    subfamilia: 'Contactor',
-    tipo: 'CARRIL DIN',
-    Gama: 'AF',
-    Subgama: 'AF16',
-    pdf_url: 'https://search.abb.com/library/Download.aspx?DocumentID=1SBL177001R1310&LanguageCode=es&DocumentPartId=&Action=Launch',
-    imagen: 'https://new.abb.com/images/librariesprovider8/default-album/af-contactors-block.jpg',
-    precio: 47.90
-  },
-  {
-    sku: '1SBL237001R1310',
-    name: 'Contactor de potencia AF26-30-00-13 3 polos 26A 11kW 230V CA/CC',
-    familia: 'Automatización',
-    subfamilia: 'Contactor',
-    tipo: 'CARRIL DIN',
-    Gama: 'AF',
-    Subgama: 'AF26',
-    pdf_url: 'https://search.abb.com/library/Download.aspx?DocumentID=1SBL237001R1310&LanguageCode=es&DocumentPartId=&Action=Launch',
-    imagen: 'https://new.abb.com/images/librariesprovider8/default-album/af-contactors-block.jpg',
-    precio: 64.50
-  },
-  {
-    sku: '1SBL277001R1310',
-    name: 'Contactor de potencia AF30-30-00-13 3 polos 32A 15kW 230V CA/CC',
-    familia: 'Automatización',
-    subfamilia: 'Contactor',
-    tipo: 'CARRIL DIN',
-    Gama: 'AF',
-    Subgama: 'AF30',
-    pdf_url: 'https://search.abb.com/library/Download.aspx?DocumentID=1SBL277001R1310&LanguageCode=es&DocumentPartId=&Action=Launch',
-    imagen: 'https://new.abb.com/images/librariesprovider8/default-album/af-contactors-block.jpg',
-    precio: 78.30
-  },
-
-  // GUARDAMOTORES MS116 (Automatización -> Guardamotor)
-  {
-    sku: '1SAM250000R1006',
-    name: 'Guardamotor MS116-1.6 protección térmica y magnética 1.0-1.6A',
-    familia: 'Automatización',
-    subfamilia: 'Guardamotor',
-    tipo: 'CARRIL DIN',
-    Gama: 'MS116',
-    Subgama: 'MS116-1.6',
-    pdf_url: 'https://search.abb.com/library/Download.aspx?DocumentID=1SAM250000R1006&LanguageCode=es&DocumentPartId=&Action=Launch',
-    imagen: 'https://new.abb.com/images/librariesprovider8/default-album/ms116-manual-motor-starters.jpg',
-    precio: 48.90
-  },
-  {
-    sku: '1SAM250000R1007',
-    name: 'Guardamotor MS116-2.5 protección térmica y magnética 1.6-2.5A',
-    familia: 'Automatización',
-    subfamilia: 'Guardamotor',
-    tipo: 'CARRIL DIN',
-    Gama: 'MS116',
-    Subgama: 'MS116-2.5',
-    pdf_url: 'https://search.abb.com/library/Download.aspx?DocumentID=1SAM250000R1007&LanguageCode=es&DocumentPartId=&Action=Launch',
-    imagen: 'https://new.abb.com/images/librariesprovider8/default-album/ms116-manual-motor-starters.jpg',
-    precio: 52.30
-  },
-  {
-    sku: '1SAM250000R1008',
-    name: 'Guardamotor MS116-4.0 protección térmica y magnética 2.5-4.0A',
-    familia: 'Automatización',
-    subfamilia: 'Guardamotor',
-    tipo: 'CARRIL DIN',
-    Gama: 'MS116',
-    Subgama: 'MS116-4.0',
-    pdf_url: 'https://search.abb.com/library/Download.aspx?DocumentID=1SAM250000R1008&LanguageCode=es&DocumentPartId=&Action=Launch',
-    imagen: 'https://new.abb.com/images/librariesprovider8/default-album/ms116-manual-motor-starters.jpg',
-    precio: 56.40
-  },
-  {
-    sku: '1SAM250000R1009',
-    name: 'Guardamotor MS116-6.3 protección térmica y magnética 4.0-6.3A',
-    familia: 'Automatización',
-    subfamilia: 'Guardamotor',
-    tipo: 'CARRIL DIN',
-    Gama: 'MS116',
-    Subgama: 'MS116-6.3',
-    pdf_url: 'https://search.abb.com/library/Download.aspx?DocumentID=1SAM250000R1009&LanguageCode=es&DocumentPartId=&Action=Launch',
-    imagen: 'https://new.abb.com/images/librariesprovider8/default-album/ms116-manual-motor-starters.jpg',
-    precio: 58.10
-  },
-  {
-    sku: '1SAM250000R1010',
-    name: 'Guardamotor MS116-10 protección térmica y magnética 6.3-10A',
-    familia: 'Automatización',
-    subfamilia: 'Guardamotor',
-    tipo: 'CARRIL DIN',
-    Gama: 'MS116',
-    Subgama: 'MS116-10',
-    pdf_url: 'https://search.abb.com/library/Download.aspx?DocumentID=1SAM250000R1010&LanguageCode=es&DocumentPartId=&Action=Launch',
-    imagen: 'https://new.abb.com/images/librariesprovider8/default-album/ms116-manual-motor-starters.jpg',
-    precio: 62.40
-  },
-
-  // BORNAS DE CONEXIÓN SNK (Distribución de potencia -> Bornas)
-  {
-    sku: '1SNK505010R0000',
-    name: 'Borna de paso ZS4 gris conexión tornillo paso 4mm2',
-    familia: 'Distribución de potencia',
-    subfamilia: 'Bornas',
-    tipo: 'CARRIL DIN',
-    Gama: 'SNK',
-    Subgama: 'ZS4',
-    pdf_url: 'https://search.abb.com/library/Download.aspx?DocumentID=1SNK505010R0000&LanguageCode=es&DocumentPartId=&Action=Launch',
-    imagen: 'https://new.abb.com/images/librariesprovider8/default-album/snk-terminal-blocks.jpg',
-    precio: 1.15
-  },
-  {
-    sku: '1SNK505020R0000',
-    name: 'Borna de paso ZS4-BL azul conexión tornillo paso 4mm2',
-    familia: 'Distribución de potencia',
-    subfamilia: 'Bornas',
-    tipo: 'CARRIL DIN',
-    Gama: 'SNK',
-    Subgama: 'ZS4',
-    pdf_url: 'https://search.abb.com/library/Download.aspx?DocumentID=1SNK505020R0000&LanguageCode=es&DocumentPartId=&Action=Launch',
-    imagen: 'https://new.abb.com/images/librariesprovider8/default-album/snk-terminal-blocks.jpg',
-    precio: 1.20
-  },
-  {
-    sku: '1SNK505150R0000',
-    name: 'Borna de tierra ZS4-PE verde/amarilla conexión tornillo paso 4mm2',
-    familia: 'Distribución de potencia',
-    subfamilia: 'Bornas',
-    tipo: 'CARRIL DIN',
-    Gama: 'SNK',
-    Subgama: 'ZS4-PE',
-    pdf_url: 'https://search.abb.com/library/Download.aspx?DocumentID=1SNK505150R0000&LanguageCode=es&DocumentPartId=&Action=Launch',
-    imagen: 'https://new.abb.com/images/librariesprovider8/default-album/snk-terminal-blocks.jpg',
-    precio: 4.80
-  },
-  {
-    sku: '1SNK506010R0000',
-    name: 'Borna de paso ZS6 gris conexión tornillo paso 6mm2',
-    familia: 'Distribución de potencia',
-    subfamilia: 'Bornas',
-    tipo: 'CARRIL DIN',
-    Gama: 'SNK',
-    Subgama: 'ZS6',
-    pdf_url: 'https://search.abb.com/library/Download.aspx?DocumentID=1SNK506010R0000&LanguageCode=es&DocumentPartId=&Action=Launch',
-    imagen: 'https://new.abb.com/images/librariesprovider8/default-album/snk-terminal-blocks.jpg',
-    precio: 1.60
-  },
-
-  // FUENTES DE ALIMENTACIÓN CP (Automatización -> Fuente alimentación)
-  {
-    sku: '1SVR427041R0000',
-    name: 'Fuente de alimentación conmutada CP-D 24/1.3 24V CC 1.3A 30W',
-    familia: 'Automatización',
-    subfamilia: 'Fuente alimentación',
-    tipo: 'CARRIL DIN',
-    Gama: 'CP-D',
-    Subgama: 'CP-D24',
-    pdf_url: 'https://search.abb.com/library/Download.aspx?DocumentID=1SVR427041R0000&LanguageCode=es&DocumentPartId=&Action=Launch',
-    imagen: 'https://new.abb.com/images/librariesprovider8/default-album/primary-switch-mode-power-supplies.jpg',
-    precio: 44.50
-  },
-  {
-    sku: '1SVR427043R0100',
-    name: 'Fuente de alimentación conmutada CP-D 24/2.5 24V CC 2.5A 60W',
-    familia: 'Automatización',
-    subfamilia: 'Fuente alimentación',
-    tipo: 'CARRIL DIN',
-    Gama: 'CP-D',
-    Subgama: 'CP-D24',
-    pdf_url: 'https://search.abb.com/library/Download.aspx?DocumentID=1SVR427043R0100&LanguageCode=es&DocumentPartId=&Action=Launch',
-    imagen: 'https://new.abb.com/images/librariesprovider8/default-album/primary-switch-mode-power-supplies.jpg',
-    precio: 56.20
-  },
-  {
-    sku: '1SVR427044R0200',
-    name: 'Fuente de alimentación conmutada CP-D 24/4.2 24V CC 4.2A 100W',
-    familia: 'Automatización',
-    subfamilia: 'Fuente alimentación',
-    tipo: 'CARRIL DIN',
-    Gama: 'CP-D',
-    Subgama: 'CP-D24',
-    pdf_url: 'https://search.abb.com/library/Download.aspx?DocumentID=1SVR427044R0200&LanguageCode=es&DocumentPartId=&Action=Launch',
-    imagen: 'https://new.abb.com/images/librariesprovider8/default-album/primary-switch-mode-power-supplies.jpg',
-    precio: 82.00
-  },
-
-  // RELÉS DE SEGURIDAD SENTRY (Automatización -> Relé de Seguridad)
-  {
-    sku: '2TLA010026R0200',
-    name: 'Relé de seguridad Sentry BSR10 24V CC 3 contactos NO + 1 NC',
-    familia: 'Automatización',
-    subfamilia: 'Relé de Seguridad',
-    tipo: 'CARRIL DIN',
-    Gama: 'Sentry',
-    Subgama: 'BSR10',
-    pdf_url: 'https://search.abb.com/library/Download.aspx?DocumentID=2TLA010026R0200&LanguageCode=es&DocumentPartId=&Action=Launch',
-    imagen: 'https://new.abb.com/images/librariesprovider8/default-album/sentry-safety-relays.jpg',
-    precio: 98.00
-  },
-  {
-    sku: '2TLA010028R1000',
-    name: 'Relé de seguridad Sentry SSR10 24V CC 3 contactos NO + 1 NC reset manual/auto',
-    familia: 'Automatización',
-    subfamilia: 'Relé de Seguridad',
-    tipo: 'CARRIL DIN',
-    Gama: 'Sentry',
-    Subgama: 'SSR10',
-    pdf_url: 'https://search.abb.com/library/Download.aspx?DocumentID=2TLA010028R1000&LanguageCode=es&DocumentPartId=&Action=Launch',
-    imagen: 'https://new.abb.com/images/librariesprovider8/default-album/sentry-safety-relays.jpg',
-    precio: 104.50
-  },
-
-  // CARGADORES DE VEHÍCULOS ELÉCTRICOS TERRA AC (Vehículos eléctricos -> Puntos de recarga)
-  {
-    sku: '6AGC082155',
-    name: 'Cargador vehículo eléctrico Terra AC wallbox 7.4kW monofásico cable tipo 2',
-    familia: 'Vehículos eléctricos',
-    subfamilia: 'Puntos de recarga',
-    tipo: 'EMPOTRAR',
-    Gama: 'Terra AC',
-    Subgama: 'Terra-7.4',
-    pdf_url: 'https://search.abb.com/library/Download.aspx?DocumentID=6AGC082155&LanguageCode=es&DocumentPartId=&Action=Launch',
-    imagen: 'https://new.abb.com/images/librariesprovider8/default-album/terra-ac-wallbox-charger.jpg',
-    precio: 645.00
-  },
-  {
-    sku: '6AGC082156',
-    name: 'Cargador vehículo eléctrico Terra AC wallbox 11kW trifásico cable tipo 2',
-    familia: 'Vehículos eléctricos',
-    subfamilia: 'Puntos de recarga',
-    tipo: 'EMPOTRAR',
-    Gama: 'Terra AC',
-    Subgama: 'Terra-11',
-    pdf_url: 'https://search.abb.com/library/Download.aspx?DocumentID=6AGC082156&LanguageCode=es&DocumentPartId=&Action=Launch',
-    imagen: 'https://new.abb.com/images/librariesprovider8/default-album/terra-ac-wallbox-charger.jpg',
-    precio: 785.00
-  },
-  {
-    sku: '6AGC082157',
-    name: 'Cargador vehículo eléctrico Terra AC wallbox 22kW trifásico cable tipo 2',
-    familia: 'Vehículos eléctricos',
-    subfamilia: 'Puntos de recarga',
-    tipo: 'EMPOTRAR',
-    Gama: 'Terra AC',
-    Subgama: 'Terra-22',
-    pdf_url: 'https://search.abb.com/library/Download.aspx?DocumentID=6AGC082157&LanguageCode=es&DocumentPartId=&Action=Launch',
-    imagen: 'https://new.abb.com/images/librariesprovider8/default-album/terra-ac-wallbox-charger.jpg',
-    precio: 890.00
-  },
-
-  // VARIADORES DE FRECUENCIA (Automatización -> Variador velocidad)
-  {
-    sku: '3AXD50000035043',
-    name: 'Variador de frecuencia ACS380-040S-02A6-4 1.1kW 400V trifásico',
-    familia: 'Automatización',
-    subfamilia: 'Variador velocidad',
-    tipo: 'CARRIL DIN',
-    Gama: 'ACS380',
-    Subgama: 'ACS380-040S',
-    pdf_url: 'https://search.abb.com/library/Download.aspx?DocumentID=3AXD50000035043&LanguageCode=es&Action=Launch',
-    imagen: 'https://new.abb.com/images/librariesprovider8/default-album/acs380-machinery-drive.jpg',
-    precio: 345.00
-  },
-  {
-    sku: '3AXD50000038952',
-    name: 'Variador de frecuencia ACS580-01-09A5-4 4kW 400V trifásico IP21',
-    familia: 'Automatización',
-    subfamilia: 'Variador velocidad',
-    tipo: 'MONTAJE EN PARED',
-    Gama: 'ACS580',
-    Subgama: 'ACS580-01',
-    pdf_url: 'https://search.abb.com/library/Download.aspx?DocumentID=3AXD50000038952&LanguageCode=es&Action=Launch',
-    imagen: 'https://new.abb.com/images/librariesprovider8/default-album/acs580-general-purpose-drive.jpg',
-    precio: 520.00
-  },
-
-  // CAJA MOLDEADA TMAX XT (Distribución de potencia -> Interruptor Caja Moldeada)
-  {
-    sku: '1SDA066803R1',
-    name: 'Interruptor automático en caja moldeada Tmax XT1B 160 TMD 160A 3 polos',
-    familia: 'Distribución de potencia',
-    subfamilia: 'Interruptor Caja Moldeada',
-    tipo: 'CAJA MOLDEADA',
-    Gama: 'Tmax XT',
-    Subgama: 'XT1',
-    pdf_url: 'https://search.abb.com/library/Download.aspx?DocumentID=1SDA066803R1&LanguageCode=es&Action=Launch',
-    imagen: 'https://new.abb.com/images/librariesprovider8/default-album/tmax-xt-molded-case-circuit-breakers.jpg',
-    precio: 215.00
-  },
-  {
-    sku: '1SDA067022R1',
-    name: 'Interruptor automático en caja moldeada Tmax XT2N 160 TMD 125A 3 polos',
-    familia: 'Distribución de potencia',
-    subfamilia: 'Interruptor Caja Moldeada',
-    tipo: 'CAJA MOLDEADA',
-    Gama: 'Tmax XT',
-    Subgama: 'XT2',
-    pdf_url: 'https://search.abb.com/library/Download.aspx?DocumentID=1SDA067022R1&LanguageCode=es&Action=Launch',
-    imagen: 'https://new.abb.com/images/librariesprovider8/default-album/tmax-xt-molded-case-circuit-breakers.jpg',
-    precio: 295.00
-  },
-
-  // MÁS MAGNETOTÉRMICOS S200 (Distribución de potencia -> Interruptor Magnetotérmico)
-  {
-    sku: '2CDS253001R0324',
-    name: 'Interruptor magnetotérmico S203-C32 3 polos 32A 6kA',
-    familia: 'Distribución de potencia',
-    subfamilia: 'Interruptor Magnetotérmico',
-    tipo: 'CARRIL DIN',
-    Gama: 'S200',
-    Subgama: 'S203',
-    pdf_url: 'https://search.abb.com/library/Download.aspx?DocumentID=2CDS253001R0324&LanguageCode=es&Action=Launch',
-    imagen: 'https://new.abb.com/images/librariesprovider8/default-album/s200-miniature-circuit-breakers.jpg',
-    precio: 62.10
-  },
-  {
-    sku: '2CDS253001R0404',
-    name: 'Interruptor magnetotérmico S203-C40 3 polos 40A 6kA',
-    familia: 'Distribución de potencia',
-    subfamilia: 'Interruptor Magnetotérmico',
-    tipo: 'CARRIL DIN',
-    Gama: 'S200',
-    Subgama: 'S203',
-    pdf_url: 'https://search.abb.com/library/Download.aspx?DocumentID=2CDS253001R0404&LanguageCode=es&Action=Launch',
-    imagen: 'https://new.abb.com/images/librariesprovider8/default-album/s200-miniature-circuit-breakers.jpg',
-    precio: 68.90
-  },
-  {
-    sku: '2CDS254001R0324',
-    name: 'Interruptor magnetotérmico S204-C32 4 polos 32A 6kA',
-    familia: 'Distribución de potencia',
-    subfamilia: 'Interruptor Magnetotérmico',
-    tipo: 'CARRIL DIN',
-    Gama: 'S200',
-    Subgama: 'S204',
-    pdf_url: 'https://search.abb.com/library/Download.aspx?DocumentID=2CDS254001R0324&LanguageCode=es&Action=Launch',
-    imagen: 'https://new.abb.com/images/librariesprovider8/default-album/s200-miniature-circuit-breakers.jpg',
-    precio: 82.50
-  },
-  {
-    sku: '2CDS254001R0404',
-    name: 'Interruptor magnetotérmico S204-C40 4 polos 40A 6kA',
-    familia: 'Distribución de potencia',
-    subfamilia: 'Interruptor Magnetotérmico',
-    tipo: 'CARRIL DIN',
-    Gama: 'S200',
-    Subgama: 'S204',
-    pdf_url: 'https://search.abb.com/library/Download.aspx?DocumentID=2CDS254001R0404&LanguageCode=es&Action=Launch',
-    imagen: 'https://new.abb.com/images/librariesprovider8/default-album/s200-miniature-circuit-breakers.jpg',
-    precio: 89.90
-  },
-
-  // ROBÓTICA ABB (Robótica -> Robot Industrial, Controlador, Accesorio)
+// Catálogo oficial de Robótica que no se distribuye por canales eléctricos normales (Sonepar)
+const ROBOTICS_CATALOG = [
   {
     sku: 'ABB-IRB-120',
     name: 'Brazo robótico industrial de 6 ejes ABB IRB 120 3kg',
@@ -722,122 +98,440 @@ const FALLBACK_CATALOG = [
 const args = process.argv.slice(2);
 const DRY_RUN = args.includes('--dry-run');
 
-const LOG_FILE = path.join(import.meta.dirname, 'scrape-abb-official.log');
-const REPORT_FILE = path.join(import.meta.dirname, 'scrape-abb-official-report.json');
-
 function log(...args) {
   const line = `[${new Date().toISOString()}] ${args.join(' ')}`;
   console.log(line);
   fs.appendFileSync(LOG_FILE, line + '\n');
 }
 
+// Cargar clave de API de Supabase para consultas directas
+let SUPABASE_KEY = process.env.SONEX_SUPABASE_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY || '';
+if (!SUPABASE_KEY) {
+  try {
+    const envPath = path.join(import.meta.dirname, '../..', '.env');
+    const envContent = fs.readFileSync(envPath, 'utf-8');
+    SUPABASE_KEY = envContent.match(/SONEX_SUPABASE_KEY=(.+)/)?.[1]?.trim() ||
+                   envContent.match(/SUPABASE_SERVICE_ROLE_KEY=(.+)/)?.[1]?.trim() || '';
+  } catch (err) {
+    // ignorar
+  }
+}
+
+// Obtener todas las referencias existentes de ABB para prevenir duplicados en memoria
+async function fetchExistingABBRefs() {
+  log('⌛ Cargando referencias de productos de ABB existentes para evitar duplicados...');
+  const refs = new Set();
+  let offset = 0;
+  const limit = 1000;
+  
+  while (true) {
+    const url = `https://fncmzrnmzmuhlullkrud.supabase.co/rest/v1/products?select=ref_fabricante&marca=eq.ABB&limit=${limit}&offset=${offset}`;
+    const headers = {
+      'apikey': SUPABASE_KEY,
+      'Authorization': `Bearer ${SUPABASE_KEY}`
+    };
+    
+    const res = await fetch(url, { headers });
+    if (!res.ok) {
+      const err = await res.text();
+      throw new Error(`Error Supabase al consultar referencias de ABB: ${res.status} - ${err}`);
+    }
+    
+    const data = await res.json();
+    data.forEach(p => {
+      if (p.ref_fabricante) refs.add(p.ref_fabricante.trim());
+    });
+    
+    if (data.length < limit) break;
+    offset += limit;
+  }
+  
+  log(`✅ Cargadas ${refs.size} referencias de ABB desde Supabase.`);
+  return refs;
+}
+
+// Realizar inserción masiva en Supabase
+async function insertProductsBulk(products) {
+  const url = `https://fncmzrnmzmuhlullkrud.supabase.co/rest/v1/products`;
+  const headers = {
+    'apikey': SUPABASE_KEY,
+    'Authorization': `Bearer ${SUPABASE_KEY}`,
+    'Content-Type': 'application/json'
+  };
+  
+  const res = await fetch(url, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify(products)
+  });
+  
+  if (!res.ok) {
+    const errorText = await res.text();
+    throw new Error(`Error en inserción masiva (POST): ${res.status} - ${errorText}`);
+  }
+}
+
+// Clasificación taxonómica de ABB
+function mapABBProduct(p, brandId) {
+  const name = (p.descripcion || p.nombre || '').trim();
+  const ref = p.refFabricante || p.codigoArticulo || p.ref || '';
+  
+  if (!name || !ref) return null;
+
+  // Valores predeterminados
+  let familia = 'Instalación';
+  let subfamilia = 'Accesorio';
+  let tipo = 'ACCESORIO';
+  let gama = 'Otros';
+  let subgama = '';
+
+  const nameUpper = name.toUpperCase();
+  const fam1Upper = (p.descFam1 || '').toUpperCase();
+  const fam2Upper = (p.descFam2 || '').toUpperCase();
+  const fam3Upper = (p.descFam3 || '').toUpperCase();
+
+  // PVP
+  const pvp = p.pvp || '0';
+  const cleanedPrice = String(pvp).replace(/\./g, '').replace(',', '.').trim();
+  const precio = parseFloat(cleanedPrice) || 0;
+
+  // Imagen
+  let image_url = '';
+  if (p.imagenes && p.imagenes.length > 0) {
+    const imgObj = p.imagenes[0];
+    image_url = typeof imgObj === 'string' ? imgObj : (imgObj.imagen || imgObj.url || '');
+  }
+
+  // PDF
+  const pdf_url = p.urlPdfInfTecnica || '';
+
+  // Reglas de mapeo taxonómico
+  // 1. Interruptores Magnetotérmicos
+  if (
+    (fam1Upper.includes('POTENCIA') || fam2Upper.includes('BAJA TENSION') || fam2Upper.includes('PROTECCION')) &&
+    (nameUpper.includes('INT. AUT.') || nameUpper.includes('MAGNETOTERMICO') || nameUpper.includes('INT.AUT.') || nameUpper.includes('AUTOMATICO') || /S[238]0\d/i.test(nameUpper) || /SH20\d/i.test(nameUpper)) &&
+    !nameUpper.includes('DIFERENCIAL') && !nameUpper.includes('DIF.') && !nameUpper.includes('BLOQUE')
+  ) {
+    familia = 'Distribución de potencia';
+    subfamilia = 'Interruptor Magnetotérmico';
+    tipo = 'CARRIL DIN';
+    gama = 'System Pro M';
+    const mcbMatch = nameUpper.match(/\b(S20\d|S80\d|SH20\d|S30\d)\b/);
+    if (mcbMatch) {
+      gama = mcbMatch[1];
+    }
+  }
+  // 2. Interruptores Diferenciales
+  else if (
+    (fam1Upper.includes('POTENCIA') || fam2Upper.includes('BAJA TENSION') || fam2Upper.includes('DIFERENCIAL')) &&
+    (nameUpper.includes('DIFERENCIAL') || nameUpper.includes('INT.DIF.') || nameUpper.includes('INT. DIF.') || /F20\d/i.test(nameUpper) || /FH20\d/i.test(nameUpper))
+  ) {
+    familia = 'Distribución de potencia';
+    subfamilia = 'Interruptor Diferencial';
+    tipo = 'CARRIL DIN';
+    gama = 'System Pro M';
+    const rcdMatch = nameUpper.match(/\b(F20\d|FH20\d)\b/);
+    if (rcdMatch) {
+      gama = rcdMatch[1];
+    }
+  }
+  // 3. Interruptores Caja Moldeada (MCCB)
+  else if (
+    fam2Upper.includes('CAJA MOLDEADA') || fam3Upper.includes('CAJA MOLDEADA') || nameUpper.includes('TMAX') || nameUpper.includes('XT1') || nameUpper.includes('XT2') || nameUpper.includes('XT3') || nameUpper.includes('XT4') || nameUpper.includes('XT5') || nameUpper.includes('XT6') || nameUpper.includes('XT7')
+  ) {
+    familia = 'Distribución de potencia';
+    subfamilia = 'Interruptor Caja Moldeada';
+    tipo = 'CAJA MOLDEADA';
+    gama = 'Tmax XT';
+    const mccbMatch = nameUpper.match(/\b(XT\d)\b/);
+    if (mccbMatch) {
+      subgama = mccbMatch[1];
+    }
+  }
+  // 4. Guardamotores
+  else if (
+    fam2Upper.includes('MOTOR') || fam3Upper.includes('MOTOR') || nameUpper.includes('GUARDAMOTOR') || /MS116|MS132|MS165/i.test(nameUpper)
+  ) {
+    familia = 'Automatización';
+    subfamilia = 'Guardamotor';
+    tipo = 'CARRIL DIN';
+    gama = 'MS Series';
+    const guardMatch = nameUpper.match(/\b(MS116|MS132|MS165)\b/i);
+    if (guardMatch) {
+      gama = guardMatch[1].toUpperCase();
+    }
+  }
+  // 5. Contactores
+  else if (
+    nameUpper.includes('CONTACTOR') || nameUpper.includes('CONT.') || /AF09|AF12|AF16|AF26|AF30|AF38|AF40|AF52|AF65|AF80|AF96/i.test(nameUpper)
+  ) {
+    familia = 'Automatización';
+    subfamilia = 'Contactor';
+    tipo = 'CARRIL DIN';
+    gama = 'AF Series';
+    const contMatch = nameUpper.match(/\b(AF\d+)\b/i);
+    if (contMatch) {
+      gama = contMatch[1].toUpperCase();
+    }
+  }
+  // 6. Bornas
+  else if (
+    fam2Upper.includes('BORNAS') || fam3Upper.includes('BORNAS') || fam3Upper.includes('CONEXION') || nameUpper.includes('BORNA') || nameUpper.includes('ZS4') || nameUpper.includes('ZS6') || nameUpper.includes('ZS10')
+  ) {
+    familia = 'Distribución de potencia';
+    subfamilia = 'Bornas';
+    tipo = 'CARRIL DIN';
+    gama = 'SNK';
+  }
+  // 7. Fuente Alimentación
+  else if (
+    (nameUpper.includes('FUENTE') && (nameUpper.includes('ALIMENTACION') || nameUpper.includes('TENSION'))) || /CP-D|CP-E|CP-S|CP-C/i.test(nameUpper)
+  ) {
+    familia = 'Automatización';
+    subfamilia = 'Fuente alimentación';
+    tipo = 'CARRIL DIN';
+    gama = 'CP Series';
+    const pwrMatch = nameUpper.match(/\b(CP-[DECS])\b/i);
+    if (pwrMatch) {
+      gama = pwrMatch[1].toUpperCase();
+    }
+  }
+  // 8. Relé de Control / Relé de Seguridad
+  else if (nameUpper.includes('SENTRY') || nameUpper.includes('SSR10') || nameUpper.includes('BSR10')) {
+    familia = 'Automatización';
+    subfamilia = 'Relé de Seguridad';
+    tipo = 'CARRIL DIN';
+    gama = 'Sentry';
+  } else if (nameUpper.includes('RELE') || /CR-[MPU]/i.test(nameUpper)) {
+    familia = 'Automatización';
+    subfamilia = 'Relé de Control';
+    tipo = 'CARRIL DIN';
+    gama = 'CR Series';
+  }
+  // 9. Interruptor Seccionador
+  else if (nameUpper.includes('SECCIONADOR') || nameUpper.includes('OTP') || /OT[123468]\d/i.test(nameUpper)) {
+    familia = 'Distribución de potencia';
+    subfamilia = 'Interruptor Seccionador';
+    tipo = 'CARRIL DIN';
+    gama = 'OT Series';
+  }
+  // 10. Puntos de recarga
+  else if (nameUpper.includes('TERRA') || nameUpper.includes('WALLBOX') || nameUpper.includes('RECUPERACION VEHICULO') || nameUpper.includes('RVE')) {
+    familia = 'Vehículos eléctricos';
+    subfamilia = 'Puntos de recarga';
+    tipo = 'WALLBOX';
+    gama = 'Terra AC';
+  }
+  // 11. Variador velocidad
+  else if (nameUpper.includes('VARIADOR') || /ACS\d{3}/i.test(nameUpper)) {
+    familia = 'Automatización';
+    subfamilia = 'Variador velocidad';
+    tipo = 'CARRIL DIN';
+    gama = 'ACS Series';
+    const drvMatch = nameUpper.match(/\b(ACS\d+)\b/i);
+    if (drvMatch) {
+      gama = drvMatch[1].toUpperCase();
+    }
+  }
+  // 12. Cajas / Envolventes
+  else if (fam2Upper.includes('ENVOLVENTES') || fam2Upper.includes('CUADROS') || nameUpper.includes('ARMARIO') || nameUpper.includes('MISTRAL') || nameUpper.includes('ARIA') || nameUpper.includes('GEMINI')) {
+    familia = 'Distribución de potencia';
+    subfamilia = 'Caja Distribucion';
+    tipo = 'CUADROS';
+    if (nameUpper.includes('MISTRAL')) gama = 'System Pro E Comfort';
+    else if (nameUpper.includes('ARIA')) gama = 'Aria';
+    else if (nameUpper.includes('GEMINI')) gama = 'Gemini';
+    else gama = 'Enclosures';
+  }
+  // 13. Pulsadores / Pilotos
+  else if (nameUpper.includes('PULSADOR') || nameUpper.includes('SELECTOR') || nameUpper.includes('PILOTO') || /CP1|CP2|CP3|MP1|MP2|MP3/i.test(nameUpper)) {
+    familia = 'Automatización';
+    subfamilia = 'Pulsador';
+    tipo = 'ELEMENTO MANDO';
+    gama = 'Compact';
+  }
+  // 14. Accesorios / Auxiliares
+  else if (nameUpper.includes('CONTACTO AUXILIAR') || nameUpper.includes('BOBINA') || nameUpper.includes('ACCESORIO') || nameUpper.includes('BLOQUE') || nameUpper.includes('PASACABL') || nameUpper.includes('CONTRAPUERTA') || nameUpper.includes('FIJACION') || nameUpper.includes('PUENTE') || /S2C-/i.test(nameUpper)) {
+    const isPotencia = fam1Upper.includes('POTENCIA') || fam2Upper.includes('BAJA TENSION');
+    familia = isPotencia ? 'Distribución de potencia' : 'Automatización';
+    subfamilia = 'Accesorio';
+    tipo = 'ACCESORIO';
+    gama = 'Accessories';
+  }
+  // 15. Robótica
+  else if (nameUpper.includes('ROBOT') || nameUpper.includes('IRB ') || nameUpper.includes('OMNICORE') || nameUpper.includes('FLEXPENDANT')) {
+    familia = 'Robótica';
+    if (nameUpper.includes('IRB')) {
+      subfamilia = 'Robot Industrial';
+      tipo = '6 EJES';
+    } else if (nameUpper.includes('OMNICORE') || nameUpper.includes('IRC5')) {
+      subfamilia = 'Controlador de Robot';
+      tipo = 'CONTROLADOR';
+    } else {
+      subfamilia = 'Accesorio de Robot';
+      tipo = 'CONSOLA';
+    }
+    gama = 'Robotics';
+  }
+  // 16. Domótica
+  else if (fam1Upper.includes('DOMOTICA') || fam2Upper.includes('KNX') || nameUpper.includes('KNX')) {
+    familia = 'Automatización de edificios';
+    subfamilia = 'Actuador KNX';
+    tipo = 'CARRIL DIN';
+    gama = 'i-bus KNX';
+  }
+
+  // Refinado de gama si quedó en Otros
+  if (gama === 'Otros') {
+    const firstWord = name.split(/[ ,-\/]/)[0];
+    if (firstWord && firstWord.length > 2 && firstWord.length < 15 && /^[A-Z0-9]+$/i.test(firstWord)) {
+      gama = firstWord;
+    }
+  }
+
+  return {
+    ref_fabricante: ref.trim(),
+    name: name.substring(0, 150),
+    marca: MARCA,
+    brand_id: brandId,
+    familia: familia,
+    subfamilia: subfamilia,
+    tipo: tipo,
+    Gama: gama,
+    Subgama: subgama,
+    imagen: image_url || '',
+    pdf_url: pdf_url || '',
+    precio: precio
+  };
+}
+
 async function main() {
-  log('=== INICIO SCRAPING ABB OFICIAL ===');
+  log('=== INICIO SCRAPING Y EXTRACCIÓN MASIVA ABB ===');
 
   const report = {
-    totalProductos: 0,
+    totalProductosScan: 0,
+    candidatosABB: 0,
     nuevos: 0,
     duplicados: 0,
     errores: 0,
     inicio: new Date().toISOString(),
-    fin: null,
-    scrapedOnline: false,
-    useFallback: false
+    fin: null
   };
 
-  let scrapedProducts = [];
-  let browser = null;
+  if (!SUPABASE_KEY) {
+    log('❌ Error: Falta la clave de Supabase en las variables de entorno o archivo .env');
+    process.exit(1);
+  }
 
+  // 1. Obtener referencias existentes para deduplicación instantánea
+  let existingRefs = new Set();
   try {
-    log('Iniciando navegador Playwright para new.abb.com/es...');
-    browser = await chromium.launch({
-      headless: true,
-      args: [
-        '--no-sandbox',
-        '--disable-setuid-sandbox',
-        '--disable-http2',
-        '--disable-gpu'
-      ]
-    });
-
-    const context = await browser.newContext({
-      userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-      locale: 'es-ES'
-    });
-
-    const page = await context.newPage();
-    
-    log('Navegando a la home de ABB España...');
-    const response = await page.goto(WEBSITE_URL, { waitUntil: 'domcontentloaded', timeout: 30000 });
-    
-    if (response.status() === 403 || response.status() === 401) {
-      throw new Error(`Acceso denegado por WAF (HTTP ${response.status()})`);
-    }
-
-    await page.waitForTimeout(2000); // 2s delay
-
-    // ABB usa dinámicas muy complejas, provocamos la activación del fallback
-    throw new Error('Estructura web de ABB protegida/dinámica. Activando catálogo precompilado oficial...');
-
+    existingRefs = await fetchExistingABBRefs();
   } catch (err) {
-    log(`Scraping interactivo no completado: ${err.message}`);
-    log(`⚠️ Activando mecanismo de FALLBACK con catálogo precompilado de ABB (${FALLBACK_CATALOG.length} productos)...`);
-    scrapedProducts = FALLBACK_CATALOG;
-    report.useFallback = true;
-  } finally {
-    if (browser) {
-      await browser.close();
+    log(`⚠️ Advertencia cargando referencias: ${err.message}. Se asume base de datos vacía.`);
+  }
+
+  // 2. Escanear chunks de Sonepar
+  log(`📂 Escaneando chunks de Sonepar en: ${CHUNKS_DIR}`);
+  if (!fs.existsSync(CHUNKS_DIR)) {
+    log(`❌ Directorio de chunks no existe: ${CHUNKS_DIR}`);
+    process.exit(1);
+  }
+
+  const files = fs.readdirSync(CHUNKS_DIR).filter(f => f.startsWith('S') && f.endsWith('.json') && !f.includes('progress'));
+  log(`Encontrados ${files.length} archivos de chunks.`);
+
+  const productsToProcess = [];
+
+  // Leer Sonepar chunks
+  for (const file of files) {
+    const filePath = path.join(CHUNKS_DIR, file);
+    try {
+      const content = fs.readFileSync(filePath, 'utf-8');
+      const products = JSON.parse(content);
+      report.totalProductosScan += products.length;
+
+      for (const p of products) {
+        const brandRaw = (p.marca || p.nombreFabricante || '').trim().toUpperCase();
+        if (brandRaw.includes('ABB')) {
+          report.candidatosABB++;
+          const mapped = mapABBProduct(p, BRAND_ID);
+          if (mapped) {
+            productsToProcess.push(mapped);
+          }
+        }
+      }
+    } catch (err) {
+      log(`❌ Error leyendo ${file}: ${err.message}`);
     }
   }
 
-  // Inserción en Supabase
-  log(`Procesando inserción de ${scrapedProducts.length} productos para ABB...`);
-  report.totalProductos = scrapedProducts.length;
+  // 3. Fusionar con catálogo de Robótica
+  log(`🤖 Añadiendo catálogo estático de Robótica (${ROBOTICS_CATALOG.length} productos)...`);
+  for (const r of ROBOTICS_CATALOG) {
+    productsToProcess.push({
+      ref_fabricante: r.sku,
+      name: r.name,
+      marca: MARCA,
+      brand_id: BRAND_ID,
+      familia: r.familia,
+      subfamilia: r.subfamilia,
+      tipo: r.tipo,
+      Gama: r.Gama,
+      Subgama: r.Subgama,
+      imagen: r.imagen || '',
+      pdf_url: r.pdf_url || '',
+      precio: r.precio || 0
+    });
+  }
 
-  for (const product of scrapedProducts) {
-    try {
-      if (!DRY_RUN) {
-        const exists = await checkRefExists(product.sku);
-        if (exists) {
-          log(`  [Duplicado] SKU=${product.sku} ya existe. Omitiendo.`);
-          report.duplicados++;
-          continue;
-        }
+  log(`📊 Candidatos totales a procesar (Sonepar + Robótica): ${productsToProcess.length}`);
 
-        const record = {
-          ref_fabricante: product.sku,
-          name: product.name,
-          marca: MARCA,
-          brand_id: BRAND_ID,
-          familia: product.familia,
-          subfamilia: product.subfamilia,
-          tipo: product.tipo,
-          Gama: product.Gama,
-          Subgama: product.Subgama,
-          imagen: product.imagen || '',
-          pdf_url: product.pdf_url || '',
-          precio: product.precio || 0
-        };
-
-        await insertProduct(record);
-        log(`  [Insertado] SKU=${product.sku} - ${product.name}`);
-        report.nuevos++;
-      } else {
-        log(`  [DRY-RUN] Guardaría: SKU=${product.sku}, Nombre="${product.name}"`);
-        report.nuevos++;
-      }
-    } catch (err) {
-      log(`  [Error] SKU=${product.sku}: ${err.message}`);
-      report.errores++;
+  // 4. Filtrar duplicados
+  const finalBatch = [];
+  for (const p of productsToProcess) {
+    if (existingRefs.has(p.ref_fabricante)) {
+      report.duplicados++;
+    } else {
+      finalBatch.push(p);
+      // Evitar meter duplicados dentro del mismo lote leído
+      existingRefs.add(p.ref_fabricante);
     }
+  }
+
+  log(`🆕 Candidatos únicos nuevos a insertar: ${finalBatch.length}`);
+
+  // 5. Inserción masiva en lotes de 100
+  if (finalBatch.length > 0) {
+    if (DRY_RUN) {
+      log(`[DRY-RUN] Se omiten las inserciones en la base de datos.`);
+      report.nuevos = finalBatch.length;
+    } else {
+      const batchSize = 100;
+      for (let i = 0; i < finalBatch.length; i += batchSize) {
+        const batch = finalBatch.slice(i, i + batchSize);
+        try {
+          await insertProductsBulk(batch);
+          report.nuevos += batch.length;
+          log(`   ✅ Lote insertado: ${report.nuevos}/${finalBatch.length}`);
+        } catch (err) {
+          log(`   ❌ Error insertando lote: ${err.message}`);
+          report.errores += batch.length;
+        }
+      }
+    }
+  } else {
+    log('✅ No hay nuevos productos únicos de ABB para insertar.');
   }
 
   report.fin = new Date().toISOString();
   log('=== RESUMEN SCRAPING ABB OFICIAL ===');
-  log(`Productos totales: ${report.totalProductos}`);
-  log(`Nuevos insertados: ${report.nuevos}`);
+  log(`Total productos escaneados en Sonepar: ${report.totalProductosScan}`);
+  log(`Total candidatos de ABB encontrados: ${report.candidatosABB}`);
+  log(`Nuevos insertados/procesados: ${report.nuevos}`);
   log(`Duplicados omitidos: ${report.duplicados}`);
   log(`Errores: ${report.errores}`);
+  log(`Duración: ${new Date(report.fin) - new Date(report.inicio)}ms`);
 
   fs.writeFileSync(REPORT_FILE, JSON.stringify(report, null, 2));
   log(`Reporte guardado en: ${REPORT_FILE}`);
