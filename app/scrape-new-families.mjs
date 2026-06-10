@@ -6,9 +6,21 @@ import { firefox } from 'playwright';
 import { launchOptions } from 'camoufox-js';
 import fs from 'fs';
 
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const SUPABASE_URL = 'https://fncmzrnmzmuhlullkrud.supabase.co';
-const SUPABASE_KEY = fs.readFileSync('/home/abu/github_repos/proyecto-pfc-iago-duran/app/.env', 'utf-8')
-  .match(/SONEX_SUPABASE_KEY=(.+)/)?.[1]?.trim() || '';
+
+let SUPABASE_KEY = '';
+try {
+  const envContent = fs.readFileSync(path.join(__dirname, '.env'), 'utf-8');
+  SUPABASE_KEY = envContent.match(/SONEX_SUPABASE_KEY=(.+)/)?.[1]?.trim() ||
+                 envContent.match(/SUPABASE_SERVICE_ROLE_KEY=(.+)/)?.[1]?.trim() || '';
+} catch (err) {
+  SUPABASE_KEY = process.env.SONEX_SUPABASE_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY || '';
+}
+
 const H = { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' };
 
 const NEW_FAMILIES = [

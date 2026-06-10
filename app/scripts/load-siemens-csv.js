@@ -144,7 +144,7 @@ function normalizeProduct(row, brandId) {
     name: row.name?.trim() || ref,
     marca: 'Siemens',
     brand_id: brandId,
-    familia: row.familia?.toUpperCase() || 'DISTRIBUCION DE POTENCIA',
+    familia: row.familia?.trim() || 'Distribución de potencia',
     subfamilia: row.subfamilia?.trim() || 'Interruptor Magnetotérmico',
     tipo: row.tipo?.trim() || 'CARRIL DIN',
     Gama: Gama || 'Siemens',

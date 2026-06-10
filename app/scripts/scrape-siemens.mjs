@@ -55,7 +55,7 @@ const GAMAS = {
   }
 };
 
-const FAMILIA = 'DISTRIBUCION DE POTENCIA';
+const FAMILIA = 'Distribución de potencia';
 const MARCA = 'Siemens';
 let BRAND_ID = null;
 const BASE_URL = 'https://new.siemens.com/es/es.html';

@@ -2,8 +2,24 @@
  * Cliente API REST para Supabase SONEX — tabla products
  */
 
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
 const SONEX_URL = 'https://fncmzrnmzmuhlullkrud.supabase.co';
-const SONEX_KEY = process.env.SONEX_SUPABASE_KEY || '';
+let SONEX_KEY = process.env.SONEX_SUPABASE_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY || '';
+
+if (!SONEX_KEY) {
+  try {
+    const __dirname = path.dirname(fileURLToPath(import.meta.url));
+    const envPath = path.join(__dirname, '../..', '.env');
+    const envContent = fs.readFileSync(envPath, 'utf-8');
+    SONEX_KEY = envContent.match(/SONEX_SUPABASE_KEY=(.+)/)?.[1]?.trim() ||
+                envContent.match(/SUPABASE_SERVICE_ROLE_KEY=(.+)/)?.[1]?.trim() || '';
+  } catch (err) {
+    // Fallback silencioso
+  }
+}
 
 const HEADERS = {
   'apikey': SONEX_KEY,
@@ -80,6 +96,14 @@ export async function getAllProductIds() {
   return fetchAPI('products?select=id,ref_fabricante,brand_id&limit=10000');
 }
 
+export async function updateProduct(id, updates) {
+  return fetchAPI(`products?id=eq.${id}`, {
+    method: 'PATCH',
+    headers: { ...HEADERS, 'Prefer': 'return=representation' },
+    body: JSON.stringify(updates)
+  });
+}
+
 export default {
   insertProduct,
   checkRefExists,
@@ -87,5 +111,6 @@ export default {
   getBrands,
   insertBrand,
   updateProductsByMarca,
-  getAllProductIds
+  getAllProductIds,
+  updateProduct
 };

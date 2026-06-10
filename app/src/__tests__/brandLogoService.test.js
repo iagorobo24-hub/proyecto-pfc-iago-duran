@@ -25,6 +25,26 @@ describe('getBrandLogoData', () => {
     expect(result.logo).toBe('/logos/siemens.png')
   })
 
+  it('returns logo for Eaton', () => {
+    const result = getBrandLogoData('Eaton')
+    expect(result.logo).toBe('/logos/eaton.svg')
+  })
+
+  it('returns logo for Finder', () => {
+    const result = getBrandLogoData('Finder')
+    expect(result.logo).toBe('/logos/finder.svg')
+  })
+
+  it('returns logo for Circutor', () => {
+    const result = getBrandLogoData('Circutor')
+    expect(result.logo).toBe('/logos/circutor.png')
+  })
+
+  it('returns logo for Phoenix Contact', () => {
+    const result = getBrandLogoData('Phoenix Contact')
+    expect(result.logo).toBe('/logos/phoenix.svg')
+  })
+
   it('returns null logo with gradient for unknown brand', () => {
     const result = getBrandLogoData('Unknown Brand XYZ')
     expect(result.logo).toBeNull()

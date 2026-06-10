@@ -23,6 +23,10 @@ const BRAND_METADATA: Record<string, { logo: string; color: string }> = {
   'SMA SOLAR': { logo: '/logos/sma.png', color: '#009640' },
   'PYLONTECH': { logo: '/logos/pylontech.png', color: '#336699' },
   'LEGRAND': { logo: '/logos/legrand.png', color: '#E0001A' },
+  'EATON': { logo: '/logos/eaton.svg', color: '#DA291C' },
+  'FINDER': { logo: '/logos/finder.svg', color: '#005A9C' },
+  'CIRCUTOR': { logo: '/logos/circutor.png', color: '#E30613' },
+  'PHOENIX CONTACT': { logo: '/logos/phoenix.svg', color: '#007A58' },
 }
 
 const GRADIENT_PAIRS: [string, string][] = [

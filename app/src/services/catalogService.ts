@@ -47,6 +47,7 @@ const etiquetasFamilias: Record<string, string> = {
   'AUTOMATIZACION': 'Automatización',
   'AUTOMATIZACION INDUSTRIAL': 'Automatización',
   'CONTROL Y AUTOMATIZACION INDUSTRIAL': 'Automatización',
+  'CONTROL Y AUTOMATIZACION': 'Automatización',
   'AUTOMACION INDUSTRIAL': 'Automatización',
   
   /* Automatización de edificios (domótica) */

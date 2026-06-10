@@ -23,7 +23,7 @@ import { insertProduct, checkRefExists, getProductsCount } from './lib/supabase-
 import fs from 'fs';
 import path from 'path';
 
-const FAMILIA = 'DISTRIBUCION DE POTENCIA';
+const FAMILIA = 'Distribución de potencia';
 const MARCA = 'Schneider Electric';
 const BRAND_ID = 456;
 const BASE_URL = 'https://www.se.com';

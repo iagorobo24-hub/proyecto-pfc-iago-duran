@@ -52,7 +52,7 @@ const GAMAS = {
   //        Usar scrape-schneider-ik60.mjs (generación de referencias).
 };
 
-const FAMILIA = 'DISTRIBUCION DE POTENCIA';
+const FAMILIA = 'Distribución de potencia';
 const MARCA = 'Schneider Electric';
 const BASE_URL = 'https://www.se.com';
 
