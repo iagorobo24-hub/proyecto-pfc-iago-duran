@@ -166,6 +166,7 @@ export default async function handler(req, res) {
     };
 
     let response;
+    let data;
     let isFallback = false;
     let currentModel = model;
 
