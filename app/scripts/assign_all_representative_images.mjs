@@ -90,6 +90,39 @@ async function fetchAllProducts() {
   return all;
 }
 
+function cleanRef(ref) {
+  if (!ref) return '';
+  return String(ref).toUpperCase().replace(/[^A-Z0-9]/g, '').trim();
+}
+
+function isLogoUrl(url) {
+  if (!url) return false;
+  const lower = url.toLowerCase();
+  
+  if (lower.includes('/logos/') || lower.includes('logo') || lower.includes('cleanpng')) {
+    return true;
+  }
+  
+  const brandLogos = [
+    'schneider.png', 'schneider.jpg', 'schneider.svg',
+    'legrand.png', 'legrand.jpg', 'legrand.svg',
+    'siemens.png', 'siemens.jpg', 'siemens.svg',
+    'abb.png', 'abb.jpg', 'abb.svg',
+    'eaton.svg', 'eaton.png', 'eaton.jpg',
+    'finder.svg', 'finder.png', 'finder.jpg',
+    'circutor.png', 'circutor.jpg', 'circutor.svg',
+    'phoenix.svg', 'phoenix.png', 'phoenix.jpg'
+  ];
+  
+  for (const bl of brandLogos) {
+    if (lower.endsWith('/' + bl)) {
+      return true;
+    }
+  }
+  
+  return false;
+}
+
 // Cargar todas las imágenes de los chunks de Sonepar locales
 function loadImagesFromSoneparChunks() {
   console.log('📂 Escaneando chunks de Sonepar en busca de imágenes exactas...');
@@ -112,8 +145,11 @@ function loadImagesFromSoneparChunks() {
             const imgObj = p.imagenes[0];
             image_url = typeof imgObj === 'string' ? imgObj : (imgObj.imagen || imgObj.url || '');
           }
-          if (image_url) {
-            refImageMap[ref.trim()] = image_url;
+          if (image_url && !isLogoUrl(image_url)) {
+            const cleaned = cleanRef(ref);
+            if (cleaned) {
+              refImageMap[cleaned] = image_url;
+            }
           }
         }
       });
@@ -134,12 +170,13 @@ async function main() {
   const products = await fetchAllProducts();
   const chunkImages = loadImagesFromSoneparChunks();
 
-  // Separar productos que ya tienen imagen de los que no
+  // Separar productos que ya tienen una foto real de los que no (vacíos o logos)
   const productsWithImage = [];
   const productsWithoutImage = [];
 
   products.forEach(p => {
-    if (p.imagen && p.imagen.trim() !== '') {
+    const img = p.imagen ? p.imagen.trim() : '';
+    if (img && !isLogoUrl(img)) {
       productsWithImage.push(p);
     } else {
       productsWithoutImage.push(p);
@@ -147,11 +184,11 @@ async function main() {
   });
 
   console.log(`\n📊 Estado del catálogo:`);
-  console.log(`  - Con imagen: ${productsWithImage.length} productos`);
-  console.log(`  - Sin imagen: ${productsWithoutImage.length} productos (para resolver)`);
+  console.log(`  - Con foto real: ${productsWithImage.length} productos`);
+  console.log(`  - Sin foto real (vacíos o con logo): ${productsWithoutImage.length} productos (para resolver)`);
 
   if (productsWithoutImage.length === 0) {
-    console.log('\n✅ ¡Perfecto! El 100% de los productos ya tienen imagen. Saliendo.');
+    console.log('\n✅ ¡Perfecto! El 100% de los productos ya tienen una foto real. Saliendo.');
     return;
   }
 
@@ -178,7 +215,7 @@ async function main() {
   });
 
   // Pipeline de asignación
-  console.log('\n📊 Asignando imágenes a registros vacíos...');
+  console.log('\n📊 Asignando imágenes a registros vacíos o con logo...');
   const assignments = [];
   let soneparMatches = 0;
   let subgamaMatches = 0;
@@ -188,6 +225,7 @@ async function main() {
 
   productsWithoutImage.forEach(p => {
     const ref = p.ref_fabricante ? p.ref_fabricante.trim() : '';
+    const cleaned = cleanRef(ref);
     const brandKey = String(p.marca || '').trim().toLowerCase();
     const sg = String(p.Subgama || '').trim();
     const ga = String(p.Gama || '').trim();
@@ -196,9 +234,9 @@ async function main() {
     let targetImage = null;
     let strategy = '';
 
-    // 1. Coincidencia exacta por chunk
-    if (ref && chunkImages[ref]) {
-      targetImage = chunkImages[ref];
+    // 1. Coincidencia exacta por chunk (con referencia normalizada)
+    if (cleaned && chunkImages[cleaned]) {
+      targetImage = chunkImages[cleaned];
       strategy = 'sonepar_exact';
       soneparMatches++;
     }
