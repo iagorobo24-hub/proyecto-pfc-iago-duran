@@ -162,7 +162,7 @@ export default async function handler(req, res) {
         const errData = await response.json().catch(() => ({}));
         console.error('[AI API] Stream error:', errData);
         res.setHeader('Content-Type', 'application/json');
-        return res.status(502).json({ error: 'AI provider error. Please try again.' });
+        return res.status(502).json({ error: 'AI provider error. Please try again.', details: errData });
       }
 
       res.setHeader('Content-Type', 'text/event-stream');
@@ -211,7 +211,7 @@ export default async function handler(req, res) {
 
     if (!response.ok) {
       console.error('[AI API] Provider error:', data);
-      return res.status(502).json({ error: 'AI provider error. Please try again.' });
+      return res.status(502).json({ error: 'AI provider error. Please try again.', details: data });
     }
 
     // Normalize response format
