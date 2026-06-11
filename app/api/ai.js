@@ -10,6 +10,8 @@ const PROVIDERS = {
     models: [
       'anthropic/claude-3.5-haiku',
       'meta-llama/llama-3.3-70b-instruct:free',
+      'google/gemma-4-31b-it:free',
+      'meta-llama/llama-3.2-3b-instruct:free',
       'deepseek/deepseek-r1:free',
       'qwen/qwen-2.5-72b-instruct:free',
       'google/gemini-flash-1.5-8b',
@@ -53,6 +55,12 @@ function isCreditError(status, errorData) {
   if (status === 402) return true;
   const msg = JSON.stringify(errorData).toLowerCase();
   return msg.includes('credits') || msg.includes('balance') || msg.includes('afford') || msg.includes('insufficient');
+}
+
+function isRateLimitError(status, errorData) {
+  if (status === 429 || status === 503 || status === 502) return true;
+  const msg = JSON.stringify(errorData).toLowerCase();
+  return msg.includes('rate-limited') || msg.includes('rate limit') || msg.includes('overloaded') || msg.includes('too many requests');
 }
 
 export default async function handler(req, res) {
@@ -159,27 +167,50 @@ export default async function handler(req, res) {
 
     let response;
     let isFallback = false;
+    let currentModel = model;
 
-    if (stream) {
-      body.stream = true;
-      response = await fetch(endpoint, {
+    const FREE_FALLBACKS = [
+      'meta-llama/llama-3.3-70b-instruct:free',
+      'google/gemma-4-31b-it:free',
+      'meta-llama/llama-3.2-3b-instruct:free'
+    ];
+
+    const makeStreamRequest = async (modelName) => {
+      body.model = modelName;
+      return await fetch(endpoint, {
         method: 'POST',
         headers,
         body: JSON.stringify(body)
       });
+    };
+
+    if (stream) {
+      body.stream = true;
+      response = await makeStreamRequest(currentModel);
 
       if (!response.ok) {
-        const errData = await response.json().catch(() => ({}));
+        const errData = await response.clone().json().catch(() => ({}));
         console.error('[AI API] Stream error:', errData);
-        if (isCreditError(response.status, errData) && !body.model.endsWith(':free')) {
-          console.warn('[AI API] Credit limit hit. Retrying stream with free fallback model.');
-          body.model = 'meta-llama/llama-3.3-70b-instruct:free';
+        if (isCreditError(response.status, errData) && !currentModel.endsWith(':free')) {
+          console.warn('[AI API] Credit limit hit in stream. Switching to free fallback model.');
           isFallback = true;
-          response = await fetch(endpoint, {
-            method: 'POST',
-            headers,
-            body: JSON.stringify(body)
-          });
+          currentModel = FREE_FALLBACKS[0];
+          response = await makeStreamRequest(currentModel);
+        }
+      }
+
+      if (!response.ok) {
+        const errData = await response.clone().json().catch(() => ({}));
+        if (isRateLimitError(response.status, errData)) {
+          console.warn(`[AI API] Stream model ${currentModel} rate limited. Trying fallbacks...`);
+          for (const fallbackModel of FREE_FALLBACKS) {
+            if (fallbackModel === currentModel) continue;
+            console.warn(`[AI API] Retrying stream with: ${fallbackModel}`);
+            isFallback = true;
+            currentModel = fallbackModel;
+            response = await makeStreamRequest(currentModel);
+            if (response.ok) break;
+          }
         }
       }
 
@@ -196,7 +227,7 @@ export default async function handler(req, res) {
       res.flushHeaders();
 
       if (isFallback) {
-        res.write(`data: ${JSON.stringify({ content: "⚠️ *[Nota: Usando modelo alternativo gratuito Llama 3.3 por falta de créditos en OpenRouter]*\n\n" })}\n\n`);
+        res.write(`data: ${JSON.stringify({ content: `⚠️ *[Nota: Usando modelo alternativo gratuito (${currentModel.split('/')[1].split(':')[0].toUpperCase()}) por límite de cuota o créditos en OpenRouter]*\n\n` })}\n\n`);
       }
 
       const reader = response.body.getReader();
@@ -230,26 +261,44 @@ export default async function handler(req, res) {
       return res.end();
     }
 
-    response = await fetch(endpoint, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify(body)
-    });
+    const makeRequest = async (modelName) => {
+      body.model = modelName;
+      const resObj = await fetch(endpoint, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(body)
+      });
+      const dataJson = await resObj.json().catch(() => ({}));
+      return { resObj, dataJson };
+    };
 
-    let data = await response.json();
+    let result = await makeRequest(currentModel);
+    response = result.resObj;
+    data = result.dataJson;
 
     if (!response.ok) {
       console.error('[AI API] Provider error:', data);
-      if (isCreditError(response.status, data) && !body.model.endsWith(':free')) {
-        console.warn('[AI API] Credit limit hit. Retrying with free fallback model.');
-        body.model = 'meta-llama/llama-3.3-70b-instruct:free';
+      if (isCreditError(response.status, data) && !currentModel.endsWith(':free')) {
+        console.warn('[AI API] Credit limit hit. Switching to free models.');
         isFallback = true;
-        response = await fetch(endpoint, {
-          method: 'POST',
-          headers,
-          body: JSON.stringify(body)
-        });
-        data = await response.json();
+        currentModel = FREE_FALLBACKS[0];
+        result = await makeRequest(currentModel);
+        response = result.resObj;
+        data = result.dataJson;
+      }
+    }
+
+    if (!response.ok && isRateLimitError(response.status, data)) {
+      console.warn(`[AI API] Model ${currentModel} rate limited. Trying fallbacks...`);
+      for (const fallbackModel of FREE_FALLBACKS) {
+        if (fallbackModel === currentModel) continue;
+        console.warn(`[AI API] Retrying with: ${fallbackModel}`);
+        isFallback = true;
+        currentModel = fallbackModel;
+        result = await makeRequest(currentModel);
+        response = result.resObj;
+        data = result.dataJson;
+        if (response.ok) break;
       }
     }
 
@@ -271,7 +320,7 @@ export default async function handler(req, res) {
     return res.status(200).json({
       text,
       provider,
-      model: body.model,
+      model: currentModel,
       fallback: isFallback
     });
 
