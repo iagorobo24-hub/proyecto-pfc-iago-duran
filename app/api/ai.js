@@ -9,6 +9,7 @@ const PROVIDERS = {
     baseUrl: 'https://openrouter.ai/api/v1',
     models: [
       'anthropic/claude-3.5-haiku',
+      'meta-llama/llama-3.3-70b-instruct:free',
       'deepseek/deepseek-r1:free',
       'qwen/qwen-2.5-72b-instruct:free',
       'google/gemini-flash-1.5-8b',
@@ -24,7 +25,7 @@ const PROVIDERS = {
 };
 
 const DEFAULT_PROVIDER = 'openrouter';
-const DEFAULT_MODEL = 'anthropic/claude-3.5-haiku';
+const DEFAULT_MODEL = 'meta-llama/llama-3.3-70b-instruct:free';
 const MAX_TOKENS_CAP = 4096;
 const ALLOWED_ORIGINS = [
   'https://proyecto-pfc-iago-duran.vercel.app',
@@ -46,6 +47,12 @@ function isRateLimited(ip) {
   }
   entry.count++;
   return entry.count > RATE_LIMIT_MAX;
+}
+
+function isCreditError(status, errorData) {
+  if (status === 402) return true;
+  const msg = JSON.stringify(errorData).toLowerCase();
+  return msg.includes('credits') || msg.includes('balance') || msg.includes('afford') || msg.includes('insufficient');
 }
 
 export default async function handler(req, res) {
@@ -150,9 +157,12 @@ export default async function handler(req, res) {
       temperature: safeTemperature
     };
 
+    let response;
+    let isFallback = false;
+
     if (stream) {
       body.stream = true;
-      const response = await fetch(endpoint, {
+      response = await fetch(endpoint, {
         method: 'POST',
         headers,
         body: JSON.stringify(body)
@@ -161,6 +171,21 @@ export default async function handler(req, res) {
       if (!response.ok) {
         const errData = await response.json().catch(() => ({}));
         console.error('[AI API] Stream error:', errData);
+        if (isCreditError(response.status, errData) && !body.model.endsWith(':free')) {
+          console.warn('[AI API] Credit limit hit. Retrying stream with free fallback model.');
+          body.model = 'meta-llama/llama-3.3-70b-instruct:free';
+          isFallback = true;
+          response = await fetch(endpoint, {
+            method: 'POST',
+            headers,
+            body: JSON.stringify(body)
+          });
+        }
+      }
+
+      if (!response.ok) {
+        const errData = await response.json().catch(() => ({}));
+        console.error('[AI API] Final stream error:', errData);
         res.setHeader('Content-Type', 'application/json');
         return res.status(502).json({ error: 'AI provider error. Please try again.', details: errData });
       }
@@ -169,6 +194,10 @@ export default async function handler(req, res) {
       res.setHeader('Cache-Control', 'no-cache');
       res.setHeader('Connection', 'keep-alive');
       res.flushHeaders();
+
+      if (isFallback) {
+        res.write(`data: ${JSON.stringify({ content: "⚠️ *[Nota: Usando modelo alternativo gratuito Llama 3.3 por falta de créditos en OpenRouter]*\n\n" })}\n\n`);
+      }
 
       const reader = response.body.getReader();
       const decoder = new TextDecoder();
@@ -201,16 +230,31 @@ export default async function handler(req, res) {
       return res.end();
     }
 
-    const response = await fetch(endpoint, {
+    response = await fetch(endpoint, {
       method: 'POST',
       headers,
       body: JSON.stringify(body)
     });
 
-    const data = await response.json();
+    let data = await response.json();
 
     if (!response.ok) {
       console.error('[AI API] Provider error:', data);
+      if (isCreditError(response.status, data) && !body.model.endsWith(':free')) {
+        console.warn('[AI API] Credit limit hit. Retrying with free fallback model.');
+        body.model = 'meta-llama/llama-3.3-70b-instruct:free';
+        isFallback = true;
+        response = await fetch(endpoint, {
+          method: 'POST',
+          headers,
+          body: JSON.stringify(body)
+        });
+        data = await response.json();
+      }
+    }
+
+    if (!response.ok) {
+      console.error('[AI API] Final provider error:', data);
       return res.status(502).json({ error: 'AI provider error. Please try again.', details: data });
     }
 
@@ -227,7 +271,8 @@ export default async function handler(req, res) {
     return res.status(200).json({
       text,
       provider,
-      model
+      model: body.model,
+      fallback: isFallback
     });
 
   } catch (error) {

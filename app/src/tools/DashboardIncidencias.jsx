@@ -81,7 +81,7 @@ export default function DashboardIncidencias() {
     try {
       const { callAnthropicAI, parseAIJsonResponse } = await import('../services/anthropicService')
       const { text } = await callAnthropicAI({
-        model: 'anthropic/claude-3.5-haiku', max_tokens: 1000,
+        model: 'meta-llama/llama-3.3-70b-instruct:free', max_tokens: 1000,
         system: `Eres un técnico de mantenimiento industrial con 15 años de experiencia.\nIncidencia: ${inc.equipo}\nZona: ${inc.zona}\nSíntoma: ${inc.sintoma}\nSeveridad: ${inc.severidad}\n\nResponde con JSON: {"causa_probable":"...","pasos_verificacion":["...","...","..."],"solucion":"...","medidas_preventivas":["...","..."]}`,
         messages: [{ role: 'user', content: 'Diagnostica esta incidencia.' }],
       })

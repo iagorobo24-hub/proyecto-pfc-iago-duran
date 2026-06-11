@@ -49,7 +49,7 @@ export default function useFichasTecnicas() {
         // 2. BUSCAR CARACTERÍSTICAS ADICIONALES CON IA
         try {
           const { text } = await callAnthropicAI({
-            model: 'anthropic/claude-3.5-haiku',
+            model: 'meta-llama/llama-3.3-70b-instruct:free',
             max_tokens: 800,
             system: `Eres un asistente técnico de Proyectos PFC. El producto es: ${productoReal.nombre} (Ref: ${productoReal.ref_fabricante}). Proporciona solo las características técnicas en JSON:
 {"caracteristicas": ["característica 1", "característica 2"], "aplicaciones": ["app 1"], "normas": ["norma 1"]}`,
@@ -84,7 +84,7 @@ export default function useFichasTecnicas() {
 
       // 3. SI NO HAY RESULTADOS REALES, PREGUNTAR A LA IA (RAG)
       const { text } = await callAnthropicAI({
-        model: 'anthropic/claude-3.5-haiku',
+        model: 'meta-llama/llama-3.3-70b-instruct:free',
         max_tokens: 1000,
         system: SYSTEM_FICHA,
         messages: [{ role: 'user', content: q }],

@@ -138,7 +138,7 @@ export default function SimuladorAlmacen() {
       try {
         const { callAnthropicAI } = await import('../services/anthropicService');
         const { text } = await callAnthropicAI({ 
-          model: "anthropic/claude-3.5-haiku", 
+          model: "meta-llama/llama-3.3-70b-instruct:free", 
           max_tokens: 800, 
           messages: [{ role: "user", content: PROMPT_ANALISIS(pedidoActivo, todosTiempos, pedidoActivo.categoria, incResueltas, operario.nombre) }] 
         });

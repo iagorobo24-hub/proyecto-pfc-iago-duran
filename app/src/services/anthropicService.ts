@@ -102,7 +102,7 @@ export async function callAnthropicAI(body: AIRequestBody): Promise<AIResponse> 
       },
       body: JSON.stringify({
         provider: body.provider || 'openrouter',
-        model: body.model || 'anthropic/claude-3.5-haiku',
+        model: body.model || 'meta-llama/llama-3.3-70b-instruct:free',
         messages: body.messages || [],
         system: body.system || '',
         max_tokens: body.max_tokens || 1000,
@@ -193,7 +193,7 @@ export async function callAnthropicAIStream(
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         provider: body.provider || 'openrouter',
-        model: body.model || 'anthropic/claude-3.5-haiku',
+        model: body.model || 'meta-llama/llama-3.3-70b-instruct:free',
         messages: body.messages || [],
         system: body.system || '',
         max_tokens: body.max_tokens || 1000,

@@ -71,7 +71,7 @@ function construirGrupos(subfamiliasConTipos) {
 
   try {
     const { text } = await callAnthropicAI({
-      model: 'anthropic/claude-3.5-haiku',
+      model: 'meta-llama/llama-3.3-70b-instruct:free',
       max_tokens: 1000,
       system: `Eres un técnico especialista en material eléctrico e industrial.
 Dado un producto con su nombre, marca y referencia, busca mentalmente en tu conocimiento técnico y responde ÚNICAMENTE con este JSON (sin markdown ni backticks):

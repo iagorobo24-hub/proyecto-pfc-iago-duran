@@ -188,7 +188,7 @@ ${modoInstrucciones[modoActivo] || modoInstrucciones.busqueda}${categoriaTexto}$
       await callAnthropicAIStream(
         {
           provider: 'openrouter',
-          model: "anthropic/claude-3.5-haiku",
+          model: "meta-llama/llama-3.3-70b-instruct:free", 
           max_tokens: 1000,
           system: buildSystemPrompt(catalogContext),
           messages: historial,

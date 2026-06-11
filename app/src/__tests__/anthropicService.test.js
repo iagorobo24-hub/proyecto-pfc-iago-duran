@@ -135,7 +135,7 @@ describe('callAnthropicAI', () => {
 
     const callBody = JSON.parse(fetch.mock.calls[0][1].body)
     expect(callBody.provider).toBe('openrouter')
-    expect(callBody.model).toBe('anthropic/claude-3.5-haiku')
+    expect(callBody.model).toBe('meta-llama/llama-3.3-70b-instruct:free')
     expect(callBody.max_tokens).toBe(1000)
     expect(callBody.temperature).toBe(0.7)
     expect(callBody.stream).toBeUndefined()

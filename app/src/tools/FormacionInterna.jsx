@@ -107,7 +107,7 @@ export default function FormacionInterna() {
     setCargandoIA(true); setPlanIA("");
     try {
       const { callAnthropicAI } = await import('../services/anthropicService');
-      const { text } = await callAnthropicAI({ model: "anthropic/claude-3.5-haiku", max_tokens: 1000, system: "Eres el responsable de formación de la empresa.", messages: [{ role: "user", content: PROMPT_PLAN(emp, modulos, progresos[emp.id] || {}) }] });
+      const { text } = await callAnthropicAI({ model: "meta-llama/llama-3.3-70b-instruct:free", max_tokens: 1000, system: "Eres el responsable de formación de la empresa.", messages: [{ role: "user", content: PROMPT_PLAN(emp, modulos, progresos[emp.id] || {}) }] });
       setPlanIA(text || "Error al generar el plan.");
     } catch { setPlanIA("Error al generar el plan."); }
     setCargandoIA(false);
