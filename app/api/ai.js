@@ -227,9 +227,7 @@ export default async function handler(req, res) {
       res.setHeader('Connection', 'keep-alive');
       res.flushHeaders();
 
-      if (isFallback) {
-        res.write(`data: ${JSON.stringify({ content: `⚠️ *[Nota: Usando modelo alternativo gratuito (${currentModel.split('/')[1].split(':')[0].toUpperCase()}) por límite de cuota o créditos en OpenRouter]*\n\n` })}\n\n`);
-      }
+
 
       const reader = response.body.getReader();
       const decoder = new TextDecoder();
