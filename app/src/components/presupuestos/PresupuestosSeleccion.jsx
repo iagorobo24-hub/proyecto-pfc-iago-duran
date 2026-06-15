@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo, Fragment } from 'react'
 import { useNavigate } from 'react-router-dom'
 import catalogService from '../../services/catalogService'
 import Button from '../ui/Button'
+import ProductImage from '../ui/ProductImage'
 import { usePresupuestosContext } from './PresupuestosContext'
 import styles from '../../tools/Presupuestos.module.css'
 
@@ -273,13 +274,12 @@ export default function PresupuestosSeleccion() {
                   {vecesAnadido > 0 && (
                     <span className={styles.productCard__added}>✓ ×{vecesAnadido}</span>
                   )}
-                  {prod.imagen && (
-                    <img
-                      src={prod.imagen}
-                      alt={key}
-                      style={{ width: '40px', height: '40px', objectFit: 'contain', borderRadius: '4px', marginTop: '8px', alignSelf: 'center' }}
-                    />
-                  )}
+                  <ProductImage
+                    src={prod.imagen}
+                    alt={key}
+                    marca={prod.marca}
+                    style={{ width: '40px', height: '40px', objectFit: 'contain', borderRadius: '4px', marginTop: '8px', alignSelf: 'center' }}
+                  />
                 </button>
               )
             })}

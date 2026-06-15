@@ -34,6 +34,7 @@ export default function StepFicha({
           desc={fichaDesc}
           price={referencia.precio}
           image={referencia.imagen}
+          marca={referencia.marca}
           specs={[
             ['Marca', referencia.marca],
             ['Familia', referencia.familia],

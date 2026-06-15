@@ -56,8 +56,8 @@ const etiquetasFamilias: Record<string, string> = {
   'DOMOTICA Y CONTROL': 'Automatización de edificios',
   
   /* Distribución de potencia */
-  'DISTRIBUCION DE POTENCIA': 'Distribución de potencia',
-  'POTENCIA': 'Distribución de potencia',
+  'DISTRIBUCION DE POTENCIA': 'Protecciones y Cuadros',
+  'POTENCIA': 'Protecciones y Cuadros',
   
   /* Instalación */
   'INSTALACION': 'Instalación',

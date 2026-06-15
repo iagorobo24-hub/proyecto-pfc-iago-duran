@@ -1,13 +1,17 @@
+import ProductImage from '../ui/ProductImage'
 import styles from './LinearFichaCard.module.css'
 
-export default function LinearFichaCard({ refCode, desc, price, specs, actions, image, className = '' }) {
+export default function LinearFichaCard({ refCode, desc, price, specs, actions, image, marca, className = '' }) {
   return (
     <div className={`${styles.card} ${className}`}>
-      {image && (
-        <div className={styles.imageWrap}>
-          <img src={image} alt={refCode || desc} className={styles.image} loading="lazy" />
-        </div>
-      )}
+      <div className={styles.imageWrap}>
+        <ProductImage
+          src={image}
+          alt={refCode || desc}
+          marca={marca}
+          className={styles.image}
+        />
+      </div>
 
       <div className={styles.header}>
         <div>

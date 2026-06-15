@@ -17,8 +17,8 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const CHUNKS_DIR = path.join(__dirname, '../sonepar-catalog-scraper');
-const PROGRESS_FILE = path.join(__dirname, '../scrape-schneider-images-progress.json');
+const CHUNKS_DIR = path.join(__dirname, '../../..', 'sonepar-catalog-scraper');
+const PROGRESS_FILE = path.join(__dirname, '../../..', 'scrape-schneider-images-progress.json');
 
 // ─── Environment Variables ─────────────────────────────────────────────────
 let SUPABASE_URL = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || '';
@@ -26,7 +26,7 @@ let SUPABASE_KEY = process.env.SONEX_SUPABASE_KEY || process.env.SUPABASE_SERVIC
 
 if (!SUPABASE_URL || !SUPABASE_KEY) {
   try {
-    const envPath = path.join(__dirname, '..', '.env');
+    const envPath = path.join(__dirname, '../../..', '.env');
     if (fs.existsSync(envPath)) {
       const envContent = fs.readFileSync(envPath, 'utf-8');
       SUPABASE_URL = envContent.match(/SUPABASE_URL=(.+)/)?.[1]?.trim() ||
@@ -81,7 +81,7 @@ async function fetchSchneiderProducts() {
   while (hasMore) {
     const from = page * pageSize;
     const to = from + pageSize - 1;
-    const url = `${SUPABASE_URL}/rest/v1/products?select=id,ref_fabricante,name,imagen&marca=eq.${encodeURIComponent('Schneider Electric')}&limit=${pageSize}&offset=${from}&order=id`;
+    const url = `${SUPABASE_URL}/rest/v1/products?select=id,ref_fabricante,name,imagen,imagen_verificacion_estado&marca=eq.${encodeURIComponent('Schneider Electric')}&limit=${pageSize}&offset=${from}&order=id`;
     const res = await fetch(url, { headers: HEADERS });
     if (!res.ok) {
       throw new Error(`Error fetching products: ${res.status} - ${await res.text()}`);
@@ -134,10 +134,7 @@ function getChunkReferences() {
 
 async function checkCdnUrl(url) {
   try {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 4000);
-    const res = await fetch(url, { method: 'HEAD', signal: controller.signal });
-    clearTimeout(timeoutId);
+    const res = await fetch(url, { method: 'HEAD', signal: AbortSignal.timeout(4000) });
     return res.status === 200;
   } catch {
     return false;
@@ -227,7 +224,9 @@ async function main() {
   // Filtrar productos que no tienen coincidencia exacta en Sonepar (necesitan scrapeado)
   const targetProducts = products.filter(p => {
     const cleaned = cleanRef(p.ref_fabricante);
-    return !chunkRefs.has(cleaned);
+    const hasSonepar = chunkRefs.has(cleaned);
+    const needsImage = !p.imagen || p.imagen.trim() === '' || p.imagen_verificacion_estado === null;
+    return !hasSonepar && needsImage;
   });
 
   console.log(`\n📊 Análisis del Catálogo Schneider Electric:`);
@@ -346,6 +345,7 @@ async function main() {
   console.log(`  - Productos actualizados en Supabase:   ${dbSuccessCount}`);
   console.log(`  - Errores de escritura en DB:           ${dbErrorCount}`);
   console.log('======================================================');
+  process.exit(0);
 }
 
 main().catch(err => {

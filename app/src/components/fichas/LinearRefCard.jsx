@@ -1,22 +1,26 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import ProductImage from '../ui/ProductImage'
 import styles from './LinearRefCard.module.css'
 
 export default function LinearRefCard({ code, desc, price, onClick, image, marca, className = '' }) {
-  const initials = code ? code.slice(0, 2).toUpperCase() : '??'
   const [imgError, setImgError] = useState(false)
-  const showImage = image && !imgError
+
+  useEffect(() => {
+    setImgError(false)
+  }, [image])
 
   return (
     <button className={`${styles.card} ${className}`} onClick={onClick}>
       <div className={styles.imageWrap}>
-        {showImage ? (
-          <>
-            <img src={image} alt={code} className={styles.image} loading="lazy" onError={() => setImgError(true)} />
-            <span className={styles.badge}>REF</span>
-          </>
-        ) : (
-          <div className={styles.imageFallback}>{initials}</div>
-        )}
+        <ProductImage
+          src={image}
+          alt={code}
+          marca={marca}
+          className={styles.image}
+          fallbackClassName={styles.imageFallback}
+          onError={() => setImgError(true)}
+        />
+        {image && !imgError && <span className={styles.badge}>REF</span>}
       </div>
       <div className={styles.info}>
         <div className={styles.code} title={code}>{code}</div>
