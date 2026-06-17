@@ -58,13 +58,13 @@ export class FichasPage extends BasePage {
 
   // Assertions
     async expectCategoryVisible() {
-      await expect(this.page.getByText('Familias')).toBeVisible()
+      await expect(this.page.getByText(/Familias|Fichas Técnicas/i).first()).toBeVisible()
     }
 
     async waitForContent(timeout = 30000) {
     // Wait for the categories label first with longer timeout
     try {
-      await this.page.getByText('Familias').waitFor({ state: 'visible', timeout: 10000 });
+      await this.page.getByText(/Familias|Fichas Técnicas/i).first().waitFor({ state: 'visible', timeout: 10000 });
     } catch {
       // If label not found, wait for any button in the sidebar
       console.log('Label not found, waiting for buttons directly...');

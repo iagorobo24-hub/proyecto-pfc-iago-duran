@@ -341,6 +341,25 @@ Evolución del sistema de logos:
 
 ---
 
+## Fase 20 — SONEX con intenciones y cards de catálogo (17 jun 2026)
+
+**Logro:** SONEX deja de depender de extraer referencias desde texto generado por IA para las consultas de producto y consulta primero el catálogo real.
+
+**Características:**
+- Detector determinista de intención, tipo de producto y requisitos técnicos.
+- Búsqueda estructurada en Supabase con ranking local de coincidencias exactas, parciales y relacionadas.
+- Cards visuales en SONEX con productos verificados del catálogo, referencia, marca, specs coincidentes y acciones.
+- Deep link SONEX → Fichas Técnicas mediante `?ref=`.
+- Deep link SONEX → Presupuestos con `nuevo=1` para crear un presupuesto limpio con la partida cargada.
+- Historial enviado a IA limitado a mensajes recientes para reducir contexto innecesario.
+
+**Verificación:**
+- Tests unitarios para parser de intención, normalización técnica y ranking.
+- E2E específico para SONEX → cards → Fichas → Presupuestos.
+- Revisión de regresión en navegación principal y auditoría de tema claro/oscuro.
+
+---
+
 ## Estado actual (Junio 2026)
 
 **Stack:**

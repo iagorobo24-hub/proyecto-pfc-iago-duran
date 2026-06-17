@@ -15,6 +15,7 @@ import { getCategoriaMeta } from '../data/categories'
 import { useToast } from '../contexts/ToastContext'
 import { useSonex } from '../hooks/useSonex'
 import { trackEvent } from '../hooks/useAnalytics'
+import SonexProductResults from '../components/sonex/SonexProductResults'
 import styles from './Sonex.module.css'
 
 // Modos de operación técnica disponibles en el panel lateral
@@ -96,18 +97,40 @@ export default function Sonex() {
   /**
    * Navega a la vista de fichas técnicas filtrando por una referencia determinada.
    */
-  const irAFicha = (referencia) => { 
-    navigate(`/app/fichas?ref=${encodeURIComponent(referencia)}`); 
-    toast.show(`Abriendo ficha de ${referencia}`, 'success'); 
+  const getProductRef = (item) => item?.ref_fabricante || item?.ref || item || ''
+
+  const irAFicha = (item) => {
+    const referencia = getProductRef(item)
+    if (!referencia) return
+    trackEvent('sonex', 'sonex_open_ficha', referencia)
+    navigate(`/app/fichas?ref=${encodeURIComponent(referencia)}`)
+    toast.show(`Abriendo ficha de ${referencia}`, 'success')
   };
 
   /**
    * Redirige al asistente de presupuestos cargando el producto detectado.
    */
-  const irAPresupuesto = (item) => { 
-    navigate(`/app/presupuestos?${new URLSearchParams({ producto: item.desc, referencia: item.ref })}`); 
-    toast.show(`${item.ref} añadido al presupuesto`, 'success'); 
+  const irAPresupuesto = (item) => {
+    const referencia = getProductRef(item)
+    if (!referencia) return
+    const producto = item?.name || item?.desc || ''
+    const precio = item?.precio ? String(item.precio) : '0'
+    const params = new URLSearchParams({
+      nuevo: '1',
+      producto,
+      referencia,
+      precio,
+    })
+    trackEvent('sonex', 'sonex_add_budget', referencia)
+    navigate(`/app/presupuestos?${params.toString()}`)
+    toast.show(`${referencia} añadido a un presupuesto nuevo`, 'success')
   };
+
+  const copiarReferencia = async (referencia) => {
+    if (!referencia) return
+    await navigator.clipboard.writeText(referencia)
+    toast.show(`Referencia "${referencia}" copiada`, 'success')
+  }
 
   // Texto acumulado durante el streaming de la respuesta de la IA
   const [streamingText, setStreamingText] = useState('');
@@ -164,23 +187,94 @@ ${modoInstrucciones[modoActivo] || modoInstrucciones.busqueda}${categoriaTexto}$
 
     trackEvent('ia', 'consulta', modoActivo, userMessage.length)
     try {
-      // ── BUNDLE SIZE OPTIMIZATION (Dynamic Imports) ──
-      // Importar dinámicamente servicios y contextos del catálogo bajo demanda de la primera consulta
-      const { callAnthropicAIStream } = await import('../services/anthropicService');
-      const { buildCatalogContext } = await import('../services/sonexCatalogContext');
-      
       const aiMsgId = userMsgId + 1;
-      
-      // Obtener bloque de contexto RAG del catálogo técnico
-      const catalogContext = await buildCatalogContext(userMessage, categoriaActiva);
+      const { prepareSonexTurn } = await import('../services/sonexTurnOrchestrator');
+      const turn = await prepareSonexTurn(userMessage, { activeCategory: categoriaActiva });
 
-      // Crear burbuja de mensaje vacía para recibir el streaming de la IA
-      guardarMensaje({ id: aiMsgId, role: "assistant", content: '', timestamp: new Date(), referencias: [] });
+      trackEvent('sonex', 'sonex_intent_detected', turn.intent, turn.criteria.confidence)
+
+      if (turn.kind === 'clarification') {
+        guardarMensaje({
+          id: aiMsgId,
+          role: "assistant",
+          content: turn.assistantMessage || 'Necesito algún dato técnico más para buscar referencias exactas.',
+          timestamp: new Date(),
+          referencias: [],
+          catalogCards: [],
+          externalCards: [],
+          criteria: turn.criteria,
+          intent: turn.intent,
+        });
+        setStreamingText('');
+        return;
+      }
 
       const historial = messages
         .filter(m => m.content)
+        .slice(-8)
         .map(m => ({ role: m.role, content: m.content }));
       historial.push({ role: "user", content: userMessage });
+
+      const { callAnthropicAIStream } = await import('../services/anthropicService');
+
+      if (turn.kind === 'catalog') {
+        const catalogCards = turn.catalogCards || [];
+        trackEvent('sonex', 'sonex_catalog_results', turn.intent, catalogCards.length)
+        guardarMensaje({
+          id: aiMsgId,
+          role: "assistant",
+          content: '',
+          timestamp: new Date(),
+          referencias: [],
+          catalogCards,
+          externalCards: turn.externalCards || [],
+          criteria: turn.criteria,
+          intent: turn.intent,
+        });
+
+        let fullText = '';
+        try {
+          await callAnthropicAIStream(
+            {
+              provider: 'openrouter',
+              model: "meta-llama/llama-3.3-70b-instruct:free",
+              max_tokens: 800,
+              system: buildSystemPrompt(turn.catalogContext),
+              messages: historial,
+            },
+            (chunk) => {
+              fullText += chunk;
+              setStreamingText(fullText);
+            }
+          );
+        } catch (error) {
+          trackEvent('ia', 'error', modoActivo, error?.message || 'unknown')
+          fullText = turn.assistantMessage || 'He preparado resultados de catálogo verificados para revisar.';
+        }
+
+        guardarMensaje({
+          id: aiMsgId,
+          role: "assistant",
+          content: fullText || turn.assistantMessage || '',
+          timestamp: new Date(),
+          referencias: [],
+          catalogCards,
+          externalCards: turn.externalCards || [],
+          criteria: turn.criteria,
+          intent: turn.intent,
+        });
+        if (catalogCards.length > 0) {
+          setRefsTurno(prev => [...prev, ...catalogCards.map(result => result.product)]);
+        }
+        setStreamingText('');
+        return;
+      }
+
+      // ── BUNDLE SIZE OPTIMIZATION (Dynamic Imports) ──
+      // Importar dinámicamente el contexto textual del catálogo solo para consultas generales
+      const { buildCatalogContext } = await import('../services/sonexCatalogContext');
+      const catalogContext = await buildCatalogContext(userMessage, categoriaActiva);
+      guardarMensaje({ id: aiMsgId, role: "assistant", content: '', timestamp: new Date(), referencias: [] });
 
       let fullText = '';
       
@@ -208,8 +302,9 @@ ${modoInstrucciones[modoActivo] || modoInstrucciones.busqueda}${categoriaTexto}$
       trackEvent('ia', 'error', modoActivo, error?.message || 'unknown')
       toast.show("Error al procesar la consulta");
       setStreamingText('');
+    } finally {
+      setIsLoading(false);
     }
-    setIsLoading(false);
   };
 
   const handleCategoriaClick = (categoriaId) => {
@@ -323,9 +418,9 @@ ${modoInstrucciones[modoActivo] || modoInstrucciones.busqueda}${categoriaTexto}$
               <div className={styles.seccion}>
                 <div className={styles.seccionLabel}>REFERENCIAS EN TURNO ({refsTurno.length})</div>
                 {refsTurno.slice(0, 5).map((ref, i) => (
-                  <button key={i} className={styles.refCard} onClick={() => irAFicha(ref.ref)}>
-                    <span className={styles.refCard__ref}>{ref.ref}</span>
-                    <span className={styles.refCard__desc}>{ref.desc}</span>
+                  <button key={getProductRef(ref) || i} className={styles.refCard} onClick={() => irAFicha(ref)}>
+                    <span className={styles.refCard__ref}>{getProductRef(ref)}</span>
+                    <span className={styles.refCard__desc}>{ref.name || ref.desc}</span>
                   </button>
                 ))}
               </div>
@@ -369,13 +464,22 @@ ${modoInstrucciones[modoActivo] || modoInstrucciones.busqueda}${categoriaTexto}$
                         : <div className={styles.markdownContent} dangerouslySetInnerHTML={{ __html: renderMarkdown(displayContent) }} />
                       }
                     </div>
+                    {message.role === 'assistant' && (message.catalogCards?.length > 0 || message.externalCards?.length > 0) && (
+                      <SonexProductResults
+                        catalogCards={message.catalogCards || []}
+                        externalCards={message.externalCards || []}
+                        onOpenFicha={irAFicha}
+                        onAddBudget={irAPresupuesto}
+                        onCopyRef={copiarReferencia}
+                      />
+                    )}
                     {/* Botones de acción contextuales para referencias detectadas en el texto */}
-                    {message.role === 'assistant' && message.referencias && message.referencias.length > 0 && (
+                    {message.role === 'assistant' && !(message.catalogCards?.length > 0) && message.referencias && message.referencias.length > 0 && (
                       <div className={styles.messageRefs}>
                         {message.referencias.map(item => (
-                          <div key={item.ref} className={styles.messageRef}>
-                            <button onClick={() => irAFicha(item.ref)} className={styles.messageRefBtn}>
-                              📄 Ficha: {item.ref}
+                          <div key={getProductRef(item)} className={styles.messageRef}>
+                            <button onClick={() => irAFicha(item)} className={styles.messageRefBtn}>
+                              📄 Ficha: {getProductRef(item)}
                             </button>
                             <button onClick={() => irAPresupuesto(item)} className={`${styles.messageRefBtn} ${styles.messageRefBtnSecondary}`}>
                               💶 Añadir
@@ -396,13 +500,13 @@ ${modoInstrucciones[modoActivo] || modoInstrucciones.busqueda}${categoriaTexto}$
           {/* Loader de burbuja mientras se espera la primera respuesta de red de la IA */}
           {isLoading && !streamingText && (
             <div className={styles.message}>
-              <div className={styles.message__avatar} style={{ background: 'var(--blue-800)', color: 'var(--white)' }}>S</div>
+              <div className={`${styles.message__avatar} ${styles.loadingAvatar}`}>S</div>
               <div className={styles.message__content}>
-                <div className={styles.message__bubble} style={{ background: 'var(--white)', border: '1px solid var(--gray-100)' }}>
+                <div className={`${styles.message__bubble} ${styles.loadingBubble}`}>
                   <div className={styles.loadingDots}>
                     {[0, 1, 2].map(i => <div key={i} className={styles.loadingDots__dot} />)}
                   </div>
-                  <span style={{ fontSize: '12px', color: 'var(--gray-400)', fontStyle: 'italic', marginLeft: '8px' }}>SONEX está escribiendo...</span>
+                  <span className={styles.loadingText}>SONEX está escribiendo...</span>
                 </div>
               </div>
             </div>

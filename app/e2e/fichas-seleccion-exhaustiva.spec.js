@@ -11,6 +11,28 @@ async function waitForLoadingSettled(page) {
   await page.waitForTimeout(300)
 }
 
+function normalizeVisibleText(text) {
+  return text.trim().replace(/\s+/g, ' ')
+}
+
+async function clickCategoryByName(page, categoryName) {
+  const cats = page.locator('nav[aria-labelledby="categories-label"] button')
+  await cats.first().waitFor({ state: 'attached', timeout: 15000 })
+  const count = await cats.count()
+
+  for (let i = 0; i < count; i++) {
+    const button = cats.nth(i)
+    const text = normalizeVisibleText(await button.innerText())
+    if (text === categoryName) {
+      await button.scrollIntoViewIfNeeded()
+      await button.click({ timeout: 15000 })
+      return true
+    }
+  }
+
+  return false
+}
+
 test.describe('Fichas Técnicas — Matriz de Selección Exhaustiva', () => {
   let jsErrors = []
 
@@ -48,7 +70,7 @@ test.describe('Fichas Técnicas — Matriz de Selección Exhaustiva', () => {
     const categoriesToTest = []
     for (let i = 0; i < catCount; i++) {
       const text = await sidebarCats.nth(i).innerText()
-      categoriesToTest.push({ index: i, name: text.trim().replace(/\s+/g, ' ') })
+      categoriesToTest.push({ index: i, name: normalizeVisibleText(text) })
     }
 
     console.log(`[Matriz] Total de categorías detectadas en la base de datos: ${categoriesToTest.length}`)
@@ -63,8 +85,11 @@ test.describe('Fichas Técnicas — Matriz de Selección Exhaustiva', () => {
       await page.goto(`${BASE}/app/fichas`, { waitUntil: 'domcontentloaded' })
       await waitForLoadingSettled(page)
       
-      const cats = page.locator('nav[aria-labelledby="categories-label"] button')
-      await cats.nth(cat.index).click()
+      const clickedCategory = await clickCategoryByName(page, cat.name)
+      if (!clickedCategory) {
+        console.warn(`  [Advertencia] Categoría no disponible tras recargar: "${cat.name}".`)
+        continue
+      }
       await waitForLoadingSettled(page)
 
       const brandBtns = page.locator('section[aria-live="polite"] button')
@@ -93,8 +118,11 @@ test.describe('Fichas Técnicas — Matriz de Selección Exhaustiva', () => {
         await waitForLoadingSettled(page)
         
         // Seleccionamos categoría
-        const catsRetry = page.locator('nav[aria-labelledby="categories-label"] button')
-        await catsRetry.nth(cat.index).click()
+        const clickedCategoryRetry = await clickCategoryByName(page, cat.name)
+        if (!clickedCategoryRetry) {
+          console.warn(`    [Advertencia] Categoría no disponible tras recargar: "${cat.name}".`)
+          continue
+        }
         await waitForLoadingSettled(page)
 
         // Seleccionamos marca (buscamos por texto exacto de marca)

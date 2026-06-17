@@ -113,7 +113,7 @@ export default defineConfig({
   },
   // Configuración de las pruebas con Vitest
   test: {
-    include: ['src/__tests__/**/*.test.js'],
+    include: ['src/__tests__/**/*.test.{js,ts}'],
     exclude: ['e2e/**', 'tests/**', 'node_modules/**'],
   },
 })

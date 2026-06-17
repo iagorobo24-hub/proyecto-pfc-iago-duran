@@ -25,6 +25,7 @@ export default function PresupuestosLayout() {
   const [sugerenciasBusqueda, setSugerenciasBusqueda] = useState([])
   const [busquedaCargando, setBusquedaCargando] = useState(false)
   const debounceRef = useRef(null)
+  const processedImportRef = useRef('')
 
   useEffect(() => {
     catalogService.getCategorias().then(dbCats => {
@@ -53,14 +54,48 @@ export default function PresupuestosLayout() {
   }, [consulta])
 
   useEffect(() => {
-    const producto = searchParams.get('producto')
+    const nuevo = searchParams.get('nuevo') === '1'
+    const productoParam = searchParams.get('producto')
     const referencia = searchParams.get('referencia')
-    const precio = searchParams.get('precio')
-    if (producto && referencia) {
-      hook.dispatchPartidas({ type: 'ADD_FROM_CATALOG', ref: referencia, desc: producto, precio: parseFloat(precio) || 0 })
+    const precioParam = searchParams.get('precio')
+    const importKey = `${nuevo ? 'nuevo' : 'add'}:${referencia || ''}:${productoParam || ''}`
+
+    if (!referencia || processedImportRef.current === importKey) return
+    processedImportRef.current = importKey
+
+    let cancelled = false
+    async function importFromQuery() {
+      let producto = productoParam
+      let precio = parseFloat(precioParam) || 0
+
+      if (!producto) {
+        const catalogProduct = await catalogService.getProductoPorRef(referencia)
+        if (cancelled) return
+        if (catalogProduct) {
+          producto = catalogProduct.name
+          precio = precio || catalogProduct.precio || 0
+        }
+      }
+
+      if (nuevo) {
+        hook.dispatchPartidas({ type: 'CLEAR' })
+        hook.setCategoria('')
+        setNumPresupuesto(genNum())
+      }
+
+      hook.dispatchPartidas({
+        type: 'ADD_FROM_CATALOG',
+        ref: referencia,
+        desc: producto || referencia,
+        precio,
+      })
+      toast.show(`${referencia} añadido al presupuesto`, 'success')
       navigate('/app/presupuestos/editor', { replace: true })
     }
-  }, [])
+
+    importFromQuery()
+    return () => { cancelled = true }
+  }, [searchParams, hook.dispatchPartidas, hook.setCategoria, navigate, toast])
 
   const guardarPresupuesto = useCallback(() => {
     if (hook.partidas.length === 0) { toast.show('Añade al menos un producto', 'error'); return }
