@@ -52,11 +52,31 @@ function escapeRegExp(value) {
   return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 }
 
+async function openSonexWithRangeResult(page) {
+  await mockAuth(page)
+  await mockAi(page)
+  await page.goto(`${BASE}/app/sonex`, { waitUntil: 'domcontentloaded' })
+  await page.locator('textarea').fill('Dame 10 referencias de la gama ic60n de schneider')
+  await page.getByLabel('Enviar consulta').click()
+
+  const firstCard = page.getByTestId('sonex-product-card').first()
+  await expect(firstCard).toBeVisible({ timeout: 30000 })
+  return { firstCard }
+}
+
 test.describe('SONEX product flow', () => {
   test('shows verified catalog cards for a product query', async ({ page }) => {
     const { firstCard } = await openSonexWithCatalogResult(page)
 
     await expect(page.getByText('En catálogo')).toBeVisible()
+    await expect(firstCard.getByTestId('sonex-open-ficha')).toBeVisible()
+    await expect(firstCard.getByTestId('sonex-add-budget')).toBeVisible()
+  })
+
+  test('shows catalog cards for a Schneider iC60N range request', async ({ page }) => {
+    const { firstCard } = await openSonexWithRangeResult(page)
+
+    await expect(page.getByTestId('sonex-product-card')).toHaveCount(10, { timeout: 30000 })
     await expect(firstCard.getByTestId('sonex-open-ficha')).toBeVisible()
     await expect(firstCard.getByTestId('sonex-add-budget')).toBeVisible()
   })

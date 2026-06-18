@@ -64,6 +64,9 @@ const BUDGET_WORDS = ['anadir', 'añadir', 'presupuesto', 'partida', 'oferta', '
 const COMPARISON_WORDS = ['compara', 'comparar', 'diferencias', 'mejor opcion', 'mejor opción', 'versus', ' vs ']
 const TECHNICAL_WORDS = ['norma', 'instalar', 'calcular', 'dimensionar', 'proteccion', 'protección', 'maniobra', 'mantenimiento']
 
+const RANGE_WORDS = ['gama', 'serie', 'linea', 'subgama', 'rango']
+const CATALOG_OBJECT_WORDS = ['referencia', 'referencias', 'ref', 'refs', 'modelo', 'modelos', 'producto', 'productos']
+
 const KNOWN_BRAND_ALIASES = [
   { canonical: 'Schneider Electric', aliases: ['schneider electric', 'schneider'] },
   { canonical: 'Phoenix Contact', aliases: ['phoenix contact', 'phoenix'] },
@@ -167,7 +170,7 @@ function extractVoltage(message: string): string | undefined {
 }
 
 function extractQuantity(message: string): number | undefined {
-  const match = message.match(/\b(\d+)\s*(?:uds?|unidades?|piezas?)\b/i)
+  const match = message.match(/\b(\d+)\s*(?:uds?|unidades?|piezas?|referencias?|refs?|modelos?|productos?)\b/i)
   return match ? Number(match[1]) : undefined
 }
 
@@ -226,6 +229,7 @@ function buildCriteria(message: string): SonexProductCriteria {
   if (includesAny(normalized, COMPARISON_WORDS)) confidence += 0.12
   if (brand) confidence += 0.08
   confidence += [amps, poles, curve, sensitivityMa].filter(Boolean).length * 0.08
+  if (includesAny(normalized, RANGE_WORDS) && includesAny(normalized, CATALOG_OBJECT_WORDS)) confidence += 0.12
   confidence = Math.min(0.98, Number(confidence.toFixed(2)))
 
   return {
@@ -269,12 +273,17 @@ export function detectSonexIntent(message: string): SonexIntentResult {
   const hasBudget = includesAny(normalized, BUDGET_WORDS)
   const hasComparison = includesAny(normalized, COMPARISON_WORDS)
   const hasTechnical = includesAny(normalized, TECHNICAL_WORDS)
+  const hasRangeCatalogRequest = hasLookup
+    && Boolean(criteria.brand)
+    && includesAny(normalized, RANGE_WORDS)
+    && includesAny(normalized, CATALOG_OBJECT_WORDS)
 
   let intent: SonexIntent = 'technical_question'
   if (hasBudget) intent = 'budget_action'
   else if (hasProduct && hasComparison) intent = 'product_comparison'
   else if (hasProduct && hasLookup && normalized.includes('recom')) intent = 'product_recommendation'
   else if (hasProduct && (hasLookup || criteria.confidence >= 0.5)) intent = 'catalog_lookup'
+  else if (hasRangeCatalogRequest) intent = 'catalog_lookup'
   else if (!hasProduct && !hasTechnical) intent = 'technical_question'
 
   const clarificationQuestion = ['catalog_lookup', 'product_recommendation', 'budget_action'].includes(intent)

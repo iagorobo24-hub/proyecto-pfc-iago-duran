@@ -45,6 +45,16 @@ describe('detectSonexIntent', () => {
     expect(result.criteria.subfamily).toBe('Interruptor Magnetotérmico');
   });
 
+  it('treats manufacturer range reference requests as catalog lookups', () => {
+    const result = detectSonexIntent('Dame 10 referencias de la gama ic60n de schneider');
+
+    expect(result.intent).toBe('catalog_lookup');
+    expect(result.needsClarification).toBe(false);
+    expect(result.criteria.brand).toBe('Schneider Electric');
+    expect(result.criteria.quantity).toBe(10);
+    expect(result.criteria.rawTerms).toContain('ic60n');
+  });
+
   it('does not match product shorthand inside manufacturer names', () => {
     const result = detectSonexIntent('Schneider 2P curva C 16A');
 

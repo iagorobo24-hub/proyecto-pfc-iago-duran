@@ -6,9 +6,15 @@ marked.setOptions({
   gfm: true,
 })
 
+function normalizeAiMarkdown(text) {
+  return String(text)
+    .replace(/\$?\\(?:rightarrow|to)\$?/gi, '→')
+    .replace(/\$?\\leftarrow\$?/gi, '←')
+}
+
 export function renderMarkdown(text) {
   if (!text) return ''
-  const html = marked.parse(text)
+  const html = marked.parse(normalizeAiMarkdown(text))
   return DOMPurify.sanitize(html)
 }
 

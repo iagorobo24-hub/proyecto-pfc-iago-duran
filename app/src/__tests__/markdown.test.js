@@ -38,6 +38,12 @@ describe('renderMarkdown', () => {
     expect(html).toContain('const x = 1')
   })
 
+  it('normalizes common latex arrows from AI responses', () => {
+    const html = renderMarkdown('iC60N 1P 10A $\\rightarrow$ Ref: A9F74110')
+    expect(html).toContain('→')
+    expect(html).not.toContain('rightarrow')
+  })
+
   it('returns empty string for null', () => {
     expect(renderMarkdown(null)).toBe('')
   })

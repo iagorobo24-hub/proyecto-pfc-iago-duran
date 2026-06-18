@@ -32,11 +32,12 @@ export function buildCatalogAssistantFallback(searchResult: SonexProductSearchRe
 }
 
 function limitCatalogCards(searchResult: SonexProductSearchResult): SonexCatalogResult[] {
+  const requestedLimit = Math.min(Math.max(Math.floor(searchResult.criteria.quantity || 10), 1), 10);
   return [
     ...searchResult.exactMatches,
     ...searchResult.partialMatches,
     ...searchResult.relatedMatches,
-  ].slice(0, 10);
+  ].slice(0, requestedLimit);
 }
 
 function hasContinuationSpecs(criteria: SonexProductCriteria): boolean {

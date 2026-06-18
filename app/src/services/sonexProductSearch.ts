@@ -5,7 +5,7 @@ import { scoreProductMatch } from '../utils/productSpecs';
 
 const MAX_EXACT = 5;
 const MAX_PARTIAL = 5;
-const MAX_RELATED = 5;
+const MAX_RELATED = 10;
 const searchCache = new Map<string, SonexProductSearchResult>();
 
 function normalizeCacheValue(value: unknown): string {
