@@ -63,6 +63,33 @@ function sameAmp(left, right) {
   return ampToStandard(Number(left)) === ampToStandard(Number(right))
 }
 
+function extractBreakingCapacitiesKa(value = '') {
+  const text = normalizeSpecText(value).replace(/,/g, '.')
+  const capacities = []
+
+  for (const match of text.matchAll(/\b(\d+(?:\.\d+)?)\s*k\s*a\b/g)) {
+    const valueKa = Number(match[1])
+    if (Number.isFinite(valueKa)) capacities.push(valueKa)
+  }
+
+  for (const match of text.matchAll(/\b(\d{4,6})\s*a\b/g)) {
+    const valueA = Number(match[1])
+    if (Number.isFinite(valueA)) capacities.push(valueA / 1000)
+  }
+
+  return [...new Set(capacities)]
+}
+
+function requestedBreakingCapacityKa(value) {
+  return extractBreakingCapacitiesKa(value)[0]
+}
+
+function sameBreakingCapacity(productCapacities, requested) {
+  const requestedKa = requestedBreakingCapacityKa(requested)
+  if (!requestedKa) return false
+  return productCapacities.some(value => Math.abs(value - requestedKa) < 0.01)
+}
+
 export function extractProductSpecs(product = {}) {
   const text = productSearchText(product)
   const technicalText = productTechnicalText(product)
@@ -79,6 +106,7 @@ export function extractProductSpecs(product = {}) {
     amps: amps > 0 ? ampToStandard(amps) : undefined,
     curve: curve && curve !== '?' ? curve : undefined,
     sensitivityMa: sensitivityMa > 0 ? sensitivityMa : undefined,
+    breakingCapacitiesKa: extractBreakingCapacitiesKa(technicalText),
   }
 }
 
@@ -132,6 +160,11 @@ export function scoreProductMatch(product = {}, criteria = {}) {
     else addMiss(`${criteria.sensitivityMa} mA`, specs.sensitivityMa ? 12 : 4)
   }
 
+  if (criteria.breakingCapacity) {
+    if (sameBreakingCapacity(specs.breakingCapacitiesKa, criteria.breakingCapacity)) addMatch(criteria.breakingCapacity, 10)
+    else addMiss(criteria.breakingCapacity, specs.breakingCapacitiesKa.length > 0 ? 8 : 3)
+  }
+
   const rawTermMatches = (criteria.rawTerms || [])
     .filter(term => term.length > 2 && includesText(specs.text, term))
     .slice(0, 4)
@@ -156,7 +189,7 @@ export function scoreProductMatch(product = {}, criteria = {}) {
     criteria.sensitivityMa,
   ].filter(Boolean).length
   const technicalMatches = matchedSpecs.filter(spec =>
-    / A$|mA$|^\dP|Curva /.test(spec)
+    / A$|mA$|kA$|^\dP|Curva /.test(spec)
   ).length
 
   let matchType = 'related'
@@ -183,5 +216,6 @@ export function matchesCriteria(product = {}, criteria = {}) {
   if (criteria.poles && result.missingSpecs.includes(criteria.poles)) return false
   if (criteria.curve && result.missingSpecs.includes(`Curva ${criteria.curve}`)) return false
   if (criteria.sensitivityMa && result.missingSpecs.includes(`${criteria.sensitivityMa} mA`)) return false
+  if (criteria.breakingCapacity && result.missingSpecs.includes(criteria.breakingCapacity)) return false
   return true
 }

@@ -1,4 +1,4 @@
-import type { SonexCatalogResult, SonexPreparedTurn, SonexProductSearchResult } from '../types/sonex';
+import type { SonexCatalogResult, SonexPreparedTurn, SonexProductCriteria, SonexProductSearchResult } from '../types/sonex';
 import { detectSonexIntent, isCatalogIntent } from './sonexIntentService';
 import {
   formatCatalogResultsContext,
@@ -39,11 +39,49 @@ function limitCatalogCards(searchResult: SonexProductSearchResult): SonexCatalog
   ].slice(0, 10);
 }
 
+function hasContinuationSpecs(criteria: SonexProductCriteria): boolean {
+  return Boolean(
+    criteria.amps ||
+    criteria.poles ||
+    criteria.curve ||
+    criteria.sensitivityMa ||
+    criteria.breakingCapacity ||
+    criteria.voltage
+  );
+}
+
+function mergeCriteria(pending: SonexProductCriteria, current: SonexProductCriteria): SonexProductCriteria {
+  return {
+    ...pending,
+    ...current,
+    productType: current.productType || pending.productType,
+    family: current.family || pending.family,
+    subfamily: current.subfamily || pending.subfamily,
+    brand: current.brand || pending.brand,
+    rawTerms: [...new Set([...(pending.rawTerms || []), ...(current.rawTerms || [])])],
+    confidence: Math.min(0.98, Math.max(pending.confidence || 0, current.confidence || 0) + 0.16),
+  };
+}
+
+function shouldContinuePendingCriteria(pending: SonexProductCriteria | undefined, current: SonexProductCriteria): pending is SonexProductCriteria {
+  if (!pending?.productType || !hasContinuationSpecs(current)) return false;
+  return !current.productType || current.productType === pending.productType;
+}
+
 export async function prepareSonexTurn(
   userMessage: string,
-  state: { activeCategory?: string } = {},
+  state: { activeCategory?: string; pendingCriteria?: SonexProductCriteria } = {},
 ): Promise<SonexPreparedTurn> {
-  const intentResult = detectSonexIntent(userMessage);
+  const detectedIntent = detectSonexIntent(userMessage);
+  const intentResult = shouldContinuePendingCriteria(state.pendingCriteria, detectedIntent.criteria)
+    ? {
+        ...detectedIntent,
+        intent: isCatalogIntent(detectedIntent.intent) ? detectedIntent.intent : 'catalog_lookup' as const,
+        criteria: mergeCriteria(state.pendingCriteria, detectedIntent.criteria),
+        needsClarification: false,
+        clarificationQuestion: undefined,
+      }
+    : detectedIntent;
 
   if (intentResult.needsClarification) {
     return {

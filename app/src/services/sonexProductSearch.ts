@@ -21,6 +21,7 @@ function criteriaKey(criteria: SonexProductCriteria, activeCategory?: string): s
     brand: normalizeCacheValue(criteria.brand),
     poles: normalizeCacheValue(criteria.poles),
     curve: normalizeCacheValue(criteria.curve),
+    breakingCapacity: normalizeCacheValue(criteria.breakingCapacity),
     amps: criteria.amps || 0,
     sensitivityMa: criteria.sensitivityMa || 0,
     rawTerms: (criteria.rawTerms || []).map(normalizeCacheValue).sort(),
@@ -70,12 +71,27 @@ function splitResults(results: SonexCatalogResult[]) {
 
 function clarificationFor(criteria: SonexProductCriteria): string | undefined {
   if (!criteria.productType) return undefined;
-  const hasTechnicalSpec = Boolean(criteria.amps || criteria.poles || criteria.curve || criteria.sensitivityMa);
+  const hasTechnicalSpec = Boolean(criteria.amps || criteria.poles || criteria.curve || criteria.sensitivityMa || criteria.breakingCapacity);
   if (hasTechnicalSpec || criteria.rawTerms.length > 1) return undefined;
   return 'Necesito algún dato técnico más para buscar referencias reales: calibre, polos, curva, sensibilidad o uso previsto.';
 }
 
+function capacitySearchTerms(value: string): string[] {
+  const match = value.match(/(\d+(?:[.,]\d+)?)/);
+  if (!match) return [value];
+
+  const numericValue = Number(match[1].replace(',', '.'));
+  const terms = [value, value.replace(/\s+/g, '')];
+  if (Number.isFinite(numericValue)) {
+    terms.push(`${numericValue * 1000} A`);
+  }
+  return [...new Set(terms)];
+}
+
 function termsForSearch(criteria: SonexProductCriteria): string[] {
+  const breakingCapacityTerms = criteria.breakingCapacity
+    ? capacitySearchTerms(criteria.breakingCapacity)
+    : [];
   const terms = [
     criteria.productType,
     criteria.productType === 'magnetotermico' ? 'magnetotérmico' : '',
@@ -86,6 +102,7 @@ function termsForSearch(criteria: SonexProductCriteria): string[] {
     criteria.amps ? `${criteria.amps} A` : '',
     criteria.sensitivityMa ? `${criteria.sensitivityMa}mA` : '',
     criteria.sensitivityMa ? `${criteria.sensitivityMa} mA` : '',
+    ...breakingCapacityTerms,
     ...criteria.rawTerms,
   ].filter(Boolean) as string[];
 
@@ -98,6 +115,7 @@ function requiredTermGroupsForSearch(criteria: SonexProductCriteria): string[][]
     criteria.amps ? [`${criteria.amps}A`, `${criteria.amps} A`] : [],
     criteria.curve ? [`curva ${criteria.curve}`, `${criteria.curve} curva`] : [],
     criteria.sensitivityMa ? [`${criteria.sensitivityMa}mA`, `${criteria.sensitivityMa} mA`] : [],
+    criteria.breakingCapacity ? capacitySearchTerms(criteria.breakingCapacity) : [],
   ].filter(group => group.length > 0);
 
   return groups.length >= 2 ? groups : [];

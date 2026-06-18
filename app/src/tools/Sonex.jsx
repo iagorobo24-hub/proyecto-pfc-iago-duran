@@ -26,6 +26,18 @@ const MODO_OBJETOS = [
   { id: "formacion", label: "📚 Formación", desc: "Instalación y uso" },
 ];
 
+function getPendingCatalogCriteria(conversation = []) {
+  const lastMessage = conversation[conversation.length - 1]
+  if (
+    lastMessage?.role === 'assistant' &&
+    lastMessage.intent === 'clarification_needed' &&
+    lastMessage.criteria?.productType
+  ) {
+    return lastMessage.criteria
+  }
+  return undefined
+}
+
 /**
  * Componente principal de la herramienta de asistente SONEX.
  * 
@@ -189,7 +201,10 @@ ${modoInstrucciones[modoActivo] || modoInstrucciones.busqueda}${categoriaTexto}$
     try {
       const aiMsgId = userMsgId + 1;
       const { prepareSonexTurn } = await import('../services/sonexTurnOrchestrator');
-      const turn = await prepareSonexTurn(userMessage, { activeCategory: categoriaActiva });
+      const turn = await prepareSonexTurn(userMessage, {
+        activeCategory: categoriaActiva,
+        pendingCriteria: getPendingCatalogCriteria(messages),
+      });
 
       trackEvent('sonex', 'sonex_intent_detected', turn.intent, turn.criteria.confidence)
 
