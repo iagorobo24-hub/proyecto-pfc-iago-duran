@@ -29,6 +29,36 @@ const partialProduct = {
   name: 'Magnetotérmico modular 1P 10A C curva',
 }
 
+const ic60nProduct = {
+  ...exactProduct,
+  id: 3,
+  ref_fabricante: 'A9F04110',
+  name: 'MagnetotÃ©rmico Acti9 iC60N 1P 10 A C curva',
+  marca: 'Schneider Electric',
+  subfamilia: 'Interruptor MagnetotÃ©rmico',
+  Gama: 'Acti 9 iC60',
+  Subgama: 'iC60N',
+}
+
+const ic60nProduct2 = {
+  ...ic60nProduct,
+  id: 4,
+  ref_fabricante: 'A9F04116',
+  name: 'MagnetotÃ©rmico Acti9 iC60N 1P 16 A C curva',
+}
+
+const schneiderContactor = {
+  ...exactProduct,
+  id: 5,
+  ref_fabricante: 'LC1D323FE7',
+  name: 'Contactor TeSys D 3P AC3 32 A',
+  marca: 'Schneider Electric',
+  familia: 'AutomatizaciÃ³n',
+  subfamilia: 'Contactor',
+  Gama: 'TeSys D',
+  Subgama: 'TeSys Deca',
+}
+
 describe('searchProductsForCriteria', () => {
   beforeEach(() => {
     vi.resetModules();
@@ -106,6 +136,31 @@ describe('searchProductsForCriteria', () => {
     expect(result.needsClarification).toBe(true);
     expect(result.clarificationQuestion).toContain('calibre');
     expect(mockBuscarProductosCatalogo).not.toHaveBeenCalled();
+  });
+
+  it('keeps manufacturer range searches focused on the requested range term', async () => {
+    mockBuscarProductosCatalogo
+      .mockResolvedValueOnce([])
+      .mockResolvedValueOnce([schneiderContactor, ic60nProduct, ic60nProduct2]);
+
+    const { searchProductsForCriteria, getFlattenedCatalogResults } = await import('../services/sonexProductSearch');
+    const result = await searchProductsForCriteria({
+      brand: 'Schneider Electric',
+      rawTerms: ['referencias', 'gama', 'ic60n', 'schneider'],
+      quantity: 10,
+      confidence: 0.46,
+    });
+
+    expect(mockBuscarProductosCatalogo).toHaveBeenCalledWith(expect.objectContaining({
+      marca: 'Schneider Electric',
+      requiredTermGroups: expect.arrayContaining([
+        expect.arrayContaining(['ic60n']),
+      ]),
+    }));
+    expect(getFlattenedCatalogResults(result).map(item => item.product.ref_fabricante)).toEqual([
+      'A9F04110',
+      'A9F04116',
+    ]);
   });
 
   it('caches repeated normalized searches', async () => {

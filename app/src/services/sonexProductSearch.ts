@@ -1,12 +1,42 @@
 import catalogService from './catalogService';
 import type { Product } from '../types/catalog';
 import type { SonexCatalogResult, SonexProductCriteria, SonexProductSearchResult } from '../types/sonex';
-import { scoreProductMatch } from '../utils/productSpecs';
+import { normalizeSpecText, scoreProductMatch } from '../utils/productSpecs';
 
 const MAX_EXACT = 5;
 const MAX_PARTIAL = 5;
 const MAX_RELATED = 10;
 const searchCache = new Map<string, SonexProductSearchResult>();
+
+const GENERIC_RAW_TERMS = new Set([
+  'amperio',
+  'amperios',
+  'catalogo',
+  'catalogos',
+  'curva',
+  'dame',
+  'fabricante',
+  'gama',
+  'interruptor',
+  'linea',
+  'marca',
+  'modelo',
+  'modelos',
+  'necesito',
+  'opciones',
+  'polo',
+  'polos',
+  'producto',
+  'productos',
+  'rango',
+  'ref',
+  'referencia',
+  'referencias',
+  'refs',
+  'selecciona',
+  'serie',
+  'subgama',
+]);
 
 function normalizeCacheValue(value: unknown): string {
   return String(value || '').trim().toLowerCase();
@@ -42,6 +72,60 @@ function uniqueProducts(products: Product[]): Product[] {
     unique.push(product);
   }
   return unique;
+}
+
+function normalizedTokens(value?: string): Set<string> {
+  return new Set(normalizeSpecText(value).split(/\s+/).filter(Boolean));
+}
+
+function isStructuredRawTerm(term: string, criteria: SonexProductCriteria): boolean {
+  if (criteria.amps && term === normalizeSpecText(`${criteria.amps}A`)) return true;
+  if (criteria.poles && term === normalizeSpecText(criteria.poles)) return true;
+  if (criteria.curve && term === normalizeSpecText(criteria.curve)) return true;
+  if (criteria.sensitivityMa && term === normalizeSpecText(`${criteria.sensitivityMa}mA`)) return true;
+  if (criteria.breakingCapacity && capacitySearchTerms(criteria.breakingCapacity).map(normalizeSpecText).includes(term)) return true;
+  return false;
+}
+
+function isDistinctiveRawTerm(term: string, criteria: SonexProductCriteria): boolean {
+  const normalizedTerm = normalizeSpecText(term);
+  if (normalizedTerm.length < 3 || GENERIC_RAW_TERMS.has(normalizedTerm)) return false;
+  if (isStructuredRawTerm(normalizedTerm, criteria)) return false;
+
+  const brandText = normalizeSpecText(criteria.brand);
+  if (brandText && (brandText === normalizedTerm || brandText.includes(normalizedTerm))) return false;
+  if (normalizedTokens(criteria.brand).has(normalizedTerm)) return false;
+
+  const productTypeText = normalizeSpecText(criteria.productType);
+  if (productTypeText && (productTypeText === normalizedTerm || productTypeText.includes(normalizedTerm))) return false;
+
+  return /[a-z0-9]/.test(normalizedTerm);
+}
+
+function requiredRawTermGroupsForSearch(criteria: SonexProductCriteria): string[][] {
+  return [...new Set((criteria.rawTerms || [])
+    .map(term => normalizeSpecText(term))
+    .filter(term => isDistinctiveRawTerm(term, criteria))
+  )].slice(0, 3).map(term => [term]);
+}
+
+function productRawSearchText(product: Product): string {
+  return normalizeSpecText([
+    product.ref_fabricante,
+    product.name,
+    product.marca,
+    product.familia,
+    product.subfamilia,
+    product.tipo,
+    product.Gama,
+    product.Subgama,
+  ].filter(Boolean).join(' '));
+}
+
+function matchesRequiredRawTermGroups(product: Product, groups: string[][]): boolean {
+  if (groups.length === 0) return true;
+  const text = productRawSearchText(product);
+  return groups.every(group => group.some(term => text.includes(normalizeSpecText(term))));
 }
 
 function classifyProducts(products: Product[], criteria: SonexProductCriteria): SonexCatalogResult[] {
@@ -117,8 +201,9 @@ function requiredTermGroupsForSearch(criteria: SonexProductCriteria): string[][]
     criteria.sensitivityMa ? [`${criteria.sensitivityMa}mA`, `${criteria.sensitivityMa} mA`] : [],
     criteria.breakingCapacity ? capacitySearchTerms(criteria.breakingCapacity) : [],
   ].filter(group => group.length > 0);
+  const rawTermGroups = requiredRawTermGroupsForSearch(criteria);
 
-  return groups.length >= 2 ? groups : [];
+  return groups.length >= 2 ? [...groups, ...rawTermGroups] : rawTermGroups;
 }
 
 export function getFlattenedCatalogResults(searchResult: SonexProductSearchResult): SonexCatalogResult[] {
@@ -155,6 +240,7 @@ export async function searchProductsForCriteria(
   if (cached) return cached;
 
   const terms = termsForSearch(enrichedCriteria);
+  const requiredRawTermGroups = requiredRawTermGroupsForSearch(enrichedCriteria);
   const requiredTermGroups = requiredTermGroupsForSearch(enrichedCriteria);
   const batches = await Promise.all([
     requiredTermGroups.length > 0
@@ -184,7 +270,8 @@ export async function searchProductsForCriteria(
     }),
   ]);
 
-  const candidates = uniqueProducts(batches.flat());
+  const candidates = uniqueProducts(batches.flat())
+    .filter(product => matchesRequiredRawTermGroups(product, requiredRawTermGroups));
   const scored = classifyProducts(candidates, enrichedCriteria);
   const split = splitResults(scored);
 

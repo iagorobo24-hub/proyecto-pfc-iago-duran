@@ -68,7 +68,7 @@ describe('prepareSonexTurn', () => {
   });
 
   it('returns catalog cards for a manufacturer range reference request', async () => {
-    mockBuscarProductosCatalogo.mockResolvedValueOnce(schneiderRangeProducts);
+    mockBuscarProductosCatalogo.mockResolvedValue(schneiderRangeProducts);
 
     const { prepareSonexTurn } = await import('../services/sonexTurnOrchestrator');
     const result = await prepareSonexTurn('Dame 10 referencias de la gama ic60n de schneider');
