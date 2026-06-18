@@ -88,6 +88,13 @@
 
 ---
 
+## 011 — Plan SONEX Intenciones y Cards
+**Fecha:** 2026-06-17
+**Archivo:** [`011_2026-06-17_PLAN_SONEX_INTENCIONES_CARDS.md`](./011_2026-06-17_PLAN_SONEX_INTENCIONES_CARDS.md)
+**Descripción:** Plan por fases para detección de intenciones en SONEX, búsqueda estructurada en catálogo, cards visuales, enlaces a Fichas Técnicas y creación de Presupuestos.
+
+---
+
 ## Auditorías Técnicas → `docs/auditorias/`
 
 | Archivo | Descripción |
@@ -108,11 +115,12 @@
 |---------|-------------|
 | [`001_CHANGES_V4.md`](../revisiones/001_CHANGES_V4.md) | Guía de actualización de la memoria PFC a V4 con datos corregidos |
 | [`002_MEJORAS_CONTEXTO_IA.md`](../revisiones/002_MEJORAS_CONTEXTO_IA.md) | Mejoras futuras: sliding window, resumen de contexto, conteo de tokens para SONEX |
+| [`003_SONEX_INTENCIONES_CARDS.md`](../revisiones/003_SONEX_INTENCIONES_CARDS.md) | Implementación de intenciones, cards de catálogo y enlaces SONEX → Fichas → Presupuestos |
 
 ---
 
 ## Notas
 
-- **Última actualización del índice:** 2026-06-03
-- Todos los planes están organizados cronológicamente con prefijo numérico (001-010).
+- **Última actualización del índice:** 2026-06-17
+- Todos los planes están organizados cronológicamente con prefijo numérico (001-011).
 - Las auditorías, fixes y revisiones están agrupados por tipo en subdirectorios separados.

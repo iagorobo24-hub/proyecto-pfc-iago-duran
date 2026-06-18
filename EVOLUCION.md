@@ -341,6 +341,30 @@ Evolución del sistema de logos:
 
 ---
 
+## Fase 20 — SONEX con intenciones y cards de catálogo (17 jun 2026)
+
+**Logro:** SONEX deja de depender de extraer referencias desde texto generado por IA para las consultas de producto y consulta primero el catálogo real.
+
+**Características:**
+- Detector determinista de intención, tipo de producto y requisitos técnicos.
+- Búsqueda estructurada en Supabase con ranking local de coincidencias exactas, parciales y relacionadas.
+- Cards visuales en SONEX con productos verificados del catálogo, referencia, marca, specs coincidentes y acciones.
+- Deep link SONEX → Fichas Técnicas mediante `?ref=`.
+- Deep link SONEX → Presupuestos con `nuevo=1` para crear un presupuesto limpio con la partida cargada.
+- Historial enviado a IA limitado a mensajes recientes para reducir contexto innecesario.
+
+**Verificación:**
+- Tests unitarios para parser de intención, normalización técnica y ranking.
+- E2E específico para SONEX → cards → Fichas → Presupuestos.
+- Revisión de regresión en navegación principal y auditoría de tema claro/oscuro.
+
+**Fix 18 jun 2026:**
+- Corrección de extracción de marcas en consultas naturales como `marca Schneider de 16A`.
+- Búsqueda precisa por grupos técnicos (`2P` + `16A/16 A` + `curva C/C curva`) antes del lote amplio.
+- Regresión cubierta para evitar que abreviaturas como `id` coincidan dentro de nombres de marca.
+
+---
+
 ## Estado actual (Junio 2026)
 
 **Stack:**
@@ -418,3 +442,12 @@ Evolución del sistema de logos:
 8. **TypeScript progresivo reduce fricción:** Migrar con `strict: false` y `allowJs: true` permite adoptar TS sin bloquear el desarrollo.
 9. **La normalización de DB es un proceso continuo:** Se necesitaron 10 scripts y múltiples iteraciones para unificar la taxonomía de 4.689 productos.
 10. **Documentar a medida que se construye ahorra horas:** El `CLAUDE.md` y la estructura `docs/` permiten a cualquier IA entender el proyecto en segundos.
+
+---
+
+## Fase 2026-06-18 - Auditoria y segunda pasada K2 de catalogo
+
+- Se completaron precio, nombre, descripcion y caracteristicas para los 31.324 productos.
+- Se ejecuto una segunda pasada de adquisicion de imagenes para estados no verificados, seguida de Capa 1 y K2 con NVIDIA.
+- Resultado final de imagenes: 29.573 verificadas, 730 rechazadas por IA, 968 posible generico, 50 sin imagen, 0 no carga, 3 NULL y 0 pendiente K2.
+- Auditoria detallada: `docs/auditorias/2026-06-18-auditoria-catalogo-imagenes-k2.md`.

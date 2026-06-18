@@ -13,7 +13,7 @@ test.describe('Fichas Técnicas — Funcionalidad', () => {
     await page.waitForTimeout(2000)
 
     await expect(page.locator('h1').filter({ hasText: 'Fichas Técnicas' })).toBeVisible({ timeout: 15000 })
-    await expect(page.getByText('Familias')).toBeVisible()
+    await expect(page.locator('nav[aria-labelledby="categories-label"] button').first()).toBeVisible()
     await expect(page.getByPlaceholder('Buscar referencia o nombre...')).toBeVisible()
   })
 

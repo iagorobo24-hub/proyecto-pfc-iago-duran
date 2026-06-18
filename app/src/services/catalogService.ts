@@ -693,6 +693,75 @@ export async function buscarProductos(termino: string, limite: number = 20): Pro
   }
 }
 
+export interface CatalogProductSearchParams {
+  familia?: string;
+  subfamilia?: string;
+  marca?: string;
+  terms?: string[];
+  requiredTermGroups?: string[][];
+  limite?: number;
+}
+
+const CATALOG_SEARCH_COLUMNS = ['name', 'ref_fabricante', 'marca', 'tipo', 'Gama', 'Subgama'];
+
+function sanitizeSearchTerms(terms: string[] | undefined, limit: number): string[] {
+  return [...new Set((terms || [])
+    .map(term => sanitizeSearchInput(term.trim()))
+    .filter(term => term.length > 1)
+  )].slice(0, limit);
+}
+
+function buildCatalogTextFilters(terms: string[]): string[] {
+  return terms.flatMap(term =>
+    CATALOG_SEARCH_COLUMNS.map(column => `${column}.ilike.%${term}%`)
+  );
+}
+
+/**
+ * Busca productos para flujos asistidos por criterios técnicos.
+ * Aplica filtros estructurados en Supabase y deja el ranking fino al cliente.
+ */
+export async function buscarProductosCatalogo(params: CatalogProductSearchParams): Promise<Product[]> {
+  try {
+    const limite = Math.min(Math.max(params.limite || 80, 1), 150);
+    let query = supabase
+      .from('products')
+      .select('id, ref_fabricante, name, imagen, marca, familia, subfamilia, tipo, precio, Gama, Subgama, pdf_url')
+      .limit(limite);
+
+    if (params.familia) {
+      query = query.eq('familia', params.familia);
+    }
+    if (params.subfamilia) {
+      query = query.eq('subfamilia', params.subfamilia);
+    }
+    if (params.marca) {
+      query = query.ilike('marca', `%${sanitizeSearchInput(params.marca.trim())}%`);
+    }
+
+    const terms = sanitizeSearchTerms(params.terms, 10);
+
+    const requiredTermGroups = (params.requiredTermGroups || [])
+      .map(group => sanitizeSearchTerms(group, 4))
+      .filter(group => group.length > 0)
+
+    for (const group of requiredTermGroups) {
+      query = query.or(buildCatalogTextFilters(group).join(','));
+    }
+
+    if (terms.length > 0) {
+      query = query.or(buildCatalogTextFilters(terms).join(','));
+    }
+
+    const { data, error } = await query;
+    if (error) throw error;
+    return ((data || []) as Record<string, unknown>[]).map(p => validateProduct(p) as unknown as Product);
+  } catch (error) {
+    logError('❌ Error buscarProductosCatalogo:', error);
+    return [];
+  }
+}
+
 /**
  * Consulta las estadísticas agregadas del catálogo (total de productos).
  * 
@@ -739,6 +808,6 @@ export default {
   getSubgamasPorFiltro,
   getProductoPorRef,
   buscarProductos,
+  buscarProductosCatalogo,
   getCatalogStats
 };
-

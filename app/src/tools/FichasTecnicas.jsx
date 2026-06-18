@@ -1,5 +1,5 @@
-import { useCallback, useMemo } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useCallback, useEffect, useMemo, useRef } from 'react'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useToast } from '../contexts/ToastContext'
 import { trackEvent } from '../hooks/useAnalytics'
 import useFichasTecnicas from '../hooks/useFichasTecnicas'
@@ -13,7 +13,9 @@ import styles from './FichasTecnicas.module.css'
 
 export default function FichasTecnicas() {
   const navigate = useNavigate()
+  const [searchParams] = useSearchParams()
   const { toast } = useToast()
+  const directRefProcessed = useRef('')
 
   const {
     paso, categoria, marca, gamaComercial, subgama, gama, tipo, categoriaGrupo, subcategoria, grupos,
@@ -26,6 +28,8 @@ export default function FichasTecnicas() {
     seleccionarReferencia, volver, irAPaso,
     buscarReferenciaDirecta, buscarPorNombre, aiFicha, aiCargando,
   } = useNavegacionFichas()
+
+  const directRef = searchParams.get('ref')
 
   const {
     consulta,
@@ -46,6 +50,20 @@ export default function FichasTecnicas() {
     [categorias]
   )
   const isCargando = navegacionCargando || busquedaIACargando
+
+  useEffect(() => {
+    if (!directRef || directRefProcessed.current === directRef) return
+    directRefProcessed.current = directRef
+    let cancelled = false
+
+    buscarReferenciaDirecta(directRef).then(found => {
+      if (!found && !cancelled) {
+        toast.show(`No se encontró la referencia ${directRef}`, 'error')
+      }
+    })
+
+    return () => { cancelled = true }
+  }, [directRef, buscarReferenciaDirecta, toast])
 
   const handleSugerenciaClick = useCallback((p) => {
     seleccionarReferencia(p)

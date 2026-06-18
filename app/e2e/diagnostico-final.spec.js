@@ -98,7 +98,8 @@ test.describe('Diagnóstico Final', () => {
     await page.goto(`${BASE}/app/fichas`, { waitUntil: 'domcontentloaded' })
     await page.waitForTimeout(2000)
 
-    const hasCategories = await page.getByText('Familias').isVisible()
+    const categoryCount = await page.locator('nav[aria-labelledby="categories-label"] button').count()
+    const hasCategories = categoryCount > 0
     const hasSearch = await page.getByPlaceholder('Buscar referencia o nombre...').isVisible()
     const hasHeading = await page.locator('h1').filter({ hasText: 'Fichas Técnicas' }).isVisible()
 
@@ -107,7 +108,7 @@ test.describe('Diagnóstico Final', () => {
     expect(hasCategories).toBe(true)
     expect(hasSearch).toBe(true)
     expect(hasHeading).toBe(true)
-    console.log('Fichas Técnicas — Familias:', hasCategories, '| Buscador:', hasSearch, '| Título:', hasHeading)
+    console.log('Fichas Técnicas — Categorías:', hasCategories, '| Buscador:', hasSearch, '| Título:', hasHeading)
   })
 
   test('Diseño visual — SONEX', async ({ page }) => {

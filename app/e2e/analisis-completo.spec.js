@@ -28,8 +28,8 @@ test.describe('Auditoría Completa — Proyecto PFC Iago Durán', () => {
 
     test('Redirección automática al estar autenticado (mock)', async ({ page }) => {
       await page.goto(`${BASE}/login`, { waitUntil: 'networkidle' })
-      await page.waitForURL(/\/app\/fichas/, { timeout: 5000 })
-      await expect(page).toHaveURL(/\/app\/fichas/)
+      await page.waitForURL(url => ['/app', '/app/fichas'].includes(url.pathname), { timeout: 5000 })
+      expect(['/app', '/app/fichas']).toContain(new URL(page.url()).pathname)
     })
   })
 

@@ -425,7 +425,7 @@ test.describe('Tests de Funcionalidad Real — PFC Iago Durán', () => {
       
       // With mocked auth, should redirect to app
       const currentUrl = page.url()
-      const isRedirected = currentUrl.includes('/app/') || currentUrl.includes('/fichas')
+      const isRedirected = currentUrl.includes('/app/') || currentUrl.endsWith('/app') || currentUrl.includes('/fichas')
       
       expect(isRedirected).toBe(true)
     })

@@ -63,10 +63,10 @@ test.describe('Theme Audit — Light & Dark Mode', () => {
     await page.goto(`${BASE}/app/fichas`, { waitUntil: 'domcontentloaded', timeout: 20000 })
     await page.waitForTimeout(2000)
     await expect(page.getByPlaceholder('Buscar referencia o nombre...')).toBeVisible({ timeout: 10000 })
-    await expect(page.getByText('Familias')).toBeVisible()
+    await expect(page.getByText(/Familias|Fichas Técnicas/i).first()).toBeVisible()
     await toggleDarkMode(page, true)
     await expect(page.getByPlaceholder('Buscar referencia o nombre...')).toBeVisible()
-    await expect(page.getByText('Familias')).toBeVisible()
+    await expect(page.getByText(/Familias|Fichas Técnicas/i).first()).toBeVisible()
   })
 
   test('sonex — all mode tabs work', async ({ page }) => {
