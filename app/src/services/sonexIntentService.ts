@@ -123,9 +123,22 @@ function extractNumber(value: string | undefined): number | undefined {
 }
 
 function extractPoles(message: string): string | undefined {
-  const match = message.match(/\b(1\s*p\s*\+\s*n|3\s*p\s*\+\s*n|[1234]\s*p)\b/i)
-  if (!match) return undefined
-  return match[1].replace(/\s+/g, '').toUpperCase()
+  const compactMatch = message.match(/\b(1\s*p\s*\+\s*n|3\s*p\s*\+\s*n|[1234]\s*p)\b/i)
+  if (compactMatch) return compactMatch[1].replace(/\s+/g, '').toUpperCase()
+
+  const polesWithNeutral = message.match(/\b(1|3)\s*(?:polo|polos)\s*(?:\+|y|con)?\s*(?:n|neutro)\b/i)
+  if (polesWithNeutral) return `${polesWithNeutral[1]}P+N`
+
+  const naturalMatch = message.match(/\b([1234])\s*(?:polo|polos)\b/i)
+  if (naturalMatch) return `${naturalMatch[1]}P`
+
+  const namedPoles = [
+    { pattern: /\bmonopolar(?:es)?\b/i, value: '1P' },
+    { pattern: /\bbipolar(?:es)?\b/i, value: '2P' },
+    { pattern: /\btripolar(?:es)?\b/i, value: '3P' },
+    { pattern: /\btetrapolar(?:es)?\b/i, value: '4P' },
+  ]
+  return namedPoles.find(item => item.pattern.test(message))?.value
 }
 
 function extractAmps(message: string): number | undefined {

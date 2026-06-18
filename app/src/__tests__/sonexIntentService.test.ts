@@ -27,6 +27,16 @@ describe('detectSonexIntent', () => {
     expect(result.criteria.curve).toBe('C');
   });
 
+  it('extracts natural-language pole and amp specifications', () => {
+    const result = detectSonexIntent('Dime un magnetotérmico de la marca Schneider de 16 amperios 2 polos curva C');
+
+    expect(result.intent).toBe('catalog_lookup');
+    expect(result.criteria.brand).toBe('Schneider Electric');
+    expect(result.criteria.amps).toBe(16);
+    expect(result.criteria.poles).toBe('2P');
+    expect(result.criteria.curve).toBe('C');
+  });
+
   it('infers known manufacturer names even when the user omits the word marca', () => {
     const result = detectSonexIntent('Dime un magnetotérmico Schneider 2P curva C 16A');
 
