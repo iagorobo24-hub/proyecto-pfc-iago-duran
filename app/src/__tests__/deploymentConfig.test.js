@@ -54,4 +54,11 @@ describe('deployment configuration', () => {
     expect(csp).toContain('wss://*.supabase.co')
     expect(csp).toContain('https://api.openrouter.ai')
   })
+
+  it('keeps header-only CSP directives out of the html meta policy', () => {
+    const html = readAppFile('index.html')
+    const metaPolicy = html.match(/<meta http-equiv="Content-Security-Policy" content="([^"]+)"/)?.[1] || ''
+
+    expect(metaPolicy).not.toContain('frame-ancestors')
+  })
 })
