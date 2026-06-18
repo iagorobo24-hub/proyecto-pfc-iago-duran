@@ -37,6 +37,7 @@ describe('searchProductsForCriteria', () => {
 
   it('queries catalog by structured criteria and ranks exact matches first', async () => {
     mockBuscarProductosCatalogo
+      .mockResolvedValueOnce([exactProduct])
       .mockResolvedValueOnce([partialProduct, exactProduct])
       .mockResolvedValueOnce([partialProduct]);
 
@@ -52,7 +53,7 @@ describe('searchProductsForCriteria', () => {
       confidence: 0.9,
     });
 
-    expect(mockBuscarProductosCatalogo).toHaveBeenCalledTimes(2);
+    expect(mockBuscarProductosCatalogo).toHaveBeenCalledTimes(3);
     expect(mockBuscarProductosCatalogo).toHaveBeenCalledWith(expect.objectContaining({
       familia: 'Protecciones y Cuadros',
       subfamilia: 'Interruptor Magnetotérmico',
@@ -60,6 +61,36 @@ describe('searchProductsForCriteria', () => {
     expect(result.needsClarification).toBe(false);
     expect(result.exactMatches[0].product.ref_fabricante).toBe('REF-216C');
     expect(result.partialMatches[0].product.ref_fabricante).toBe('REF-110C');
+  });
+
+  it('queries catalog with manufacturer and common spec variants', async () => {
+    mockBuscarProductosCatalogo
+      .mockResolvedValueOnce([exactProduct])
+      .mockResolvedValueOnce([])
+      .mockResolvedValueOnce([]);
+
+    const { searchProductsForCriteria } = await import('../services/sonexProductSearch');
+    await searchProductsForCriteria({
+      productType: 'magnetotermico',
+      family: 'Protecciones y Cuadros',
+      subfamily: 'Interruptor Magnetotérmico',
+      brand: 'Schneider Electric',
+      poles: '2P',
+      curve: 'C',
+      amps: 16,
+      rawTerms: ['dime', 'magnetotermico', 'schneider'],
+      confidence: 0.9,
+    });
+
+    expect(mockBuscarProductosCatalogo).toHaveBeenCalledWith(expect.objectContaining({
+      marca: 'Schneider Electric',
+      terms: expect.arrayContaining(['C curva', 'curva C', '16 A', '16A', '2P']),
+      requiredTermGroups: expect.arrayContaining([
+        expect.arrayContaining(['2P']),
+        expect.arrayContaining(['16A', '16 A']),
+        expect.arrayContaining(['curva C', 'C curva']),
+      ]),
+    }));
   });
 
   it('asks for clarification before querying broad ambiguous criteria', async () => {
@@ -80,6 +111,7 @@ describe('searchProductsForCriteria', () => {
   it('caches repeated normalized searches', async () => {
     mockBuscarProductosCatalogo
       .mockResolvedValueOnce([exactProduct])
+      .mockResolvedValueOnce([exactProduct])
       .mockResolvedValueOnce([exactProduct]);
 
     const { searchProductsForCriteria } = await import('../services/sonexProductSearch');
@@ -97,6 +129,6 @@ describe('searchProductsForCriteria', () => {
     await searchProductsForCriteria(criteria);
     await searchProductsForCriteria({ ...criteria, rawTerms: ['magnetotermico'] });
 
-    expect(mockBuscarProductosCatalogo).toHaveBeenCalledTimes(2);
+    expect(mockBuscarProductosCatalogo).toHaveBeenCalledTimes(3);
   });
 });

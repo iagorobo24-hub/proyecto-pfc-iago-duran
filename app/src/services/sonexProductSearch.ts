@@ -76,14 +76,31 @@ function clarificationFor(criteria: SonexProductCriteria): string | undefined {
 }
 
 function termsForSearch(criteria: SonexProductCriteria): string[] {
-  return [
+  const terms = [
     criteria.productType,
+    criteria.productType === 'magnetotermico' ? 'magnetotérmico' : '',
     criteria.curve ? `curva ${criteria.curve}` : '',
+    criteria.curve ? `${criteria.curve} curva` : '',
     criteria.poles,
     criteria.amps ? `${criteria.amps}A` : '',
+    criteria.amps ? `${criteria.amps} A` : '',
     criteria.sensitivityMa ? `${criteria.sensitivityMa}mA` : '',
+    criteria.sensitivityMa ? `${criteria.sensitivityMa} mA` : '',
     ...criteria.rawTerms,
   ].filter(Boolean) as string[];
+
+  return [...new Set(terms)];
+}
+
+function requiredTermGroupsForSearch(criteria: SonexProductCriteria): string[][] {
+  const groups = [
+    criteria.poles ? [criteria.poles] : [],
+    criteria.amps ? [`${criteria.amps}A`, `${criteria.amps} A`] : [],
+    criteria.curve ? [`curva ${criteria.curve}`, `${criteria.curve} curva`] : [],
+    criteria.sensitivityMa ? [`${criteria.sensitivityMa}mA`, `${criteria.sensitivityMa} mA`] : [],
+  ].filter(group => group.length > 0);
+
+  return groups.length >= 2 ? groups : [];
 }
 
 export function getFlattenedCatalogResults(searchResult: SonexProductSearchResult): SonexCatalogResult[] {
@@ -120,7 +137,18 @@ export async function searchProductsForCriteria(
   if (cached) return cached;
 
   const terms = termsForSearch(enrichedCriteria);
+  const requiredTermGroups = requiredTermGroupsForSearch(enrichedCriteria);
   const batches = await Promise.all([
+    requiredTermGroups.length > 0
+      ? catalogService.buscarProductosCatalogo({
+          familia: enrichedCriteria.family,
+          subfamilia: enrichedCriteria.subfamily,
+          marca: enrichedCriteria.brand,
+          terms,
+          requiredTermGroups,
+          limite: 60,
+        })
+      : Promise.resolve([]),
     enrichedCriteria.subfamily
       ? catalogService.buscarProductosCatalogo({
           familia: enrichedCriteria.family,

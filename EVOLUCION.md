@@ -358,6 +358,11 @@ Evolución del sistema de logos:
 - E2E específico para SONEX → cards → Fichas → Presupuestos.
 - Revisión de regresión en navegación principal y auditoría de tema claro/oscuro.
 
+**Fix 18 jun 2026:**
+- Corrección de extracción de marcas en consultas naturales como `marca Schneider de 16A`.
+- Búsqueda precisa por grupos técnicos (`2P` + `16A/16 A` + `curva C/C curva`) antes del lote amplio.
+- Regresión cubierta para evitar que abreviaturas como `id` coincidan dentro de nombres de marca.
+
 ---
 
 ## Estado actual (Junio 2026)
@@ -437,3 +442,12 @@ Evolución del sistema de logos:
 8. **TypeScript progresivo reduce fricción:** Migrar con `strict: false` y `allowJs: true` permite adoptar TS sin bloquear el desarrollo.
 9. **La normalización de DB es un proceso continuo:** Se necesitaron 10 scripts y múltiples iteraciones para unificar la taxonomía de 4.689 productos.
 10. **Documentar a medida que se construye ahorra horas:** El `CLAUDE.md` y la estructura `docs/` permiten a cualquier IA entender el proyecto en segundos.
+
+---
+
+## Fase 2026-06-18 - Auditoria y segunda pasada K2 de catalogo
+
+- Se completaron precio, nombre, descripcion y caracteristicas para los 31.324 productos.
+- Se ejecuto una segunda pasada de adquisicion de imagenes para estados no verificados, seguida de Capa 1 y K2 con NVIDIA.
+- Resultado final de imagenes: 29.573 verificadas, 730 rechazadas por IA, 968 posible generico, 50 sin imagen, 0 no carga, 3 NULL y 0 pendiente K2.
+- Auditoria detallada: `docs/auditorias/2026-06-18-auditoria-catalogo-imagenes-k2.md`.

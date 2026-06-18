@@ -38,7 +38,7 @@ async function openSonexWithCatalogResult(page) {
   await mockAuth(page)
   await mockAi(page)
   await page.goto(`${BASE}/app/sonex`, { waitUntil: 'domcontentloaded' })
-  await page.getByLabel('Consulta técnica para SONEX').fill('Necesito magnetotérmico 2P curva C 16A')
+  await page.getByLabel('Consulta técnica para SONEX').fill('Dime un magnetotérmico marca Schneider de 16A 2P curva C')
   await page.getByLabel('Enviar consulta').click()
 
   const firstCard = page.getByTestId('sonex-product-card').first()

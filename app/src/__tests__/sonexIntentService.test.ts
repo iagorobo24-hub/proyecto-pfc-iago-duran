@@ -16,6 +16,33 @@ describe('detectSonexIntent', () => {
     expect(result.criteria.confidence).toBeGreaterThan(0.7);
   });
 
+  it('keeps connector words out of an explicit manufacturer lookup', () => {
+    const result = detectSonexIntent('Dime un magnetotérmico marca Schneider de 16A 2P curva C');
+
+    expect(result.intent).toBe('catalog_lookup');
+    expect(result.needsClarification).toBe(false);
+    expect(result.criteria.brand).toBe('Schneider Electric');
+    expect(result.criteria.amps).toBe(16);
+    expect(result.criteria.poles).toBe('2P');
+    expect(result.criteria.curve).toBe('C');
+  });
+
+  it('infers known manufacturer names even when the user omits the word marca', () => {
+    const result = detectSonexIntent('Dime un magnetotérmico Schneider 2P curva C 16A');
+
+    expect(result.intent).toBe('catalog_lookup');
+    expect(result.criteria.brand).toBe('Schneider Electric');
+    expect(result.criteria.subfamily).toBe('Interruptor Magnetotérmico');
+  });
+
+  it('does not match product shorthand inside manufacturer names', () => {
+    const result = detectSonexIntent('Schneider 2P curva C 16A');
+
+    expect(result.intent).toBe('technical_question');
+    expect(result.criteria.brand).toBe('Schneider Electric');
+    expect(result.criteria.productType).toBeUndefined();
+  });
+
   it('detects recommendation intent without brand', () => {
     const result = detectSonexIntent('Recomienda un magnetotermico 1P+N 20 A curva C');
 

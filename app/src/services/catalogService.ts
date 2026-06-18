@@ -698,7 +698,23 @@ export interface CatalogProductSearchParams {
   subfamilia?: string;
   marca?: string;
   terms?: string[];
+  requiredTermGroups?: string[][];
   limite?: number;
+}
+
+const CATALOG_SEARCH_COLUMNS = ['name', 'ref_fabricante', 'marca', 'tipo', 'Gama', 'Subgama'];
+
+function sanitizeSearchTerms(terms: string[] | undefined, limit: number): string[] {
+  return [...new Set((terms || [])
+    .map(term => sanitizeSearchInput(term.trim()))
+    .filter(term => term.length > 1)
+  )].slice(0, limit);
+}
+
+function buildCatalogTextFilters(terms: string[]): string[] {
+  return terms.flatMap(term =>
+    CATALOG_SEARCH_COLUMNS.map(column => `${column}.ilike.%${term}%`)
+  );
 }
 
 /**
@@ -723,20 +739,18 @@ export async function buscarProductosCatalogo(params: CatalogProductSearchParams
       query = query.ilike('marca', `%${sanitizeSearchInput(params.marca.trim())}%`);
     }
 
-    const terms = [...new Set((params.terms || [])
-      .map(term => sanitizeSearchInput(term.trim()))
-      .filter(term => term.length > 1)
-    )].slice(0, 5);
+    const terms = sanitizeSearchTerms(params.terms, 10);
+
+    const requiredTermGroups = (params.requiredTermGroups || [])
+      .map(group => sanitizeSearchTerms(group, 4))
+      .filter(group => group.length > 0)
+
+    for (const group of requiredTermGroups) {
+      query = query.or(buildCatalogTextFilters(group).join(','));
+    }
 
     if (terms.length > 0) {
-      const orFilters = terms.flatMap(term => [
-        `name.ilike.%${term}%`,
-        `ref_fabricante.ilike.%${term}%`,
-        `tipo.ilike.%${term}%`,
-        `Gama.ilike.%${term}%`,
-        `Subgama.ilike.%${term}%`,
-      ]);
-      query = query.or(orFilters.join(','));
+      query = query.or(buildCatalogTextFilters(terms).join(','));
     }
 
     const { data, error } = await query;
@@ -797,4 +811,3 @@ export default {
   buscarProductosCatalogo,
   getCatalogStats
 };
-

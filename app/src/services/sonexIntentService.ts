@@ -64,9 +64,31 @@ const BUDGET_WORDS = ['anadir', 'añadir', 'presupuesto', 'partida', 'oferta', '
 const COMPARISON_WORDS = ['compara', 'comparar', 'diferencias', 'mejor opcion', 'mejor opción', 'versus', ' vs ']
 const TECHNICAL_WORDS = ['norma', 'instalar', 'calcular', 'dimensionar', 'proteccion', 'protección', 'maniobra', 'mantenimiento']
 
+const KNOWN_BRAND_ALIASES = [
+  { canonical: 'Schneider Electric', aliases: ['schneider electric', 'schneider'] },
+  { canonical: 'Phoenix Contact', aliases: ['phoenix contact', 'phoenix'] },
+  { canonical: 'Mitsubishi Electric', aliases: ['mitsubishi electric', 'mitsubishi'] },
+  { canonical: 'IFM Electronic', aliases: ['ifm electronic', 'ifm'] },
+  { canonical: 'Pepperl+Fuchs', aliases: ['pepperl+fuchs', 'pepperl fuchs', 'pepperl'] },
+  { canonical: 'Philips Lighting', aliases: ['philips lighting', 'philips'] },
+  { canonical: 'SMA Solar', aliases: ['sma solar', 'sma'] },
+  { canonical: 'ABB', aliases: ['abb'] },
+  { canonical: 'Siemens', aliases: ['siemens'] },
+  { canonical: 'Ledvance', aliases: ['ledvance'] },
+  { canonical: 'Zemper', aliases: ['zemper'] },
+  { canonical: 'Wallbox', aliases: ['wallbox'] },
+  { canonical: 'Hager', aliases: ['hager'] },
+  { canonical: 'Fronius', aliases: ['fronius'] },
+  { canonical: 'Pylontech', aliases: ['pylontech'] },
+  { canonical: 'Legrand', aliases: ['legrand'] },
+  { canonical: 'Eaton', aliases: ['eaton'] },
+  { canonical: 'Finder', aliases: ['finder'] },
+  { canonical: 'Circutor', aliases: ['circutor'] },
+] as const;
+
 const STOP_WORDS = new Set([
   'para', 'por', 'con', 'sin', 'que', 'una', 'uno', 'unos', 'unas', 'del', 'las', 'los',
-  'necesito', 'puedo', 'usar', 'dame', 'busca', 'buscar', 'opciones', 'referencias',
+  'necesito', 'necesitas', 'quiero', 'puedo', 'usar', 'dame', 'dime', 'busca', 'buscar', 'opciones', 'referencias',
   'producto', 'productos', 'marca', 'fabricante', 'presupuesto', 'partida',
 ])
 
@@ -81,9 +103,16 @@ function includesAny(normalized: string, words: string[]): boolean {
   return words.some(word => normalized.includes(normalizeText(word)))
 }
 
+function includesProductTerm(normalized: string, term: string): boolean {
+  const normalizedTerm = normalizeText(term).trim()
+  const pattern = escapeRegExp(normalizedTerm).replace(/\s+/g, '\\s+')
+  const matcher = new RegExp(`(^|[^\\p{L}\\d])${pattern}([^\\p{L}\\d]|$)`, 'u')
+  return matcher.test(normalized)
+}
+
 function findProductPattern(normalized: string) {
   return PRODUCT_PATTERNS.find(pattern =>
-    pattern.terms.some(term => normalized.includes(normalizeText(term)))
+    pattern.terms.some(term => includesProductTerm(normalized, term))
   )
 }
 
@@ -129,15 +158,31 @@ function extractQuantity(message: string): number | undefined {
   return match ? Number(match[1]) : undefined
 }
 
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+}
+
+function findKnownBrand(value: string): string | undefined {
+  const normalized = normalizeText(value)
+  for (const brand of KNOWN_BRAND_ALIASES) {
+    for (const alias of brand.aliases) {
+      const normalizedAlias = normalizeText(alias)
+      const matcher = new RegExp(`(^|[^\\p{L}\\d])${escapeRegExp(normalizedAlias)}([^\\p{L}\\d]|$)`, 'u')
+      if (matcher.test(normalized)) return brand.canonical
+    }
+  }
+  return undefined
+}
+
 function extractBrand(message: string): string | undefined {
   const match = message.match(/\b(?:marca|fabricante)\s+([\p{L}\d][\p{L}\d ._-]{1,32})/iu)
-  if (!match) return undefined
+  if (!match) return findKnownBrand(message)
   const candidate = match[1]
-    .split(/\b(?:con|para|curva|polo|polos|amperios?)\b|\b\d+\s*(?:p|a|ma)\b/i)[0]
+    .split(/\b(?:de|del|con|para|curva|polo|polos|amperios?|referencia|ref|modelo|serie)\b|\b\d+(?:[.,]\d+)?\s*(?:p|a|ma|ka|v)\b/i)[0]
     .replace(/\s+\d.*$/, '')
     .trim()
   if (!candidate || /\d/.test(candidate)) return undefined
-  return candidate
+  return findKnownBrand(candidate) || candidate
 }
 
 function extractRawTerms(message: string): string[] {
