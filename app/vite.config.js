@@ -41,7 +41,7 @@ export default defineConfig({
     
     // Configuración para convertir la aplicación en PWA (Progressive Web App)
     VitePWA({
-      registerType: 'autoUpdate',
+      registerType: 'prompt',
       includeAssets: ['icons/*.svg'],
       manifest: {
         name: 'Proyectos PFC Tools',
@@ -60,17 +60,13 @@ export default defineConfig({
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,svg,png,jpg,woff2}'],
         cleanupOutdatedCaches: true,
-        clientsClaim: true,
-        skipWaiting: true,
-        runtimeCaching: [
-          {
-            urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
-            handler: 'CacheFirst',
-            options: {
-              cacheName: 'google-fonts-cache',
-              expiration: { maxEntries: 10, maxAgeSeconds: 60 * 60 * 24 * 365 },
-            },
-          },
+        navigateFallbackDenylist: [
+          /^\/api\//,
+          /^\/assets\//,
+          /^\/icons\//,
+          /^\/logos\//,
+          /^\/screenshots\//,
+          /\/[^/?]+\.[^/]+$/,
         ],
       },
       devOptions: {
