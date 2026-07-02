@@ -122,8 +122,9 @@ export async function callAnthropicAI(body: AIRequestBody): Promise<AIResponse> 
     }
 
     if (!response.ok) {
-      const errorMsg = data.error || data.hint || `Error ${response.status}`;
-      throw new Error(errorMsg as string);
+      const detailsStr = data.details ? ` - Details: ${JSON.stringify(data.details)}` : '';
+      const errorMsg = `${data.error || data.hint || `Error ${response.status}`}${detailsStr}`;
+      throw new Error(errorMsg);
     }
 
     const text = data.text || '';
@@ -204,7 +205,8 @@ export async function callAnthropicAIStream(
 
     if (!response.ok) {
       const errData = await response.json().catch(() => ({ error: `Error ${response.status}` }));
-      throw new Error(errData.error || `Error ${response.status}`);
+      const detailsStr = errData.details ? ` - Details: ${JSON.stringify(errData.details)}` : '';
+      throw new Error(`${errData.error || `Error ${response.status}`}${detailsStr}`);
     }
 
     const reader = response.body!.getReader();
