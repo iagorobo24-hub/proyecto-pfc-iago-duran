@@ -763,22 +763,29 @@ export async function buscarProductosCatalogo(params: CatalogProductSearchParams
 }
 
 /**
- * Consulta las estadísticas agregadas del catálogo (total de productos).
+ * Consulta las estadísticas agregadas del catálogo (total de productos, marcas y familias).
  * 
  * @export
- * @returns {Promise<{ totalProducts: number }>}
+ * @returns {Promise<{ totalProducts: number; totalBrands: number; totalFamilies: number }>}
  */
-export async function getCatalogStats(): Promise<{ totalProducts: number }> {
+export async function getCatalogStats(): Promise<{ totalProducts: number; totalBrands: number; totalFamilies: number }> {
   try {
-    const { count, error } = await supabase
-      .from('products')
-      .select('*', { count: 'exact', head: true });
+    const [productsRes, brandsRes, familiesRes] = await Promise.all([
+      supabase.from('products').select('*', { count: 'exact', head: true }),
+      supabase.from('brands').select('*', { count: 'exact', head: true }),
+      supabase.from('vw_unique_families').select('familia')
+    ]);
 
-    if (error) throw error;
-    return { totalProducts: count || 0 };
+    if (productsRes.error) throw productsRes.error;
+
+    return {
+      totalProducts: productsRes.count || 0,
+      totalBrands: brandsRes.count || brandsRes.data?.length || 0,
+      totalFamilies: familiesRes.data?.length || 0
+    };
   } catch (error) {
     logError('❌ Error getCatalogStats:', error);
-    return { totalProducts: 0 };
+    return { totalProducts: 0, totalBrands: 0, totalFamilies: 0 };
   }
 }
 

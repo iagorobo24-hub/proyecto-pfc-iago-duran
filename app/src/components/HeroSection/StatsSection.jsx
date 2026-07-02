@@ -39,7 +39,7 @@ const StatsSection = () => {
     totalProducts: 2.4,
     totalTools: 7,
     totalFamilies: 7,
-    totalBrands: 0
+    totalBrands: 5
   });
 
   React.useEffect(() => {
@@ -47,12 +47,11 @@ const StatsSection = () => {
       try {
         const data = await catalogService.getCatalogStats();
         if (data.totalProducts) {
-          const brands = await catalogService.getMarcasPorCategoria('DISTRIBUCION DE POTENCIA');
           setStats({
             totalProducts: parseFloat((data.totalProducts / 1000).toFixed(1)),
             totalTools: 7,
-            totalFamilies: 7,
-            totalBrands: brands.length
+            totalFamilies: data.totalFamilies || 7,
+            totalBrands: data.totalBrands || 5
           });
         }
       } catch {
