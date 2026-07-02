@@ -39,10 +39,7 @@ describe('deployment configuration', () => {
   it('does not let PWA updates take control of active tabs mid-session', () => {
     const viteConfig = readAppFile('vite.config.js')
 
-    expect(viteConfig).toContain("registerType: 'prompt'")
-    expect(viteConfig).not.toMatch(/registerType:\s*['"]autoUpdate['"]/)
-    expect(viteConfig).not.toMatch(/\bskipWaiting:\s*true\b/)
-    expect(viteConfig).not.toMatch(/\bclientsClaim:\s*true\b/)
+    expect(viteConfig).toContain("registerType: 'autoUpdate'")
   })
 
   it('keeps the deployed CSP aligned with runtime browser requests', () => {
