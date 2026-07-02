@@ -1,11 +1,3 @@
-/**
- * @file vite.config.js
- * @description Configuración de Vite para el proyecto.
- * Configura los plugins de compilación (React, PWA), validación de variables de entorno,
- * estrategia de división de paquetes (manualChunks) para optimización del tamaño de bundle
- * y configuración del servidor proxy de desarrollo y del entorno de pruebas (Vitest).
- */
-
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
@@ -41,7 +33,7 @@ export default defineConfig({
     
     // Configuración para convertir la aplicación en PWA (Progressive Web App)
     VitePWA({
-      registerType: 'prompt',
+      registerType: 'autoUpdate',
       includeAssets: ['icons/*.svg'],
       manifest: {
         name: 'Proyectos PFC Tools',
@@ -113,4 +105,3 @@ export default defineConfig({
     exclude: ['e2e/**', 'tests/**', 'node_modules/**'],
   },
 })
-
