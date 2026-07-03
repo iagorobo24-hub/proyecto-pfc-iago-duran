@@ -252,7 +252,7 @@ ${modoInstrucciones[modoActivo] || modoInstrucciones.busqueda}${categoriaTexto}$
           await callAnthropicAIStream(
             {
               provider: 'openrouter',
-              model: "meta-llama/llama-3.3-70b-instruct:free",
+              model: "google/gemini-2.5-flash:free",
               max_tokens: 800,
               system: buildSystemPrompt(turn.catalogContext),
               messages: historial,
@@ -297,7 +297,7 @@ ${modoInstrucciones[modoActivo] || modoInstrucciones.busqueda}${categoriaTexto}$
       await callAnthropicAIStream(
         {
           provider: 'openrouter',
-          model: "meta-llama/llama-3.3-70b-instruct:free", 
+          model: "google/gemini-2.5-flash:free", 
           max_tokens: 1000,
           system: buildSystemPrompt(catalogContext),
           messages: historial,
