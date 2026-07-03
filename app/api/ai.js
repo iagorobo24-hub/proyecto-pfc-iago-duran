@@ -173,11 +173,10 @@ export default async function handler(req, res) {
     let currentModel = model;
 
     const FREE_FALLBACKS = [
-      'google/gemini-2.5-flash:free',
       'meta-llama/llama-3.3-70b-instruct:free',
+      'qwen/qwen-2.5-72b-instruct:free',
       'google/gemma-4-31b-it:free',
-      'meta-llama/llama-3.2-3b-instruct:free',
-      'qwen/qwen-2.5-72b-instruct:free'
+      'meta-llama/llama-3.2-3b-instruct:free'
     ];
 
     const makeStreamRequest = async (modelName) => {
