@@ -15,15 +15,13 @@ export default function TestimoniosSection() {
     if (!formData.nombre.trim() || !formData.texto.trim() || formData.rating === 0) return
 
     setEnviando(true)
-    // Pequeño delay para UX
     await new Promise(r => setTimeout(r, 400))
 
-    agregar({
+    await agregar({
       nombre: formData.nombre.trim(),
       email: formData.email.trim(),
       texto: formData.texto.trim(),
       rating: formData.rating,
-      fecha: new Date().toISOString(),
     })
 
     setFormData({ nombre: '', email: '', texto: '', rating: 0 })
@@ -142,7 +140,7 @@ export default function TestimoniosSection() {
           {testimonios.length > 0 && (
             <div className={styles.list}>
               <h3 className={styles.listTitle}>Últimas valoraciones</h3>
-              {testimonios.slice(-5).reverse().map((t, i) => (
+              {testimonios.slice(0, 5).map((t, i) => (
                 <motion.div
                   key={t.id || i}
                   className={styles.testimonioCard}
@@ -165,11 +163,13 @@ export default function TestimoniosSection() {
                   </div>
                   <p className={styles.testimonioTexto}>{t.texto}</p>
                   <time className={styles.testimonioFecha}>
-                    {new Date(t.fecha).toLocaleDateString('es-ES', {
-                      day: 'numeric',
-                      month: 'short',
-                      year: 'numeric',
-                    })}
+                    {t.created_at
+                      ? new Date(t.created_at).toLocaleDateString('es-ES', {
+                          day: 'numeric',
+                          month: 'short',
+                          year: 'numeric',
+                        })
+                      : ''}
                   </time>
                 </motion.div>
               ))}
