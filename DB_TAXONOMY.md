@@ -1,10 +1,22 @@
 # Taxonomía de Base de Datos — Sonepar Tools
-*Última actualización: 14 de junio de 2026*
-*Total de productos: 31.324*
 
-## Estado actual de familias y subfamilias
+> **Snapshot histórico — 14 de junio de 2026.**
+> Las cifras de este documento describen el estado observado en esa fecha y no deben presentarse como recuento actual sin volver a consultar la base de datos.
 
-A continuación se detalla la distribución actual de productos clasificados por su familia y subfamilia en la base de datos de producción:
+**Total registrado en este snapshot:** 31.324 productos.
+
+## Cómo obtener el estado vigente
+
+Antes de reutilizar una cifra de este documento como dato actual:
+
+1. Consultar `getCatalogStats()` desde `app/src/services/catalogService.ts` o ejecutar una consulta equivalente contra el entorno Supabase que se pretende documentar.
+2. Registrar proyecto/entorno, fecha y hora, commit, método/consulta y recuentos obtenidos.
+3. Presentar el resultado como **snapshot fechado**, no como constante del software.
+4. Si la consulta no puede ejecutarse, conservar la cifra histórica con su fecha y declarar que el estado vigente no está verificado.
+
+## Distribución del snapshot de familias y subfamilias
+
+A continuación se detalla la distribución registrada en la base de datos el 14 de junio de 2026:
 
 | Familia | Subfamilia | Total de Productos |
 | :--- | :--- | :---: |
@@ -101,9 +113,9 @@ A continuación se detalla la distribución actual de productos clasificados por
 
 ---
 
-## Cobertura de imágenes por marca
+## Cobertura de imágenes por marca — snapshot
 
-Estado actual del inventario de imágenes asociadas a cada fabricante en la tabla `products`:
+Inventario de imágenes registrado en el mismo snapshot:
 
 | Marca | Total | Sin imagen | Cobertura % |
 |---|---|---|---|
@@ -127,9 +139,9 @@ A continuación se listan cronológicamente las modificaciones estructurales apl
 * **Verificación de imágenes (Capa 1):** Ejecución del script `01-clasificar-imagenes.mjs` sobre el catálogo completo (31.164 productos con imagen). Se clasificaron y actualizaron en Supabase: 21.731 como `pendiente_ia` (cargan correctamente y son únicas), 8.952 como `posible_generico` (mismo hash repetido o tamaño < 1.5 KB) y 481 como `no_carga` (URLs rotas o sin formato de imagen).
 
 ### Sesión de Trabajo — 13 de junio de 2026
-* **Fase A (Unificar Protección Sobretensión):** Consolidación de todos los limitadores de sobretensión dispersos en las familias `Instalación` y `Fotovoltaica` bajo una única subfamilia dentro de `Distribución de potencia`. 
+* **Fase A (Unificar Protección Sobretensión):** Consolidación de todos los limitadores de sobretensión dispersos en las familias `Instalación` y `Fotovoltaica` bajo una única subfamilia dentro de `Distribución de potencia`.
   * *Filas afectadas:* **151**
-* **Fase C (Unificar Medidores de Energía):** Consolidación de subfamilias de medida. 
+* **Fase C (Unificar Medidores de Energía):** Consolidación de subfamilias de medida.
   * Mapeo de `Contador de energía` (anteriormente en `Automatización` e `Instalación`) hacia la familia de potencia. *Filas afectadas:* **31**
   * Mapeo de `Analizador redes` (anteriormente en `Automatización`) hacia la familia de potencia. *Filas afectadas:* **9**
 * **Fase E (Renombrado de Accesorios Genéricos):** Sustitución de la subfamilia genérica `"Accesorio"` por nombres unívocos basados en su familia para evitar colisiones en los selectores de búsqueda.
@@ -188,7 +200,7 @@ Antes de crear una subfamilia nueva, es obligatorio buscar si alguna de las exis
 La subfamilia genérica `"Accesorio"` está prohibida. Cualquier accesorio debe estar explícitamente etiquetado bajo el estándar `"Accesorio [NombreFamilia]"` (ej: `"Accesorio Automatización"`, `"Accesorio Instalación"`, etc.) para evitar ambigüedades en los filtros.
 
 **Regla 5 — Nombres de producto**
-El campo `name` debe ser limpio, descriptivo y único para cada referencia. 
+El campo `name` debe ser limpio, descriptivo y único para cada referencia.
 * Quedan **prohibidos** los nombres que consistan únicamente en el nombre de la marca (ej: `"Schneider Electric"`) o que repitan la misma etiqueta genérica para diferentes referencias (ej: `"CONTACTOR"` para 50 modelos distintos). El formato preferido es `[Tipo de producto] [Gama] [Características clave (polos, corriente, etc.)]`.
 
 **Regla 6 — Imágenes**

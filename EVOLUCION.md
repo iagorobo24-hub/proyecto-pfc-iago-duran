@@ -1,5 +1,7 @@
 # Evolución de Proyectos Sonepar — Guía Cronológica
 
+> **Documento histórico.** Este archivo conserva cómo se describía el proyecto en cada fase. Expresiones como “actual”, “final”, cifras de catálogo/tests, precios, modelos o estados de herramientas pertenecen a la fecha de esa fase y **no describen necesariamente el repositorio vigente**. Para el estado actual consultar `README.md` y `proyecto-fin-ciclo/00-README.md`.
+
 > **Documento de referencia para el PFC.**  
 > Resume cómo fue evolucionando la web app desde la idea inicial hasta el producto actual, incluyendo tecnologías usadas en cada fase, problemas encontrados y decisiones tomadas.
 
@@ -365,7 +367,9 @@ Evolución del sistema de logos:
 
 ---
 
-## Estado actual (Junio 2026)
+## Snapshot de estado — junio 2026
+
+> Este bloque conserva el snapshot que antes se titulaba “Estado actual”. Sus cifras y afirmaciones pertenecen a junio de 2026 y no deben usarse como estado vigente sin verificación fresca.
 
 **Stack:**
 | Componente | Tecnología |

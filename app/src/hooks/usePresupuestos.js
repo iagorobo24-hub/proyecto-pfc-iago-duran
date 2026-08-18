@@ -1,5 +1,5 @@
 /**
- * Hook para Presupuestos - sincronización con Firestore
+ * Hook para Presupuestos - persistencia híbrida mediante usePersistedState
  */
 import { useState, useReducer } from 'react'
 import usePersistedState from './usePersistedState'
