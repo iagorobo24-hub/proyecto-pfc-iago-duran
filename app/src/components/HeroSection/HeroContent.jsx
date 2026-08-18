@@ -35,14 +35,14 @@ const TypingTitle = () => {
 const HeroContent = () => {
   return (
     <div className={styles.content}>
-      <motion.div 
+      <motion.div
         className={styles.badge}
         initial={{ opacity: 0, x: -20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ duration: 0.6 }}
       >
         <CheckCircle size={14} />
-        <span>8 módulos en producción · IA integrada</span>
+        <span>7 herramientas + dashboard · IA integrada</span>
       </motion.div>
 
       <motion.div
@@ -54,25 +54,26 @@ const HeroContent = () => {
         <TypingTitle />
       </motion.div>
 
-      <motion.p 
+      <motion.p
         className={styles.subtitle}
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.2 }}
       >
-        Plataforma académica y profesional que integra cálculo, gestión de material, 
-        simulación y asistencia con IA en un solo entorno.
+        Plataforma académica que integra consulta técnica, gestión de material,
+        simulación logística, presupuestos y asistencia con IA en un solo entorno.
       </motion.p>
 
       <motion.div
-       className={styles.contextText}
-       initial={{ opacity: 0 }}
-       animate={{ opacity: 1 }}
-       transition={{ duration: 0.6, delay: 0.3 }}
+        className={styles.contextText}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.6, delay: 0.3 }}
       >
-       Desarrollado por <span style={{ color: 'var(--brand-blue)', fontWeight: 'bold' }}>Iago Durán</span> en CIFP Universidad Laboral
+        Desarrollado por <span style={{ color: 'var(--brand-blue)', fontWeight: 'bold' }}>Iago Durán</span> en CIFP Universidad Laboral
       </motion.div>
-      <motion.div 
+
+      <motion.div
         className={styles.actions}
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -82,10 +83,10 @@ const HeroContent = () => {
           Acceder a la aplicación
           <ArrowRight size={18} style={{ marginLeft: '8px' }} />
         </Link>
-        <a 
-          href="https://www.linkedin.com/in/iago-dur%C3%A1n-romera-72b1a13ba/" 
-          target="_blank" 
-          rel="noopener noreferrer" 
+        <a
+          href="https://www.linkedin.com/in/iago-dur%C3%A1n-romera-72b1a13ba/"
+          target="_blank"
+          rel="noopener noreferrer"
           className={styles.secondaryBtn}
         >
           <Linkedin size={18} style={{ marginRight: '8px' }} />
@@ -93,13 +94,13 @@ const HeroContent = () => {
         </a>
       </motion.div>
 
-      <motion.p 
+      <motion.p
         className={styles.disclaimer}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 1, delay: 0.8 }}
       >
-        Autenticación con Google · Datos sincronizados · Actualizaciones automáticas
+        Autenticación con Google · persistencia cloud · despliegue continuo
       </motion.p>
     </div>
   );
