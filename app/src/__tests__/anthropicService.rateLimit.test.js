@@ -1,5 +1,16 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 
+vi.mock('../supabase/supabaseClient', () => ({
+  supabase: {
+    auth: {
+      getSession: vi.fn(() => Promise.resolve({
+        data: { session: { access_token: 'test-access-token' } },
+        error: null,
+      })),
+    },
+  },
+}))
+
 const mockJsonResponse = (data, ok = true) =>
   Promise.resolve({
     ok,
@@ -41,7 +52,6 @@ describe('rate limiting', () => {
   describe('callAnthropicAI', () => {
     it('allows up to 20 calls within 60s window', async () => {
       globalThis.fetch.mockResolvedValue(mockJsonResponse({ text: 'ok' }))
-
       const { callAnthropicAI } = await import('../services/anthropicService')
 
       for (let i = 0; i < 20; i++) {
@@ -52,7 +62,6 @@ describe('rate limiting', () => {
 
     it('rejects the 21st call with rate limit error', async () => {
       globalThis.fetch.mockResolvedValue(mockJsonResponse({ text: 'ok' }))
-
       const { callAnthropicAI } = await import('../services/anthropicService')
 
       for (let i = 0; i < 20; i++) {
@@ -67,7 +76,6 @@ describe('rate limiting', () => {
     it('allows calls again after the 60s window passes', async () => {
       vi.advanceTimersByTime(60001)
       globalThis.fetch.mockResolvedValue(mockJsonResponse({ text: 'ok after window' }))
-
       const { callAnthropicAI } = await import('../services/anthropicService')
 
       const result = await callAnthropicAI({ messages: [{ role: 'user', content: 'late' }] })
@@ -78,7 +86,6 @@ describe('rate limiting', () => {
   describe('callAnthropicAIStream', () => {
     it('rejects calls when rate limit is exceeded', async () => {
       globalThis.fetch.mockResolvedValue(mockJsonResponse({ text: 'ok' }))
-
       const { callAnthropicAI, callAnthropicAIStream } = await import('../services/anthropicService')
 
       for (let i = 0; i < 20; i++) {
@@ -97,7 +104,6 @@ describe('rate limiting', () => {
       vi.advanceTimersByTime(60001)
       const streamResponse = mockSSEResponse(['chunk1', 'chunk2'])
       globalThis.fetch.mockResolvedValue(streamResponse)
-
       const { callAnthropicAIStream } = await import('../services/anthropicService')
 
       const chunks = []
