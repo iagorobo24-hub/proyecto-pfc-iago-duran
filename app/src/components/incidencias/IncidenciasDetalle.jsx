@@ -1,23 +1,30 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import Button from '../ui/Button'
-import { ESTADOS, PROMPT_DIAGNOSTICO, SevBadge, EstBadge } from './IncidenciasShared'
+import { ESTADOS, SevBadge, EstBadge } from './IncidenciasShared'
 import styles from './IncidenciasDetalle.module.css'
 
 function ObservacionesEditor({ initial, onSave }) {
   const [texto, setTexto] = useState(initial || '')
   const [editado, setEditado] = useState(false)
-  
-  useEffect(() => {
-    setTexto(initial || '')
+
+  const handleSave = () => {
+    onSave(texto)
     setEditado(false)
-  }, [initial])
-  
-  const handleSave = () => { onSave(texto); setEditado(false); toast.show('Observación guardada', 'success') }
+  }
+
   return (
     <div>
-      <textarea className={styles.textarea} value={texto} rows={3} maxLength={500}
-        onChange={e => { setTexto(e.target.value); setEditado(true) }}
-        placeholder="Notas de seguimiento..." />
+      <textarea
+        className={styles.textarea}
+        value={texto}
+        rows={3}
+        maxLength={500}
+        onChange={e => {
+          setTexto(e.target.value)
+          setEditado(true)
+        }}
+        placeholder="Notas de seguimiento..."
+      />
       <div className={styles.editorFooter}>
         <span className={styles.charCount}>{texto.length}/500</span>
         {editado && <Button variant="primary" size="sm" onClick={handleSave}>Guardar observación</Button>}
@@ -27,7 +34,6 @@ function ObservacionesEditor({ initial, onSave }) {
 }
 
 export default function IncidenciasDetalle({ incidencia, cargandoIA, onCambiarEstado, onGuardarObservacion, onGenerarDiagnostico, onVolver }) {
-
   const handleCambiarEstado = (estado) => {
     if (incidencia) onCambiarEstado(incidencia.id, estado)
   }
@@ -71,7 +77,11 @@ export default function IncidenciasDetalle({ incidencia, cargandoIA, onCambiarEs
 
         <div className={styles.section}>
           <div className={styles.sectionLabel}>Observaciones</div>
-          <ObservacionesEditor initial={incidencia.observaciones} onSave={handleGuardarObservacion} />
+          <ObservacionesEditor
+            key={incidencia.id}
+            initial={incidencia.observaciones}
+            onSave={handleGuardarObservacion}
+          />
         </div>
 
         <div className={styles.section}>
