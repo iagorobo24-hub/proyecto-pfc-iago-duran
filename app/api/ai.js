@@ -31,6 +31,23 @@ const PROVIDERS = {
   },
 }
 
+const FALLBACK_MODELS = {
+  openrouter: [
+    'meta-llama/llama-3.3-70b-instruct:free',
+    'qwen/qwen-2.5-72b-instruct:free',
+    'google/gemma-4-31b-it:free',
+    'meta-llama/llama-3.2-3b-instruct:free',
+  ],
+  groq: [
+    'llama-3.3-70b-versatile',
+    'mixtral-8x7b-32768',
+  ],
+}
+
+export function getFallbackModels(provider) {
+  return [...(FALLBACK_MODELS[provider] || [])]
+}
+
 const DEFAULT_PROVIDER = 'openrouter'
 const DEFAULT_MODEL = 'meta-llama/llama-3.3-70b-instruct:free'
 const MAX_TOKENS_CAP = 4096
@@ -145,16 +162,18 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: `Unsupported provider: ${provider}` })
     }
 
-    const allowedModels = providerConfig.models
-    if (!allowedModels.includes(model)) {
-      return res.status(400).json({ error: 'Model not allowed', allowed: allowedModels })
+    if (!providerConfig.models.includes(model)) {
+      return res.status(400).json({ error: 'Model not allowed', allowed: providerConfig.models })
     }
 
     if (messages.length > 50) {
       return res.status(400).json({ error: 'Too many messages (max 50)' })
     }
 
-    const totalChars = messages.reduce((sum, message) => sum + (typeof message?.content === 'string' ? message.content.length : 0), 0)
+    const totalChars = messages.reduce(
+      (sum, message) => sum + (typeof message?.content === 'string' ? message.content.length : 0),
+      0,
+    )
     if (totalChars > 50000) {
       return res.status(400).json({ error: 'Messages too long (max 50k chars)' })
     }
@@ -202,13 +221,7 @@ export default async function handler(req, res) {
     let data
     let isFallback = false
     let currentModel = model
-
-    const FREE_FALLBACKS = [
-      'meta-llama/llama-3.3-70b-instruct:free',
-      'qwen/qwen-2.5-72b-instruct:free',
-      'google/gemma-4-31b-it:free',
-      'meta-llama/llama-3.2-3b-instruct:free',
-    ]
+    const fallbackModels = getFallbackModels(provider)
 
     const makeStreamRequest = async (modelName) => {
       body.model = modelName
@@ -223,19 +236,22 @@ export default async function handler(req, res) {
       body.stream = true
       response = await makeStreamRequest(currentModel)
 
-      if (!response.ok) {
+      if (!response.ok && provider === 'openrouter') {
         const errData = await response.clone().json().catch(() => ({}))
         if (isCreditError(response.status, errData) && !currentModel.endsWith(':free')) {
-          isFallback = true
-          currentModel = FREE_FALLBACKS[0]
-          response = await makeStreamRequest(currentModel)
+          const creditFallback = fallbackModels.find(candidate => candidate !== currentModel)
+          if (creditFallback) {
+            isFallback = true
+            currentModel = creditFallback
+            response = await makeStreamRequest(currentModel)
+          }
         }
       }
 
       if (!response.ok) {
         const errData = await response.clone().json().catch(() => ({}))
         if (isRateLimitError(response.status, errData)) {
-          for (const fallbackModel of FREE_FALLBACKS) {
+          for (const fallbackModel of fallbackModels) {
             if (fallbackModel === currentModel) continue
             isFallback = true
             currentModel = fallbackModel
@@ -322,16 +338,19 @@ export default async function handler(req, res) {
     response = result.resObj
     data = result.dataJson
 
-    if (!response.ok && isCreditError(response.status, data) && !currentModel.endsWith(':free')) {
-      isFallback = true
-      currentModel = FREE_FALLBACKS[0]
-      result = await makeRequest(currentModel)
-      response = result.resObj
-      data = result.dataJson
+    if (!response.ok && provider === 'openrouter' && isCreditError(response.status, data) && !currentModel.endsWith(':free')) {
+      const creditFallback = fallbackModels.find(candidate => candidate !== currentModel)
+      if (creditFallback) {
+        isFallback = true
+        currentModel = creditFallback
+        result = await makeRequest(currentModel)
+        response = result.resObj
+        data = result.dataJson
+      }
     }
 
     if (!response.ok && isRateLimitError(response.status, data)) {
-      for (const fallbackModel of FREE_FALLBACKS) {
+      for (const fallbackModel of fallbackModels) {
         if (fallbackModel === currentModel) continue
         isFallback = true
         currentModel = fallbackModel
