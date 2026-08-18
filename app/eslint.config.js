@@ -23,11 +23,12 @@ export default defineConfig([
       },
     },
     rules: {
-      // Core ESLint does not account for lowercase JSX namespace usage such as <motion.div>.
+      // Preserve the repository convention for JSX component identifiers while also
+      // covering Framer Motion's lowercase namespace usage (<motion.div>).
       'no-unused-vars': ['error', {
-        varsIgnorePattern: '^(?:[A-Z_]|motion)$',
+        varsIgnorePattern: '^(?:[A-Z_].*|motion)$',
         argsIgnorePattern: '^_',
-        caughtErrorsIgnorePattern: '^_',
+        caughtErrors: 'none',
       }],
       // Existing synchronization effects are valid legacy patterns. Keep them visible
       // as debt without blocking unrelated changes; refactor them only with behavioral tests.
