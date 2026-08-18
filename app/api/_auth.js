@@ -4,7 +4,9 @@ let authClient = null
 
 function getHeader(headers, name) {
   if (!headers) return undefined
-  return headers[name] ?? headers[name.toLowerCase()] ?? headers[name.toUpperCase()]
+  const target = name.toLowerCase()
+  const entry = Object.entries(headers).find(([key]) => key.toLowerCase() === target)
+  return entry?.[1]
 }
 
 export function extractBearerToken(headers = {}) {
