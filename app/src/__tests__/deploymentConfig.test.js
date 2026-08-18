@@ -49,7 +49,12 @@ describe('deployment configuration', () => {
     expect(csp).toContain('https://fonts.googleapis.com')
     expect(csp).toContain('https://fonts.gstatic.com')
     expect(csp).toContain('wss://*.supabase.co')
-    expect(csp).toContain('https://api.openrouter.ai')
+    expect(csp).toContain("connect-src 'self'")
+
+    // AI providers are server-side dependencies of /api/ai, not browser dependencies.
+    expect(csp).not.toContain('https://api.openrouter.ai')
+    expect(csp).not.toContain('https://openrouter.ai')
+    expect(csp).not.toContain('https://api.groq.com')
   })
 
   it('keeps header-only CSP directives out of the html meta policy', () => {
