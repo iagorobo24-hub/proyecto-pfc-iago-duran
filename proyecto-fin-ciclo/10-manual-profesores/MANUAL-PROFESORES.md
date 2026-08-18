@@ -1,270 +1,80 @@
-# MANUAL PARA PROFESORES — Proyecto Fin de Ciclo con IA Generativa
+# Manual para profesorado — proyectos técnicos asistidos por IA
 
-> **Nota:** Este manual está pensado para que cualquier profesor del ciclo de Automatización y Robótica Industrial (o ciclos similares) pueda utilizar la experiencia y documentación de este proyecto como recurso didáctico para cursos futuros.
+## Propósito
 
----
+Este material utiliza el PFC como caso de estudio para enseñar desarrollo asistido por IA con un principio central: **el alumno conserva la responsabilidad sobre requisitos, decisiones, validación y defensa**.
 
-## 1. Introducción
+No se propone una herramienta concreta como obligatoria. Los servicios, planes y modelos cambian; la metodología debe sobrevivir a esos cambios.
 
-Este proyecto demuestra que un estudiante de ciclo formativo puede, utilizando herramientas de IA generativa gratuitas y de vanguardia, desarrollar una aplicación web profesional que resuelve necesidades reales de una empresa del sector eléctrico.
+## Objetivos docentes
 
-### 1.1 ¿Qué demuestra este proyecto?
+Al finalizar el itinerario el alumno debería poder:
 
-1. **Viabilidad técnica:** Un estudiante sin experiencia previa en desarrollo web puede crear una SPA completa con autenticación, base de datos, API de IA y despliegue en producción.
+- formular un problema técnico y criterios de aceptación;
+- usar un asistente de IA con contexto y límites claros;
+- revisar código o documentación generada;
+- utilizar Git para conservar trazabilidad;
+- ejecutar validaciones y leer sus resultados;
+- distinguir dato medido, inferencia y opinión;
+- identificar cuándo una respuesta necesita fuente normativa/oficial.
 
-2. **Herramientas gratuitas son suficientes:** Todas las herramientas usadas son gratuitas o tienen tier gratuito generoso. No se necesita inversión económica.
+## Itinerario de cuatro sesiones
 
-3. **Metodología replicable:** El proceso de trabajo (prompt → iteración → testing) es aplicable a cualquier proyecto.
+### Sesión 1 — Del problema al prompt verificable
 
-4. **Coste cero en producción:** La aplicación está en producción en Vercel + Firebase Spark sin ningún coste.
+- qué puede y qué no puede garantizar un LLM;
+- transformar una necesidad en requisitos observables;
+- crear un prompt con objetivo, entradas, límites y criterio de cierre;
+- ejercicio: comparar una respuesta vaga con otra verificable.
 
-### 1.2 ¿Por qué es relevante para el ciclo?
+### Sesión 2 — IA + Git + revisión
 
-El ciclo de Automatización y Robótica Industrial forma técnicos que trabajarán con:
-- PLCs yautómatas programables
-- SCADAs y sistemas de supervisión
-- Redes industriales (Profibus, Modbus, etc.)
-- IoT y sensores
-- **Software de gestión y visualización** ← Este proyecto cubre este aspecto
+- repositorio, diff, commit y reversibilidad;
+- generar un cambio pequeño con asistencia IA;
+- revisar el diff antes de aceptarlo;
+- ejercicio: localizar una suposición incorrecta del agente.
 
-Aunque el proyecto no es de automatización pura, demuestra competencias transferibles:
-- Análisis de requisitos con el cliente (la empresa)
-- Diseño de soluciones técnicas
-- Implementación y pruebas
-- Documentación
+### Sesión 3 — Pruebas y evidencia
 
----
+- diferencia entre “parece funcionar” y “está verificado”;
+- build, lint, pruebas unitarias y E2E;
+- interpretar un fallo sin modificar tests para ocultarlo;
+- ejercicio: documentar comando, resultado y limitaciones.
 
-## 2. Las 5 herramientas esenciales que todo alumno debería conocer
+### Sesión 4 — Mini proyecto y defensa
 
-### 2.1 Herramientas de desarrollo con IA
+- diseñar una solución pequeña en grupo;
+- documentar qué hizo la IA y qué verificó el equipo;
+- presentar decisiones, evidencias y límites;
+- evaluar el resultado, no el volumen de contenido generado.
 
-| Herramienta | Tipo | Coste | Uso principal |
-|-------------|------|-------|--------------|
-| **Claude Web** | Chat/web | Gratis | Diseño de arquitectura, prototipos |
-| **Windsurf IDE** | IDE con IA | Gratis (ilimitado) | Coding en tiempo real |
-| **OpenCode CLI** | Agente terminal | Gratis (modelos NVIDIA) | Refactorización, scripts |
+## Reglas de seguridad y autoría
 
-### 2.2 Herramientas de infraestructura
+- Las normas del centro determinan qué uso de IA, atribución y ayuda externa están permitidos.
+- El alumno debe poder explicar el código y las decisiones que presenta.
+- No se aceptan especificaciones eléctricas, normativa, compatibilidades o procedimientos de seguridad generados sin contraste con fuentes oficiales.
+- Un *system prompt* no garantiza verdad, seguridad ni JSON válido.
+- Un test verde no justifica una implementación si el resultado es evidentemente incorrecto.
 
-| Herramienta | Tipo | Coste | Uso principal |
-|-------------|------|-------|--------------|
-| **GitHub** | Control de versiones | Gratis | Almacenar código, colaboración |
-| **Vercel** | Hosting + serverless | Gratis (tier hobby) | Desplegar aplicaciones web |
+## Evaluación recomendada
 
-### 2.3 ¿Por qué estas 5 y no otras?
+Priorizar:
 
-- **Sin coste:** Todas tienen tier gratuito suficiente para proyectos académicos
-- **Sin autenticación compleja:** OpenCode y Vercel no requieren cuenta compleja
-- **De vanguardia:** Son las herramientas que están redefiniendo cómo se programa
-- **Complementarias:** Cada una cubre una fase diferente del desarrollo
+1. definición del problema y alcance;
+2. calidad de la solución;
+3. trazabilidad de decisiones;
+4. validación y evidencia;
+5. comprensión técnica;
+6. comunicación y límites reconocidos.
 
----
+La cantidad de herramientas IA utilizadas no es un criterio de calidad por sí sola.
 
-## 3. Plan de actividades propuesto (4 sesiones)
+## Materiales del repositorio
 
-### Sesión 1: Introducción a la IA generativa para desarrollo (2h)
+- `05-proceso-desarrollo/`: metodología y patrones de prompts.
+- `06-herramientas-ia/`: fichas históricas de herramientas utilizadas.
+- `07-manuales-uso/`: comportamiento actual de la aplicación.
+- `08-resultados/`: contrato de evidencia y resultados.
+- `10-manual-profesores/`: actividades, evaluación y guía rápida.
 
-**Objetivo:** Que los alumnos entiendan qué es la IA generativa y cómo puede ayudarles en su trabajo.
-
-**Contenido:**
-1. Qué es un modelo de lenguaje (LLM) y cómo funciona [15 min]
-2. Demostración: pidiéndole a Claude que diseñe un programa en Python para calcular temperaturas en un PLC [30 min]
-3. Diferencia entre chat web y herramientas de coding [15 min]
-4. Actividad: Primer contacto con Claude Web [45 min]
-   - Crear cuenta en claude.ai
-   - Pedir un programa simple (ej: calculadora de secciones de cable)
-   - Discutir resultados
-
-**Material necesario:**
-- Ordenadores con acceso a internet
-- Cuentas de claude.ai (gratis)
-
-**Entregable:**
-- Programa generado por cada alumno + screenshot de la conversación
-
----
-
-### Sesión 2: IDE con IA + Control de versiones (2h)
-
-**Objetivo:** Instalar y configurar Windsurf IDE + GitHub
-
-**Contenido:**
-1. Instalación de Windsurf [20 min]
-2. Configuración básica + conexión a GitHub [20 min]
-3. Conceptos de control de versiones (commit, push, branch, merge) [30 min]
-4. Actividad: Hacer un commit en GitHub desde Windsurf [45 min]
-
-**Material necesario:**
-- Ordenadores con acceso a internet
-- Cuenta de GitHub (gratis)
-- Windsurf instalado
-
-**Entregable:**
-- Repositorio GitHub con al menos 3 commits documentados
-
----
-
-### Sesión 3: Deployment en Vercel (2h)
-
-**Objetivo:** Desplegar una aplicación web simple en producción
-
-**Contenido:**
-1. Concepto de hosting y CDN [15 min]
-2. Registro en Vercel + conexión con GitHub [20 min]
-3. Qué es una Serverless Function [15 min]
-4. Actividad: Desplegar la calculadora de la Sesión 1 en Vercel [60 min]
-   - Crear repo en GitHub
-   - Conectar a Vercel
-   - Ver el resultado en la URL de producción
-
-**Material necesario:**
-- Repositorio de la Sesión 2
-- Cuenta de Vercel (gratis)
-
-**Entregable:**
-- URL pública de la aplicación desplegada
-
----
-
-### Sesión 4: Proyecto en grupo — Aplicación para la empresa (2h)
-
-**Objetivo:** Aplicar todo lo aprendido en un proyecto simplificado
-
-**Actividad:** En grupos de 2-3, diseñar y prototipar (solo mockup, no código) una herramienta web para técnicos eléctricos.
-
-**Pasos:**
-1. Elegir un problema real (ej: calculadora de circuitos, selector de protecciones, etc.)
-2. Diseñar 3 pantallas en papel o Figma
-3. Pedir a Claude que genere el mockup HTML/CSS
-4. Desplegar en Vercel (si da tiempo)
-
-**Entregable:**
-- Mockup funcional en URL de Vercel
-- Prompt usado para generarlo
-- Documentación de qué hicieron y qué hizo la IA
-
----
-
-## 4. Rúbrica de evaluación sugerida
-
-### Para proyectos que usen IA generativa
-
-| Criterio | Excelente (10) | Bueno (8) | Suficiente (6) | Insuficiente (4) |
-|----------|---------------|-----------|---------------|------------------|
-| **Uso de herramientas IA** | Usa 3+ herramientas de forma estratégica | Usa 2 herramientas con criterio | Usa 1 herramienta de forma básica | No usa herramientas IA |
-| **Calidad del código generado** | Código bien estructurado, con tests y documentación | Código funcional con estructura clara | Código que funciona pero desorganizado | Código roto o incompleto |
-| **Prompt engineering** | Prompts específicos con contexto, constraints y ejemplos | Prompts claros con contexto | Prompts genéricos | Copia prompts sin entenderlos |
-| **Validación y testing** | Tests automáticos + pruebas manuales documentadas | Pruebas manuales detalladas | Pruebas básicas | Sin pruebas |
-| **Documentación** | README completo + documentación de herramientas usadas | README claro | Documentación mínima | Sin documentación |
-| **Autonomía vs. Dependencia de IA** | Usa IA como amplificador, mantiene criterio propio | Buena dependencia, poco criterio propio | Dependencia excesiva de IA | Copia código sin entenderlo |
-
-### Preguntas de validación (para la defensa)
-
-1. *¿Qué prompt usaste para generar X? Explica por qué funciona.*
-2. *Si el código generado por IA tuviera un bug, ¿cómo lo encontrarías?*
-3. *¿Qué partes del proyecto las hizo la IA y cuáles tú?*
-4. *¿Cómo mejoraste el código generado por IA?*
-5. *¿Qué limitaciones tiene usar IA generativa para desarrollo?*
-
----
-
-## 5. Preguntas frecuentes de los alumnos
-
-### "¿Puedo usar esto para todo el proyecto?"
-
-Sí, pero con criterio. El tribunal evaluará el resultado final, no si usaste IA o no. Si la IA genera código que no entiendes, no podrás defenderlo ni adaptarlo.
-
-### "¿El código de IA cuenta como plagio?"
-
-No, si lo documentas y entiendes. El plagio es presentar código de otra persona como propio sin attribution. Usar IA generativa para generar código es como usar un compilador que autocompleta código: el trabajo está en guiar, revisar y mejorar.
-
-### "¿Qué pasa si la IA me da código incorrecto?"
-
-La IA genera código con errores. Tu trabajo es:
-1. Entender qué hace el código
-2. Probarlo exhaustivamente
-3. Corregir los errores
-
-Si no sabes si el código es correcto, es que no deberías usarlo.
-
-### "¿Cuánto código puedo pedir que me genere?"
-
-Todo lo que necesites, pero:
-- El 100% del código puede ser generado por IA
-- El 100% del diseño, requisitos y validación debe ser tuyo
-- La documentación y defensa debe ser enteramente tuya
-
----
-
-## 6. Recursos adicionales
-
-### Documentación de las herramientas
-
-Ver la carpeta `proyecto-fin-ciclo/06-herramientas-ia/` donde hay fichas técnicas detalladas de:
-
-- Claude Web (AI-001)
-- GitHub Copilot (AI-002)
-- Vercel (AI-003)
-- Windsurf (AI-004)
-- OpenCode CLI (AI-007)
-- OpenRouter (API-001)
-- Firebase (DB-001)
-- Playwright (SCRAPE-001)
-
-### Enlaces útiles
-
-| Recurso | URL |
-|---------|-----|
-| Claude | https://claude.ai |
-| Windsurf | https://codeium.com/windsurf |
-| OpenCode | https://opencode.ai |
-| GitHub | https://github.com |
-| Vercel | https://vercel.com |
-| OpenRouter | https://openrouter.ai |
-| Documentación React | https://react.dev |
-| Documentación Vite | https://vitejs.dev |
-
-### Libros recomendados
-
-- *Hands-On Generative AI with Transformers* — O'Reilly
-- *Practical AI for Healthcare Professionals* — Routledge (ejemplos transferibles)
-
----
-
-## 7. Recomendaciones para futuros proyectos
-
-### Lo que funcionó bien en este proyecto
-
-1. **Empezar simple:** Los primeros componentes fueron artefactos JSX independientes, no una SPA completa.
-2. **Iterar rápido:** Cada día había una versión nueva funcional, aunque imperfecta.
-3. **Documentar mientras trabajas:** EVOLUCION.md se actualizaba en cada sesión.
-4. **Usar herramientas gratuitas:** Nunca necesitas pagar por herramientas de desarrollo.
-
-### Lo que se podría mejorar
-
-1. **Tests desde el principio:** Añadir tests E2E con Playwright antes de refactorizar.
-2. **Validación con usuarios reales:** Probar la aplicación con técnicos de la empresa durante el desarrollo.
-3. **Integración continua:** GitHub Actions para build y tests automáticos.
-
----
-
-## 8. Licencia y reutilización
-
-Este proyecto y su documentación están bajo licencia **MIT**. Puedes:
-
-- ✅ Usar las fichas de herramientas en clase
-- ✅ Adaptar el plan de actividades
-- ✅ Copiar la estructura de documentación para otros proyectos
-- ✅ Usar el código como referencia (con atribución)
-
----
-
-*Manual elaborado en Mayo 2026*
-*Proyecto: "Proyecto PFC — Suite de herramientas web para técnicos eléctricos"*
-*Autor: Iago (iagorobo24-hub)*
-*Ciclo: Automatización y Robótica Industrial*
-
----
-
-**Nota final:** Este manual es un documento vivo. Si lo usas, por favor contribuye mejorando los materiales para los próximos alumnos. La educación mejora con la experiencia compartida.
+*Manual docente reconciliado — agosto de 2026.*

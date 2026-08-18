@@ -1,263 +1,53 @@
-# Diseño UI/UX — El aspecto visual
+# Diseño UI/UX
+
+## Principios
+
+La aplicación utiliza un sistema visual común basado en CSS Modules, variables CSS, layout compartido y componentes reutilizables. El objetivo es mantener consistencia entre siete herramientas con necesidades distintas.
+
+## Estructura de interfaz
+
+`AppShell` organiza la zona autenticada con navegación común y un `<Outlet>` para las rutas. El Dashboard Global funciona como entrada y cada herramienta mantiene su propia interfaz dentro del mismo sistema.
 
 ## Sistema de diseño
 
-La web tiene un estilo propio, con colores azules corporativos. Todo está hecho con CSS Modules (los estilos de cada componente no se mezclan con los de otros) y variables CSS (para poder cambiar entre modo claro y oscuro fácilmente).
+Las fuentes canónicas de colores, espaciado, radios, tipografía y tema son los archivos de estilos del repositorio, especialmente `app/src/styles/variables.css` y los módulos CSS de cada componente. Este documento evita duplicar todos los valores para que no quede desactualizado si cambia el diseño.
 
----
+### Componentes recurrentes
 
-## Paleta de colores
+- botones con variantes de acción;
+- inputs/selects;
+- tarjetas y badges;
+- breadcrumbs y layouts de selección;
+- estados de carga, vacío y error;
+- tablas/listados;
+- gráficos mediante Recharts en los módulos que lo requieren.
 
-### Colores corporativos la empresa
+## Tema
 
-| Color | Hex | RGB | Uso |
-|-------|-----|-----|-----|
-| **Azul la empresa** | `#004B8D` | 0, 75, 141 | Primary, botones principales |
-| **Azul claro** | `#4A90D9` | 74, 144, 217 | Links, acentos |
-| **Verde éxito** | `#28A745` | 40, 167, 69 |KPIs OK, confirmaciones |
-| **Amarillo warning** | `#FFC107` | 255, 193, 7 |KPIs Warning |
-| **Rojo error** | `#DC3545` | 220, 53, 69 |Errores, KPIs críticos |
-| **Gris texto** | `#333333` | 51, 51, 51 | Texto principal |
-| **Gris secundario** | `#666666` | 102, 102, 102 | Texto secundario |
-| **Fondo claro** | `#F5F7FA` | 245, 247, 250 | Background light |
-| **Fondo oscuro** | `#1A1A2E` | 26, 26, 46 | Background dark |
-| **Borde** | `#E0E0E0` | 224, 224, 224 | Bordes, separadores |
+Existe soporte de tema claro/oscuro a través del contexto de tema y variables CSS. Las capturas versionadas del capítulo 08 incluyen evidencia visual de ambos estados.
 
-### CSS Variables
+## Responsive
 
-```css
-:root {
-  /* Primary */
-  --color-primary: #004B8D;
-  --color-primary-light: #4A90D9;
-  --color-primary-dark: #003366;
-  
-  /* Estados */
-  --color-success: #28A745;
-  --color-warning: #FFC107;
-  --color-error: #DC3545;
-  
-  /* Texto */
-  --color-text-primary: #333333;
-  --color-text-secondary: #666666;
-  --color-text-inverse: #FFFFFF;
-  
-  /* Fondo */
-  --color-bg-primary: #F5F7FA;
-  --color-bg-secondary: #FFFFFF;
-  --color-bg-card: #FFFFFF;
-  
-  /* Bordes */
-  --color-border: #E0E0E0;
-  
-  /* Radio */
-  --radius-sm: 4px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
-  --radius-full: 9999px;
-  
-  /* Sombras */
-  --shadow-sm: 0 1px 3px rgba(0,0,0,0.1);
-  --shadow-md: 0 4px 6px rgba(0,0,0,0.1);
-  --shadow-lg: 0 10px 15px rgba(0,0,0,0.1);
-}
-```
+La UI incluye comportamiento adaptativo y existe una auditoría Playwright/responsive en el repositorio. No se afirma cumplimiento perfecto en todos los dispositivos sin ejecutar una validación fresca.
 
----
+## Teclado
 
-## Modo oscuro
+El shell define atajos globales:
 
-El sistema incluye **toggle de modo oscuro** mediante ThemeContext:
+- `Ctrl/Cmd + 1…7`: navegar a las herramientas;
+- `Ctrl/Cmd + B`: alternar sidebar;
+- `Ctrl/Cmd + K`: búsqueda global cuando corresponde;
+- `?`: ayuda de atajos;
+- `Esc`: cerrar la ayuda de atajos.
 
-```css
-[data-theme="dark"] {
-  --color-text-primary: #F5F7FA;
-  --color-text-secondary: #A0A0A0;
-  --color-bg-primary: #1A1A2E;
-  --color-bg-secondary: #16213E;
-  --color-bg-card: #1F2937;
-  --color-border: #374151;
-}
-```
-
-**Transiciones:**
-- View Transitions API para animación suave
-- `flushSync` para sincronización de DOM
-
----
-
-## Tipografía
-
-### Familia principal
-
-**IBM Plex Sans** (Google Fonts)
-
-```css
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap');
-
-body {
-  font-family: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-  font-size: 16px;
-  line-height: 1.5;
-}
-```
-
-### Escalera tipográfica
-
-| Tamaño | Uso | CSS |
-|--------|-----|-----|
-| **24px** | Títulos h1 | `font-size: 1.5rem; font-weight: 700;` |
-| **20px** | Títulos h2 | `font-size: 1.25rem; font-weight: 600;` |
-| **18px** | Títulos h3 | `font-size: 1.125rem; font-weight: 600;` |
-| **16px** | Body | `font-size: 1rem; font-weight: 400;` |
-| **14px** | Small | `font-size: 0.875rem; font-weight: 400;` |
-| **12px** | Caption | `font-size: 0.75rem; font-weight: 400;` |
-
----
-
-## Componentes UI
-
-### Button
-
-| Variante | Uso | Estilo |
-|----------|-----|--------|
-| **primary** | Acciones principales | Fondo azul, texto blanco |
-| **secondary** | Acciones secundarias | Fondo transparente, borde |
-| **ghost** | Acciones menores | Sin fondo, texto azul |
-| **danger** | Acciones destructivas | Fondo rojo |
-
-**Estados:** default, hover, active, disabled
-
-### Input
-
-- Borde redondeado (`--radius-md`)
-- Padding consistente (12px 16px)
-- Focus: borde azul con shadow
-- Error: borde rojo + mensaje
-
-### Card
-
-- Fondo blanco (light) / card (dark)
-- Borde sutil
-- Sombras suaves
-- Padding 16-24px
-
-### Badge
-
-- Estados: default, success, warning, error
-- Border-radius: pill (`--radius-full`)
-- Padding: 4px 8px
-
----
-
-## Layout
-
-### AppShell
-
-```
-┌────────────────────────────────────────────────────────┐
-│  TOPBAR (fixed)                                        │
-│  [≡] [Logo] [Buscador]              [Tema] [Avatar]   │
-├────────────┬───────────────────────────────────────────┤
-│  SIDEBAR   │  CONTENIDO PRINCIPAL                      │
-│  (fixed)   │                                           │
-│            │  ┌─────────────────────────────────────┐  │
-│  [Fichas]  │  │                                     │  │
-│  [Almacén] │  │         Route actual                │  │
-│  [KPI]     │  │                                     │  │
-│  [Presup]  │  │                                     │  │
-│  [Formac]  │  │                                     │  │
-│  [SONEX]   │  └─────────────────────────────────────┘  │
-│            │                                           │
-└────────────┴───────────────────────────────────────────┘
-```
-
-### Responsive
-
-| Breakpoint | Ancho | Layout |
-|------------|-------|--------|
-| **Desktop** | > 1024px | Sidebar visible, topbar inline |
-| **Tablet** | 640-1024px | Sidebar oculto, hamburguesa |
-| **Mobile** | < 640px | Sidebar oculto, hamburguesa |
-
----
+Los manuales no inventan atajos distintos por módulo si no existen en el código.
 
 ## Accesibilidad
 
-### Implementado
+El código contiene elementos semánticos, labels/roles ARIA y soporte de teclado en varios componentes. Eso constituye trabajo de accesibilidad, pero **no equivale a certificar cumplimiento WCAG AA**. Para hacer esa afirmación se necesitaría una auditoría específica, reproducible y fechada.
 
-- **Navegación por teclado:** Todos los interactivos tienen `:focus-visible`
-- **ARIA labels:** Para iconos sin texto
-- **Roles semánticos:** `<nav>`, `<main>`, `<aside>`
-- **Contraste:** Cumple WCAG AA (4.5:1 mínimo)
+## Criterio de evolución
 
-### Ejemplo de implementación
+Los cambios visuales deben preservar consistencia, legibilidad y comportamiento responsive sin convertir un ajuste cosmético en un refactor funcional.
 
-```jsx
-<button
-  className="hamburger"
-  onClick={toggleMenu}
-  aria-expanded={isOpen}
-  aria-label={isOpen ? 'Cerrar menú' : 'Abrir menú'}
-  aria-haspopup="menu"
->
-  <MenuIcon />
-</button>
-```
-
----
-
-## Iconografía
-
-**Librería:** lucide-react
-
-| Icono | Uso |
-|-------|-----|
-| `Home` | Navegación inicio |
-| `FileText` | Fichas técnicas |
-| `Package` | Almacén |
-| `AlertTriangle` | Incidencias |
-| `BarChart3` | KPIs |
-| `FileCheck` | Presupuestos |
-| `GraduationCap` | Formación |
-| `MessageCircle` | SONEX |
-| `Moon` / `Sun` | Tema |
-| `LogOut` | Cerrar sesión |
-
----
-
-## Animaciones
-
-### Transiciones de página
-
-- Fade in/out básico
-- Duración: 200-300ms
-- Easing: ease-in-out
-
-### Indicadores de estado
-
-| Elemento | Animación |
-|----------|-----------|
-| Loading | Spinner rotativo |
-| Sending | Stream indicator (pulsing) |
-| Success | Checkmark animado |
-| Error | Shake sutil |
-
----
-
-## Guías de estilo rápido
-
-### Para nuevos componentes
-
-1. **Usa las variables CSS** — No hardcodear colores
-2. **Sigue los tamaños de spacing** — 4, 8, 12, 16, 24, 32, 48
-3. **Card tiene padding** — Mínimo 16px
-4. **Botones tienen min-height** — 40px
-5. **Inputs tienen altura** — 40-44px
-6. **Radio consistente** — 4px (sm), 8px (md), 12px (lg)
-7. **Sombras sutiles** — No exagerar
-
----
-
-*Sistema de diseño documentado: Mayo 2026*
-*Ver también: app/src/styles/variables.css y componentes en app/src/components/ui/*
+*Diseño reconciliado — agosto de 2026.*

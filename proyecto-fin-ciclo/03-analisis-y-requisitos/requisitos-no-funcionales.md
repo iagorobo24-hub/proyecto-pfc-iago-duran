@@ -1,200 +1,73 @@
-# Requisitos No Funcionales — Cómo tiene que funcionar
+# Requisitos no funcionales
 
-## Definición
+Los RNF se formulan como **objetivos y propiedades verificables**. “Existe implementación” no significa automáticamente “cumplimiento demostrado”; cuando falta una medición fresca se indica expresamente.
 
-No basta con que la app haga cosas. También tiene que hacerlas bien: cargar rápido, ser segura, funcionar en el móvil... Esto es lo que me propuse en ese sentido.
+## RNF-01 — Rendimiento
 
----
+- La interfaz no debe bloquearse durante navegación y búsqueda de catálogo.
+- Se utiliza carga diferida de rutas y optimizaciones de consulta/caché.
+- Cualquier cifra de FCP, LCP, bundle o tiempo de interacción debe venir de un informe de rendimiento asociado al commit. No se mantiene aquí una cifra histórica como garantía actual.
 
-## RNF-01: Rendimiento
+## RNF-02 — Usabilidad y accesibilidad
 
-### RNF-01.1 — Tiempo de carga
-**Criterio:** La página principal debe cargar en menos de 3 segundos (3G)
+- Diseño responsive para móvil, tablet y escritorio.
+- Navegación común, tema claro/oscuro y atajos globales.
+- Uso de roles/atributos accesibles donde están implementados.
+- WCAG AA se considera **objetivo**, no certificación: no se declara cumplimiento global sin auditoría de accesibilidad completa.
 
-**Medición:** Lighthouse, WebPageTest
+## RNF-03 — Seguridad
 
-### RNF-01.2 — Respuesta de interfaz
-**Criterio:** Las interacciones deben responder en menos de 100ms
+Implementación observada:
 
-**Medición:** Chrome DevTools Performance
+- `ProtectedRoute` protege el área privada.
+- Claves privadas de IA permanecen en la función serverless, no en el bundle del cliente.
+- Gateway con allowlist de modelos, límites de mensajes/tamaño, CORS y rate limiting.
+- Cabeceras de seguridad en `vercel.json`, incluida CSP.
+- Sanitización de Markdown con DOMPurify.
 
-### RNF-01.3 — Rendering de catálogos grandes
-**Criterio:** El catálogo de 400K productos debe renderizar sin bloquear la UI
+Limitación: el gateway puede devolver detalles del error del proveedor en algunas respuestas 502. Por ello no se afirma “ausencia total de fuga de detalles” hasta endurecer y verificar ese comportamiento.
 
-**Medición:** Virtualización con react-window
+## RNF-04 — Datos y resiliencia
 
----
+- Supabase es la dependencia principal de autenticación y catálogo.
+- `useUserData` implementa persistencia híbrida para varios datos de usuario y respaldo local.
+- Sin credenciales o conectividad, ciertas áreas pueden degradarse; **no se promete funcionamiento offline completo del catálogo ni sincronización automática universal**.
 
-## RNF-02: Usabilidad
+## RNF-05 — Escalabilidad y disponibilidad
 
-### RNF-02.1 — Diseño responsive
-**Criterio:** La aplicación debe ser usable en 3 breakpoints
+El diseño usa servicios gestionados y consultas acotadas, pero no se declara capacidad demostrada para “1M de productos”, “100 usuarios concurrentes” ni un porcentaje de uptime. Son objetivos que necesitarían pruebas de carga/telemetría y, en su caso, SLA contractual del plan utilizado.
 
-| Breakpoint | Ancho | Dispositivo |
-|------------|-------|-------------|
-| Mobile | < 640px | Teléfono |
-| Tablet | 640-1024px | Tablet |
-| Desktop | > 1024px | Ordenador |
+## RNF-06 — Mantenibilidad
 
-**Medición:** Pruebas manuales en cada breakpoint
+- Código organizado por componentes, hooks, servicios, contextos y utilidades.
+- TypeScript se adopta de forma progresiva en parte del código.
+- Git conserva el historial de cambios.
+- La documentación académica debe mantenerse sincronizada con el código antes de generar los artefactos de entrega.
 
-### RNF-02.2 — Accesibilidad
-**Criterio:** Cumplir nivel AA de WCAG 2.2
+## RNF-07 — Coste
 
-- Contraste de colores mínimo 4.5:1
-- Navegación por teclado
-- Atributos ARIA donde corresponda
-- Texto alternativo en imágenes
+El proyecto se diseñó con fuerte preferencia por herramientas gratuitas o de bajo coste. Sin embargo, “coste cero permanente” **no es un requisito técnico garantizable**: planes, cuotas y modelos cambian, y SONEX utiliza en el snapshot auditado un modelo que no lleva sufijo `:free`.
 
-**Medición:** Lighthouse, axe DevTools
+La memoria registra coste observado e hipótesis económicas por separado en `08-resultados/presupuesto.md`.
 
-### RNF-02.3 — Modo oscuro
-**Criterio:** El usuario debe poder alternar entre modo claro y oscuro
+## RNF-08 — Testing
 
-**Implementación:** ThemeContext con CSS variables
+- `app/package.json` define Vitest y Playwright.
+- El repositorio contiene suites unitarias y múltiples archivos E2E `.spec.js`.
+- Existe el comando `test:all`.
+- La cobertura y el número de tests verdes **no se declaran como actuales** sin ejecutar la suite sobre el commit de referencia.
 
----
+## Estado de cumplimiento
 
-## RNF-03: Seguridad
+| Área | Estado documental |
+|---|---|
+| Rendimiento | Implementación parcial; medición fresca pendiente |
+| Usabilidad | Implementado en gran parte; auditoría completa pendiente |
+| Seguridad | Controles implementados; no se presenta como auditoría de seguridad cerrada |
+| Datos/resiliencia | Implementado con limitaciones explícitas |
+| Escalabilidad/disponibilidad | No demostradas mediante carga/SLA propio |
+| Mantenibilidad | Implementada y mejorable |
+| Coste | Histórico/variable, no garantía |
+| Testing | Infraestructura y suites existentes; resultado fresco pendiente |
 
-### RNF-03.1 — Autenticación
-**Criterio:** Solo usuarios autenticados pueden acceder a la aplicación
-
-**Implementación:** Supabase Auth + ProtectedRoute
-
-### RNF-03.2 — Datos de usuario aislados
-**Criterio:** Cada usuario solo ve sus propios datos
-
-**Implementación:** Row Level Security (RLS) en Supabase con `auth.uid() = user_id`
-
-### RNF-03.3 — API de IA protegida
-**Criterio:** La clave de API no debe exponerse en cliente
-
-**Implementación:** Vercel Functions como proxy
-
-### RNF-03.4 — Content Security Policy
-**Criterio:** Prevenir XSS y ataques de inyección
-
-**Implementación:** Headers CSP en vercel.json
-
----
-
-## RNF-04: Escalabilidad
-
-### RNF-04.1 — Catálogo escalable
-**Criterio:** El sistema debe soportar 1M+ productos
-
-**Implementación:**
-- Supabase (PostgreSQL) con paginación usando `.range()`
-- Índices de base de datos e índices GIN de búsqueda full-text
-- Búsqueda nativa rápida en PostgreSQL
-
-### RNF-04.2 — Crecimiento de usuarios
-**Criterio:** Soportar al menos 100 usuarios concurrentes
-
-**Implementación:**
-- Supabase Free Tier: hasta 50.000 usuarios activos mensuales
-- Vercel hobby: sin límite específico
-
----
-
-## RNF-05: Disponibilidad
-
-### RNF-05.1 — Uptime objetivo
-**Criterio:** 99% de disponibilidad
-
-**Implementación:**
-- Vercel: infraestructura redundante
-- Supabase: SLA del 99.9% de base de datos PostgreSQL
-
-### RNF-05.2 — Fallback offline
-**Criterio:** La app debe funcionar si la API de IA falla
-
-**Implementación:** Mensaje de error claro + retry
-
----
-
-## RNF-06: Mantenibilidad
-
-### RNF-06.1 — Código documentado
-**Criterio:** Componentes complejos deben tener JSDoc/comentarios
-
-**Implementación:** Convenciones en CLAUDE.md
-
-### RNF-06.2 — Estructura consistente
-**Criterio:** Estructura de carpetas predecible
-
-**Implementación:**
-```
-src/
-├── components/  # Componentes reutilizables
-├── pages/       # Componentes de página
-├── hooks/       # Custom hooks
-├── services/    # Lógica de negocio
-├── contexts/    # React contexts
-└── styles/      # Estilos globales
-```
-
-### RNF-06.3 — Control de versiones
-**Criterio:** Todo el código en Git con commits significativos
-
-**Implementación:** Conventional commits
-
----
-
-## RNF-07: Coste
-
-### RNF-07.1 — Coste cero en producción
-**Criterio:** El proyecto debe funcionar sin pagar nada
-
-**Implementación:** Exclusivamente tiers gratuitos
-
-| Servicio | Tier usado | Límite |
-|----------|------------|--------|
-| Supabase Auth | Free | 50.000 usuarios activos/mes (MAUs) |
-| Supabase DB | Free | 500MB DB, 1GB storage, lecturas ilimitadas |
-| Vercel | Hobby | 100GB bandwidth, 500min build |
-| OpenRouter | Free Tier | Modelos gratuitos sin coste |
-
-### RNF-07.2 — Alerta de costes
-**Criterio:** Notificar si se acercan a límites
-
-**Implementación:** Scripts de monitoring (pendiente)
-
----
-
-## RNF-08: Testing
-
-### RNF-08.1 — Tests E2E
-**Criterio:** Core flows deben tener tests automatizados
-
-**Implementación:** Playwright
-- Login con Google
-- Navegación entre módulos
-- Responsive design
-- Dark mode
-
-### RNF-08.2 — Cobertura objetivo
-**Criterio:** Mínimo 50% de cobertura en lógica de negocio
-
-**Estado:** ✅ Completado. Cobertura del 65% lograda mediante 272 tests unitarios en Vitest.
-
----
-
-## Resumen de requisitos no funcionales
-
-| Categoría | Requisitos | Estado |
-|-----------|------------|--------|
-| Rendimiento | 3 | ✅ Implementado |
-| Usabilidad | 3 | ✅ Implementado |
-| Seguridad | 4 | ✅ Implementado |
-| Escalabilidad | 2 | ✅ Parcial |
-| Disponibilidad | 2 | ✅ Implementado |
-| Mantenibilidad | 3 | ✅ Parcial |
-| Coste | 2 | ✅ Implementado |
-| Testing | 2 | 🔄 Parcial |
-
----
-
-*Requisitos no funcionales: Abril 2026*
-*Revisados: Mayo 2026*
+*RNF reconciliados con el snapshot auditado en agosto de 2026.*

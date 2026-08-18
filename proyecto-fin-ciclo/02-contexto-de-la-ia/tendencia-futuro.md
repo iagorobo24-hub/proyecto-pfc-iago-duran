@@ -1,95 +1,38 @@
-# Tendencia futuro
+# Tendencias futuras — hipótesis, no hechos
 
-> Esto es hacia dónde creo que va todo esto. No me hagas mucho caso porque esto cambia cada semana, pero después de meses usando estas herramientas a diario, algo me he ido dando cuenta de por dónde van los tiros.
+Este capítulo recoge líneas de evolución plausibles observadas durante el PFC. No pretende predecir productos concretos ni afirmar que una tecnología futura vaya a llegar en una fecha determinada.
 
----
+## 1. Más contexto y memoria
 
-## Lo que está pasando ahora (y por qué no es el futuro)
+Los asistentes tienden a manejar contextos de proyecto mayores y mecanismos de memoria más persistentes. El reto no es solo recordar, sino conservar **información correcta, relevante, privada y reversible**. Una memoria equivocada puede amplificar errores igual que una memoria útil puede reducir repetición.
 
-Vale, lo primero: el otro día revisé lo que había escrito antes sobre "tendencias futuras" y era básicamente describir cosas que ya existen. Decía que "en el futuro los agentes harán tareas solos" — pero OpenCode y Devin ya hacen eso ahora mismo. Decía que "los modelos gratis mejorarán" — pero ya hay modelos gratuitos que funcionan muy bien.
+## 2. Agentes con más autonomía
 
-Así que voy a intentar ir un paso más allá, a lo que **todavía no existe del todo** pero que se ve venir.
+Los agentes ya pueden editar repositorios y ejecutar herramientas. Es razonable esperar más automatización de tareas de desarrollo y operación, pero la autonomía aumenta también la necesidad de permisos mínimos, revisión de acciones, logs y condiciones de parada.
 
----
+## 3. IA integrada en herramientas técnicas
 
-## 1. Agentes con memoria de verdad
+Es probable que más software de ingeniería incorpore búsqueda, generación, diagnóstico o asistencia contextual. En ámbitos industriales, esa integración tendrá que convivir con requisitos de seguridad funcional, trazabilidad, normativa y responsabilidad profesional.
 
-Ahora mismo los agentes como OpenCode o Hermes funcionan así: tú le dices algo, lo hace, y luego se olvida. En la misma sesión se acuerdan de lo que habéis hablado, pero al día siguiente empiezan de cero. No aprenden de tus proyectos anteriores, ni recuerdan cómo te gusta trabajar, ni mejoran con el uso.
+## 4. Verificación automática más importante
 
-**Lo que viene:** Agentes con una memoria persistente, como un trabajador que lleva años en la empresa. Que se acuerde de que la última vez hiciste un proyecto con Firebase y prefieres cierta estructura. Que sepa que a ti te gustan los componentes modulares, que evites ciertos patrones, que uses variables CSS en vez de Tailwind. Una memoria que crezca contigo.
+Cuanto más código o contenido se genere automáticamente, más valor tendrán los mecanismos independientes de comprobación: tests, análisis estático, esquemas, simulación, fuentes firmadas, revisiones y métricas reproducibles.
 
-Proyectos como OpenClaw (aunque todavía están verdes) apuntan a eso: un agente que no solo ejecuta órdenes, sino que **aprende de la experiencia** como haría un trabajador humano. Cada prompt que le das, cada corrección que haces, cada vez que le dices "no, hazlo así mejor" — eso debería quedarle grabado para la próxima.
+## 5. Cambios en las competencias
 
----
+La capacidad de formular problemas, revisar resultados y entender el dominio ganará peso. Eso no implica que deje de ser necesario conocer programación, electricidad o automatización: sin conocimiento suficiente es más difícil detectar cuándo una respuesta automática es incorrecta.
 
-## 2. IAs que se auto-refinan mientras trabajan
+## Riesgos que acompañan la tendencia
 
-Esto es lo que más me sorprende pensar. Ahora mismo los modelos de lenguaje son estáticos: salen una versión, la entrenan con un montón de datos, y la congelan. El modelo que usas hoy es el mismo que vas a usar dentro de seis meses (aunque ellos saquen versiones nuevas).
+- sobreautomatización de acciones irreversibles;
+- propagación de errores a mayor velocidad;
+- dependencia de proveedores;
+- pérdida de privacidad o secretos;
+- falsa confianza en respuestas técnicamente plausibles;
+- dificultad para atribuir responsabilidad.
 
-**Lo que viene:** Modelos que aprenden durante el uso real. Imagínate una IA que mientras te ayuda con tu proyecto, va identificando qué respuestas te han funcionado mejor, qué patrones de código han dado menos errores, qué explicaciones has entendido más rápido. Y con todo eso, se va ajustando a ti.
+## Conclusión
 
-Sería como tener un estudiante y un trabajador a la vez, a velocidades increíbles. La IA aprende de ti mientras tú aprendes de ella. Cada interacción la hace mejor para la siguiente. Y no solo para ti — todo lo que aprende trabajando con miles de usuarios podría servir para mejorar el modelo base.
+La tendencia más útil para este PFC no es apostar por una herramienta concreta, sino diseñar procesos que sigan siendo válidos cuando cambie la herramienta: **objetivo claro, permisos limitados, evidencia, revisión y responsabilidad humana**.
 
-¿Los riesgos? Muchos. Si aprende de ejemplos malos, se vuelve mala. Si alguien la envenena con datos incorrectos, replica errores a gran escala. Pero el potencial es enorme.
-
----
-
-## 3. Empresas automatizadas de principio a fin
-
-Esto suena a ciencia ficción, pero cada vez lo veo más cerca. Herramientas como OpenClaw apuntan a algo grande: un agente que no solo escribe código, sino que entiende **todo el flujo** de una empresa.
-
-Ahora mismo tengo una app web. Pero para que funcione necesito:
-- Firebase para datos
-- Vercel para publicar
-- GitHub para el código
-- Un dominio
-- Gestionar errores
-- Hacer copias de seguridad
-- Responder a incidencias
-
-Cada cosa va por separado. **Lo que viene:** agentes que hagan todo eso solos. Le dices "monta una tienda online con estos productos y estos precios" y el agente solo:
-1. Crea el proyecto
-2. Programa la tienda
-3. La publica
-4. Conecta la pasarela de pago
-5. Te da el enlace
-
-Cuando alguien se tome en serio la seguridad y el control de estos agentes, veremos empresas automatizadas donde no haya un solo trabajador humano en el día a día. Solo supervisión. Y eso, para un alumno de FP que ha visto de cerca cómo funcionan los almacenes y la logística, te hace pensar lo cerca que estamos de eso.
-
----
-
-## 4. Cada herramienta tendrá IA integrada
-
-Hoy ya estamos ahí. Windsurf la tiene, VSCode tiene Copilot, la terminal tiene agentes. Pero lo que viene es que **todas** las herramientas profesionales tendrán IA. No como un plugin opcional, sino como parte fundamental.
-
-El Excel con IA, el AutoCAD con IA, el SAP con IA. Cualquier programa que uses en tu trabajo tendrá una IA al lado diciéndote "oye, esta fórmula está mal" o "normalmente este diseño lo haces así".
-
-Para los que estamos en automatización, imagínate un TIA Portal o un CODESYS con IA integrada. Le dices "programa un ascensor de 4 paradas" y el PLC se programa solo. Eso va a llegar.
-
----
-
-## 5. Y luego qué... ¿Ya no hacen falta humanos?
-
-Pues no creo. Lo que sí creo es que el trabajo cambia. Pasarás de ser "el que hace" a "el que dice lo que hay que hacer". Como un jefe de obra que no pone ladrillos pero sabe cómo se pone cada ladrillo.
-
-El valor del trabajador del futuro no será saber escribir código o programar PLCs — eso lo hará la IA. Será:
-- Saber **explicar bien** lo que quieres
-- Saber **detectar cuándo la IA se equivoca**
-- Saber **tomar decisiones** sobre lo que está bien o mal
-- Entender **el negocio**, no solo la herramienta
-
-Y eso, en el fondo, es lo que hace falta en la industria: gente que entiende el proceso, no solo la tecnología.
-
----
-
-## Mi conclusión
-
-Si algo he aprendido en estos meses es que **todo va a cambiar y rápido**. Lo que usé en marzo ya no existe (Qwen CLI, te recordamos). Lo que uso ahora (OpenCode, Hermes) igual en seis meses ha evolucionado a otra cosa completamente distinta.
-
-Lo importante no es dominar una herramienta concreta. Es entender el **concepto**: los agentes con memoria, el auto-aprendizaje, la automatización total. Porque el que entienda hacia dónde va esto, va a estar preparado para lo que venga. El que solo aprende a manejar la herramienta de moda, se va a quedar atrás cuando esa herramienta desaparezca.
-
-Yo, personalmente, creo que estamos en el momento justo antes de un cambio enorme. Como estar en 2007 antes del iPhone. Y no quiero perdérmelo.
-
----
-
-*Escrito en mayo de 2026. Probablemente desactualizado en seis meses. Pero bueno, al menos intenté mirar más allá.*
+*Revisado en agosto de 2026.*

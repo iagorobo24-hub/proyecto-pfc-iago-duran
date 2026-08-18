@@ -1,139 +1,39 @@
-# Impacto Educativo — Qué aporta esto al ciclo
+# Impacto educativo
 
-## Introducción
+## Aportación al ciclo
 
-Más allá de la aplicación, este proyecto demuestra algo que creo importante: un alumno de FP puede hacer cosas chulas con IA sin necesidad de ser informático. Y creo que eso debería aprovecharse en el ciclo.
+El PFC sirve como caso de estudio sobre cómo un alumno de Automatización y Robótica Industrial puede incorporar software web e IA a un problema técnico sin confundir asistencia automática con conocimiento profesional.
 
----
+## Competencias que permite trabajar
 
-## ¿Por qué es relevante para el ciclo?
+- análisis de necesidades y requisitos;
+- diseño de interfaces y flujos;
+- bases de datos y APIs;
+- control de versiones;
+- pruebas automatizadas;
+- seguridad básica de aplicaciones;
+- documentación técnica;
+- evaluación crítica de sistemas generativos.
 
-### Conexión con el currículo
+## Uso responsable de IA en el aula
 
-El proyecto toca competencias del ciclo:
+El material docente propone que cada trabajo con IA deje trazabilidad de:
 
-| Competencia | Cómo se trabaja |
-|-------------|-----------------|
-| **Programación** | React, JavaScript |
-| **Bases de datos** | Firebase Firestore, Supabase |
-| **Sistemas embebidos** | Web apps (relación con IoT) |
-| **Comunicación** | Documentación técnica |
-| **Autonomía** | Trabajo con herramientas IA |
-| **Inglés técnico** | Documentación, comandos |
+1. objetivo planteado;
+2. contexto y restricciones;
+3. salida producida;
+4. revisión realizada por el alumno;
+5. validaciones ejecutadas;
+6. fuentes oficiales utilizadas cuando la respuesta afecta a seguridad o normativa.
 
-### Diferenciación con otros proyectos
+La política de autoría, citación y uso permitido de IA debe adaptarse a las normas del centro y de cada actividad. No existe una regla universal por la que “código generado por IA nunca sea plagio” ni por la que una determinada proporción de código automático sea aceptable.
 
-| Aspecto | Proyecto tradicional | Este proyecto |
-|---------|---------------------|---------------|
-| **Herramienta principal** | Código escrito a mano | IA generativa como herramienta |
-| **Documentación** | Básica | Completa (10 capítulos) |
-| **Stack** | Lo que sabe el alumno | Stack moderno completo |
-| **Coste** | Puede requerir inversión | Coste cero |
+## Valor reutilizable
 
----
+Los capítulos 05, 06 y 10 pueden reutilizarse como material para enseñar metodología, comparación de herramientas, prompts verificables y evaluación crítica. Las fichas de herramientas deben leerse como experiencia histórica del PFC, no como catálogo comercial permanente.
 
-## ¿Qué pueden aprender futuros alumnos?
+## Límite educativo
 
-### De la documentación
+El proyecto no acredita dominio profundo de todas las tecnologías utilizadas. Sí aporta evidencia de aprendizaje, integración, depuración, documentación y capacidad de revisar resultados de herramientas externas.
 
-1. **Metodología** — Cómo usar IA para desarrollo
-2. **Herramientas** — Cuáles usar y por qué
-3. **Errores comunes** — Lecciones aprendidas
-4. **Buenas prácticas** — Estructura, documentación
-
-### Del código
-
-1. **React moderno** — Hooks, Context, Router
-2. **Patrones de diseño** — Componentes, servicios
-3. **Buenas prácticas** — Clean code, modularidad
-4. **Testing** — Playwright para E2E
-
-### Del manual para profesores
-
-1. **Cómo enseñar** — Plan de 4 sesiones
-2. **Qué evaluar** — Rúbricas
-3. **Ejercicios propuestos** — Lista de actividades
-
----
-
-## Materiales reutilizables
-
-### Para profesores
-
-| Material | Uso |
-|----------|-----|
-| **Manual para profesores** | Plan de clases |
-| **Fichas de herramientas** | Material de estudio |
-| **Rúbricas de evaluación** | Criterios de corrección |
-
-### Para alumnos
-
-| Material | Uso |
-|----------|-----|
-| **Metodología documentada** | Guía de trabajo |
-| **Prompts exitosos** | Templates |
-| **Lecciones aprendidas** | Errores a evitar |
-
----
-
-## Impacto en la metodología docente
-
-### Lo que sugiere este proyecto
-
-1. **IA como herramienta, no sustituto** — Enseñar a usar IA, no a depender de ella
-2. **Documentar el proceso** — Tan importante como el resultado
-3. **Proyectos reales** — Con impacto demostrable
-4. **Stack moderno** — Preparar para el mercado actual
-
-### Propuesta de integración
-
-**Para el módulo de Sistemas Programables:**
-- Añadir ejercicio de crear una web simple con IA
-- Usar las fichas como material de estudio
-
-**Para el módulo de Comunicación:**
-- Usar el manual como ejemplo de documentación técnica
-
-**Para el módulo de Proyecto:**
-- Proponer metodología similar
-
----
-
-## Limitaciones y cautions
-
-### Cosas que NO demuestra
-
-- **Programación desde cero** — El código fue generado por IA
-- **Dominio profundo de React** — Uso básico-medio
-- **Gestión de proyecto real** — Solo académico
-
-### Lo que SÍ demuestra
-
-- **Capacidad de aprendizaje** — Aprender a usar herramientas nuevas
-- **Pensamiento analítico** — Qué pedir a la IA
-- **Documentación** — Cómo comunicar decisiones
-- **Autonomía** — Buscar soluciones
-
----
-
-## Recomendaciones para el centro
-
-1. **Actualizar el temario** — Incluir IA generativa como herramienta
-2. **Crear materiales derivados** — Basarse en este proyecto
-3. **Establecer colaboraciones** — Con empresas para proyectos reales
-4. **Evaluación del enfoque** — Medir resultados
-
----
-
-## Conclusión
-
-Este proyecto demuestra que **la IA generativa es una herramienta viable** para el desarrollo de proyectos de ciclo formativo. Su mayor valor no es la aplicación en sí, sino la **metodología documentada** que puede replicarse en futuros proyectos.
-
-El impacto educativo esperado:
-- Metodología replicable
-- Materiales reutilizables
-- Evidencia de viabilidad
-
----
-
-*Impacto educativo documentado: Mayo 2026*
+*Impacto educativo reconciliado — agosto de 2026.*

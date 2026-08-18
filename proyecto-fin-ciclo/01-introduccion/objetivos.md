@@ -1,94 +1,52 @@
-# Objetivos del Proyecto
+# Objetivos del proyecto
 
 ## Objetivo general
 
-Desarrollar una **suite de herramientas web** funcional para técnicos del sector de distribución de material eléctrico, construida mediante **IA generativa**, que demuestre la viabilidad de esta metodología para proyectos de ciclo formativo.
+Diseñar, desarrollar y documentar una suite web académica que explore cómo la IA generativa puede apoyar el desarrollo de software aplicado al sector eléctrico y logístico, manteniendo trazabilidad sobre decisiones, limitaciones y validaciones.
 
----
+## Objetivos funcionales
 
-## Objetivos específicos
+La aplicación se estructura en **7 herramientas funcionales**:
 
-### OE1 — Funcionalidad
-> Crear 7 módulos web que cubran las necesidades identificadas en la empresa
+1. Fichas Técnicas.
+2. Simulador de Almacén.
+3. Dashboard de Incidencias.
+4. KPI Logístico.
+5. Presupuestos.
+6. Formación Interna.
+7. SONEX.
 
-- [x] Catálogo de fichas técnicas con navegación jerárquica
-- [x] Simulador de flujo de almacén
-- [x] Dashboard de incidencias industriales
-- [x] Visualizador de KPIs logísticos
-- [x] Generador de presupuestos
-- [x] Sistema de gestión de formación
-- [x] Asistente técnico con IA (SONEX)
+El **Dashboard Global** actúa como pantalla de acceso y resumen, pero no se cuenta como octava herramienta de negocio.
 
-### OE2 — Metodología
-> Documentar el uso de IA generativa como herramienta de desarrollo
+## Objetivos técnicos
 
-- [x] Catalogar 15+ herramientas IA utilizadas
-- [x] Crear fichas técnicas de cada herramienta
-- [x] Extraer lecciones aprendidas y mejores prácticas
-- [x] Definir workflow de trabajo con agentes CLI
+- Construir una SPA con React y routing protegido.
+- Integrar autenticación y persistencia con Supabase.
+- Centralizar las llamadas de IA detrás de un gateway serverless para no exponer claves privadas en el cliente.
+- Mantener degradación controlada cuando un servicio externo no esté disponible.
+- Aplicar diseño responsive, tema claro/oscuro y componentes reutilizables.
+- Incorporar pruebas automatizadas con Vitest y Playwright.
+- Mantener el proyecto versionado en Git y documentar su evolución.
 
-### OE3 — Calidad técnica
-> Aplicar estándares profesionales de desarrollo web
+## Objetivos metodológicos
 
-- [x] Arquitectura SPA con React 19 + Vite
-- [x] Autenticación con Supabase Auth (Google OAuth)
-- [x] Base de datos relacional y escalable con Supabase (PostgreSQL)
-- [x] Deploy automático en Vercel
-- [x] Tests E2E con Playwright y unitarios con Vitest
-- [x] Diseño responsive (mobile/tablet/desktop)
+- Comparar distintas formas de trabajar con IA: chat web, IDE asistido y agentes de terminal/GitHub.
+- Registrar errores, correcciones y decisiones para que el proceso sea reutilizable por otros alumnos.
+- Evitar presentar la salida de un modelo como evidencia: código, datos y documentación deben contrastarse.
+- Separar la contribución de la IA de la responsabilidad del autor del proyecto.
 
-### OE4 — Documentación
-> Crear materiales reutilizables para el centro educativo
+## Objetivos académicos
 
-- [x] Memoria técnica completa (10 capítulos)
-- [x] Manual para profesores
-- [x] Fichas de herramientas IA
-- [x] Comparativas y análisis
+- Relacionar el proyecto con competencias de análisis, programación, bases de datos, documentación técnica y autonomía.
+- Preparar una memoria y una defensa coherentes con el estado real del repositorio.
+- Crear material docente reutilizable que enseñe también límites, riesgos y verificación.
 
-### OE5 — Sostenibilidad
-> Garantizar que el proyecto pueda mantenerse sin coste
+## Alcance y límites
 
-- [x] Usar exclusivamente tiers gratuitos
-- [x] Minimizar dependencias de terceros
-- [x] Documentar migración de Firebase a Supabase
+El proyecto no pretende ser un producto oficial de la empresa ni sustituir sus sistemas internos. Tampoco valida que una recomendación generada por IA sea segura o normativa por sí sola. Los datos técnicos de productos, reglamentos e instrucciones de instalación deben contrastarse con fuentes oficiales.
 
----
+## Criterio de cierre
 
-## Objetivos no cumplidos (honestidad)
+Se considera cumplido un objetivo cuando existe una implementación o evidencia observable en el repositorio. Las métricas variables (tests, cobertura, catálogo, Lighthouse, consumo o coste) solo se declaran con fecha y método de medición; no forman parte del objetivo como cifras inmutables.
 
-| CI/CD con GitHub Actions | ❌ Parcial | Solo deploy automático |
-| Validación con usuarios reales | ❌ Limitada | Solo pruebas propias |
-| Integración con SAP de la empresa | ❌ Descartado | Sin acceso a sistemas internos |
-
----
-
-## Ámbito del proyecto
-
-### Incluido
-- Aplicación web completa con 7 módulos
-- Catálogo de productos real (scraping de web pública del distribuidor)
-- Autenticación de usuarios
-- Asistente IA integrado
-- Documentación técnica completa
-- Materiales para profesores
-
-### Excluido
-- APP móvil nativa (solo web responsive)
-- Integración con sistemas internos de la empresa
-- Pago online / procesamiento de pedidos real
-- Hardware físico / IoT
-
----
-
-## Objetivos personales de aprendizaje
-
-1. **Dominar React** — De cero a SPA completa
-2. **Entender bases de datos** — Firestore, después Supabase
-3. **Aprender deployment** — Vercel, serverless functions
-4. **Usar IA como herramienta** — No como sustituto
-5. **Documentar proceso** — Para otros y para mí
-
----
-
-*Objetivos definidos en Marzo 2026*
-*Revisados y actualizados: Mayo 2026*
+*Objetivos reconciliados con el estado del repositorio: agosto de 2026.*

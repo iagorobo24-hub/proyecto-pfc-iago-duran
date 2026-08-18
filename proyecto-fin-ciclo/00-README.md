@@ -1,63 +1,62 @@
-# PROYECTO FIN DE CICLO — PROYECTO PFC
+# Proyecto Fin de Ciclo — índice y contrato documental
 
-**Título:** Desarrollo de una suite de herramientas web para automatización industrial aplicada al sector eléctrico, construida con IA generativa
-
-**Autor:** Iago (iagorobo24-hub)
-**Ciclo:** Automatización y Robótica Industrial
-**Centro:** [Nombre del centro]
-**Empresa:** Empresa de distribución de material eléctrico
+**Proyecto:** Suite de herramientas web para el sector eléctrico y logístico, desarrollada con apoyo de IA generativa  
+**Autor:** Iago Durán Romera  
+**Ciclo:** Automatización y Robótica Industrial  
+**Centro:** CIFP Universidade Laboral  
 **Curso:** 2025-2026
 
----
+## Estructura
 
-## Qué encontrarás aquí
+Esta carpeta contiene la documentación académica fuente. La estructura estable es:
 
-Esta carpeta contiene la documentación completa del proyecto, organizada en 10 capítulos:
-
-| Capítulo | Qué trata | Archivos |
-|----------|-----------|----------|
-| 01 | Presentación del proyecto | 3 |
-| 02 | Contexto de la IA en desarrollo web | 3 |
-| 03 | Análisis y requisitos de la empresa | 4 |
-| 04 | Diseño técnico y arquitectura | 5 |
-| 05 | Proceso de desarrollo con IA | 4 |
-| 06 | Fichas técnicas de herramientas IA | 14 |
-| 07 | Manuales de uso de la app | 7 |
-| 08 | Resultados y validación | 3 |
+| Capítulo | Contenido | Archivos fuente |
+|---|---|---:|
+| 01 | Introducción, alcance y herramientas | 3 |
+| 02 | Contexto de la IA | 3 |
+| 03 | Análisis y requisitos | 4 |
+| 04 | Diseño técnico | 5 |
+| 05 | Proceso de desarrollo | 4 |
+| 06 | Herramientas y servicios utilizados | 15 |
+| 07 | Manuales de uso | 7 |
+| 08 | Resultados y evidencias | 4 |
 | 09 | Conclusiones y líneas futuras | 3 |
-| 10 | Manual para profesores | 5 |
+| 10 | Material docente | 5 |
 
----
+Además, `desarrollo-entrega-final/` contiene artefactos derivados de la memoria y la presentación.
 
-## Para qué sirve esto
+## Fuente de verdad
 
-Puedes usar esta documentación de tres formas:
+Para evitar contradicciones se aplican estas reglas:
 
-1. **Como guía de trabajo** — Cada capítulo es independiente, no hace falta leerlo en orden
-2. **Como base para la presentación** — Cada sección se puede sacar a diapositivas
-3. **Como material para otros alumnos** — Las fichas de herramientas y los manuales se pueden reutilizar
+1. **Código y configuración** determinan qué funcionalidad existe en el snapshot documentado.
+2. **Los capítulos 01-10** explican esa funcionalidad y el proceso académico.
+3. **Resultados cuantitativos** solo pueden declararse como actuales si incluyen método o evidencia reproducible.
+4. **Fichas de herramientas externas** describen principalmente cómo se usaron durante el PFC. Precios, planes, cuotas y modelos disponibles cambian y no se tratan como datos permanentes.
+5. **Presentación, DOCX y HTML** son derivados: si contradicen los capítulos fuente, prevalecen los capítulos fuente hasta regenerar el artefacto.
 
----
+### Hechos canónicos del proyecto
 
-## Glosario rápido
+- La aplicación contiene **7 herramientas funcionales + 1 Dashboard Global**.
+- Firebase pertenece a la **historia de la arquitectura**; la implementación actual usa Supabase para autenticación y datos persistentes definidos en el código.
+- El gateway de IA soporta varios modelos/proveedores; **no hay un único modelo global**.
+- Existen suites de Vitest y Playwright. El número de tests que pasan no se congela en la memoria sin una ejecución asociada al commit.
+- La cifra del catálogo es un dato de base de datos, no una constante documental. Debe medirse cuando sea relevante.
+- El PFC es académico; no se presenta como integración oficial con sistemas corporativos internos.
 
-| Término | Qué es |
-|---------|--------|
-| **SPA** | Web de una sola página (no se recarga al navegar) |
-| **CSS Modules** | Cada componente tiene sus propios estilos, sin que se mezclen |
-| **Lazy Loading** | Los componentes se cargan solo cuando los necesitas |
-| **Supabase** | Base de datos PostgreSQL + autenticación, todo en la nube |
-| **Vercel Function** | Código backend que se ejecuta en la nube sin servidor propio |
-| **Scraper** | Script que extrae datos de una web automáticamente |
-| **OpenRouter** | API que une varios modelos de IA (Claude, Gemini, etc.) |
+## Convención de evidencia
 
----
+En los capítulos se distingue entre:
+
+- **Implementado:** visible en código/configuración.
+- **Verificado por ejecución:** existe log o resultado de una ejecución concreta.
+- **Histórico:** ocurrió durante el desarrollo, pero no describe necesariamente el estado actual.
+- **Estimado:** cálculo orientativo, no medición.
+- **Pendiente:** objetivo futuro o evidencia que falta regenerar.
 
 ## Enlaces
 
-- **Repositorio:** https://github.com/iagorobo24-hub/proyecto-pfc-iago-duran
-- **Demo:** https://proyecto-pfc-iago-duran.vercel.app
+- Repositorio: `iagorobo24-hub/proyecto-pfc-iago-duran`
+- Aplicación desplegada: `https://proyecto-pfc-iago-duran.vercel.app`
 
----
-
-> **Nota para el tribunal:** El valor de este proyecto no es solo la aplicación web. Lo que lo hace diferente es la **metodología de trabajo con IA generativa**, documentada en el Capítulo 5. La app es la prueba de que un alumno de ciclo puede, con las herramientas adecuadas, hacer algo profesional.
+> La aportación principal del PFC no es demostrar que la IA sustituye el conocimiento técnico. Es documentar un proceso de trabajo en el que la IA acelera tareas, mientras el alumno conserva la responsabilidad de definir, revisar, probar, documentar y defender el resultado.

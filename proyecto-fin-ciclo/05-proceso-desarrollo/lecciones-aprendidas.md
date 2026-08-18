@@ -1,331 +1,47 @@
-# Lecciones Aprendidas — Lo que haría diferente
+# Lecciones aprendidas
 
-## Introducción
+## Planificar lo suficiente antes de generar código
 
-Si pudiera volver atrás, hay cosas que haría distinto. Y otras que repetiría sin dudar. Esto es lo que aprendí a base de probar, equivocarme y rectificar.
+Los primeros prototipos aislados permitieron validar ideas, pero aumentaron el coste de integración posterior. La lección no es evitar prototipos, sino definir desde el inicio qué será desechable y qué contrato deberá respetar la versión integrada.
 
----
+## Las credenciales privadas no pertenecen al frontend
 
-## Errores que cometí
+En una etapa temprana se expuso una clave de API. La corrección fue introducir una función serverless que conserva la credencial en variables de entorno. La configuración pública de ciertos SDK no debe confundirse con secretos privados.
 
-### Error 1: No empezar con una estructura clara
+## Los tests forman parte del producto
 
-**Qué pasó:** Empecé con 7 archivos JSX sueltos, cada uno funcionando independientemente. Cuando quise unirlos, tuve que refactorizar todo.
+Hubo una fase histórica en la que pruebas E2E se perdieron o quedaron desalineadas. El repositorio actual vuelve a contener Vitest y Playwright. La lección es mantener las pruebas versionadas, ejecutarlas después de cambios relevantes y no citar cifras antiguas como resultado actual.
 
-**Por qué fue un error:** Perdí tiempo reescribiendo código que podría haber hecho bien desde el principio.
+## Verificar el contrato de los datos
 
-**Qué habría hecho diferente:** Planear la estructura del proyecto antes de empezar a generar código.
+Uno de los bugs de enriquecimiento IA estuvo relacionado con la forma esperada por un validador/parser. La corrección de un bug concreto no justifica eliminar la validación como regla general.
 
-**Lección:** Un poco de planificación ahorra mucho tiempo de refactorización. 
+**Regla actual:**
 
----
+`modelo genera → parser interpreta → esquema/contrato valida → fuente oficial verifica los datos críticos → UI consume`
 
-### Error 2: Exponer la API key en el frontend
+Un *system prompt* puede mejorar el formato esperado, pero **no garantiza JSON válido ni verdad factual**.
 
-**Qué pasó:** La primera versión tenía la clave de API de Anthropic directamente en el código JavaScript. Cualquier usuario podía verla en "Ver código fuente".
+## Diferenciar fuente real de contenido generado
 
-**Cómo se detectó:** Salta el aviso en Vercel, cualquiera de los modelos LLM que use avisto este tipo de errores en los analisis, y Anthropic mismo detectó que estaba la clave expuesta y la deprecó.
+Para fichas, normativa o instalación eléctrica, una respuesta del modelo no es una fuente técnica. Referencias, características, certificados, manuales y recomendaciones de seguridad deben provenir del catálogo o de documentación oficial cuando la decisión tenga consecuencias reales.
 
-**Cómo se solucionó:** Crear una Vercel Function que hace de proxy:
-```javascript
-// api/anthropic.js (serverless)
-// El cliente llama a /api/ai, el servidor añade la key y llama a Anthropic
-```
+## Los datos son más difíciles que la interfaz
 
-**Lección:** Nunca pongas claves en código cliente. Siempre usa un proxy.
+La extracción, limpieza, taxonomía y consulta del catálogo exigieron más iteración de la prevista. Supabase y las vistas/consultas optimizadas resolvieron parte del problema, pero la cifra de productos sigue siendo un dato de base de datos que debe medirse, no repetirse desde documentos antiguos.
 
----
+## Las herramientas cambian
 
-### Error 3: No hacer tests desde el principio
+Durante el PFC cambiaron agentes, modelos, planes y accesos gratuitos. Por eso las fichas del capítulo 06 documentan **uso histórico** y evitan prometer que una herramienta seguirá siendo gratuita o ilimitada.
 
-**Qué pasó:** Creé Playwright tests en la Fase 6, pero después se perdieron en commits y nunca los recuperé.
+## Validar con usuarios
 
-**Por qué fue un error:** Sin tests, no hay forma de verificar que los cambios no rompen funcionalidad existente.
+El proyecto obtuvo requisitos y contexto del entorno de prácticas, pero la validación de producto con usuarios reales fue limitada. Una demo o una conversación sobre necesidades no equivale a un estudio de usabilidad ni a validación masiva.
 
-**Qué habría hecho diferente:** Integrar tests desde el principio y asegurarlos en el repo.
+## Documentar con evidencia
 
-**Lección:** Los tests son parte del código, no opcionales.
+Git, commits y documentación ayudan a reconstruir decisiones, pero un documento escrito por un agente no se considera automáticamente cierto. Las afirmaciones importantes se contrastan con código, configuración, pruebas o una fuente externa fechada.
 
----
+## Síntesis
 
-### Error 4: Depender de una sola herramienta IA
-
-**Qué pasó:** Me centré en Claude Web durante las primeras semanas. No descubrí Windsurf hasta después.
-
-**Por qué fue un error:** Claude Web tiene límites y no puede acceder al proyecto. Windsurf habría acelerado el desarrollo.
-
-**Cómo se solucionó:** Probar regularmente nuevas herramientas.
-
-**Lección:** Explora alternativas. El ecosistema cambia rápido.
-
----
-
-### Error 5: No documentar mientras trabajaba
-
-**Qué pasó:** Solo documenté EVOLUCION.md al final de cada sesión grande. En una sesión olvidé documentar cambios importantes.
-
-**Por qué fue un error:** Después no recordaba por qué había tomado ciertas decisiones.
-
-**Cómo se solucionó:** Hacer commits frecuentes con mensajes descriptivos.
-
-**Lección:** Documenta mientras trabajas. No confíes en la memoria.
-
----
-
-### Error 6: Elegir Firebase antes de investigar alternativas
-
-**Qué pasó:** Elegí Firestore porque era lo que conocía. Después descubrí que Supabase tiene mejor tier gratuito y PostgreSQL es más familiar.
-
-**Por qué fue un error:** Ahora tengo que hacer una migración.
-
-**Qué habría hecho diferente:** Investigar alternativas antes de decidir.
-
-**Lección:** Dedica tiempo a investigar antes de comprometerte con una tecnología.
-
----
-
-### Error 7: No validar con usuarios reales
-
-**Qué pasó:** Desarrollé la aplicación sin probarla con técnicos reales de la empresa (solo con ellos como fuente de requisitos).
-
-**Por qué fue un error:** Puede que las soluciones no resuelvan los problemas reales.
-
-**Qué habría hecho diferente:** Hacer pruebas de usuario durante el desarrollo.
-
-**Lección:** Los usuarios reales validan las soluciones.
-
----
-
-### Error 8: La pesadilla de configurar la base de datos — Scraping, Sync y Conexión
-
-**Qué pasó:** El proceso de obtener los datos del catálogo de la empresa y mostrarlos en la web resultó ser mucho más complejo de lo esperado. Pasé por tres fases:
-
-#### Fase 1: Scraping de la web de la empresa
-
-La web tiene protecciones contra bots, estructura HTML cambiante, y miles de productos con información incompleta.
-
-**Qué intenté:**
-- Múltiples versiones del scraper (v1 a v7)
-- Puppeteer, Playwright, crawlee
-- Manejo de CAPTCHA y rate limiting
-- Parsing de JSONs embebidos en el HTML
-
-**Qué salió mal:**
-- La web cambiaba estructura cada semana
-- Productos sin precio o imagen
-- Caracteres especiales mal codificados
-- Timeout constantes
-
-**Resultado:** Semanas de iteración hasta conseguir los ~400.000 productos.
-
-#### Fase 2: Sync a Supabase
-
-Subir 400K productos a PostgreSQL de forma ordenada.
-
-**Problemas:**
-- Límites de inserción en el tier gratuito
-- Columnas que no existían en la tabla
-- El sync tardaba horas y a veces fallaba a mitad
-- La estructura de datos no era óptima para las queries
-
-**Resultado:** Días de scripts y pruebas.
-
-#### Fase 3: Conexión web ↔ Base de datos
-
-Al principio la navegación no funcionaba bien: solo aparecían 3 categorías (deberían ser 12+), timeouts en consultas pesadas, y datos con saltos de línea que rompían las comparaciones.
-
-**Cómo se resolvió:**
-- Optimización de `getCategorias()` — de paginar toda la tabla a 1 query + dedup
-- Brand lookup optimizado — de O(n) a O(1) con reverse Map
-- Sanitización de inputs en `.or()` filters
-- Scripts de normalización de datos
-
-**Estado actual:** Todo funciona. El catálogo carga rápido y la navegación es fluida.
-
-**Lección:** Los datos son la base de todo. Sin una estructura limpia y queries optimizadas, el frontend no puede funcionar. Y los tiers gratuitos tienen limitaciones que hay que entender antes de comprometerse con una arquitectura.
-
----
-
-### Error 9: Validator de parseAIJsonResponse con tipo incorrecto
-
-**Qué pasó:** Al implementar el enriquecimiento IA para fichas técnicas, la función `parseAIJsonResponse(text, validator)` recibía un callback que retornaba `array` (ej. `(p) => p.caracteristicas || p.aplicaciones`), pero la función esperaba `{ valid: boolean }`. Como `array.valid` es `undefined`, siempre se consideraba inválido y se descartaba toda respuesta IA.
-
-**Por qué no se detectó:** El error era silencioso — no había console.error ni UI de error. Simplemente la IA nunca mostraba datos. El fallback a la ficha básica ocultaba el problema.
-
-**Cómo se detectó:** Code review del flujo completo — se siguió el camino de los datos desde la API hasta el render.
-
-**Cómo se solucionó:** Eliminar el validator en los 3 lugares donde se usaba (el system prompt ya fuerza JSON estricto). Además se corrigió `Object.assign(fichaReal, parsed)` → `Object.assign(fichaReal, parsed.data)` que mergeaba el wrapper en vez de los datos reales.
-
-**Lección:** Cuando implementes un callback que valida datos, verifica que el tipo de retorno coincide con lo que espera el receptor. Los errores silenciosos son los más peligrosos — si no hay breakage visible, asumes que funciona.
-
----
-
-## Decisiones que funcionaron bien
-
-### Acierto 1: Empezar con artefactos simples
-
-**Qué hice:** Creé versiones simples de cada herramienta como archivos JSX independientes antes de unirlos.
-
-**Por qué funcionó:** 
-- Pude validar que cada concepto funcionaba
-- No me abrume con toda la complejidad desde el principio
-- Era fácil de iterar
-
-**Lección:** Empieza simple, depois complejidad.
-
----
-
-### Acierto 2: Usar CSS Modules desde el principio
-
-**Qué hice:** Elegí CSS Modules (en lugar de CSS-in-JS o Tailwind) para los estilos.
-
-**Por qué funcionó:**
-- No hay runtime overhead
-- Los estilos están scoped automáticamente
-- Es fácil de entender para otros
-
-**Lección:** Las decisiones simples y consistentes facilitan el mantenimiento.
-
----
-
-### Acierto 3: Elegir herramientas gratuitas
-
-**Qué hice:** Todo el stack usa tiers gratuitos (Firebase Spark, Vercel Hobby, OpenRouter Free, Windsurf Free).
-
-**Por qué funcionó:**
-- El proyecto no tuvo coste
-- Puedo mantenerlo después de terminar el ciclo
-- No hay presión por monetizar
-
-**Lección:** Para proyectos académicos, el tier gratuito es suficiente.
-
----
-
-### Acierto 4: Usar un sistema de diseño consistente
-
-**Qué hice:** Definí CSS Variables para colores, espaciados, radios desde el principio.
-
-**Por qué funcionó:**
-- La app se ve coherente
-- Es fácil cambiar el tema (dark mode)
-- Es fácil añadir nuevos componentes
-
-**Lección:** Invierte en sistema de diseño al principio.
-
----
-
-### Acierto 5: Documentar en Markdown
-
-**Qué hice:** Mantengo README.md, EVOLUCION.md y la documentación del PFC en Markdown.
-
-**Por qué funcionó:**
-- Es fácil de escribir y editar
-- Se versiona bien en Git
-- Se puede convertir a otros formatos
-
-**Lección:** Markdown es el formato ideal para documentación técnica.
-
----
-
-### Acierto 6: Usar Vercel para deployment
-
-**Qué hice:** Desplegué en Vercel con integración automática desde GitHub.
-
-**Por qué funcionó:**
-- Deploy automático en cada push
-- URL pública para compartir
-- Vercel Functions para la API de IA
-
-**Lección:** La automatización de deployment ahorra tiempo y reduce errores.
-
----
-
-### Acierto 7: Hacer scraping del catálogo real
-
-**Qué hice:** En lugar de crear productos mock, scrapeé el catálogo real de Proyecto PFC.es.
-
-**Por qué funcionó:**
-- Los datos son reales y útiles
-- La app tiene valor práctico
-- Demuestra capacidad técnica
-
-**Lección:** Los datos reales son mejores que los mocks.
-
----
-
-## Lecciones genéricas para proyectos con IA
-
-### 1. La IA es una herramienta, no un sustituto
-
-**Regla:** Tú diriges, la IA ejecuta.
-
-- Define el qué, la IA genera el cómo
-- Revisa siempre el código
-- Entiende lo que se genera
-
-### 2. La especificidad importa
-
-**Regla:** Prompts vagos dan resultados vagos.
-
-- Define entradas y salidas
-- Especifica tecnología
-- Da ejemplos cuando puedas
-
-### 3. La iteración es clave
-
-**Regla:** Mejor pedir poco y iterar que pedir mucho de golpe.
-
-- Versión 1: funcional pero simple
-- Versión 2: añadir funcionalidad
-- Versión 3: refinar y optimizar
-
-### 4. Documenta como si lo olvidaras todo
-
-**Regla:** Si no está documentado, no existe.
-
-- Commit messages descriptivos
-- README actualizado
-- Notas en EVOLUCION.md
-
-### 5. El tier gratuito es suficiente
-
-**Regla:** No pagues hasta que tengas que escalar.
-
-- Firebase, Vercel, OpenRouter tienen tiers gratuitos generosos
-- Para proyectos académicos, es suficiente
-- Puedes escalar después si hace falta
-
----
-
-## Consejos para futuros alumnos
-
-### Si vas a hacer un proyecto similar:
-
-1. **Dedica tiempo a investigar herramientas** antes de comprometerte
-2. **Empieza simple** — primero funciona, depois mejora
-3. **Usa herramientas gratuitas** — no necesitas presupuesto
-4. **Documenta mientras avanzas** — no lo dejes para el final
-5. **Prueba con usuarios reales** — valida lo que haces
-6. **No confíes ciegamente en la IA** — revisa siempre
-7. **Guarda todo en Git** — el código se puede perder
-
-### Cosas que haré diferente en el futuro:
-
-1. Tests desde el día 1
-2. Investigación de alternativas antes de decidir
-3. Validación con usuarios durante el desarrollo
-4. Más commits frecuentes
-5. Mejor planificación inicial
-
----
-
-## Conclusión
-
-Este proyecto me enseñó tanto sobre desarrollo web como sobre trabajar con IA. Los errores fueron tan valiosos como los aciertos — cada problema me llevó a una solución mejor.
-
-Lo más importante que aprendí: **la IA es un amplificador de tus capacidades, no un sustituto**. Tu juicio, tu documentación y tu revisión son los que hacen que el resultado sea bueno.
-
----
-
-*Lecciones aprendidas documentadas: Mayo 2026*
-*Estas lecciones informarán futuras mejoras del proyecto*
+La IA fue útil como acelerador de análisis, implementación y documentación. El trabajo evaluable sigue siendo la capacidad de **definir, revisar, probar, corregir y explicar** el sistema.

@@ -1,122 +1,31 @@
 ---
 tool_id: AI-007
 nombre: OpenCode CLI
-version_observada: 2025-2026
-rol_principal: Agente CLI con modelos NVIDIA, ejecución de tareas de desarrollo
-url: https://opencode.ai
----
-OpenCode es un agente de terminal que usa modelos de NVIDIA totalmente gratis. No necesitas cuenta, no necesitas API key, solo lo instalas y ya. Lo usé un montón para refactorizar código y crear scripts.
-
-## ¿Qué es?
-
-OpenCode CLI es un agente de IA en terminal que usa los modelos de NVIDIA (a través de su plataforma). Es completamente gratuito y no requiere autenticación. Funciona mediante una API que conecta con los modelos NVIDIA Nemotron, MiniMax y otros.
-
-## ¿Para qué lo usé?
-
-### Desarrollo principal (herramienta actual)
-
-OpenCode se convirtió en mi herramienta principal de desarrollo en terminal:
-
-- **Creación de archivos:** Generaba componentes React, hooks, servicios
-- **Refactorización:** Mejoraba código existente siguiendo los patrones del proyecto
-- **Debugging:** Analizaba errores y proponía soluciones
-- **Scripts:** Creaba scripts de sincronización (sync-catalog-enhanced.mjs, verify-data.mjs, etc.)
-
-### Análisis del repositorio
-
-Con `opencode --repo` podía analizar el codebase completo:
-- Entender la estructura del proyecto
-- Identificar patrones y convenciones
-- Proponer mejoras de arquitectura
-
-## ¿Cómo lo usé?
-
-1. Instalaba con npm:
-   ```bash
-   npm install -g opencode
-   ```
-
-2. Ejecutaba con:
-   ```bash
-   opencode
-   # o con análisis de repo:
-   opencode --repo /ruta/al/proyecto
-   ```
-
-3. Escribía la tarea y OpenCode la ejecutaba
-
-### Ejemplo de uso
-
-```bash
-$ opencode
-> Analiza el hook useSonex y crea tests unitarios con Vitest
-> Los tests deben cubrir: envío de mensajes, cambio de modo, cambio de categoría
-
-> Crea un nuevo componente Button que siga el patrón de los demás componentes UI en /components/ui/
-> Debe soportar: variants (primary/secondary/ghost), sizes (sm/md/lg), loading state
-```
-
-## Modelos disponibles
-
-OpenCode conecta con los modelos NVIDIA a través de su API:
-
-| Modelo | Uso | Calidad |
-|--------|-----|---------|
-| NVIDIA Nemotron | General | ⭐⭐⭐⭐ |
-| MiniMax | Rápido | ⭐⭐⭐ |
-| BigPickle | Código | ⭐⭐⭐⭐ |
-
-## Ventajas que encontré
-
-| Aspecto | Valoración |
-|---------|-----------|
-| Coste (100% gratis, sin AUTH) | ⭐⭐⭐⭐⭐ |
-| Ejecución de tareas completas | ⭐⭐⭐⭐⭐ |
-| Acceso al filesystem | ⭐⭐⭐⭐⭐ |
-| Modelos NVIDIA (alta calidad) | ⭐⭐⭐⭐ |
-| Sin límites de autenticación | ⭐⭐⭐⭐⭐ |
-| Integración con repos locales | ⭐⭐⭐⭐⭐ |
-
-## Limitaciones que encontré
-
-1. **Modelo a veces lento:** Especialmente con modelos grandes, la respuesta puede tardar segundos.
-2. **Errores ocasionales:** Como todo agente, a veces genera código con bugs.
-3. **No tiene acceso a internet:** No puede buscar documentación externa.
-
-## ¿Cuándo lo usaba?
-
-✅ **Sí lo usaba:**
-- Tareas de refactorización
-- Creación de nuevos archivos siguiendo patrones existentes
-- Scripts de automatización
-- Análisis de errores
-
-❌ **No lo usaba:**
-- Tareas que requieren información actualizada (documentación, cambios recientes)
-- Cuando necesitaba buscar en internet
-
-## Lecciones aprendidas con esta herramienta
-
-1. **Los modelos NVIDIA son unterschätz:** Nemotron produce código de alta calidad.
-2. **La clave está en ser específico:** Cuanto más detallados los requisitos, mejor el resultado.
-3. **Siempre verificar:** Revisar el código generado antes de commit.
-
-## Comparativa con otras herramientas CLI
-
-| Característica | Qwen CLI | Gemini CLI | OpenCode CLI | Hermes CLI |
-|---|---|---|---|---|
-| Estado | Cerrado | Activo | Activo | Activo |
-| Coste | Gratis | Gratis | Gratis | Gratis |
-| Autenticación | Sí (Alibaba) | Sí (Google) | No | No |
-| Calidad código | ⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ |
-| Modelos | Qwen | Gemini | NVIDIA | NVIDIA |
-| Velocidad | ⭐⭐⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐ | ⭐⭐⭐⭐ |
-
-## Referencias
-
-- [OpenCode](https://opencode.ai)
-- [NVIDIA Nemotron](https://build.nvidia.com/nvidia/nemotron-3-4b-super-free)
-
+rol_en_el_pfc: agente de terminal para repositorios
+estado_documental: utilizado en el flujo de desarrollo
 ---
 
-**Fecha de elaboración de esta ficha:** Abril 2026
+# OpenCode CLI
+
+## Uso en el PFC
+
+OpenCode se utilizó para analizar repositorios, implementar cambios, ejecutar comandos y preparar commits desde equipos de desarrollo.
+
+## Fortalezas en este proyecto
+
+- trabajo directo sobre el árbol del repositorio;
+- capacidad de inspeccionar múltiples archivos;
+- ejecución de build/tests;
+- útil para tareas largas de estabilización y documentación.
+
+## Reglas de uso aprendidas
+
+1. inspeccionar rama, `git status` y diff antes de cambiar;
+2. no asumir que el informe del agente coincide con el estado real;
+3. no hacer `force-push` ni reescribir historia sin autorización;
+4. sincronizar con remoto antes del push y resolver conflictos preservando ambas fuentes válidas;
+5. reportar comandos y resultados observados.
+
+## Coste/modelos
+
+La versión antigua ligaba OpenCode a proveedores/modelos concretos y a “coste cero”. Esa relación no es un hecho estable de la herramienta: depende de la configuración elegida. La ficha conserva el workflow, no un proveedor ni tarifa determinados.

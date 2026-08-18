@@ -1,85 +1,63 @@
-# Capturas de Pantalla
+# Evidencia visual de la aplicación
 
-A continuación se muestran las capturas de pantalla de la interfaz de la aplicación, que reflejan los diferentes módulos y la navegación en producción.
+Las capturas de este capítulo enlazan a imágenes que **existen en el repositorio** bajo `app/e2e/screenshots/`. Sustituyen las antiguas referencias a `assets/extracted_v7/`, que no existían en el snapshot auditado.
 
----
+## Acceso y navegación
 
-## Acceso y Dashboard Principal
+### Login
 
-### Landing Page (Pública)
+![Pantalla de login](../../app/e2e/screenshots/01-login.png)
 
-Página de acceso público sin autenticación. Muestra una vista general de los 8 módulos disponibles y presenta el proyecto de cara al usuario.
+### Navegación y shell
 
-<img src="../assets/extracted_v7/image1.png" alt="Figura: Landing Page (Pública)" />
+![Topbar](../../app/e2e/screenshots/02-topbar.png)
 
-### Autenticación (Login)
-
-Pantalla de acceso seguro que integra el sistema de autenticación a través de Google OAuth mediante Supabase.
-
-<img src="../assets/extracted_v7/image2.png" alt="Figura: Autenticación" />
-
-### Dashboard Global
-
-Panel de control principal unificado desde el que los usuarios autenticados pueden visualizar el estado del sistema y saltar a los diferentes módulos.
-
-<img src="../assets/extracted_v7/image3.png" alt="Figura: Dashboard Global" />
-
----
-
-## Módulos de Catálogo y Asistencia
+## Herramientas
 
 ### Fichas Técnicas
 
-Navegación jerárquica por el catálogo de productos (Familias → Marcas → Gamas).
-
-<img src="../assets/extracted_v7/image3.png" alt="Figura: Fichas Técnicas" />
-
-### Detalle de Producto
-
-Visualización detallada de la información técnica y descripción ampliada de un producto específico, enriquecida en tiempo real con IA.
-
-<img src="../assets/extracted_v7/image3.png" alt="Figura: Detalle de Producto" />
-
-### SONEX - Asistente Técnico
-
-Chat interactivo y asistente inteligente especializado en el sector eléctrico, que responde consultas técnicas e identifica productos.
-
-<img src="../assets/extracted_v7/image3.png" alt="Figura: SONEX - Asistente Técnico" />
-
----
-
-## Módulos Operativos y Analíticos
+![Búsqueda de fichas](../../app/e2e/screenshots/04-fichas-busqueda.png)
 
 ### Simulador de Almacén
 
-Simulador gamificado de 4 etapas que recrea el ciclo logístico y de pedidos de la empresa.
+![Simulador de almacén](../../app/e2e/screenshots/05-almacen.png)
 
-<img src="../assets/extracted_v7/image3.png" alt="Figura: Simulador de Almacén" />
+### Incidencias
 
-### Dashboard de Incidencias
+![Dashboard de incidencias](../../app/e2e/screenshots/06-incidencias.png)
 
-Registro de averías e incidencias operativas, con diagnóstico automatizado asistido por modelos de lenguaje.
+### KPI Logístico
 
-<img src="../assets/extracted_v7/image3.png" alt="Figura: Dashboard de Incidencias" />
+![KPI](../../app/e2e/screenshots/07-kpi.png)
 
-### KPIs Logísticos
+![Resultados KPI](../../app/e2e/screenshots/07-kpi-resultados.png)
 
-Cálculo dinámico de indicadores clave de rendimiento (KPIs) con visualizaciones gráficas interactivas.
+### Presupuestos
 
-<img src="../assets/extracted_v7/image3.png" alt="Figura: KPIs Logísticos" />
+![Presupuestos](../../app/e2e/screenshots/08-presupuestos.png)
 
----
+### Formación
 
-## Módulos de Gestión
+![Formación](../../app/e2e/screenshots/09-formacion.png)
 
-### Generador de Presupuestos
+### SONEX
 
-Asistente de cotización integrado con el catálogo de productos para la creación y exportación de presupuestos en PDF.
+![SONEX](../../app/e2e/screenshots/10-sonex.png)
 
-<img src="../assets/extracted_v7/image3.png" alt="Figura: Generador de Presupuestos" />
+![SONEX con mensaje](../../app/e2e/screenshots/10-sonex-mensaje.png)
 
-### Matriz de Formación
+## Responsive y tema
 
-Matriz interactiva para el seguimiento de la formación, competencias y módulos completados por el personal técnico.
+![Vista móvil](../../app/e2e/screenshots/11-responsive-mobile.png)
 
-<img src="../assets/extracted_v7/image3.png" alt="Figura: Matriz de Formación" />
+![Vista tablet](../../app/e2e/screenshots/11-responsive-tablet.png)
+
+![Modo oscuro](../../app/e2e/screenshots/12-darkmode.png)
+
+## Landing
+
+![Landing page](../../app/e2e/screenshots/13-landing.png)
+
+> Estas imágenes son evidencia versionada del repositorio. No implican por sí solas que todos los flujos estén pasando actualmente; para eso hace falta una ejecución fresca de las pruebas.
+
+*Evidencia visual reconciliada — agosto de 2026.*

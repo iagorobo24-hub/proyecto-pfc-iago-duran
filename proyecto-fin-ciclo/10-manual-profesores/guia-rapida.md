@@ -1,135 +1,51 @@
-# Guía Rápida — Cómo Usar Esta Documentación
+# Guía rápida para profesorado
 
-## Para el profesor
+## Antes de empezar
 
-Esta documentación está diseñada para ser usada como material docente. Aquí tienes una guía rápida.
+1. Definir qué uso de IA permite la actividad.
+2. Indicar cómo debe declararse o citarse.
+3. Elegir una tarea pequeña y verificable.
+4. Preparar un repositorio de práctica.
 
----
+## Ciclo de trabajo recomendado
 
-## Estructura de la documentación
+**Definir → pedir → inspeccionar → probar → contrastar → documentar.**
 
-### 10 capítulos organizados
+### Definir
 
-| Capítulo | Contenido | Tiempo de lectura |
-|----------|-----------|-------------------|
-| 01 | Resumen ejecutivo | 10 min |
-| 02 | Estado del arte | 15 min |
-| 03 | Análisis de requisitos | 15 min |
-| 04 | Diseño técnico | 20 min |
-| 05 | Proceso de desarrollo | 20 min |
-| 06 | Herramientas IA (fichas) | 30 min |
-| 07 | Manuales de uso | 15 min |
-| 08 | Resultados | 10 min |
-| 09 | Conclusiones | 10 min |
-| 10 | Manual para profesores | 15 min |
+Qué problema se resuelve y qué queda fuera.
 
----
+### Pedir
 
-## Cómo usar los capítulos
+Dar al asistente contexto, límites y criterio de cierre.
 
-### Para enseñar metodología
+### Inspeccionar
 
-Capítulos clave:
-- **02 (Estado del arte)** — Evolución de la IA
-- **05 (Proceso)** — Workflow real
-- **06 (Fichas)** — Herramientas en detalle
+Revisar el resultado/diff antes de incorporarlo.
 
-### Para evaluar proyectos
+### Probar
 
-Capítulos clave:
-- **01 (Resumen)** — Objetivos y alcance
-- **08 (Resultados)** — Métricas
-- **09 (Conclusiones)** — Cumplimiento
+Ejecutar las validaciones relevantes; no sustituirlas por una explicación del agente.
 
-### Para inspirar a alumnos
+### Contrastar
 
-Capítulos clave:
-- **05.3 (Prompts)** — Ejemplos reales
-- **05.4 (Lecciones)** — Errores y aciertos
-- **10.3 (Actividades)** — Ejercicios propuestos
+Para normativa, seguridad y especificaciones, utilizar fuentes oficiales.
 
----
+### Documentar
 
-## Las fichas de herramientas (Cap 06)
+Registrar decisiones, evidencia y limitaciones.
 
-Son el material más valioso. Cada ficha incluye:
+## Señales de alerta
 
-- Qué es la herramienta
-- Para qué se usó
-- Cómo se usó (flujo)
-- Prompts típicos
-- Ventajas y limitaciones
-- Comparativa
+- “La IA dice que está bien”.
+- métricas sin fecha ni comando;
+- referencias normativas generadas sin fuente;
+- tests modificados para encajar con un bug;
+- grandes refactors para una tarea pequeña;
+- alumno que no puede explicar el cambio.
 
-**Usar como:** Material de referencia para los alumnos.
+## Material recomendado del PFC
 
----
+Leer primero `00-README.md`, después `05-proceso-desarrollo/metodologia.md` y `05-proceso-desarrollo/prompts-exitosos.md`.
 
-## El plan de sesiones (Cap 10.2)
-
-4 sesiones de 2 horas cada una:
-
-1. Introducción a la IA generativa
-2. IDE con IA + GitHub
-3. Deployment en Vercel
-4. Proyecto en grupo
-
-**Tiempo total:** 8 horas (2 días)
-
----
-
-## Rúbricas de evaluación (Cap 10.3)
-
-Criterios principales:
-
-- Uso estratégico de herramientas IA
-- Calidad del código generado
-- Prompt engineering
-- Documentación
-- Autonomía vs. dependencia
-
-**Usar para:** Evaluar proyectos similares.
-
----
-
-## Materiales complementarios
-
-### En la carpeta assets/
-
-- Logos y colores
-- Screenshots
-- Diagramas
-
-### En el repo principal
-
-- Código fuente completo
-- Scripts de sincronización
-- Configuración
-
----
-
-## Adaptar a tu contexto
-
-Esta documentación es un **punto de partida**, no un guión estricto.
-
-Puedes:
-- ✅ Usar las fichas tal cual
-- ✅ Adaptar los ejemplos a tu sector
-- ✅ Crear nuevos ejercicios
-- ✅ Modificar las rúbricas
-
-No puedes:
-- ❌ Claimar como propio
-- ❌ Vender sin modificación
-
----
-
-## Dónde encontrar más
-
-- **Repo:** https://github.com/iagorobo24-hub/proyecto-pfc-iago-duran
-- **Demo:** https://proyecto-pfc-iago-duran.vercel.app
-- **Documentación:** Carpeta `proyecto-fin-ciclo/`
-
----
-
-*Guía rápida actualizada: Mayo 2026*
+*Guía rápida actualizada — agosto de 2026.*

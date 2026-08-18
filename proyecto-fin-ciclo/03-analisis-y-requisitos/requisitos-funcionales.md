@@ -1,265 +1,93 @@
-# Requisitos Funcionales — Lo que la app tiene que hacer
+# Requisitos funcionales
 
-## Definición
+## Convención
 
-Esto es lo que la aplicación tiene que poder hacer, visto desde el punto de vista del usuario que la usa. Cada requisito está relacionado con un módulo concreto.
+Para evitar el antiguo problema de conteo, esta memoria define **8 grupos de requisitos funcionales (RF-01 a RF-08)**. Los identificadores `RF-x.y` son capacidades o criterios de aceptación dentro del grupo; no se suman como “RF independientes” en otras secciones.
 
----
+## RF-01 — Autenticación
 
-## RF-01: Autenticación de usuarios
+**Prioridad:** alta.
 
-**Módulo:** Login
-**Prioridad:** Alta
+- RF-01.1: iniciar sesión mediante el proveedor configurado en Supabase Auth.
+- RF-01.2: cerrar sesión.
+- RF-01.3: impedir el acceso anónimo al área `/app/*` mediante `ProtectedRoute`.
 
-### RF-01.1
-> El sistema debe permitir autenticación con cuenta Google
+## RF-02 — Fichas Técnicas
 
-- Botón "Iniciar sesión con Google"
-- Redirección a Google OAuth
-- Sesión persistente (recordar usuario)
+**Prioridad:** alta.
 
-### RF-01.2
-> El sistema debe permitir cerrar sesión
+- RF-02.1: obtener familias/categorías desde el catálogo.
+- RF-02.2: filtrar por marca.
+- RF-02.3: navegar por subfamilia/tipo y, cuando existan, gama y subgama comercial.
+- RF-02.4: listar productos resultantes.
+- RF-02.5: buscar por texto o referencia y abrir el detalle.
+- RF-02.6: mostrar información de catálogo y permitir enriquecimiento asistido por IA sin sustituir la fuente original.
 
-- Botón de logout en la interfaz
-- Cierre de sesión en Supabase Auth
-- Redirección a página de login
+## RF-03 — Simulador de Almacén
 
-### RF-01.3
-> El sistema debe proteger todas las rutas excepto login
+**Prioridad:** media.
 
-- Middleware de rutas protegidas
-- Redirección a login si no autenticado
+- RF-03.1: crear/seleccionar perfil de operario.
+- RF-03.2: ejecutar las cinco etapas: Recepción, Ubicación, Picking, Verificación y Expedición.
+- RF-03.3: medir tiempos y comparar con estándares de simulación.
+- RF-03.4: presentar incidencias interactivas y calcular puntuación.
+- RF-03.5: conservar historial y admitir modo entrenamiento/evaluación.
+- RF-03.6: admitir el flujo multijugador implementado cuando la conectividad lo permita.
 
----
+## RF-04 — Incidencias
 
-## RF-02: Catálogo de fichas técnicas
+**Prioridad:** media.
 
-**Módulo:** Fichas Técnicas
-**Prioridad:** Alta
+- RF-04.1: registrar equipo, zona, operario, síntoma y severidad.
+- RF-04.2: filtrar por estado y severidad.
+- RF-04.3: cambiar el estado y guardar observaciones.
+- RF-04.4: generar un diagnóstico asistido por IA.
+- RF-04.5: señalar incidencias críticas abiertas durante más de dos horas.
+- RF-04.6: exportar un resumen PDF.
 
-### RF-02.1
-> El usuario debe poder navegar por familias de productos
+## RF-05 — KPI Logístico
 
-- Listado de familias (iluminación, cableado, automatización...)
-- Filtrado por familia
+**Prioridad:** media.
 
-### RF-02.2
-> El usuario debe poder filtrar por marca
+- RF-05.1: capturar datos de un turno.
+- RF-05.2: calcular seis KPIs: pedidos/hora, error de picking, tiempo de ciclo, ocupación, devoluciones y productividad.
+- RF-05.3: clasificar cada KPI mediante semáforo.
+- RF-05.4: guardar histórico y representar comparativas/gráficos.
+- RF-05.5: generar un comentario asistido por IA y exportar PDF.
 
-- Listado de marcas disponibles
-- Filtrado por marca dentro de familia
+## RF-06 — Presupuestos
 
-### RF-02.3
-> El usuario debe poder filtrar por gama/tipo
+**Prioridad:** alta.
 
-- Listado de gamas dentro de marca
-- Filtrado por gama
+- RF-06.1: iniciar un presupuesto y seleccionar productos del catálogo.
+- RF-06.2: editar líneas y cantidades.
+- RF-06.3: calcular subtotal, IVA y total.
+- RF-06.4: guardar/recuperar presupuestos según el flujo implementado.
+- RF-06.5: generar una salida PDF.
 
-### RF-02.4
-> El usuario debe poder ver los productos de una gama
+## RF-07 — Formación Interna
 
-- Listado de referencias con imagen, nombre, referencia
-- Información básica visible
+**Prioridad:** baja/media.
 
-### RF-02.5
-> El usuario debe poder ver el detalle de un producto
+- RF-07.1: gestionar empleados y módulos de formación.
+- RF-07.2: registrar progreso `pendiente`, `en_curso` o `completado`.
+- RF-07.3: calcular progreso individual/global y alertar por obligatorios pendientes.
+- RF-07.4: generar un plan de desarrollo asistido por IA.
 
-- Ficha completa con todas las especificaciones técnicas
-- Imagen del producto
-- Referencia del fabricante
-- Enlace a web del fabricante
+## RF-08 — SONEX
 
-### RF-02.6
-> El sistema debe enriquecer la ficha con información técnica generada por IA
+**Prioridad:** alta.
 
-- Al seleccionar un producto, se consulta automáticamente a la IA
-- Se muestran: características técnicas, aplicaciones, normas, URL del manual y consejo técnico
-- La información IA es adicional — la ficha base se muestra siempre
-- Si la IA falla o tarda, la ficha se muestra sin datos extra
+- RF-08.1: mantener sesiones de conversación y aceptar preguntas en lenguaje natural.
+- RF-08.2: ofrecer cuatro modos actuales: Búsqueda, Comparativa, Asistencia y Formación.
+- RF-08.3: usar contexto del catálogo para consultas de producto cuando esté disponible.
+- RF-08.4: mostrar resultados de catálogo y validar referencias antes de enlazarlas a Fichas/Presupuestos.
+- RF-08.5: conservar historial según la persistencia implementada.
 
----
+SONEX **no incluye actualmente un requisito de exportación de conversación a PDF**; esa afirmación se elimina de los manuales.
 
-## RF-03: Simulador de almacén
+## Validación
 
-**Módulo:** Almacén
-**Prioridad:** Media
+Los requisitos se originaron en observación, necesidades detectadas y decisiones del propio PFC. Esto no equivale a afirmar que todo el producto haya sido validado masivamente con usuarios reales. La validación externa fue limitada y se reconoce como tal en resultados y conclusiones.
 
-### RF-03.1
-> El usuario debe poder simular recepción de pedido
-
-- Formulario de productos solicitados
-- Confirmación de recepción
-
-### RF-03.2
-> El usuario debe poder simular almacenamiento
-
-- Asignación de ubicación en almacén
-- Validación de capacidad
-
-### RF-03.3
-> El usuario debe poder simular preparación de pedido
-
-- Selección de productos del inventario
-- Cálculo de disponibilidad
-
-### RF-03.4
-> El usuario debe poder simular expedición
-
-- Generación de albarán
-- Registro de salida
-
----
-
-## RF-04: Dashboard de incidencias
-
-**Módulo:** Incidencias
-**Prioridad:** Media
-
-### RF-04.1
-> El usuario debe poder registrar una incidencia
-
-- Formulario: título, descripción, categoría, severidad
-- Timestamp automático
-
-### RF-04.2
-> El usuario debe poder categorizar incidencias
-
-- Categorías predefinidas (producto, logística, calidad...)
-- Niveles de severidad (bajo, medio, alto, crítico)
-
-### RF-04.3
-> El usuario debe poder ver el historial de incidencias
-
-- Listado ordenable por fecha
-- Filtrado por estado (abierta/cerrada)
-
-### RF-04.4
-> El usuario debe poder actualizar el estado de una incidencia
-
-- Cambiar deabierta a en proceso a resuelta
-
----
-
-## RF-05: KPIs logísticos
-
-**Módulo:** KPI
-**Prioridad:** Media
-
-### RF-05.1
-> El usuario debe poder ver 6 KPIs principales
-
-- Rotación de inventario
-- Tiempo medio de preparación
-- Tasa de disponibilidad
-- Pedidos perfectos
-- Valor en almacén
-- Incidencias por familia
-
-### RF-05.2
-> Cada KPI debe mostrar estado con semáforo
-
-- Verde: dentro de objetivo
-- Amarillo: cerca del límite
-- Rojo: fuera de objetivo
-
-### RF-05.3
-> El usuario debe poder exportar informe
-
-- Generación de informe en formato texto
-
----
-
-## RF-06: Generador de presupuestos
-
-**Módulo:** Presupuestos
-**Prioridad:** Alta
-
-### RF-06.1
-> El usuario debe poder buscar productos
-
-- Buscador por nombre o referencia
-- Resultados en tiempo real
-
-### RF-06.2
-> El usuario debe poder añadir productos al presupuesto
-
-- Selección de cantidad
-- Acumulación en lista
-
-### RF-06.3
-> El sistema debe calcular subtotal, IVA y total
-
-- Cálculo automático con IVA 21%
-- Actualización en tiempo real
-
-### RF-06.4
-> El usuario debe poder generar presupuesto formateado
-
-- Vista previa del presupuesto
-- Exportable/copiable
-
----
-
-## RF-07: Gestión de formación
-
-**Módulo:** Formación
-**Prioridad:** Baja
-
-### RF-07.1
-> El usuario debe poder ver la matriz de competencias
-
-- Listado de empleados
-- Listado de cursos
-- Estado de completado/no completado
-
-### RF-07.2
-> El usuario debe poder registrar formación completada
-
-- Selección de empleado y curso
-- Fecha de completion
-
----
-
-## RF-08: Asistente técnico (SONEX)
-
-**Módulo:** SONEX
-**Prioridad:** Alta
-
-### RF-08.1
-> El usuario debe poder hacer preguntas en lenguaje natural
-
-- Input de texto libre
-- Envío de mensaje
-
-### RF-08.2
-> El sistema debe responder con información técnica
-
-- Respuestas basadas en contexto de productos
-- Procesamiento de Markdown
-
-### RF-08.3
-> El sistema debe detectar referencias de productos
-
-- Identificación de referencias en respuestas
-- Enlace a fichas técnicas
-
-### RF-08.4
-> El usuario debe poder exportar conversación
-
-- Exportar a PDF
-
----
-
-## Resumen deprioridades
-
-| Prioridad | Módulos | Requisitos |
-|-----------|---------|------------|
-| **Alta** | Login, Fichas, Presupuestos, SONEX | 12 RFs |
-| **Media** | Almacén, Incidencias, KPI | 8 RFs |
-| **Baja** | Formación | 2 RFs |
-
----
-
-*Requisitos funcionales documentados: Abril 2026*
-*Validados con personal de la empresa: Mayo 2026*
+*Requisitos reconciliados con el código auditado en agosto de 2026.*

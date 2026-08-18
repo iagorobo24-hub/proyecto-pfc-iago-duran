@@ -1,169 +1,44 @@
-# Listado de Componentes del Sistema
+# Inventario funcional de componentes
 
-> En un proyecto de automatización normal, aquí iría el listado de entradas y salidas del PLC.
-> Como mi proyecto es una aplicación web, este listado recoge todas las piezas que la forman:
-> pantallas, componentes, funciones y conexiones con servicios externos.
+Este documento evita mantener conteos rígidos de componentes, hooks o archivos: esos números envejecen con cada refactor. El inventario se organiza por **responsabilidad** y remite al árbol del repositorio para el detalle exacto.
 
----
+## Capas principales
 
-## 1. Rutas de la aplicación (las pantallas)
+| Ruta | Responsabilidad |
+|---|---|
+| `src/components/auth/` | Login y protección de rutas |
+| `src/components/layout/` | AppShell, topbar, sidebar y atajos |
+| `src/components/fichas/` | Navegación, tarjetas, tablas y detalle de catálogo |
+| `src/components/incidencias/` | Lista, formulario y detalle de incidencias |
+| `src/components/presupuestos/` | Wizard, selección, editor, gestión y PDF |
+| `src/components/simulador/` | Perfil, onboarding, etapas, resultados y multijugador |
+| `src/components/sonex/` | Presentación de resultados de producto de SONEX |
+| `src/components/ui/` | Componentes visuales reutilizables |
+| `src/tools/` | Pantallas de las 7 herramientas + Dashboard Global |
+| `src/hooks/` | Estado y lógica reutilizable |
+| `src/services/` | Catálogo, IA y servicios auxiliares |
+| `src/contexts/` | Auth, tema y toasts |
+| `src/utils/` | PDF, sanitización, validación, storage y helpers |
 
-Cada ruta es una página distinta dentro de la web. Algunas requieren haber iniciado sesión.
+## Componentes de página/routing
 
-| Ruta | Pantalla | ¿Requiere login? | ¿Qué hace? |
-|------|----------|------------------|------------|
-| `/` | Landing page | No | Página principal con presentación del proyecto |
-| `/login` | Inicio de sesión | No | Botón para entrar con Google |
-| `/app` | Dashboard Global | Sí | Panel de control con widgets de todas las herramientas |
-| `/app/fichas` | Fichas Técnicas | Sí | Catálogo de productos con navegador por familias |
-| `/app/almacen` | Simulador Almacén | Sí | Simulación paso a paso de un pedido |
-| `/app/incidencias` | Dashboard Incidencias | Sí | Registro y seguimiento de fallos |
-| `/app/kpi` | KPI Logístico | Sí | Gráficos con indicadores del almacén |
-| `/app/presupuestos` | Presupuestos | Sí | Generador de presupuestos con productos reales |
-| `/app/formacion` | Formación Interna | Sí | Matriz de competencias de empleados |
-| `/app/sonex` | SONEX Asistente | Sí | Chat con IA para preguntas técnicas |
+`App.jsx` define las pantallas principales y subrutas de Presupuestos. La carga diferida reduce el código inicial que necesita el navegador.
 
----
+## Hooks destacados
 
-## 2. Componentes de la interfaz
+- `useNavegacionFichas`: navegación jerárquica del catálogo.
+- `useFichasTecnicas`: búsqueda/selección y enriquecimiento.
+- `useUserData`: persistencia Supabase + local.
+- `useSonex`: sesiones e historial del chat.
+- `useKeyboardShortcuts`: atajos globales.
+- `useSimuladorMultijugador`: estado del modo multijugador.
 
-Son los "cachos" de los que está hecha cada pantalla. Separarlos así ayuda a que el código sea más fácil de mantener.
+## Servicios destacados
 
-### 2.1 Componentes generales (se usan en varias pantallas)
+- `catalogService.ts`: acceso tipado al catálogo.
+- `anthropicService.ts`: cliente de la API de IA y streaming; el nombre es histórico y no implica que todas las llamadas utilicen Anthropic.
+- `sonex*`: intención, búsqueda y orquestación específica de SONEX.
 
-| Componente | ¿Qué hace? |
-|------------|------------|
-| `Button` | Botón con varios estilos (principal, secundario, peligro) |
-| `Badge` | Etiqueta pequeña para mostrar estados (ej: "Nuevo", "Urgente") |
-| `Input` | Campo de texto con etiqueta y mensaje de error |
-| `Card` | Caja con sombra para mostrar contenido |
-| `Spinner` | Rueda de carga mientras se espera |
-| `Modal` | Ventana emergente para confirmar acciones |
-| `Toast` | Aviso que aparece y desaparece solo |
+## Regla de mantenimiento
 
-### 2.2 Layout (la estructura de la web)
-
-| Componente | ¿Qué hace? |
-|------------|------------|
-| `AppShell` | Esqueleto principal: barra arriba, menú lateral, contenido en medio |
-| `Topbar` | Barra superior con el logo, el tema claro/oscuro, búsqueda y avatar del usuario |
-| `Sidebar` | Menú lateral con navegación a las 7 herramientas + info de la herramienta activa |
-
-### 2.3 Auth (inicio de sesión)
-
-| Componente | ¿Qué hace? |
-|------------|------------|
-| `LoginPage` | Pantalla con el botón "Iniciar sesión con Google" |
-| `ProtectedRoute` | Envoltura que redirige al login si no has iniciado sesión |
-
-### 2.4 Fichas Técnicas
-
-| Componente | ¿Qué hace? |
-|------------|------------|
-| `TarjetaFicha` | Muestra un producto con foto, nombre, referencia y marca |
-
-### 2.5 Landing Page
-
-| Componente | ¿Qué hace? |
-|------------|------------|
-| `HeroContainer` | Sección principal con el título grande |
-| `HeroContent` | Texto de presentación |
-| `HeroHeader` | Cabecera de la landing |
-| `HeroVisual` | Capturas de las herramientas |
-| `FeaturesMini` | Lista de características |
-| `ToolsShowcase` | Muestra las 7 herramientas |
-| `HowItWorks` | Explicación de cómo funciona |
-| `StatsSection` | Estadísticas del proyecto |
-| `TechStack` | Tecnologías usadas |
-| `Roadmap` | Historia de versiones |
-| `FinalCTA` | Botón final para empezar |
-| `SimpleFooter` | Pie de página |
-| `FloatingParticles` | Fondo animado con partículas |
-| `AnimatedBackground` | Fondo con animación |
-| `TypingEffect` | Texto que se escribe solo |
-
----
-
-## 3. Hooks (funciones reutilizables)
-
-Los hooks son trozos de código que encapsulan lógica para no repetirla. Son como las "funciones de control" del programa.
-
-| Hook | ¿Para qué sirve? |
-|------|-------------------|
-| `useAuth` | Gestiona si el usuario ha iniciado sesión o no |
-| `useFichas` | Carga los productos del catálogo y gestiona la navegación |
-| `useAlmacen` | Controla el flujo de pasos del simulador de almacén |
-| `useIncidencias` | Añade, edita y filtra incidencias |
-| `useKPI` | Calcula los indicadores del almacén |
-| `usePresupuestos` | Gestiona la creación y el historial de presupuestos |
-| `useFormacion` | Maneja la matriz de empleados y sus competencias |
-| `useSonex` | Controla el chat con la IA (envía mensajes, recibe respuestas) |
-| `useScrollReveal` | Detecta cuando un elemento aparece en pantalla (para animaciones) |
-
----
-
-## 4. Servicios (conexión con el exterior)
-
-Son los archivos que se encargan de hablar con otras aplicaciones o bases de datos.
-
-| Servicio | ¿Qué hace? |
-|----------|------------|
-| `catalogService.js` | **Activo.** Consulta el catálogo en Supabase (PostgreSQL). 10 métodos: `getCategorias`, `getMarcasPorCategoria`, `getGamasPorMarcaYCategoria`, `getSubfamiliasConTipos`, `getProductosPorSubcategoria`, `getProductosPorFiltro`, `getProductoPorRef`, `buscarProductos`... |
-| `firestoreService.js` | **Legacy.** Lee/escribe datos de usuario en Firestore (fichas guardadas, presupuestos, incidencias, KPIs, formación) |
-| `firebaseConfig.js` | **Legacy.** Config Firebase con claves demo — ya no se usa para auth ni catálogo |
-| `brandLogoService.js` | Carga logos de marcas desde `public/logos/` o genera initials/gradients como fallback |
-| `anthropicService.js` | Cliente auxiliar para llamadas a la IA (contiene `callAnthropicAI`, `parseAIJsonResponse`, `sanitizeUrl`, `formatAIResponse`) |
-
----
-
-## 5. APIs (Vercel Functions)
-
-Son las funciones que se ejecutan en el servidor (no en el navegador del usuario). Solo tenemos una, pero es importante.
-
-| API | ¿Qué hace? |
-|-----|------------|
-| `api/ai.js` | Recibe un mensaje del usuario, lo envía a OpenRouter (o Groq, o Gemini) y devuelve la respuesta de la IA |
-
----
-
-## 6. Bases de datos
-
-### Supabase (PostgreSQL) — Catálogo de productos
-
-| Tabla | ¿Qué guarda? |
-|-------|--------------|
-| `products` | ~2.400 productos con columnas: ref_fabricante, name, familia, subfamilia, tipo, marca, brand_id, precio, Gama, Subgama, pdf_url, documentos (jsonb) |
-| `brands` | Marcas/fabricantes: id, name, website_url |
-
-### Firestore (legacy) — Datos de usuario
-
-| Colección | ¿Qué guarda? |
-|-----------|--------------|
-| `users/{userId}/fichas/` | Fichas técnicas guardadas por el usuario |
-| `users/{userId}/presupuestos/` | Presupuestos que ha creado el usuario |
-| `users/{userId}/incidencias/` | Incidencias que ha registrado el usuario |
-| `users/{userId}/kpis/` | Datos históricos de los indicadores |
-| `users/{userId}/formacion/` | Información de los empleados y sus competencias |
-
----
-
-## 7. Resumen visual
-
-Si tuviera que hacer un esquema como el de un PLC, sería algo así:
-
-```
-ENTRADAS (inputs)                    PROCESO (código)                    SALIDAS (outputs)
-─────────────────                   ────────────────                    ─────────────────
-• Click del usuario       ───→      • React Router (rutas)      ───→    • Pantalla renderizada
-• Texto escrito           ───→      • Hooks (lógica)            ───→    • Componentes UI
-• Google login            ───→      • AuthContext (Supabase)    ───→    • Avatar + nombre
-• Datos de Supabase       ───→      • catalogService            ───→    • Tarjetas, listas, tablas
-• Datos de Firestore      ───→      • firestoreService          ───→    • Historial, presupuestos
-• Pregunta al asistente   ───→      • API ai.js → OpenRouter    ───→    • Respuesta de IA
-• Tema claro/oscuro       ───→      • ThemeContext               ───→    • Colores cambiados
-```
-
----
-
-*Documento generado: Mayo 2026*
-*Equivalente a: listado de señales E/S y esquemas eléctricos en proyectos de automatización*
+Si se necesita una cifra exacta de componentes, hooks o tests para una entrega, debe calcularse desde el árbol del commit y citarse como snapshot. No se mantiene aquí una cifra manual como parte del contrato del sistema.

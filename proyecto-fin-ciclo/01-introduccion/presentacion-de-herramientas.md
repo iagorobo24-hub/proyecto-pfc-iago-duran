@@ -1,169 +1,32 @@
-# Presentación de herramientas
+# Presentación de las herramientas de la aplicación
 
-> Una página por cada herramienta usada en el proyecto. Para fichas completas, ver Capítulo 06.
+La suite reúne **7 herramientas funcionales** bajo un mismo `AppShell` y un **Dashboard Global**. La enumeración siguiente corresponde a las rutas definidas en `app/src/App.jsx`.
 
----
+| Herramienta | Ruta | Función actual |
+|---|---|---|
+| Fichas Técnicas | `/app/fichas` | Explorar y buscar catálogo, abrir fichas y consultar enriquecimiento asistido por IA |
+| Simulador Almacén | `/app/almacen` | Entrenar el ciclo recepción → ubicación → picking → verificación → expedición |
+| Incidencias | `/app/incidencias` | Registrar, filtrar, diagnosticar y seguir incidencias; exportar informe PDF |
+| KPI Logístico | `/app/kpi` | Calcular seis indicadores operativos, guardar histórico, visualizar y exportar |
+| Presupuestos | `/app/presupuestos` | Seleccionar productos, editar presupuesto, calcular IVA, guardar y generar PDF |
+| Formación Interna | `/app/formacion` | Gestionar empleados, módulos, progreso, alertas y plan asistido por IA |
+| SONEX | `/app/sonex` | Consultar el catálogo y cuestiones técnicas mediante un asistente conversacional |
 
-## Herramientas Conversacionales
+El Dashboard Global (`/app`) resume y enlaza estas herramientas. No se cuenta como módulo funcional independiente para evitar la antigua contradicción entre “7” y “8” módulos.
 
-### Claude Web (Anthropic)
-**Rol:** Primera herramienta usada, diseño inicial de arquitectura
+## Elementos transversales
 
-- Generó los 7 artefactos JSX originales
-- Ayuda con diseño de componentes
-- Limitación: sin acceso al filesystem
+- Autenticación mediante Supabase y `ProtectedRoute` para el área privada.
+- Persistencia híbrida en varios módulos mediante `useUserData` (Supabase + respaldo local).
+- Tema claro/oscuro y navegación común.
+- Atajos globales (`Ctrl/Cmd + 1…7`, `Ctrl/Cmd + B`, `Ctrl/Cmd + K` y `?`).
+- Gateway `/api/ai` para las llamadas de IA.
+- Generación de PDF en los módulos que la implementan.
 
-**Coste:** Gratis (con límites)
+## Sobre la IA
 
----
+No todas las herramientas usan el mismo modelo. El proveedor/modelo es una decisión técnica configurable por módulo y por el gateway. Por ello la memoria evita frases como “la aplicación usa Claude” o “todo funciona con un único modelo gratuito”.
 
-### GitHub Copilot
-**Rol:** Autocompletado en VSCode
+## Alcance de las recomendaciones técnicas
 
-- Sugerencias de código en tiempo real
--Chat inline para explicaciones
-
-**Coste:** Gratis para estudiantes
-
----
-
-### Windsurf IDE
-**Rol:** IDE principal (sustituyó a Copilot)
-
-- Coding ilimitado con IA
-- Acceso a proyecto local
-- Mejor que Copilot para este proyecto
-
-**Coste:** Gratis (tier gratuito)
-
----
-
-## Agentes CLI
-
-### Qwen CLI
-**Rol:** Agente terminal (cerrado abril 2026)
-
-- Ejecución de tareas complejas
-- Análisis de código
-- Scripts automatizados
-
-**Coste:** Gratis (modelos NVIDIA)
-
----
-
-### Gemini CLI (Google)
-**Rol:** Agente terminal alternativo
-
-- Buena velocidad
-- Integración con ecosistema Google
-
-**Coste:** Gratis
-
----
-
-### OpenCode CLI
-**Rol:** Agente actual (NVIDIA)
-
-- Acceso completo al filesystem
-- Skills especializados
-- Integración con modelos NVIDIA
-
-**Coste:** Gratis
-
----
-
-### Hermes Agent
-**Rol:** Documentación y análisis
-
-- Agente que genera esta documentación
-- Análisis profundo de repositorio
-- Memoria persistente
-
-**Coste:** Gratis (modelos NVIDIA)
-
----
-
-## Infraestructura
-
-### GitHub
-**Rol:** Control de versiones
-
-- Repositorio principal
-- Commits, branches, PRs
-
-**Coste:** Gratis
-
----
-
-### Vercel
-**Rol:** Hosting + Serverless
-
-- Deploy automático
-- Vercel Functions para API de IA
-- Dominio gratuito
-
-**Coste:** Gratis (hobby tier)
-
----
-
-### Firebase
-**Rol:** Backend legado (En desuso)
-
-- Firebase Auth y Firestore (catálogo original)
-- Sustituido por Supabase debido a límites de escritura
-- Actualmente se mantiene solo como referencia de migración en la documentación
-
-**Coste:** 0€ (Sin uso activo en producción)
-
----
-
-### Supabase
-**Rol:** Backend principal activo (Auth + Base de datos)
-
-- PostgreSQL para almacenar el catálogo unificado (~4.689 productos)
-- Supabase Auth (Google OAuth) para autenticación segura
-- Sincronización de datos de usuario en tiempo real con la tabla `user_data`
-
-**Coste:** Gratis (Free tier)
-
----
-
-## APIs y Servicios
-
-### OpenRouter
-**Rol:** Gateway de IA
-
-- Unifica múltiples proveedores
-- Modelos gratuitos (Claude Haiku, DeepSeek, Qwen)
-- Coste cero con límites
-
-**Coste:** Gratis (modelos seleccionados)
-
----
-
-## Testing
-
-### Playwright
-**Rol:** Scraping + Tests E2E
-
-- Scraping de web pública del distribuidor (400K productos)
-- Tests automatizados de UI
-- 14 tests implementados
-
-**Coste:** Gratis (open source)
-
----
-
-## Resumen de costes
-
-| IDE + Coding | Windsurf | 0€ |
-| Hosting | Vercel | 0€ |
-| Auth + DB | Supabase | 0€ |
-| IA | OpenRouter | 0€ |
-| Control de versiones | GitHub | 0€ |
-| Testing | Playwright | 0€ |
-| **TOTAL** | | **0€** |
-
----
-
-*Fichas resumidas — Para detalle completo ver: `06-herramientas-ia/`*
+Las funciones de IA son de apoyo. Una respuesta sobre normativa, seguridad eléctrica, sección de conductores, compatibilidad, mantenimiento o instalación debe verificarse contra documentación oficial y criterio profesional antes de aplicarse en un entorno real.

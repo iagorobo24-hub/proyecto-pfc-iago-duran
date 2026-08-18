@@ -1,145 +1,52 @@
-# Líneas Futuras — Lo que queda por hacer
+# Líneas futuras
 
-## Introducción
+Las líneas futuras se limitan a trabajo que **no está ya implementado** en el snapshot reconciliado.
 
-El proyecto funciona, pero no está acabado del todo. Siempre hay cosas que mejorar, ideas que se quedaron en el tintero y cosas que aprendí a hacer mejor para la próxima. Esto es lo que me gustaría hacer si tuviera más tiempo.
+## Prioridad alta
 
----
+### 1. Evidencia reproducible de calidad
 
-## Corto plazo (0-3 meses)
+- ejecutar build, lint, Vitest y Playwright sobre el commit de entrega;
+- conservar resultados y códigos de salida;
+- publicar métricas solo cuando estén vinculadas a esa ejecución.
 
-### 1. Completar migración a Supabase
+### 2. Validación con usuarios
 
-**Estado:** En progreso
+- sesiones observadas con técnicos/usuarios objetivo;
+- registro de tareas, errores y feedback;
+- separar satisfacción subjetiva de métricas de usabilidad.
 
-- Migrar catálogo de Firestore a Supabase
-- Actualizar catalogService
-- Beneficio: mejor escalabilidad, PostgreSQL
+### 3. Seguridad y fiabilidad de IA
 
-### 2. Tests E2E con Playwright
+- validar de forma estructural todas las respuestas JSON;
+- reforzar el tratamiento de errores del gateway para no devolver detalles innecesarios del proveedor;
+- incorporar fuentes verificables para consultas normativas/técnicas de alto riesgo;
+- definir cuándo la aplicación debe negarse a dar una recomendación no respaldada.
 
-**Estado:** Pendiente
+## Prioridad media
 
-- Recuperar suite de tests perdidos
-- Añadir a CI/CD
-- Cobertura: login, navegación, módulos principales
+### 4. CI reproducible
 
-### 3. Mejora de SONEX
+Añadir o consolidar CI que ejecute build, lint y pruebas en cada cambio relevante. El deploy automático no debe confundirse con una validación completa de calidad.
 
-**Estado:** Pendiente
+### 5. Observabilidad
 
-- Modelo más capaz (Claude Sonnet)
-- Contexto de conversación más amplio
-- Historial persistente
+Registrar errores, latencia y fallos de proveedores sin exponer datos sensibles.
 
----
+### 6. Datos y catálogo
 
-## Medio plazo (3-12 meses)
+Definir un proceso autorizado y mantenible para actualizar el catálogo, con trazabilidad de procedencia, normalización y controles de calidad.
 
-### 4. APP móvil
+## Evoluciones opcionales
 
-**Estado:** Idea
+- PWA/offline más completa;
+- TypeScript más estricto;
+- internacionalización;
+- integraciones empresariales solo con autorización y contrato de datos;
+- mejoras de accesibilidad verificadas con auditoría específica.
 
-- PWA (Progressive Web App)
-- O bien React Native / Expo
-- Funcionalidad offline
+## Trabajo ya cerrado que no vuelve a figurar como futuro
 
-### 5. Integración con la empresa
+La migración principal a Supabase y la existencia de pruebas Playwright ya forman parte del repositorio actual, por lo que no se listan como pendientes.
 
-**Estado:** Idea
-
-- Acceso a sistemas internos (con autorización)
-- Sincronización automática de catálogo
-- API oficial de productos
-
-### 6. Módulo de pedidos real
-
-**Estado:** Idea
-
-- Conexión con ERP
-- Seguimiento de pedidos reales
-- Notificaciones
-
-### 7. Multiidioma
-
-**Estado:** Idea
-
-- Español (actual)
-- Inglés
-- Otros idiomas relevantes
-
----
-
-## Largo plazo (12+ meses)
-
-### 8. IA que mantenga el proyecto
-
-**Estado:** Idea
-
-- Agentes que hagan mantenimiento automático
-- Actualización de dependencias
-- Fix de bugs
-
-### 9. Expansión a otras empresas
-
-**Estado:** Idea
-
-- Adaptar el modelo a otros distribuidores
-- Plantilla reutilizable
-- SaaS
-
-### 10. Comunidad
-
-**Estado:** Idea
-
-- Foro de usuarios
-- Mejoras propuestas
-- Documentación colaborativa
-
----
-
-## Mejoras técnicas identificadas
-
-| Mejora | Prioridad | Dificultad |
-|--------|-----------|------------|
-| Migración Supabase | Alta | Media |
-| Tests E2E | Alta | Baja |
-| Mejora SONEX | Media | Alta |
-| PWA | Media | Media |
-| TypeScript | Baja | Alta |
-| GraphQL | Baja | Alta |
-
----
-
-## Deprecaciones y riesgos
-
-### Herramientas que pueden desaparecer
-
-| Herramienta | Riesgo | Alternativa |
-|-------------|--------|-------------|
-| Qwen CLI | Cerró en abril 2026 | OpenCode, Hermes |
-| Firebase Spark | Puede cambiar | Supabase |
-
-### Mantenimiento necesario
-
-| Componente | Frecuencia |
-|------------|------------|
-| Dependencias npm | Mensual |
-| Documentación | Trimestral |
-| Tests | Con cada feature |
-
----
-
-## Cómo contribuir
-
-Si quieres continuar este proyecto:
-
-1. **Clona el repo:** `git clone https://github.com/iagorobo24-hub/proyecto-pfc-iago-duran`
-2. **Instala dependencias:** `cd app && npm install`
-3. **Ejecuta en local:** `npm run dev`
-4. **Revisa los issues:** Busca en GitHub
-
----
-
-*Lineas futuras documentadas: Mayo 2026*
-*Ver también: TODO.md para tareas inmediatas*
+*Líneas futuras reconciliadas — agosto de 2026.*

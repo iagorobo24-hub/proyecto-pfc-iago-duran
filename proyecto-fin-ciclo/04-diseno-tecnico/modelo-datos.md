@@ -1,131 +1,53 @@
-# Modelo de Datos — Cómo se guarda todo
+# Modelo de datos
 
-## La historia de los datos
+## Estado actual
 
-El modelo de datos fue cambiando según evolucionaba el proyecto:
+La implementación actual se apoya en **Supabase/PostgreSQL**. Firebase/Firestore forma parte de la evolución histórica y no debe mezclarse con el esquema vigente.
 
-1. **Al principio:** Los datos estaban en archivos JavaScript dentro de la propia web. Había unos 120 productos de prueba. Funcionaba para hacer pruebas pero no valía para producción.
-2. **Después:** Migré todo a Firestore (una base de datos NoSQL de Google). Ahí estaban los 400.000+ productos del catálogo real y los datos de usuario.
-3. **Ahora:** El **catálogo** está en **Supabase (PostgreSQL)** — tablas `products` y `brands`. Los **datos de usuario** (fichas guardadas, presupuestos, incidencias, KPIs, formación) se almacenan en **localStorage** con sincronización a Supabase `user_data` table cuando hay sesión activa.
+## Catálogo
 
-Este documento explica cómo está organizado todo en la versión actual.
+### `products`
 
----
+El código consulta, entre otros, estos campos:
 
-## Supabase: el catálogo de productos
+- `id`
+- `ref_fabricante`
+- `name`
+- `imagen`
+- `marca`
+- `brand_id`
+- `familia`
+- `subfamilia`
+- `tipo`
+- `precio`
+- `Gama`
+- `Subgama`
+- `pdf_url`
 
-El catálogo vive en PostgreSQL. Dos tablas principales:
+La navegación no presupone un único árbol rígido. `catalogService.ts` permite combinar familia, marca, subfamilia/tipo y filtros comerciales según los datos disponibles.
 
-### Tabla `products`
+### `brands`
 
-```
-id: 1                          ← Autonumérico (PK)
-ref_fabricante: "A9F74110"     ← Referencia del fabricante (única, NOT NULL)
-name: "Magnetotérmico, Acti9 iC60N, 1P, 6A, C curva"  ← Nombre completo
-familia: "DISTRIBUCION DE POTENCIA"  ← Categoría principal (MAYÚSCULAS con _)
-Gama: "Acti 9 iC60"            ← Gama comercial del fabricante (sin normalizar)
-Subgama: "iC60N"               ← Subgama dentro de la gama
-subfamilia: "Interruptor Magnetotérmico"  ← Tipo funcional (Capitalizado)
-tipo: "CARRIL DIN"              ← Formato físico (MAYÚSCULAS)
-marca: "Schneider Electric"     ← Nombre del fabricante
-brand_id: 456                   ← FK → brands.id
-precio: 14.50                   ← Precio unitario (puede ser null)
-imagen: "https://..."           ← URL de imagen del producto
-pdf_url: "https://..."          ← URL de ficha técnica PDF
-documentos: [{"nombre": "...", "url": "..."}]  ← JSONB con enlaces adicionales
-```
+Asocia identificadores de fabricante con su nombre. El servicio mantiene cachés en memoria para resolver nombres/IDs sin repetir consultas innecesarias.
 
-### Tabla `brands`
+### `vw_unique_families`
 
-```
-id: 456                         ← PK
-name: "Schneider Electric"      ← Nombre de la marca
-website_url: "https://www.se.com"  ← Web de la marca
-```
+Vista utilizada por `getCategorias()` para recuperar familias únicas sin descargar todo el catálogo.
 
-### Acceso a los datos
+## Datos de usuario
 
-La comunicación con Supabase se hace desde el frontend directamente (client-side) usando `@supabase/supabase-js`. Las consultas van con la **anon key** pública — la seguridad se gestiona con Row Level Security (RLS) en las tablas.
+`useUserData` trabaja con una tabla `user_data` con la identidad del usuario, módulo, clave y contenido serializable. El acceso remoto se combina con respaldo local para mejorar continuidad y migrar datos previos.
 
-Servicio principal: `app/src/services/catalogService.ts`
-- `getCategorias()` — Familias únicas con productos (1 query + Set dedup)
-- `getMarcasPorCategoria(familia)` — Marcas que tienen productos en una familia
-- `getGamasPorMarcaYCategoria(marca, familia)` — Gamas/subfamilias para legacy
-- `getSubfamiliasConTipos(marca, familia)` — Pares (subfamilia, tipo) para DP agrupado
-- `getProductosPorSubcategoria(familia, marca, filtros)` — Productos por subcategoría
-- `getProductosPorFiltro(familia, marca, gama, tipo)` — Productos por filtro exacto
-- `getProductoPorRef(ref)` — Producto por referencia única
-- `buscarProductos(termino)` — Búsqueda por nombre con sanitización
-- `buscarProductosConLimite(termino, limite)` — Búsqueda con límite configurable
+La seguridad efectiva de esa tabla depende de las políticas RLS configuradas en el proyecto Supabase; la existencia del hook cliente no demuestra por sí sola que todas las políticas estén correctas.
 
-### Categorización en frontend (`categoriaMapping.js`)
+## Estadísticas del catálogo
 
-Para DISTRIBUCION DE POTENCIA, el mapeo `subfamilia+tipo → (categoria, subcategoria)` está en el frontend:
+`getCatalogStats()` consulta recuentos de productos, marcas y familias. Por ello la memoria **no fija 4.689, 75.000 o 400.000 productos como constante**. Si se necesita el número para la defensa, debe obtenerse de esa fuente o de una consulta equivalente y fecharse.
 
-| Categoría | Subcategorías | Icono |
-|-----------|---------------|-------|
-| **Protección** | Magnetotérmico modular, MCCB, Diferencial, Sobretensión, Fusibles | 🛡️ |
-| **Seccionamiento** | Seccionador, Seccionador CC, Interruptor CC | 🔌 |
-| **Accesorios** | Rearme, Control aislamiento, Cajas, Pilotaje, Medida, Distribución, Conmutación, Tomas, Fuentes, Señalización | 🔧 |
-| **Control Motor** | Contactor, Relés y control, Pulsadores | ⚙️ |
+## Tipos y validación
 
----
+Parte del catálogo está tipada en TypeScript (`types/catalog.ts`) y los datos recuperados pasan por validadores del cliente. Esto reduce errores de forma, pero no convierte datos externos o generados por IA en información técnica verificada.
 
-## Datos de usuario (localStorage + Supabase sync)
+## Historia de migración
 
-Los datos que genera cada usuario al usar las herramientas se almacenan en **localStorage** con la librería `useMemoriaUsuario` (custom hook). Cuando hay sesión activa, se sincronizan con la tabla `user_data` de Supabase.
-
-### Estructura de datos por módulo
-
-- **`pfc_fichas_historial`** — Fichas técnicas consultadas
-- **`pfc_presupuestos_historial`** — Presupuestos creados
-- **`pfc_incidencias_listado`** — Incidencias registradas
-- **`pfc_kpi_historial`** — Resultados de KPIs calculados
-- **`pfc_formacion_modulos`** — Módulos de formación
-- **`pfc_formacion_empleados`** — Empleados y su progreso
-- **`pfc_simulador_historial`** — Resultados del simulador
-- **`pfc_analytics_events`** — Eventos de uso (analytics)
-
----
-
-## Autenticación
-
-**Supabase Auth** con Google OAuth:
-
-```js
-supabase.auth.signInWithOAuth({
-  provider: 'google',
-  options: { redirectTo: window.location.origin }
-})
-```
-
-El estado de sesión se gestiona en `AuthContext.jsx` mediante:
-- `supabase.auth.getSession()` — Recuperar sesión al cargar
-- `supabase.auth.onAuthStateChange()` — Escuchar cambios en tiempo real
-- `supabase.auth.signOut()` — Cerrar sesión
-
----
-
-## Datos locales (frontend)
-
-Algunos datos están directamente en el código del frontend:
-- **categoriaMapping.js** — Mapeo subfamilia → categoria/subcategoria
-- **categoryMapping.js** — Metadatos de familias (iconos, tips)
-- **marcasLogos.js** — URLs de logos de fabricantes
-- **hierarchy.json** — Árbol de navegación (legacy, ya no usado en producción)
-
----
-
-## Comparativa rápida
-
-| Aspecto | Catálogo (Supabase) | Datos usuario (Supabase) |
-|---------|--------------------|---------------------------|
-| **Tipo** | SQL (PostgreSQL) | SQL (PostgreSQL) |
-| **Tablas** | `products`, `brands` | `user_data` |
-| **Búsqueda** | `ilike` + `OR` + GIN Index | Clave exacta (`module` + `key`) |
-| **Auth** | Supabase OAuth | Supabase OAuth |
-| **Estado** | ✅ Producción | ✅ Producción ( localStorage offline fallback ) |
-
----
-
-*Para más detalle técnico, ver [DB_TAXONOMY.md](../../DB_TAXONOMY.md).*
+Firestore fue utilizado en etapas previas. La migración a Supabase se documenta como una decisión de arquitectura ya materializada en el código actual, no como trabajo futuro.

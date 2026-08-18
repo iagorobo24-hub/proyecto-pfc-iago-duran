@@ -1,388 +1,80 @@
-# Prompts Exitosos — Ejemplos Reales
+# Patrones de prompts que funcionaron
 
-## Introducción
+Este documento no pretende coleccionar “prompts mágicos”. Resume patrones que mejoraron el trabajo porque hacían explícitos objetivo, evidencia y criterios de cierre.
 
-Esta sección recopila prompts que funcionaron bien en el proyecto. Cada uno es un ejemplo real que generó código útil. Se incluyen el contexto, el prompt exacto, y por qué funcionó.
+## 1. Análisis antes de modificar
 
----
-
-## Categoría 1: Componentes UI
-
-### Prompt: Crear componente Card
-
-**Contexto:** Necesitaba un componente reutilizable para mostrar productos en Fichas Técnicas.
-
-**Prompt exacto:**
-
-```
-Crea un componente React llamado TarjetaProducto que muestre una tarjeta de producto eléctrico.
-
-Requisitos:
-- Usa React hooks (useState, useEffect) - NO clases
-- Usa CSS Modules para los estilos
-- El componente recibe una prop 'product' con: { ref, name, marca, precio, imagen }
-- Muestra: imagen (o placeholder si no hay), nombre, referencia del fabricante, marca como badge
-- Cuando se hace click en la tarjeta, debe llamar a una función onSelect(product)
-- Diseño: card con sombra suave, border-radius 8px, padding 16px
-- Si no hay imagen, muestra un div con el icono de Package de lucide-react
-- El componente debe ser responsive - en mobile ocupa el 100%, en desktop max-width 300px
-
-Incluye el CSS Module también.
+```text
+Analiza primero el código y la documentación relacionados con [problema].
+Distingue lo verificado de lo supuesto. No modifiques nada todavía.
+Entrega causa probable, archivos implicados y validaciones necesarias.
 ```
 
-**Resultado:** Componente funcional que se usó en producción.
+**Por qué funcionó:** evita que el agente salte directamente a una solución basada en una hipótesis.
 
-**Por qué funcionó:**
-- Específico sobre las props
-- Define comportamiento (onSelect)
-- Especifica tecnología (CSS Modules, hooks)
-- Da ejemplos de contenido (placeholder)
+## 2. Cambio acotado
 
----
-
-### Prompt: Sistema de thèmes
-
-**Contexto:** Necesitaba implementar modo oscuro/claro.
-
-**Prompt exacto:**
-
-```
-Crea un ThemeContext en React que gestione el tema de la aplicación.
-
-Requisitos:
-- Dos temas: 'light' y 'dark'
-- Usa CSS Custom Properties para los colores
-- Lee el tema guardado en localStorage al iniciar
-- Si no hay tema guardado, usa 'light' por defecto
-- Exporta: ThemeProvider (context provider), useTheme() hook
-- El hook devuelve: theme ('light'|'dark'), toggleTheme(), setTheme()
-- Cuando cambia el tema, actualiza document.documentElement.setAttribute('data-theme', theme)
-- Guarda en localStorage cada vez que cambia
-
-Ejemplo de uso esperado:
-const { theme, toggleTheme } = useTheme();
-return <button onClick={toggleTheme}>Cambiar a {theme === 'light' ? 'oscuro' : 'claro'}</button>;
+```text
+Objetivo: [resultado observable].
+Alcance autorizado: [archivos/capa].
+Fuera de alcance: [refactors/features].
+Respeta los contratos existentes y no debilites tests.
+Después ejecuta [validaciones] y revisa el diff.
 ```
 
-**Resultado:** ThemeContext completo que se usa actualmente.
+## 3. Auditoría
 
-**Por qué funcionó:**
-- Define claramente inputs/outputs
-- Especifica persistencia (localStorage)
-- Da ejemplo de uso esperado
-
----
-
-## Categoría 2: Lógica de negocio
-
-### Prompt: Navegación jerárquica
-
-**Contexto:** Fichas Técnicas necesitaba navegar por familia → marca → gama → producto.
-
-**Prompt exacto:**
-
-```
-Crea un hook personalizado useNavegacionJerarquica para las fichas técnicas.
-
-Requisitos:
-- El hook gestiona la navegación de 4 niveles: familia → marca → gama → producto
-- Estado inicial: { familia: null, marca: null, gama: null, producto: null }
-- Props: 
-  - hierarchy: objeto con { familias: [{ id, nombre, marcas: [{ id, nombre, gamas: [...] }] }] }
-  - productos: array de productos
-- Funciones:
-  - selectFamilia(id): selecciona familia, resetea marca/gama/producto
-  - selectMarca(id): selecciona marca dentro de familia seleccionada, resetea gama/producto
-  - selectGama(id): selecciona gama dentro de marca seleccionada, resetea producto
-  - selectProducto(product): selecciona producto
-  - goBack(): vuelve al nivel anterior
-  - reset(): vuelve al inicio
-- Selectores derivados (para filtrar productos):
-  - getMarcasDisponibles(): marcas de la familia seleccionada
-  - getGamasDisponibles(): gamas de la marca seleccionada
-  - getProductosFiltrados(): productos que coinciden con familia+marca+gama
-- Si no hay selección, los selectores devuelven arrays vacíos o todo el catálogo
-
-El hook debe ser robusto: si se selecciona una familia que no existe, no debe fallar.
+```text
+Revisa [área] sin modificar código.
+Para cada hallazgo indica evidencia, impacto y si es fallo confirmado,
+riesgo plausible o falta de evidencia. No inventes resultados de tests.
 ```
 
-**Resultado:** Hook robusto que gestiona toda la navegación.
+## 4. Documentación sincronizada
 
-**Por qué funcionó:**
-- Define todos los estados posibles
-- Explica relaciones entre niveles
-- Incluye funciones de "volver" y "reset"
-- Considera casos de error
-
----
-
-### Prompt: Streaming de SONEX
-
-**Contexto:** Las respuestas de SONEX tardaban y quería mostrar progreso.
-
-**Prompt exacto:**
-
-```
-Crea un servicio en Javascript para hacer streaming de chat con OpenRouter.
-
-Requisitos:
-- Usa fetch con ReadableStream para recibir respuestas chunk a chunk
-- El servicio recibe: { messages: [{ role: 'user'|'assistant', content: '...' }] }
-- Para cada chunk recibido, llama a un callback onChunk(chunk)
-- Cuando termina, llama a onComplete(fullResponse)
-- Si hay error, llama a onError(error)
-- Incluye timeout de 60 segundos
-- Maneja el caso de streaming no soportado (retry sin streaming)
-
-Usa este formato para la llamada a OpenRouter:
-POST https://openrouter.ai/api/v1/chat/completions
-Headers:
-  Authorization: Bearer API_KEY
-  Content-Type: application/json
-Body:
-{
-  model: "anthropic/claude-3-haiku",
-  messages: messages,
-  stream: true
-}
-
-El servicio debe funcionar tanto con stream: true como con stream: false.
+```text
+Contrasta la documentación con el código actual.
+Corrige únicamente afirmaciones desactualizadas.
+Las métricas variables deben llevar fecha/método o eliminarse.
+Separa historia del proyecto de estado actual.
 ```
 
-**Resultado:** Servicio de streaming que se usa actualmente.
+## 5. Salida estructurada de un modelo
 
-**Por qué funcionó:**
-- Define claramente los callbacks
-- Maneja errores y timeouts
-- Explica el formato de la API
+Para datos de aplicación, el prompt puede pedir JSON, pero **el prompt no es una garantía**.
 
----
-
-## Categoría 3: Scripts y herramientas
-
-### Prompt: Enriquecimiento IA para fichas técnicas
-
-**Contexto:** Al seleccionar un producto del catálogo, quería mostrar información técnica adicional (características, aplicaciones, normas) generada por IA.
-
-**Prompt exacto (system prompt):**
-
-```
-Eres un técnico especialista en material eléctrico e industrial.
-Dado un producto con su nombre, marca y referencia, busca mentalmente en
-tu conocimiento técnico y responde ÚNICAMENTE con este JSON
-(sin markdown ni backticks):
-{
-  "caracteristicas": ["característica técnica 1", ...],
-  "aplicaciones": ["aplicación 1", ...],
-  "normas": ["norma 1", ...],
-  "url_manual": "URL del manual o cadena vacía",
-  "consejo_tecnico": "consejo práctico en 1-2 frases"
-}
+```text
+Devuelve únicamente un objeto JSON que siga este esquema: [...].
+Si falta un dato, usa null y no lo inventes.
 ```
 
-**Prompt del usuario:**
-```
-Producto: {nombre}
-Marca: {marca}
-Referencia: {ref}
+Después, el código debe parsear y validar la estructura. Si el dato es crítico (por ejemplo una especificación eléctrica o una norma), además debe contrastarse con una fuente autorizada.
 
-Proporciona las características técnicas, aplicaciones, normas y consejo técnico.
-```
+## Patrón que ya no se recomienda
 
-**Resultado:** Enriquecimiento IA funcional — el usuario ve datos técnicos detallados sin salir de la ficha.
+Se elimina como buena práctica cualquier prompt del tipo:
 
-**Por qué funcionó:**
-- System prompt con estructura JSON exacta — elimina parsing ambiguo
-- Sin markdown ni backticks — la respuesta es directamente parseable
-- Campos opcionales (`url_manual`) — la IA puede omitir lo que no sabe sin romper el JSON
-- Consejo técnico añade valor práctico que no está en los datos del catálogo
-
-**Lección aprendida:** Al principio el validator `(p) => p.caracteristicas || p.aplicaciones` rompía el flujo porque `parseAIJsonResponse` espera `{ valid: boolean }` y el callback retornaba un array. La solución fue eliminar el validator — el system prompt ya garantiza JSON válido.
-
----
-
-### Prompt: Script de scraping
-
-**Contexto:** Necesitaba obtener el catálogo de productos de Proyecto PFC.es.
-
-**Prompt exacto:**
-
-```
-Crea un script de scraping con Playwright que obtenga el catálogo de productos de la empresa.
-
-Requisitos:
-- Usa Playwright con Chromium
-- Navega a https://www.Proyecto PFC.es/catalogo
-- Para cada categoría del menú lateral:
-  - Haz click para expandir
-  - Para cada subcategoría:
-    - Haz click para ver los productos
-    - Espera a que carguen los productos (esperar grid con productos)
-    - Extrae: nombre, referencia, precio, marca, imagen, URL
-    - Si hay paginación, navega por todas las páginas
-- Guarda los datos en un archivo JSON con estructura:
-  [
-    {
-      "familia": "Iluminación",
-      "subfamilia": "Bombillas LED",
-      "nombre": "Bombilla LED E27 10W",
-      "referencia": "AB123456",
-      "precio": 5.99,
-      "marca": "Philips",
-      "imagen": "https://...",
-      "url": "https://..."
-    }
-  ]
-- Maneja errores: si una categoría falla, continúa con la siguiente y registra el error
-- Ejecuta con: node scraping.js
-- Necesita credenciales de Playwright instaladas
-
-El script debe ser robusto contra cambios en la web.
+```text
+Busca mentalmente la ficha, normativa o URL del fabricante y complétala.
 ```
 
-**Resultado:** Script que eventually obtuvo 75K+ productos (con múltiples iteraciones).
+Un modelo puede fabricar especificaciones, normas o enlaces plausibles. Para enriquecimiento técnico, el orden seguro es:
 
-**Por qué funcionó:**
-- Define la estructura de salida exactamente
-- Explica cómo manejar paginación
-- Incluye manejo de errores
+1. usar datos reales disponibles;
+2. pedir al modelo que explique o estructure esos datos;
+3. validar el esquema;
+4. mostrar claramente qué contenido es generado;
+5. remitir a la documentación oficial para decisiones reales.
 
----
+## Criterios de un buen prompt de ingeniería
 
-### Prompt: Script de sincronización
+- objetivo observable;
+- contexto suficiente;
+- restricciones y exclusiones;
+- contrato de entrada/salida;
+- validaciones;
+- acciones Git permitidas;
+- condiciones de parada;
+- informe final con resultados reales y limitaciones.
 
-**Contexto:** Necesitaba sincronizar el JSON del catálogo a Firestore.
-
-**Prompt exacto:**
-
-```
-Crea un script Node.js que sincronice productos desde un JSON a Firestore.
-
-Requisitos:
-- Lee el archivo: Proyecto PFC-catalog-scraper/catalogo-final.json
-- Configura Firebase Admin SDK con service-account.json
-- Por cada producto del JSON:
-  - Inserta o actualiza en colección 'productos' de Firestore
-  - El documento usa ref_fabricante como ID
-  - Añade campo 'lastUpdated' con timestamp
-- Procesa en batches de 500 documentos (límite de Firestore)
-- Muestra progreso: "Procesados X de Y" cada 100 productos
-- Al final muestra: "Sincronización completada: X documentos"
-- Maneja errores: si falla uno, continúa y muestra error
-
-Usa estos campos del JSON:
-ref_fabricante, name, familia, subfamilia, tipo, marca, image, url
-Mapea a Firestore:
-ref_fabricante → ref_fabricante
-name → name
-familia → familia
-subfamilia → subfamilia
-tipo → tipo
-marca → marca
-image → image
-url → url
-lastUpdated → serverTimestamp()
-```
-
-**Resultado:** Script que sincronizó el catálogo a Firestore.
-
-**Por qué funcionó:**
-- Especifica el formato exacto de entrada y salida
-- Define tamaño de batch
-- Incluye logging de progreso
-
----
-
-## Categoría 4: Estructura de proyecto
-
-### Prompt: Estructura inicial
-
-**Prompt exacto:**
-
-```
-Genera la estructura de carpetas para un proyecto React con Vite.
-
-Requisitos:
-- Estructura moderna de proyecto React
-- Carpeta src/ con:
-  - components/ (componentes reutilizables)
-  - pages/ (componentes de página/rutas)
-  - hooks/ (custom hooks)
-  - services/ (lógica de negocio, APIs)
-  - contexts/ (React contexts)
-  - styles/ (CSS global, variables)
-  - data/ (datos estáticos, mocks)
-- Incluye package.json con dependencias:
-  - react, react-dom
-  - react-router-dom
-  - vite
-  - firebase
-- Incluye vite.config.js básico
-- Incluye .gitignore básico para Node
-
-No generes código, solo la estructura y configuración básica.
-```
-
-**Resultado:** Estructura base que se usó para iniciar el proyecto.
-
-**Por qué funcionó:**
-- Define lo que necesita y lo que NO necesita
-- Especifica dependencias exactas
-
----
-
-## Patrones comunes en prompts exitosos
-
-### 1. Define las props/inputs exactamente
-
-```
-MALO: "Crea un componente de botón"
-BUENO: "Crea un Button con props: variant (primary/secondary), 
-        size (sm/md/lg), disabled (boolean), onClick (function)"
-```
-
-### 2. Especifica la tecnología
-
-```
-"...usa React hooks (useState, useEffect), NO clases"
-"...usa CSS Modules, NO styled-components"
-"...usa async/await, NO then/catch"
-```
-
-### 3. Da el formato de salida
-
-```
-"...guarda en JSON con estructura: [{ campo1, campo2 }]"
-"...el hook devuelve: { data, loading, error }"
-```
-
-### 4. Incluye casos edge
-
-```
-"...si no hay imagen, muestra un placeholder"
-"...si la API falla, lanza excepción"
-"...maneja arrays vacíos"
-```
-
-### 5. Establece restricciones
-
-```
-"...NO uses librerías externas além de las especificadas"
-"...el código debe ser TypeScript"
-"...máximo 100 líneas"
-```
-
----
-
-## Conclusión
-
-Los mejores prompts son aquellos que:
-1. **Son específicos** — Definen exactamente lo que necesitan
-2. **Son completos** — Incluyen contexto, restricciones, ejemplos
-3. **Son verificables** — Se puede saber si el resultado es correcto
-4. **Son iterables** — Se pueden mejorar si no funcionan
-
----
-
-*Prompts documentados: Mayo 2026*
-*Ver también: EVOLUCION.md para contexto de cada fase*
+La calidad no depende solo de cómo se redacta el prompt, sino de cómo se verifica el trabajo después.

@@ -1,160 +1,41 @@
-# Análisis de la Empresa
+# Análisis del contexto empresarial
 
-## La empresa
+## Origen del problema
 
-### Información general
+El PFC nace de la experiencia de prácticas en una empresa de distribución B2B de material eléctrico. La observación del entorno sirvió para identificar tareas susceptibles de apoyo digital: consulta de catálogo, logística formativa, incidencias, indicadores, presupuestos, formación y asistencia técnica.
 
-| Campo | Datos |
-|-------|-------|
-| **Nombre** | Empresa de distribución de material eléctrico |
-| **Sector** | Distribución de material eléctrico |
-| **Tamaño** | Gran empresa (más de 500 empleados en España) |
-| **Sede** | Barcelona |
-| **Actividad** | Wholesale de material eléctrico profesional |
+Este documento describe **el contexto académico percibido por el alumno**. No debe leerse como auditoría oficial de procesos internos ni como declaración de la empresa.
 
-### Modelo de negocio
+## Necesidades que motivaron los módulos
 
-Es una empresa de **distribución B2B** (business to business):
-- Compra material eléctrico a fabricantes
-- Vende a instaladores electricistas, empresas de mantenimiento, obra civil
-- No vende al público general
+| Necesidad observada/propuesta | Respuesta del PFC |
+|---|---|
+| Localizar información de producto con menos fricción | Fichas Técnicas |
+| Practicar un flujo logístico sin actuar sobre un almacén real | Simulador de Almacén |
+| Registrar y seguir incidencias | Dashboard de Incidencias |
+| Calcular indicadores a partir de datos de turno | KPI Logístico |
+| Preparar presupuestos académicos desde catálogo | Presupuestos |
+| Registrar módulos y progreso formativo | Formación Interna |
+| Consultar productos y conceptos mediante lenguaje natural | SONEX |
 
-### Situación durante las prácticas
+## Restricciones
 
-Realicé mis prácticas curriculares en una empresa de distribución de material eléctrico durante el ciclo formativo. Esto me permitió:
-- Conocer la estructura organizativa
-- Observar los procesos de trabajo
-- Identificar necesidades no cubiertas
-- Validar requisitos con usuarios reales
+- proyecto académico y plazo limitado;
+- sin integración oficial con SAP/ERP ni bases de datos corporativas;
+- uso de datos accesibles/autorizados para el prototipo;
+- preferencia por infraestructura de bajo coste;
+- necesidad de validar externamente cualquier información técnica generada por IA.
 
----
+## Stakeholders
 
-## Estructura organizativa relevante
+Se consideraron como perfiles de interés técnicos, personal comercial/operativo, tutores y el propio alumno. Su presencia en el análisis **no implica una validación formal o masiva del producto**.
 
-```
-Empresa de distribución
-│
-├── Dirección General
-├── Área Comercial
-│   ├── Equipo de ventas
-│   └── Técnicos de apoyo
-├── Área Técnica
-│   ├── Ingenieros de producto
-│   └── Técnicos de aplicación
-├── Área de Operaciones
-│   ├── Almacén
-│   ├── Logística
-│   └── Calidad
-└── Área de Formación
-    ├── Formación técnica
-    └── Documentación
-```
+## Validación realizada y límite de evidencia
 
-Mi contacto principal fue el **departamento técnico**, que daba soporte a comerciales y clientes.
+La experiencia de prácticas aportó contexto y permitió contrastar necesidades de forma informal. La documentación no dispone de evidencia suficiente para afirmar una validación sistemática con una muestra representativa de usuarios reales. Por eso esa validación permanece como línea futura.
 
----
+## Alcance de la solución
 
-## Necesidades identificadas
+La aplicación no es un producto oficial de la empresa ni sustituye sus sistemas. Es una demostración académica de cómo podrían digitalizarse determinados flujos.
 
-Durante las prácticas, identifiqué varias áreas de mejora:
-
-### 1. Acceso a información de productos
-
-**Problema:** Los técnicos tardaban mucho buscando fichas técnicas
-- Tenían que navegar por Proyecto PFC.es manualmente
-- No había forma de buscar por características técnicas
-- Las fichas PDF estaban dispersas
-
-**Solución propuesta:** Fichas Técnicas con navegación jerárquica y búsqueda avanzada
-
----
-
-### 2. Compatibilidad entre productos
-
-**Problema:** Los técnicos no sabían si dos productos eran compatibles
-- Diferentes familias de productos no funcionan juntos
-- No había herramienta de verificación
-
-**Solución propuesta:** SONEX, asistente que responde preguntas de compatibilidad
-
----
-
-### 3. Cálculo de presupuestos
-
-**Problema:** Los presupuestos se calculaban manualmente en Excel
-- Proceso lento
-- Errores al transcribir referencias
-- No había historial
-
-**Solución propuesta:** Generador de presupuestos con productos reales
-
----
-
-### 4. Seguimiento de formación
-
-**Problema:** No había sistema centralizado de competencias
-- Los técnicos no sabían qué formación necesitaban
-- No había seguimiento de progreso
-
-**Solución propuesta:** Sistema de gestión de formación interna
-
----
-
-### 5. Registro de incidencias
-
-**Problema:** Las incidencias se registraban en papel o emails sueltos
-- Difícil seguimiento
-- Sin histórico
-- No se podían analizar patrones
-
-**Solución propuesta:** Dashboard de incidencias con categorías y niveles
-
----
-
-## Restricciones del proyecto
-
-### Restricciones técnicas
-
-| Restricción | Justificación |
-|-------------|---------------|
-| **Solo web** | No había presupuesto para APP nativa |
-| **Tecnología gratuita** | Proyecto académico sin financiación |
-| **Coste cero en producción** | No hay presupuesto de mantenimiento |
-
-### Restricciones de acceso
-
-| Restricción | Justificación |
-|-------------|---------------|
-| **Sin acceso a SAP** | Sistemas internos no accesibles |
-| **Sin acceso a BD interna** | Información propietaria |
-| **Solo datos públicos** | Scraping de web pública |
-
-### Restricciones temporales
-
-| Restricción | Justificación |
-|-------------|---------------|
-| **Duración del ciclo** | Proyecto de fin de curso |
-| **Horas de práctica** | Limitadas a las horas del módulo |
-
----
-
-## Stakeholders identificados
-
-| Stakeholder | Rol | Interés | Influencia |
-|-------------|-----|---------|------------|
-| **Técnicos electricistas** | Usuarios finales | Acceso rápido a información | Alta |
-| **Comerciales** | Usuarios secundarios | Presupuestos, fichas | Media |
-| **Departamento técnico** | Validador | Correctitud técnica | Alta |
-| **Tutores del ciclo** | Evaluadores | Cumplimiento de objetivos | Alta |
-| **Empresa (la empresa)** | Proveedor de contexto | Ninguno directo | Baja |
-
----
-
-## Agradecimientos
-
-Agradezco a la empresa la oportunidad de realizar mis prácticas allí, y especialmente al departamento técnico por compartir su conocimiento y validar mis propuestas.
-
----
-
-*Sección basada en experiencia durante prácticas curriculares*
-*Elaborado: Mayo 2026*
+*Análisis reconciliado — agosto de 2026.*

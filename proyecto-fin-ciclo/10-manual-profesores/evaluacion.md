@@ -1,106 +1,36 @@
-# Rúbricas de Evaluación
+# Evaluación de proyectos asistidos por IA
 
-## Para proyectos que usen IA generativa
+## Rúbrica propuesta
 
-Estas rúbricas están diseñadas para evaluar proyectos de ciclo formativo que usen IA generativa como herramienta de desarrollo.
+| Criterio | Peso | Excelente | Suficiente | Insuficiente |
+|---|---:|---|---|---|
+| Problema, alcance y requisitos | 20% | Objetivo y criterios observables, sin scope creep | Objetivo comprensible con algunos huecos | No se sabe qué se intenta demostrar |
+| Solución técnica | 20% | Coherente, mantenible y adecuada al problema | Funcional con limitaciones conocidas | Frágil, incompleta o incoherente |
+| Validación y pruebas | 20% | Evidencia reproducible y análisis de fallos | Pruebas básicas documentadas | Se afirma que funciona sin evidencia |
+| Uso crítico de IA | 15% | La IA se usa con límites, revisión y contraste | Uso razonable pero poco trazado | Copia/acepta resultados sin comprenderlos |
+| Git y trazabilidad | 10% | Cambios revisables y decisiones identificables | Historial suficiente | Trabajo difícil de auditar o recuperar |
+| Documentación y defensa | 15% | Distingue hechos, límites y decisiones y los explica | Explica lo esencial | No puede defender lo presentado |
 
----
+## Evidencias que puede pedir el profesor
 
-## Rúbrica principal
+- diff de un cambio significativo;
+- comando y salida de pruebas;
+- prompt o instrucción usada en una decisión relevante;
+- ejemplo de error de IA detectado y corregido;
+- fuente oficial utilizada para una afirmación técnica;
+- explicación oral de una función o arquitectura.
 
-| Criterio | Excelente (10) | Bueno (8) | Suficiente (6) | Insuficiente (4) |
-|----------|----------------|-----------|----------------|------------------|
-| **Uso de herramientas IA** | Usa 3+ herramientas de forma estratégica | Usa 2 herramientas con criterio | Usa 1 herramienta de forma básica | No usa herramientas IA |
-| **Calidad del código generado** | Código bien estructurado, con tests y documentación | Código funcional con estructura clara | Código que funciona pero desorganizado | Código roto o incompleto |
-| **Prompt engineering** | Prompts específicos con contexto, constraints y ejemplos | Prompts claros con contexto | Prompts genéricos | Copia prompts sin entender |
-| **Validación y testing** | Tests automáticos + pruebas manuales documentadas | Pruebas manuales detalladas | Pruebas básicas | Sin pruebas |
-| **Documentación** | README completo + documentación de herramientas usadas | README claro | Documentación mínima | Sin documentación |
-| **Autonomía vs. Dependencia** | Usa IA como amplificador, mantiene criterio propio | Buena dependencia, poco criterio propio | Dependencia excesiva | Copia código sin entender |
+## Preguntas de defensa
 
----
+1. ¿Qué parte de esta solución no aceptarías sin probar y por qué?
+2. ¿Qué cambió entre la propuesta inicial de la IA y el resultado final?
+3. ¿Cómo sabes que esta afirmación es cierta?
+4. ¿Qué prueba fallaría si esta funcionalidad se rompe?
+5. ¿Qué limitación sigue abierta?
+6. ¿Qué decisión tomaste tú y qué información usaste?
 
-## Evaluación por competencias
+## Autoría y normas
 
-### Competencia: Programación
+La evaluación debe ajustarse a la política del centro. La rúbrica no presupone que exista un porcentaje universal permitido de código generado por IA.
 
-| Nivel | Indicadores |
-|-------|-------------|
-| **Avanzado** | Usa patrones de diseño, estructura modular, código limpio |
-| **Intermedio** | Código funcional, sin patrones claros |
-| **Básico** | Código que funciona pero difícil de mantener |
-
-### Competencia: Uso de IA
-
-| Nivel | Indicadores |
-|-------|-------------|
-| **Avanzado** | Combina múltiples herramientas, sabe cuándo usar cada una |
-| **Intermedio** | Usa una herramienta principal, entiende sus limitaciones |
-| **Básico** | Depende de una sola herramienta sin entender alternativas |
-
-### Competencia: Documentación
-
-| Nivel | Indicadores |
-|-------|-------------|
-| **Avanzado** | Documentación completa, coherente y reutilizable |
-| **Intermedio** | Documentación clara pero incompleta |
-| **Básico** | Solo README básico |
-
----
-
-## Preguntas para la defensa
-
-El tribunal debería hacer estas preguntas:
-
-### Sobre el código
-
-1. *¿Qué prompt usaste para generar X? Explica por qué funciona.*
-2. *Si el código generado por IA tuviera un bug, ¿cómo lo encontrarías?*
-3. *¿Qué partes del proyecto las hizo la IA y cuáles tú?*
-
-### Sobre la metodología
-
-4. *¿Cómo mejoraste el código generado por IA?*
-5. *¿Qué limitaciones tiene usar IA generativa para desarrollo?*
-6. *¿Cómo decidiste qué herramientas usar?*
-
-### Sobre el proyecto
-
-7. *¿Qué harías diferente si volvieras a empezar?*
-8. *¿Cómo validarías que la solución cumple los requisitos?*
-
----
-
-## Ponderación sugerida
-
-| Componente | Peso |
-|------------|------|
-| **Funcionalidad** | 30% |
-| **Documentación técnica** | 25% |
-| **Metodología con IA** | 20% |
-| **Calidad del código** | 15% |
-| **Presentación** | 10% |
-
----
-
-## Plantilla de evaluación
-
-```
-PROYECTO: _______________________
-ALUMNO: ________________________
-FECHA: _________________________
-
-| Criterio             | Puntuación (1-10) | Observaciones |
-|----------------------|-------------------|---------------|
-| Uso de IA            |                   |               |
-| Calidad código       |                   |               |
-| Prompt engineering  |                   |               |
-| Testing              |                   |               |
-| Documentación        |                   |               |
-| Autonomía            |                   |               |
-|----------------------|-------------------|---------------|
-| NOTA FINAL           |                   |               |
-```
-
----
-
-*Rúbricas documentadas: Mayo 2026*
+*Evaluación actualizada — agosto de 2026.*

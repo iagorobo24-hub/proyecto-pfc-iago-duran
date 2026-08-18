@@ -1,70 +1,30 @@
-# Conclusiones — ¿Se cumplieron los objetivos?
+# Conclusiones
 
-## Introducción
+## Cumplimiento del objetivo principal
 
-Vale, hemos llegado al final. Tocaba sentarse y mirar atrás para ver qué prometí al principio y qué he conseguido realmente. Spoiler: la mayoría sí, algunas no, y de todas saqué algo bueno.
+El objetivo principal se considera alcanzado a nivel de implementación académica: existe una SPA integrada con **7 herramientas funcionales + Dashboard Global**, backend Supabase, despliegue web, persistencia, generación de documentos y funciones asistidas por IA.
 
----
+## Objetivos técnicos
 
-## Evaluación de objetivos
+| Área | Conclusión |
+|---|---|
+| Catálogo | Implementado con navegación/búsqueda y datos en Supabase |
+| Almacén | Simulación de 5 etapas, incidencias, puntuación y soporte multijugador |
+| Incidencias | Registro, seguimiento, diagnóstico IA y PDF |
+| KPI | 6 indicadores actuales, histórico, gráficos, IA y PDF |
+| Presupuestos | Selección de catálogo, edición, guardado y PDF |
+| Formación | Gestión de empleados/módulos, progreso y plan IA |
+| SONEX | Chat con sesiones, cuatro modos y contexto de catálogo |
+| Testing | Infraestructura y suites presentes; resultado de ejecución debe medirse por commit |
 
-### Objetivos generales
+## Límites
 
-| Objetivo | Estado | Evidencia |
-|----------|--------|-----------|
-| **OG1: Crear 7 módulos funcionales** | ✅ Cumplido | Los 7 módulos están implementados |
-| **OG2: Usar IA generativa como metodología** | ✅ Cumplido | 15+ herramientas documentadas |
-| **OG3: Aplicar estándares profesionales** | ✅ Cumplido | Git, testing, docs |
-| **OG4: Crear materiales reutilizables** | ✅ Cumplido | 10 capítulos + manual |
-| **OG5: Coste cero** | ✅ Cumplido | Todo en tier gratuito |
+El PFC no demuestra por sí solo producción empresarial, SLA, integración con sistemas internos, validación normativa de respuestas de IA ni adopción masiva por usuarios reales.
 
-### Objetivos específicos
+## Conclusión metodológica
 
-| Objetivo | Estado | Evidencia |
-|----------|--------|-----------|
-| **OE1: Catálogo de fichas técnicas** | ✅ | 400K+ productos, navegación jerárquica |
-| **OE2: Simulador de almacén** | ✅ | 4 etapas implementadas |
-| **OE3: Dashboard de incidencias** | ✅ | Registro, categorías, estados |
-| **OE4: KPIs logísticos** | ✅ | 6 KPIs con semáforo |
-| **OE5: Generador de presupuestos** | ✅ | Búsqueda, cálculo IVA, exportación |
-| **OE6: Gestión de formación** | ✅ | Matriz de competencias |
-| **OE7: Asistente SONEX** | ✅ | Chat con IA, streaming, detección refs |
+La IA aceleró prototipos, análisis, documentación y desarrollo, pero el aprendizaje más importante es el contrario a la automatización ciega: **una salida de IA es una propuesta que debe inspeccionarse, probarse y respaldarse con evidencia**.
 
-### Objetivos no cumplidos
+La calidad del proyecto depende de mantener sincronizados código, documentación y resultados, no de la cantidad de herramientas o prompts utilizados.
 
-| Objetivo | Estado | Razón |
-|----------|--------|-------|
-| **Tests unitarios** | ❌ | Prioridad a funcionalidad |
-| **CI/CD completo** | ❌ | Solo deploy automático |
-| **Validación con usuarios reales** | ❌ | Limitado a pruebas propias |
-
----
-
-## Análisis de cumplimiento
-
-### Factores de éxito
-
-1. **Metodología clara** — Workflow con IA bien definido
-2. **Herramientas gratuitas suficientes** — No hubo barrera económica
-3. **Documentación continua** — EVOLUCION.md actualizado
-4. **Scope realista** — 7 módulos, no más
-5. **Iteración rápida** — Versiones frecuentes
-
-### Factores limitantes
-
-1. **Tiempo** — Solo 3 meses de desarrollo
-2. **Experiencia previa** — Curva de aprendizaje alta
-3. **Acceso a sistemas** — No hay integración con la empresa
-4. **Usuarios reales** — Sin validación externa
-
----
-
-## Conclusión general
-
-**El proyecto ha cumplido sus objetivos principales.** Se ha creado una suite de herramientas web funcional, documentada con metodología de IA generativa, con coste cero y materiales reutilizables para futuros alumnos.
-
-Los objetivos no cumplidos (tests, CI/CD completo, validación con usuarios) son secundarios y no afectan a la viabilidad del proyecto como trabajo de ciclo formativo.
-
----
-
-*Conclusiones documentadas: Mayo 2026*
+*Conclusiones reconciliadas — agosto de 2026.*

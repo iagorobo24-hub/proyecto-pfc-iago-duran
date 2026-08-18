@@ -1,191 +1,39 @@
-# Manual de Usuario: Generador de Presupuestos
+# Manual de usuario — Presupuestos
 
-## Introducción
+## Objetivo
 
-El Generador de Presupuestos te permite crear presupuestos profesionales para clientes, usando productos reales del catálogo de la empresa.
+Crear y guardar presupuestos académicos a partir del catálogo disponible. El módulo no sustituye un sistema comercial/ERP ni garantiza que los precios sean tarifas oficiales vigentes.
 
----
+## Acceso
 
-## Cómo acceder
+Ruta: `/app/presupuestos`.
 
-1. Inicia sesión en la aplicación
-2. En el menú lateral, haz clic en **Presupuestos** (icono de documento con	check)
+## Flujo
 
----
+1. Crear un presupuesto nuevo.
+2. Buscar un producto por referencia o nombre, o navegar por categorías.
+3. Añadir productos desde el catálogo o recibirlos desde Fichas/SONEX.
+4. Editar partidas y datos del cliente.
+5. Revisar base, IVA configurado y total.
+6. Guardar el presupuesto.
+7. Generar la vista PDF cuando corresponda.
 
-## Interfaz principal
+El módulo genera un número de presupuesto local y conserva un historial limitado.
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│  GENERADOR DE PRESUPUESTOS                          [🌓]   │
-├─────────────────────────────────────────────────────────────┤
-│                                                             │
-│  🔍 Buscar producto por nombre o referencia...        [🔍] │
-│                                                             │
-│  ┌─────────────────────────────────────────────────────┐   │
-│  │ RESULTADOS DE BÚSQUEDA                             │   │
-│  │                                                     │   │
-│  │ • ABB - Interruptor iC60N 10A     Ref: AB123456   │   │
-│  │   [+] Añadir                                          │   │
-│  │                                                     │   │
-│  │ • ABB - Interruptor iC60N 16A       Ref: AB123457   │   │
-│  │   [+] Añadir                                          │   │
-│  │                                                     │   │
-│  └─────────────────────────────────────────────────────┘   │
-│                                                             │
-│  ─────────────────────────────────────────────────────     │
-│                                                             │
-│  PRESUPUESTO ACTUAL                                        │
-│  ┌─────────────────────────────────────────────────────┐   │
-│  │ Producto                    Cant.   P.Unit.  Total  │   │
-│  │ ─────────────────────────────────────────────────   │   │
-│  │ ABB iC60N 10A                 10     25,00   250,00 │   │
-│  │ ABB iC60N 16A                 5      28,00   140,00 │   │
-│  │                                                     │   │
-│  │                                    Subtotal: 390,00 │   │
-│  │                                    IVA (21%): 81,90 │   │
-│  │                                    ──────────────   │   │
-│  │                                    TOTAL: 471,90 €  │   │
-│  │                                                     │   │
-│  │ [🗑️ Vaciar]  [📋 Copiar]  [💾 Guardar]              │   │
-│  └─────────────────────────────────────────────────────┘   │
-│                                                             │
-└─────────────────────────────────────────────────────────────┘
-```
+## Búsqueda
 
----
+La barra lateral empieza a buscar al introducir al menos dos caracteres. Los resultados muestran referencia, nombre y marca; Enter selecciona el primer resultado cuando hay sugerencias.
 
-## Cómo crear un presupuesto
+## Cálculos
 
-### Paso 1: Buscar productos
+Los importes se calculan a partir de las partidas y del porcentaje de IVA configurado en los datos del presupuesto. No se debe interpretar un precio de catálogo como oferta contractual sin validación comercial.
 
-1. Escribe en el campo de búsqueda
-2. Usa nombre o referencia del fabricante
-3. Los resultados aparecerán automáticamente
+## Gestión
 
-### Paso 2: Añadir productos
+La vista de gestión permite recuperar y eliminar presupuestos guardados. Al cargar uno se restauran sus partidas y datos en el editor.
 
-1. Haz clic en **"+"** junto al producto
-2. Se abrirá un diálogo para especificar cantidad
-3. Confirma y el producto se añadirá
+## Integración con otros módulos
 
-### Paso 3: Ajustar cantidades
+Fichas Técnicas y SONEX pueden abrir el editor de Presupuestos con una referencia preseleccionada.
 
-- Haz clic en la cantidad para modificarla
-- Usa los botones + / - para ajustar
-
-### Paso 4: Calcular total
-
-- El sistema calcula automáticamente:
-  - Subtotal
-  - IVA (21%)
-  - Total
-
----
-
-## Funciones adicionales
-
-### Añadir desde Fichas Técnicas
-
-Desde el módulo de Fichas Técnicas:
-
-1. Busca un producto
-2. Haz clic en **"Añadir a presupuesto"**
-3. Serás redirigido a Presupuestos con el producto añadido
-
-### Añadir desde SONEX
-
-Desde el asistente SONEX:
-
-1. Pregunta sobre un producto
-2. Cuando detecte una referencia, haz clic en **"Ver ficha"**
-3. Desde la ficha, añade a presupuesto
-
----
-
-## Exportar presupuesto
-
-### Copiar al portapapeles
-
-1. Haz clic en **"Copiar"**
-2. El presupuesto se copiará en formato texto
-3. Pega en WhatsApp, email, etc.
-
-### Ejemplo de formato copiado
-
-```
-PRESUPUESTO
-===========
-Producto                    Cant.   P.Unit.   Total
-──────────────────────────────────────────────────
-ABB iC60N 10A               10      25,00 €   250,00 €
-ABB iC60N 16A               5       28,00 €   140,00 €
-──────────────────────────────────────────────────
-                           Subtotal:   390,00 €
-                           IVA (21%):   81,90 €
-                           TOTAL:      471,90 €
-```
-
----
-
-## Guardar presupuesto
-
-1. Haz clic en **"Guardar"**
-2. El presupuesto se almacenará en tu perfil
-3. Podrás recuperarlo más tarde
-
-### Recuperar presupuesto guardado
-
-1. Busca la sección "Presupuestos guardados"
-2. Selecciona el presupuesto
-3. Se cargará en el editor
-
----
-
-## Vaciar presupuesto
-
-Para empezar de cero:
-
-1. Haz clic en **"Vaciar"**
-2. Confirma la acción
-3. Se borrarán todos los productos
-
----
-
-## Cálculos automáticos
-
-| Concepto | Cálculo |
-|----------|---------|
-| Subtotal | Σ (cantidad × precio unitario) |
-| IVA | Subtotal × 0.21 |
-| Total | Subtotal + IVA |
-
----
-
-## atajo de teclado
-
-| Tecla | Acción |
-|-------|--------|
-| **Ctrl + B** | Enfocar buscador |
-| **Ctrl + C** | Copiar presupuesto |
-| **Ctrl + N** | Nuevo presupuesto |
-| **Esc** | Cancelar acción |
-
----
-
-## Solución de problemas
-
-### No encuentro el producto
-
-- Verifica la ortografía
-- Prueba solo la referencia
-- Prueba solo el nombre
-
-### El precio aparece como "Consultar"
-
-- Algunos productos no tienen precio definido
-- Contacta con la empresa para pricing
-
----
-
-*Manual actualizado: Mayo 2026*
+*Manual reconciliado con la implementación del repositorio — agosto de 2026.*

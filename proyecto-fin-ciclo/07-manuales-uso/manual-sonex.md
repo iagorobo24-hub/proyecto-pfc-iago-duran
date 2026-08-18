@@ -1,160 +1,50 @@
-# Manual de Usuario: SONEX — Asistente Técnico
+# Manual de usuario — SONEX
 
-## Introducción
+## Objetivo
 
-SONEX es el asistente técnico con IA de **Proyecto PFC**. Está diseñado para responder preguntas sobre productos, normativas, procedimientos y cualquier consulta técnica relacionada con el material eléctrico.
+SONEX es un asistente técnico conversacional integrado con el catálogo. Combina contexto del repositorio de productos con un modelo de IA a través del gateway `/api/ai`.
 
----
+## Acceso
 
-## Cómo acceder
+Ruta: `/app/sonex`.
 
-1. Inicia sesión en la aplicación
-2. En el menú lateral, haz clic en **SONEX** (icono de chat)
-3. La interfaz de chat se cargará
+## Modos actuales
 
----
+SONEX ofrece **cuatro modos**:
 
-## Interfaz de usuario
+| Modo | Finalidad |
+|---|---|
+| **Búsqueda** | Localizar referencias y especificaciones |
+| **Comparativa** | Comparar opciones y diferencias |
+| **Asistencia** | Orientar selección y compatibilidad |
+| **Formación** | Explicar conceptos, instalación y uso |
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│  SONEX - Asistente Técnico de la empresa              [?] [🌓]│
-├─────────────────────────────────────────────────────────────┤
-│                                                             │
-│  ┌─────────────────────────────────────────────────────┐   │
-│  │ 🤖 Hola! Soy SONEX, tu asistente técnico.           │   │
-│  │                                                     │   │
-│  │ Puedo ayudarte con:                                │   │
-│  │ • Información de productos                         │   │
-│  │ • Compatibilidad entre componentes                 │   │
-│  │ • Normativas y procedimientos                      │   │
-│  │ • Recomendaciones técnicas                         │   │
-│  │                                                     │   │
-│  │ ¿En qué puedo ayudarte hoy?                        │   │
-│  └─────────────────────────────────────────────────────┘   │
-│                                                             │
-│  ┌─────────────────────────────────────────────────────┐   │
-│  │ ¿Qué interruptor necesito para un circuito de      │   │
-│  │ 20A en una vivienda?                               │   │
-│  └─────────────────────────────────────────────────────┘   │
-│                                                             │
-│                                     [Enviar]                │
-└─────────────────────────────────────────────────────────────┘
-```
+## Conversación e historial
 
----
+El módulo mantiene sesiones de conversación. Se pueden crear, cambiar y eliminar sesiones. Para cada turno utiliza contexto reciente y, cuando procede, resultados reales de catálogo.
 
-## Cómo usar
+## Productos y referencias
 
-### 1. Hacer una pregunta
+SONEX dispone de flujos específicos para buscar productos y mostrar tarjetas de resultados. Cuando detecta una referencia en texto, la valida contra el catálogo antes de tratarla como producto existente.
 
-1. Escribe tu pregunta en el campo de texto
-2. Pulsa **Enter** o haz clic en **Enviar**
-3. SONEX responderá con la información
+Desde una referencia validada se puede:
 
-### 2. Recomendaciones de preguntas
+- abrir Fichas Técnicas;
+- añadir el producto a un presupuesto;
+- copiar la referencia.
 
-SONEX funciona mejor con preguntas específicas:
+## Modelo de IA
 
-| Tipo de pregunta | Ejemplo |
-|------------------|---------|
-| **Productos** | "¿Qué magnetotérmico de 10A me recomiendas?" |
-| **Compatibilidad** | "¿Es compatible el variador X con el motor Y?" |
-| **Normativa** | "¿Qué sección de cable necesito para 30A?" |
-| **Procedimientos** | "¿Cómo se instala un diferencial tipo A?" |
+No existe un modelo permanente que pueda documentarse como “el modelo de SONEX” para siempre. En el snapshot reconciliado del repositorio, SONEX solicita `google/gemini-2.5-flash` y el gateway dispone de modelos alternativos/fallbacks. Esta selección puede cambiar con el código.
 
-### 3. Referencias de productos
+## Límites de seguridad
 
-Cuando SONEX menciona un producto en su respuesta, verás un botón **"Ver ficha"**:
+SONEX puede equivocarse. Las respuestas sobre normativa, sección de conductores, protecciones, compatibilidad, instalación o seguridad **deben verificarse con normativa vigente, documentación oficial del fabricante y criterio profesional**. La instrucción del prompt de “no inventar” reduce riesgo, pero no garantiza exactitud.
 
-```
-Según tus necesidades, te recomiendo el:
-Interruptor Magnetotérmico NSX100N
+La versión actual no documenta una exportación de conversación a PDF porque esa función no forma parte del componente verificado.
 
-┌────────────────────────────────────────┐
-│  ABB - iC60N 10A                      │
-│  Referencia: AB123456                  │
-│  [Ver ficha]                           │
-└────────────────────────────────────────┘
-```
+## Atajos globales
 
-Haz clic en **"Ver ficha"** para ver los detalles completos del producto en Fichas Técnicas.
+Los atajos pertenecen al shell de la aplicación: `Ctrl/Cmd+1…7` navega entre herramientas, `Ctrl/Cmd+B` alterna la barra lateral, `Ctrl/Cmd+K` activa búsqueda global y `?` abre la ayuda de atajos cuando el foco no está en un campo de texto.
 
----
-
-## Añadir a presupuesto
-
-Desde una referencia de producto, también puedes añadir directamente al presupuesto:
-
-1. Ve a la ficha del producto
-2. Haz clic en **"Añadir a presupuesto"**
-3. Serás redirigido al módulo de Presupuestos con el producto añadido
-
----
-
-## Exportar conversación
-
-Puedes exportar tu conversación a PDF:
-
-1. Haz clic en el botón **"Exportar"** (icono de descarga)
-2. Se generará un PDF con toda la conversación
-3. El PDF se descargará automáticamente
-
----
-
-## Modos de consulta
-
-SONEX tiene 5 modos especializados:
-
-| Modo | Uso |
-|------|-----|
-| **General** | Preguntas técnicas generales |
-| **Productos** | Búsqueda y comparación de productos |
-| **Normativa** | Preguntas sobre REBT, CTE, etc. |
-| **Instalación** | Procedures de instalación |
-| **Diagnóstico** | Análisis de problemas |
-
-Cambia de modo usando el selector en la parte superior del chat.
-
----
-
-## Indicadores de estado
-
-| Indicador | Significado |
-|-----------|-------------|
-| 🤖 | SONEX está escribiendo |
-| ✓ | Mensaje enviado |
-| ✓✓ | Mensaje leído |
-
----
-
-## Solución de problemas
-
-### La respuesta tarda mucho
-
-- El modelo de IA puede estar congestionado
-- Espera unos segundos o intenta de nuevo
-
-### La respuesta no es correcta
-
-- Reformula tu pregunta siendo más específico
-- Incluye más contexto (tipo de instalación, potencia, etc.)
-
-### No detecta referencias
-
-- Asegúrate de que la referencia existe en el catálogo
-- Formato válido: letras y números (ej: "AB123456")
-
----
-
-## atajo de teclado
-
-| Tecla | Acción |
-|-------|--------|
-| **Enter** | Enviar mensaje |
-| **Shift + Enter** | Nueva línea en el mensaje |
-| **Ctrl + K** | Limpiar conversación |
-
----
-
-*Manual actualizado: Mayo 2026*
+*Manual reconciliado con la implementación del repositorio — agosto de 2026.*

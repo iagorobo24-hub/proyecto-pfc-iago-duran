@@ -1,30 +1,30 @@
-# Herramientas IA — Visión general
+# Herramientas y servicios utilizados — visión general
 
-Este capítulo documenta las 15+ herramientas de IA evaluadas durante el desarrollo del proyecto. Cada ficha individual cubre una herramienta en detalle. Aquí tienes la comparativa visual de uso real:
+Este capítulo documenta **cómo se utilizaron** distintas herramientas durante el PFC. No es un catálogo de precios ni un ranking actual del mercado.
 
-<img src="../../docs/diagrams/comparativa_herramientas_ia.svg" alt="Comparativa de herramientas IA" width="900"/>
+## Cómo leer las fichas
 
-## Categorías de uso
+Cada ficha separa:
 
-### Generación de código
-- **Windsurf** — IDE principal (90% uso)
-- **OpenCode CLI** — Refactor + debugging (70%)
-- **Claude Web** — Arquitectura + prompts complejos (50%)
-- **Hermes Agent** — Docs + deploy + automatización (55%)
+- **uso en el PFC:** hecho histórico del proyecto;
+- **función:** qué problema resolvía;
+- **limitaciones observadas:** experiencia del desarrollo;
+- **estado documental:** si sigue formando parte de la arquitectura actual o solo de la historia.
 
-### Modelos de IA (vía OpenRouter)
-- **Claude 3.5 Sonnet** — Modelo principal SONEX (95%)
-- **DeepSeek V3** — Fallback + código (80%)
-- **Claude 3 Haiku** — Consultas rápidas (75%)
-- **Qwen 2.5** — Fallback económico (65%)
+Los planes gratuitos, cuotas, nombres de modelos y condiciones comerciales cambian. No se consideran parte estable de la memoria.
 
-### Infraestructura
-- **Vercel** — CI/CD + hosting
-- **GitHub** — Repositorio
-- **Supabase** — Auth + DB (PostgreSQL)
-- **Playwright** — Scraping + E2E
+## Mapa del ecosistema
 
----
+| Tipo | Herramientas documentadas | Papel |
+|---|---|---|
+| Chat web | Claude Web | Diseño, explicación y prototipos |
+| Asistente de editor | GitHub Copilot, Windsurf | Autocompletado y edición contextual |
+| Agentes CLI | Qwen CLI, Gemini CLI, OpenCode | Trabajo sobre repositorio y terminal |
+| Agente remoto | Devin | Cambios gestionados mediante Git/GitHub |
+| Agente general | Hermes | Análisis/documentación en una etapa del proyecto |
+| Gateway IA | OpenRouter | Acceso unificado a modelos desde `/api/ai` |
+| Plataforma de datos | Firebase (legado), Supabase (actual) | Auth y persistencia |
+| Despliegue | Vercel | Hosting y funciones serverless |
+| Automatización | Playwright | E2E y scraping histórico |
 
-*Comparativa documentada: Mayo 2026*
-*Ver las fichas individuales en este directorio para detalles de cada herramienta*
+La comparación razonada se resume en `comparativa-final.md`.
