@@ -69,7 +69,6 @@ export default function useTestimonios() {
     try {
       const payload = {
         nombre: nuevo.nombre.trim(),
-        email: nuevo.email?.trim() || null,
         texto: nuevo.texto.trim(),
         rating: nuevo.rating,
         user_id: user?.id || null,
@@ -141,7 +140,6 @@ export default function useTestimonios() {
           .from('testimonios')
           .insert({
             nombre: t.nombre,
-            email: null,
             texto: t.texto,
             rating: t.rating,
             user_id: user.id,
