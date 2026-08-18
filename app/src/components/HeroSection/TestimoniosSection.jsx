@@ -6,7 +6,7 @@ import styles from './TestimoniosSection.module.css'
 
 export default function TestimoniosSection() {
   const { testimonios, agregar } = useTestimonios()
-  const [formData, setFormData] = useState({ nombre: '', email: '', texto: '', rating: 0 })
+  const [formData, setFormData] = useState({ nombre: '', texto: '', rating: 0 })
   const [enviando, setEnviando] = useState(false)
   const [exito, setExito] = useState(false)
 
@@ -19,12 +19,11 @@ export default function TestimoniosSection() {
 
     await agregar({
       nombre: formData.nombre.trim(),
-      email: formData.email.trim(),
       texto: formData.texto.trim(),
       rating: formData.rating,
     })
 
-    setFormData({ nombre: '', email: '', texto: '', rating: 0 })
+    setFormData({ nombre: '', texto: '', rating: 0 })
     setEnviando(false)
     setExito(true)
     setTimeout(() => setExito(false), 3000)
@@ -77,17 +76,6 @@ export default function TestimoniosSection() {
                 onChange={(e) => setFormData({ ...formData, nombre: e.target.value })}
                 placeholder="Tu nombre"
                 required
-                className={styles.input}
-              />
-            </div>
-
-            <div className={styles.formGroup}>
-              <label className={styles.label}>Email (opcional)</label>
-              <input
-                type="email"
-                value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                placeholder="tu@email.com"
                 className={styles.input}
               />
             </div>
