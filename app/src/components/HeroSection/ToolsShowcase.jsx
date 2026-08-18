@@ -17,49 +17,49 @@ const ToolsShowcase = () => {
   const tools = [
     {
       name: 'Fichas Técnicas',
-      desc: 'Catálogo de +64.000 referencias con filtros por familia, marca y categoría.',
+      desc: 'Catálogo técnico clasificado con navegación por familia, marca y categoría.',
       icon: <FileText size={22} />,
       href: '/app/fichas',
       color: 'var(--brand-blue)'
     },
     {
       name: 'Asistente SONEX',
-      desc: 'Consulta material eléctrico con IA. Pregúntale cualquier referencia.',
+      desc: 'Consulta material eléctrico con IA y contexto del catálogo disponible.',
       icon: <Bot size={22} />,
       href: '/app/sonex',
       color: '#7c3aed'
     },
     {
       name: 'KPI Logístico',
-      desc: 'Métricas de rendimiento, stock y análisis de almacén con gráficos.',
+      desc: 'Seis indicadores operativos con histórico, gráficos e informe asistido por IA.',
       icon: <BarChart3 size={22} />,
       href: '/app/kpi',
       color: '#059669'
     },
     {
       name: 'Simulador Almacén',
-      desc: 'Simula y optimiza la gestión de espacio e invento de almacén.',
+      desc: 'Simula recepción, ubicación, picking, verificación, expedición e incidencias.',
       icon: <Calculator size={22} />,
       href: '/app/almacen',
       color: '#dc2626'
     },
     {
       name: 'Presupuestos',
-      desc: 'Generador de cotizaciones profesionales con cálculo de costes.',
+      desc: 'Generador de presupuestos basado en referencias del catálogo y exportación PDF.',
       icon: <FileSpreadsheet size={22} />,
       href: '/app/presupuestos',
       color: '#d97706'
     },
     {
       name: 'Incidencias',
-      desc: 'Dashboard de seguimiento y gestión de incidencias del almacén.',
+      desc: 'Registro, filtrado, seguimiento y diagnóstico asistido de incidencias.',
       icon: <AlertTriangle size={22} />,
       href: '/app/incidencias',
       color: '#0891b2'
     },
     {
       name: 'Formación Interna',
-      desc: 'Base de conocimiento y recursos de aprendizaje del equipo.',
+      desc: 'Seguimiento de módulos, progreso, alertas y planes de desarrollo.',
       icon: <BookOpen size={22} />,
       href: '/app/formacion',
       color: '#be185d'
@@ -89,10 +89,10 @@ const ToolsShowcase = () => {
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
         >
-          <span className={styles.badge}>7 módulos profesionales</span>
+          <span className={styles.badge}>7 herramientas funcionales</span>
           <h2 className={styles.title}>Herramientas integradas</h2>
           <p className={styles.subtitle}>
-            Todo lo que necesitas en un solo entorno. Haz clic para explorar cada herramienta.
+            Módulos especializados que comparten navegación, datos y servicios comunes.
           </p>
         </motion.header>
 
