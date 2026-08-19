@@ -17,25 +17,95 @@ npm run typecheck
 npm run test
 npm run build
 
-# Focused browser gate: Vercel's serverless Chromium is reliable for one fresh
-# context per process but can close reused BrowserContexts. Run each formerly
-# failing SONEX case in its own Playwright process: no retries, no larger timeout,
-# no assertion changes beyond the semantic heading locator in the test itself.
-for test_name in \
-  "shows verified catalog cards for a product query" \
-  "shows catalog cards for a Schneider iC60N range request" \
-  "opens Fichas Tecnicas with direct reference from a card" \
-  "creates a clean budget line from a card"
-do
-  npx playwright test e2e/sonex-product-flow.spec.js \
-    --project=chromium \
-    --workers=1 \
-    --retries=0 \
-    --grep "${test_name}" \
-    --reporter=line
-done
+# Vercel's serverless Chromium can close a BrowserContext when one browser is
+# reused for multiple Playwright tests. Start one credentialless Vite server and
+# run every listed test in its own Playwright process. Assertions and timeouts are
+# unchanged; retries are disabled so this gate cannot hide flaky/product failures.
+export VITE_SUPABASE_URL=''
+export VITE_SUPABASE_ANON_KEY=''
+npm run dev -- --host 127.0.0.1 > /tmp/pfc-e2e-vite.log 2>&1 &
+VITE_PID=$!
+cleanup() {
+  kill "$VITE_PID" 2>/dev/null || true
+}
+trap cleanup EXIT
+
+python - <<'PY'
+import json
+import re
+import subprocess
+import sys
+import time
+from pathlib import Path
+
+for _ in range(60):
+    probe = subprocess.run(
+        ['node', '-e', "fetch('http://127.0.0.1:5173').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"],
+        stdout=subprocess.DEVNULL,
+        stderr=subprocess.DEVNULL,
+    )
+    if probe.returncode == 0:
+        break
+    time.sleep(1)
+else:
+    print(Path('/tmp/pfc-e2e-vite.log').read_text(errors='replace'))
+    raise SystemExit('Vite E2E server did not become ready')
+
+listed = subprocess.run(
+    ['npx', 'playwright', 'test', '--list', '--project=chromium'],
+    check=True,
+    capture_output=True,
+    text=True,
+)
+pattern = re.compile(r'›\s+((?:e2e|tests)/[^:]+\.spec\.js):(\d+):\d+\s+›')
+refs = []
+seen = set()
+for line in listed.stdout.splitlines():
+    match = pattern.search(line)
+    if not match:
+        continue
+    ref = f'{match.group(1)}:{match.group(2)}'
+    if ref not in seen:
+        refs.append(ref)
+        seen.add(ref)
+
+if not refs:
+    print(listed.stdout)
+    raise SystemExit('Playwright --list produced no runnable test references')
+
+print(f'ISOLATED_E2E_TOTAL={len(refs)}', flush=True)
+failures = []
+for index, ref in enumerate(refs, start=1):
+    print(f'ISOLATED_E2E_START={index}/{len(refs)} {ref}', flush=True)
+    run = subprocess.run([
+        'npx', 'playwright', 'test', ref,
+        '--project=chromium',
+        '--workers=1',
+        '--retries=0',
+        '--reporter=line',
+    ])
+    if run.returncode != 0:
+        failures.append(ref)
+        print(f'ISOLATED_E2E_FAIL={ref}', flush=True)
+    else:
+        print(f'ISOLATED_E2E_PASS={ref}', flush=True)
+
+summary = {
+    'total': len(refs),
+    'passed': len(refs) - len(failures),
+    'failed': failures,
+}
+Path('/tmp/pfc-e2e-summary.json').write_text(json.dumps(summary, indent=2))
+print('ISOLATED_E2E_SUMMARY=' + json.dumps(summary), flush=True)
+if failures:
+    sys.exit(1)
+PY
+
+cleanup
+trap - EXIT
 
 mkdir -p dist/__maintenance
+cp /tmp/pfc-e2e-summary.json dist/__maintenance/playwright-summary.json
 npm audit --json > dist/__maintenance/npm-audit.json || true
 npm outdated --json > dist/__maintenance/npm-outdated.json || true
 
