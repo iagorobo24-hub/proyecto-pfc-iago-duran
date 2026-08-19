@@ -2,6 +2,11 @@
   "buildCommand": "npm run verify:deploy",
   "outputDirectory": "dist",
   "framework": "vite",
+  "git": {
+    "deploymentEnabled": {
+      "chatgpt/pfc-hardening-20260818": false
+    }
+  },
   "headers": [
     {
       "source": "/(.*)",
