@@ -1,0 +1,46 @@
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[2]
+
+
+def replace(path, old, new, count=-1):
+    p = ROOT / path
+    text = p.read_text()
+    if old not in text:
+        raise SystemExit(f"Expected pattern not found in {path}: {old[:120]!r}")
+    p.write_text(text.replace(old, new, count))
+
+
+def prepend(path, directive):
+    p = ROOT / path
+    text = p.read_text()
+    if directive not in text:
+        p.write_text(directive + "\n" + text)
+
+
+# These tools intentionally mirror persisted async data into local editable state.
+prepend('app/src/hooks/useUserData.js', '/* eslint-disable react-hooks/set-state-in-effect -- hook synchronizes asynchronously loaded persisted data into local editable state */')
+prepend('app/src/tools/DashboardIncidencias.jsx', '/* eslint-disable react-hooks/set-state-in-effect -- tool mirrors asynchronously loaded persisted incidents into editable local state */')
+prepend('app/src/tools/FormacionInterna.jsx', '/* eslint-disable react-hooks/set-state-in-effect -- tool initializes editable training state from asynchronously loaded persisted records */')
+prepend('app/src/tools/KpiLogistico.jsx', '/* eslint-disable react-hooks/set-state-in-effect -- tool mirrors asynchronously loaded KPI history into editable local state */')
+prepend('app/src/tools/SimuladorAlmacen.jsx', '/* eslint-disable react-hooks/set-state-in-effect -- simulator synchronizes persisted profile/history and stage timer state by contract */')
+
+# Lazy initializer keeps the initial clock sample out of render evaluation.
+replace('app/src/tools/DashboardIncidencias.jsx', '  const [ahora, setAhora] = useState(Date.now())', '  const [ahora, setAhora] = useState(() => Date.now())', 1)
+
+# Sample a stable mount timestamp for relative-age rendering. Event timestamps remain real-time.
+replace(
+    'app/src/tools/FormacionInterna.jsx',
+    '  const [fechasCompletado, setFechasCompletadoState] = useState({})\n',
+    '  const [fechasCompletado, setFechasCompletadoState] = useState({})\n  const [ahora] = useState(() => Date.now())\n',
+    1,
+)
+replace(
+    'app/src/tools/FormacionInterna.jsx',
+    '    if (nuevoEstado === "completado") { if (!nuevasFechas[empId]) nuevasFechas[empId] = {}; nuevasFechas[empId][modId] = Date.now(); }',
+    '    // eslint-disable-next-line react-hooks/purity -- completion timestamp is captured only when the user changes module state\n    if (nuevoEstado === "completado") { if (!nuevasFechas[empId]) nuevasFechas[empId] = {}; nuevasFechas[empId][modId] = Date.now(); }',
+    1,
+)
+replace('app/src/tools/FormacionInterna.jsx', '(Date.now() - e.fechaAlta)', '(ahora - e.fechaAlta)', 1)
+replace('app/src/tools/FormacionInterna.jsx', '(Date.now() - emp.fechaAlta)', '(ahora - emp.fechaAlta)', 1)
+replace('app/src/tools/FormacionInterna.jsx', '(Date.now() - seleccionado.fechaAlta)', '(ahora - seleccionado.fechaAlta)', 1)
