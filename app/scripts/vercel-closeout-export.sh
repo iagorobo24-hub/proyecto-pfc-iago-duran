@@ -2,6 +2,7 @@
 set -euo pipefail
 
 python scripts/stabilize-closeout.py
+python scripts/stabilize-closeout-extra.py
 npm install --save-dev 'typescript@^6.0.3'
 npm update
 npx update-browserslist-db@latest
@@ -35,7 +36,10 @@ paths = [
     'app/src/hooks/usePersistedState.js',
     'app/src/hooks/useSonex.js',
     'app/src/hooks/useUserData.js',
+    'app/src/tools/DashboardIncidencias.jsx',
+    'app/src/tools/FormacionInterna.jsx',
     'app/src/tools/KpiLogistico.jsx',
+    'app/src/tools/SimuladorAlmacen.jsx',
     'app/src/utils/pdfGenerator.js',
     'app/eslint.config.js',
     'app/package.json',
