@@ -1,12 +1,7 @@
 {
-  "buildCommand": "npm run verify:deploy",
+  "buildCommand": "npm run verify:deploy && npx playwright install chromium && npx playwright test e2e/sonex-product-flow.spec.js --reporter=line",
   "outputDirectory": "dist",
   "framework": "vite",
-  "git": {
-    "deploymentEnabled": {
-      "chatgpt/pfc-hardening-20260818": false
-    }
-  },
   "headers": [
     {
       "source": "/(.*)",
