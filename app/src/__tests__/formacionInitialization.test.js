@@ -11,20 +11,20 @@ const saveFechas = vi.fn()
 const persistedEmployee = { id: 'e-stored', nombre: 'Persistido', rol: 'Técnico', departamento: 'Técnico' }
 const persistedModule = { id: 'm-stored', nombre: 'Módulo persistido', area: 'Técnico', horas: 2, obligatorio: false }
 
+const persistedValues = {
+  empleados: { data: [persistedEmployee], loading: false, save: saveEmpleados },
+  modulos: { data: [persistedModule], loading: false, save: saveModulos },
+  progresos: { data: { 'e-stored': { 'm-stored': 'completado' } }, loading: false, save: saveProgresos },
+  fechas: { data: {}, loading: false, save: saveFechas },
+}
+
 vi.mock('../hooks/useUserData', () => ({
-  default: vi.fn((module, field) => {
-    const values = {
-      empleados: { data: [persistedEmployee], loading: false, save: saveEmpleados },
-      modulos: { data: [persistedModule], loading: false, save: saveModulos },
-      progresos: { data: { 'e-stored': { 'm-stored': 'completado' } }, loading: false, save: saveProgresos },
-      fechas: { data: {}, loading: false, save: saveFechas },
-    }
-    return values[field]
-  }),
+  default: vi.fn((_module, field) => persistedValues[field]),
 }))
 
+const showToast = vi.fn()
 vi.mock('../contexts/ToastContext', () => ({
-  useToast: () => ({ show: vi.fn(), toast: { show: vi.fn() } }),
+  useToast: () => ({ show: showToast, toast: { show: showToast } }),
 }))
 
 import FormacionInterna from '../tools/FormacionInterna'
