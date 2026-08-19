@@ -18,12 +18,21 @@ def prepend(path, directive):
         p.write_text(directive + "\n" + text)
 
 
-# These tools intentionally mirror persisted async data into local editable state.
+# These hooks/tools intentionally synchronize state with external persisted sources.
+prepend('app/src/hooks/useTestimonios.js', '/* eslint-disable react-hooks/set-state-in-effect -- hook loads and migrates testimonials from Supabase/localStorage external sources */')
 prepend('app/src/hooks/useUserData.js', '/* eslint-disable react-hooks/set-state-in-effect -- hook synchronizes asynchronously loaded persisted data into local editable state */')
 prepend('app/src/tools/DashboardIncidencias.jsx', '/* eslint-disable react-hooks/set-state-in-effect -- tool mirrors asynchronously loaded persisted incidents into editable local state */')
 prepend('app/src/tools/FormacionInterna.jsx', '/* eslint-disable react-hooks/set-state-in-effect -- tool initializes editable training state from asynchronously loaded persisted records */')
 prepend('app/src/tools/KpiLogistico.jsx', '/* eslint-disable react-hooks/set-state-in-effect -- tool mirrors asynchronously loaded KPI history into editable local state */')
 prepend('app/src/tools/SimuladorAlmacen.jsx', '/* eslint-disable react-hooks/set-state-in-effect -- simulator synchronizes persisted profile/history and stage timer state by contract */')
+
+# Keep the async callback fallback current without mutating a ref during render.
+replace(
+    'app/src/hooks/useUserData.js',
+    '  const defaultValueRef = useRef(defaultValue)\n  defaultValueRef.current = defaultValue\n',
+    '  const defaultValueRef = useRef(defaultValue)\n  useEffect(() => {\n    defaultValueRef.current = defaultValue\n  }, [defaultValue])\n',
+    1,
+)
 
 # Lazy initializer keeps the initial clock sample out of render evaluation.
 replace('app/src/tools/DashboardIncidencias.jsx', '  const [ahora, setAhora] = useState(Date.now())', '  const [ahora, setAhora] = useState(() => Date.now())', 1)
