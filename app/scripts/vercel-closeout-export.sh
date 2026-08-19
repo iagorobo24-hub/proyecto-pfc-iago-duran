@@ -31,7 +31,7 @@ do
     --project=chromium \
     --workers=1 \
     --retries=0 \
-    --grep "^${test_name}$" \
+    --grep "${test_name}" \
     --reporter=line
 done
 
