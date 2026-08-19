@@ -17,39 +17,18 @@ npm run typecheck
 npm run test
 npm run build
 
-# Vercel's serverless Chromium can close a BrowserContext when one browser is
-# reused for multiple Playwright tests. Start one credentialless Vite server and
-# run every listed test in its own Playwright process. Assertions and timeouts are
-# unchanged; retries are disabled so this gate cannot hide flaky/product failures.
+# Vercel's serverless Chromium is reliable when each Playwright invocation owns
+# a fresh browser/context. Let each process also own its credentialless Vite
+# webServer; this avoids CI port collisions and keeps every case isolated.
 export VITE_SUPABASE_URL=''
 export VITE_SUPABASE_ANON_KEY=''
-npm run dev -- --host 127.0.0.1 > /tmp/pfc-e2e-vite.log 2>&1 &
-VITE_PID=$!
-cleanup() {
-  kill "$VITE_PID" 2>/dev/null || true
-}
-trap cleanup EXIT
 
 python - <<'PY'
 import json
 import re
 import subprocess
 import sys
-import time
 from pathlib import Path
-
-for _ in range(60):
-    probe = subprocess.run(
-        ['node', '-e', "fetch('http://127.0.0.1:5173').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"],
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL,
-    )
-    if probe.returncode == 0:
-        break
-    time.sleep(1)
-else:
-    print(Path('/tmp/pfc-e2e-vite.log').read_text(errors='replace'))
-    raise SystemExit('Vite E2E server did not become ready')
 
 listed = subprocess.run(
     ['npx', 'playwright', 'test', '--list', '--project=chromium'],
@@ -100,9 +79,6 @@ print('ISOLATED_E2E_SUMMARY=' + json.dumps(summary), flush=True)
 if failures:
     sys.exit(1)
 PY
-
-cleanup
-trap - EXIT
 
 mkdir -p dist/__maintenance
 cp /tmp/pfc-e2e-summary.json dist/__maintenance/playwright-summary.json
