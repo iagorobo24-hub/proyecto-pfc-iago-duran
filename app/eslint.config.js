@@ -23,17 +23,15 @@ export default defineConfig([
       },
     },
     rules: {
-      // Dead-code findings stay visible without blocking stabilization work.
-      // Runtime/syntax errors from the recommended rules remain blocking.
-      'no-unused-vars': ['warn', {
+      // Dead code is a CI-blocking defect after stabilization cleanup.
+      'no-unused-vars': ['error', {
         varsIgnorePattern: '^(?:[A-Z_].*|motion)$',
         argsIgnorePattern: '^_',
         caughtErrors: 'none',
       }],
-      // Existing synchronization effects are valid legacy patterns. Keep them visible
-      // as debt without blocking unrelated changes; refactor them only with behavioral tests.
-      'react-hooks/set-state-in-effect': 'warn',
-      'react-hooks/preserve-manual-memoization': 'warn',
+      // Intentional synchronization effects are suppressed only in the exact files that own that contract.
+      'react-hooks/set-state-in-effect': 'error',
+      'react-hooks/preserve-manual-memoization': 'error',
     },
   },
   {
