@@ -17,10 +17,23 @@ npm run typecheck
 npm run test
 npm run build
 
-# Focused browser gate: reproduce the four formerly failing SONEX flows using
-# the serverless Chromium executable only on Vercel. Run one worker without
-# retries so resource contention cannot masquerade as a product failure/pass.
-npx playwright test e2e/sonex-product-flow.spec.js --project=chromium --workers=1 --retries=0 --reporter=line
+# Focused browser gate: Vercel's serverless Chromium is reliable for one fresh
+# context per process but can close reused BrowserContexts. Run each formerly
+# failing SONEX case in its own Playwright process: no retries, no larger timeout,
+# no assertion changes beyond the semantic heading locator in the test itself.
+for test_name in \
+  "shows verified catalog cards for a product query" \
+  "shows catalog cards for a Schneider iC60N range request" \
+  "opens Fichas Tecnicas with direct reference from a card" \
+  "creates a clean budget line from a card"
+do
+  npx playwright test e2e/sonex-product-flow.spec.js \
+    --project=chromium \
+    --workers=1 \
+    --retries=0 \
+    --grep "^${test_name}$" \
+    --reporter=line
+done
 
 mkdir -p dist/__maintenance
 npm audit --json > dist/__maintenance/npm-audit.json || true
