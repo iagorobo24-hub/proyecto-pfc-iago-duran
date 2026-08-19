@@ -6,36 +6,36 @@ import { useToast } from '../contexts/ToastContext'
 import useUserData from '../hooks/useUserData'
 import styles from './FormacionInterna.module.css'
 
+const AREAS = ["Almacén", "Comercial", "Técnico", "Seguridad", "Sistemas"]
+const ROLES = ["Operario", "Técnico", "Comercial", "Responsable"]
+
+const MODULOS_INIT = [
+  { id: "m1", nombre: "Recepción de mercancía", area: "Almacén", horas: 4, obligatorio: true },
+  { id: "m2", nombre: "Gestión de ubicaciones WMS", area: "Almacén", horas: 6, obligatorio: true },
+  { id: "m3", nombre: "Proceso de picking", area: "Almacén", horas: 5, obligatorio: true },
+  { id: "m4", nombre: "Expedición y embalaje", area: "Almacén", horas: 3, obligatorio: true },
+  { id: "m5", nombre: "Atención al cliente B2B", area: "Comercial", horas: 8, obligatorio: false },
+  { id: "m6", nombre: "Catálogo eléctrico industrial", area: "Técnico", horas: 12, obligatorio: false },
+  { id: "m7", nombre: "PRL — Almacén logístico", area: "Seguridad", horas: 8, obligatorio: true },
+]
+
+const EMPLEADOS_INIT = () => [
+  { id: "e1", nombre: "María Fernández", rol: "Operario", departamento: "Almacén", fechaAlta: Date.now() - 5184000000 },
+]
+
+const progresoInicial = (modulos) => Object.fromEntries(modulos.map(m => [m.id, "pendiente"]))
+
+const PROMPT_PLAN = (emp, modulos, progreso) => {
+  const completados = modulos.filter(m => progreso[m.id] === "completado").map(m => m.nombre)
+  const pendientes = modulos.filter(m => progreso[m.id] === "pendiente").map(m => m.nombre)
+  return `Eres el responsable de formación de la empresa.\nEmpleado: ${emp.nombre} — ${emp.rol}\nCompletados: ${completados.join(", ") || "ninguno"}\nPendientes: ${pendientes.join(", ") || "ninguno"}\n\nPlan en 3 párrafos: (1) valoración, (2) módulos prioritarios, (3) recomendación semanal.`
+}
+
 export default function FormacionInterna() {
-  const AREAS = ["Almacén", "Comercial", "Técnico", "Seguridad", "Sistemas"]
-  const ROLES = ["Operario", "Técnico", "Comercial", "Responsable"]
-
-  const MODULOS_INIT = [
-    { id: "m1", nombre: "Recepción de mercancía", area: "Almacén", horas: 4, obligatorio: true },
-    { id: "m2", nombre: "Gestión de ubicaciones WMS", area: "Almacén", horas: 6, obligatorio: true },
-    { id: "m3", nombre: "Proceso de picking", area: "Almacén", horas: 5, obligatorio: true },
-    { id: "m4", nombre: "Expedición y embalaje", area: "Almacén", horas: 3, obligatorio: true },
-    { id: "m5", nombre: "Atención al cliente B2B", area: "Comercial", horas: 8, obligatorio: false },
-    { id: "m6", nombre: "Catálogo eléctrico industrial", area: "Técnico", horas: 12, obligatorio: false },
-    { id: "m7", nombre: "PRL — Almacén logístico", area: "Seguridad", horas: 8, obligatorio: true },
-  ]
-
-  const EMPLEADOS_INIT = () => [
-    { id: "e1", nombre: "María Fernández", rol: "Operario", departamento: "Almacén", fechaAlta: Date.now() - 5184000000 },
-  ]
-
-  const progresoInicial = (modulos) => Object.fromEntries(modulos.map(m => [m.id, "pendiente"]))
-
-  const PROMPT_PLAN = (emp, modulos, progreso) => {
-    const completados = modulos.filter(m => progreso[m.id] === "completado").map(m => m.nombre)
-    const pendientes = modulos.filter(m => progreso[m.id] === "pendiente").map(m => m.nombre)
-    return `Eres el responsable de formación de la empresa.\nEmpleado: ${emp.nombre} — ${emp.rol}\nCompletados: ${completados.join(", ") || "ninguno"}\nPendientes: ${pendientes.join(", ") || "ninguno"}\n\nPlan en 3 párrafos: (1) valoración, (2) módulos prioritarios, (3) recomendación semanal.`
-  }
-
-  const { data: storedEmpleados, save: saveEmpleados } = useUserData('formacion', 'empleados', [], ['pfc_formacion_empleados'])
-  const { data: storedModulos, save: saveModulos } = useUserData('formacion', 'modulos', [], ['pfc_formacion_modulos'])
-  const { data: storedProgresos, save: saveProgresos } = useUserData('formacion', 'progresos', {}, ['pfc_formacion_progresos'])
-  const { data: storedFechas, save: saveFechas } = useUserData('formacion', 'fechas', {}, ['pfc_formacion_fechas'])
+  const { data: storedEmpleados, loading: loadingEmpleados, save: saveEmpleados } = useUserData('formacion', 'empleados', [], ['pfc_formacion_empleados'])
+  const { data: storedModulos, loading: loadingModulos, save: saveModulos } = useUserData('formacion', 'modulos', [], ['pfc_formacion_modulos'])
+  const { data: storedProgresos, loading: loadingProgresos, save: saveProgresos } = useUserData('formacion', 'progresos', {}, ['pfc_formacion_progresos'])
+  const { data: storedFechas, loading: loadingFechas, save: saveFechas } = useUserData('formacion', 'fechas', {}, ['pfc_formacion_fechas'])
 
   const [empleados, setEmpleadosState] = useState([])
   const [modulos, setModulosState] = useState([])
@@ -69,15 +69,40 @@ export default function FormacionInterna() {
   const { show: toast } = useToast()
 
   useEffect(() => {
-    if (!modulos || modulos.length === 0) setModulos(MODULOS_INIT)
-    if (!empleados || empleados.length === 0) {
+    if (loadingEmpleados || loadingModulos || loadingProgresos || loadingFechas) return
+
+    const hasStoredModules = Array.isArray(storedModulos) && storedModulos.length > 0
+    const hasStoredEmployees = Array.isArray(storedEmpleados) && storedEmpleados.length > 0
+
+    if (!hasStoredModules) setModulos(MODULOS_INIT)
+
+    if (!hasStoredEmployees) {
       const initEmps = EMPLEADOS_INIT()
       setEmpleados(initEmps)
-      const prgs = {}
-      initEmps.forEach(e => { prgs[e.id] = progresoInicial(MODULOS_INIT) })
-      setProgresos(prgs)
+
+      const modulesForProgress = hasStoredModules ? storedModulos : MODULOS_INIT
+      const nextProgress = { ...(storedProgresos || {}) }
+      let progressChanged = false
+      initEmps.forEach(emp => {
+        if (!nextProgress[emp.id]) {
+          nextProgress[emp.id] = progresoInicial(modulesForProgress)
+          progressChanged = true
+        }
+      })
+      if (progressChanged) setProgresos(nextProgress)
     }
-  }, [])
+  }, [
+    loadingEmpleados,
+    loadingModulos,
+    loadingProgresos,
+    loadingFechas,
+    storedEmpleados,
+    storedModulos,
+    storedProgresos,
+    setEmpleados,
+    setModulos,
+    setProgresos,
+  ])
 
   const cambiarProgreso = (empId, modId, nuevoEstado) => {
     const nuevosProgresos = { ...progresos, [empId]: { ...progresos[empId], [modId]: nuevoEstado } };
@@ -136,7 +161,6 @@ export default function FormacionInterna() {
             <p className={styles.pageSubtitle}>Gestiona la formación del equipo por empleado</p>
           </div>
 
-          {/* Tabs */}
           <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '24px' }}>
             <div className={styles.viewToggle} role="tablist" aria-label="Vistas de formación">
               <button role="tab" aria-selected={vista === 'dashboard'} className={`${styles.viewToggle__btn} ${vista === 'dashboard' ? styles['viewToggle__btn--active'] : ''}`} onClick={() => { setVista('dashboard'); setSeleccionado(null); }}>Equipo</button>
@@ -144,7 +168,6 @@ export default function FormacionInterna() {
             </div>
           </div>
 
-          {/* Alerta */}
           {empleadosAlerta.length > 0 && (
             <div className={styles.alertBanner}>
               <div className={styles.alertBanner__title}>⚠ {empleadosAlerta.length} empleado{empleadosAlerta.length > 1 ? 's' : ''} con módulos obligatorios pendientes</div>
@@ -152,7 +175,6 @@ export default function FormacionInterna() {
             </div>
           )}
 
-          {/* KPIs */}
           <div className={styles.kpiGrid}>
             {[{ label: "Progreso global", valor: `${pctGlobal}%` }, { label: "Empleados", valor: empleados.length }, { label: "Módulos", valor: modulos.length }, { label: "Con alerta", valor: empleadosAlerta.length }].map(({ label, valor }) => (
               <div key={label} className={styles.kpiCard}>
@@ -162,7 +184,6 @@ export default function FormacionInterna() {
             ))}
           </div>
 
-          {/* ── DASHBOARD ─ */}
           {vista === 'dashboard' && (
             <>
               <div className={styles.empleadosGrid}>
@@ -191,7 +212,6 @@ export default function FormacionInterna() {
             </>
           )}
 
-          {/* ── DETALLE EMPLEADO ─ */}
           {vista === 'detalle' && seleccionado && (
             <div style={{ maxWidth: 700, margin: '0 auto' }}>
               <button onClick={() => setVista('dashboard')} style={{ fontSize: '0.8125rem', color: 'var(--gray-400)', background: 'none', border: 'none', cursor: 'pointer', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '4px' }}>← Volver al equipo</button>
@@ -204,7 +224,6 @@ export default function FormacionInterna() {
                 <div className={styles.detalleHeader__pct}>{pctEmpleado(seleccionado.id)}%</div>
               </div>
 
-              {/* Módulos por área */}
               {AREAS.map(area => {
                 const modsArea = modulos.filter(m => m.area === area);
                 if (!modsArea.length) return null;
@@ -235,7 +254,6 @@ export default function FormacionInterna() {
                 );
               })}
 
-              {/* Plan IA */}
               <div className={styles.planCard}>
                 <div className={styles.planCard__title}>📝 Plan de desarrollo IA</div>
                 {!planIA ? (
@@ -250,7 +268,6 @@ export default function FormacionInterna() {
             </div>
           )}
 
-          {/* ── AJUSTES ─ */}
           {vista === 'ajustes' && (
             <>
               <div className={styles.formCard} style={{ maxWidth: 500, margin: '0 auto 24px' }}>
