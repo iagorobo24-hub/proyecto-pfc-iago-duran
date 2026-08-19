@@ -34,6 +34,23 @@ replace(
     1,
 )
 
+# The credentialless stub intentionally implements the Supabase surface dynamically.
+# Expose one stable client contract to TypeScript consumers instead of a real|stub union.
+replace(
+    'app/src/supabase/supabaseClient.js',
+    'export const supabase = createSupabaseClient()',
+    "/** @type {import('@supabase/supabase-js').SupabaseClient} */\nexport const supabase = createSupabaseClient()",
+    1,
+)
+
+# Preserve the finite match-type contract across the JS -> TS boundary.
+replace(
+    'app/src/utils/productSpecs.js',
+    "  let matchType = 'related'\n",
+    "  /** @type {'exact' | 'partial' | 'related'} */\n  let matchType = 'related'\n",
+    1,
+)
+
 # Lazy initializer keeps the initial clock sample out of render evaluation.
 replace('app/src/tools/DashboardIncidencias.jsx', '  const [ahora, setAhora] = useState(Date.now())', '  const [ahora, setAhora] = useState(() => Date.now())', 1)
 
