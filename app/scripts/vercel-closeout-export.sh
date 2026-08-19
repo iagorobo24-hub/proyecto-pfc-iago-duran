@@ -17,10 +17,10 @@ npm run typecheck
 npm run test
 npm run build
 
-# First browser gate: reproduce the four formerly failing SONEX flows using the
-# serverless Chromium executable only on Vercel. The Playwright web server is
-# isolated from Supabase credentials by playwright.config.js.
-CI=1 npx playwright test e2e/sonex-product-flow.spec.js --project=chromium --reporter=line
+# Focused browser gate: reproduce the four formerly failing SONEX flows using
+# the serverless Chromium executable only on Vercel. Run one worker without
+# retries so resource contention cannot masquerade as a product failure/pass.
+npx playwright test e2e/sonex-product-flow.spec.js --project=chromium --workers=1 --retries=0 --reporter=line
 
 mkdir -p dist/__maintenance
 npm audit --json > dist/__maintenance/npm-audit.json || true
@@ -39,6 +39,7 @@ paths = [
     'docs/superpowers/specs/2026-08-19-pfc-stabilization-closeout-design.md',
     'docs/superpowers/plans/2026-08-19-pfc-stabilization-closeout.md',
     'app/e2e/functionality-tests.spec.js',
+    'app/e2e/sonex-product-flow.spec.js',
     'app/playwright.config.js',
     'app/src/__tests__/sonexCredentiallessFlow.test.ts',
     'app/src/__tests__/sonexSeguridad.test.js',
