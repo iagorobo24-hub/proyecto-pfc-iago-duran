@@ -1,6 +1,20 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# The branch may already contain the final CI block while the temporary codemod
+# still expects the pre-closeout shape. Normalize only that marker, then let the
+# verified codemod restore the exact final form.
+python - <<'PY'
+from pathlib import Path
+p = Path('../.github/workflows/ci.yml')
+text = p.read_text()
+final_block = "      - name: Lint\n        run: npm run lint -- --max-warnings=0\n\n      - name: Typecheck\n        run: npm run typecheck\n\n      - name: Unit tests"
+old_block = "      - name: Lint\n        run: npm run lint\n\n      - name: Unit tests"
+if final_block in text:
+    text = text.replace(final_block, old_block, 1)
+p.write_text(text)
+PY
+
 python scripts/stabilize-closeout.py
 python scripts/stabilize-closeout-extra.py
 
@@ -17,9 +31,10 @@ npm run typecheck
 npm run test
 npm run build
 
-# Vercel's serverless Chromium is reliable when each Playwright invocation owns
-# a fresh browser/context. Let each process also own its credentialless Vite
-# webServer; this avoids CI port collisions and keeps every case isolated.
+# Vercel's serverless Chromium is reliable when every individual Playwright test
+# owns a fresh process/browser/context. `file:line` alone can select several
+# parameterized tests that share one source line, so combine it with the leaf
+# title from `--list`. No retries and no timeout inflation are permitted.
 export VITE_SUPABASE_URL=''
 export VITE_SUPABASE_ANON_KEY=''
 
@@ -36,46 +51,47 @@ listed = subprocess.run(
     capture_output=True,
     text=True,
 )
-pattern = re.compile(r'›\s+((?:e2e|tests)/[^:]+\.spec\.js):(\d+):\d+\s+›')
-refs = []
-seen = set()
+pattern = re.compile(r'›\s+((?:e2e|tests)/[^:]+\.spec\.js):(\d+):\d+\s+›\s+(.+)$')
+cases = []
 for line in listed.stdout.splitlines():
     match = pattern.search(line)
     if not match:
         continue
     ref = f'{match.group(1)}:{match.group(2)}'
-    if ref not in seen:
-        refs.append(ref)
-        seen.add(ref)
+    full_title = match.group(3).strip()
+    leaf_title = full_title.split(' › ')[-1].strip()
+    cases.append((ref, leaf_title))
 
-if not refs:
+if not cases:
     print(listed.stdout)
-    raise SystemExit('Playwright --list produced no runnable test references')
+    raise SystemExit('Playwright --list produced no runnable tests')
 
-print(f'ISOLATED_E2E_TOTAL={len(refs)}', flush=True)
+print(f'ISOLATED_E2E_TOTAL={len(cases)}', flush=True)
 failures = []
-for index, ref in enumerate(refs, start=1):
-    print(f'ISOLATED_E2E_START={index}/{len(refs)} {ref}', flush=True)
+for index, (ref, leaf_title) in enumerate(cases, start=1):
+    case_id = f'{ref} :: {leaf_title}'
+    print(f'ISOLATED_E2E_START={index}/{len(cases)} {case_id}', flush=True)
     run = subprocess.run([
         'npx', 'playwright', 'test', ref,
         '--project=chromium',
         '--workers=1',
         '--retries=0',
+        '--grep', re.escape(leaf_title) + '$',
         '--reporter=line',
     ])
     if run.returncode != 0:
-        failures.append(ref)
-        print(f'ISOLATED_E2E_FAIL={ref}', flush=True)
+        failures.append(case_id)
+        print(f'ISOLATED_E2E_FAIL={case_id}', flush=True)
     else:
-        print(f'ISOLATED_E2E_PASS={ref}', flush=True)
+        print(f'ISOLATED_E2E_PASS={case_id}', flush=True)
 
 summary = {
-    'total': len(refs),
-    'passed': len(refs) - len(failures),
+    'total': len(cases),
+    'passed': len(cases) - len(failures),
     'failed': failures,
 }
-Path('/tmp/pfc-e2e-summary.json').write_text(json.dumps(summary, indent=2))
-print('ISOLATED_E2E_SUMMARY=' + json.dumps(summary), flush=True)
+Path('/tmp/pfc-e2e-summary.json').write_text(json.dumps(summary, indent=2, ensure_ascii=False))
+print('ISOLATED_E2E_SUMMARY=' + json.dumps(summary, ensure_ascii=False), flush=True)
 if failures:
     sys.exit(1)
 PY
@@ -85,8 +101,7 @@ cp /tmp/pfc-e2e-summary.json dist/__maintenance/playwright-summary.json
 npm audit --json > dist/__maintenance/npm-audit.json || true
 npm outdated --json > dist/__maintenance/npm-outdated.json || true
 
-# Export the exact validated text tree as one JSON bundle plus small lockfile
-# chunks so the GitHub connector can materialize one reproducible commit.
+# Export the exact validated tree for audit/debug transport.
 python - <<'PY'
 from pathlib import Path
 import json
@@ -138,8 +153,5 @@ for index, start in enumerate(range(0, len(lock), chunk_size)):
     chunk = lock[start:start + chunk_size]
     (lock_dir / name).write_text(chunk)
     parts.append(name)
-(lock_dir / 'manifest.json').write_text(json.dumps({
-    'parts': parts,
-    'length': len(lock),
-}, ensure_ascii=False))
+(lock_dir / 'manifest.json').write_text(json.dumps({'parts': parts, 'length': len(lock)}))
 PY
