@@ -35,6 +35,7 @@ paths = [
     'app/src/hooks/useNavegacionFichas.js',
     'app/src/hooks/usePersistedState.js',
     'app/src/hooks/useSonex.js',
+    'app/src/hooks/useTestimonios.js',
     'app/src/hooks/useUserData.js',
     'app/src/tools/DashboardIncidencias.jsx',
     'app/src/tools/FormacionInterna.jsx',
