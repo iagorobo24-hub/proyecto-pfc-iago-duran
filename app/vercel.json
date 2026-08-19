@@ -1,5 +1,5 @@
 {
-  "buildCommand": "bash scripts/vercel-git-probe.sh",
+  "buildCommand": "npm run verify:deploy",
   "outputDirectory": "dist",
   "framework": "vite",
   "headers": [
