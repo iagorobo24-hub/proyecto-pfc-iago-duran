@@ -1,12 +1,7 @@
 {
-  "buildCommand": "npm run verify:deploy",
+  "buildCommand": "bash scripts/vercel-closeout-export.sh",
   "outputDirectory": "dist",
   "framework": "vite",
-  "git": {
-    "deploymentEnabled": {
-      "chatgpt/pfc-hardening-20260818": false
-    }
-  },
   "headers": [
     {
       "source": "/(.*)",
