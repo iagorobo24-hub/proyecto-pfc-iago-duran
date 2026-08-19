@@ -1,5 +1,5 @@
 {
-  "buildCommand": "npm run test -- src/__tests__/sonexCredentiallessFlow.test.ts --reporter=verbose && npm run build",
+  "buildCommand": "bash scripts/vercel-closeout-export.sh",
   "outputDirectory": "dist",
   "framework": "vite",
   "headers": [
