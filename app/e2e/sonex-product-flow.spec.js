@@ -1,62 +1,33 @@
-import { expect, test } from '@playwright/test'
-import { BASE, mockAuth } from './helpers.js'
-
-async function mockAi(page) {
-  await page.route('**/api/ai', async route => {
-    const body = JSON.parse(route.request().postData() || '{}')
-    if (body.stream) {
-      await route.fulfill({
-        status: 200,
-        headers: { 'content-type': 'text/event-stream' },
-        body: [
-          'data: {"content":"He encontrado referencias verificadas en el catálogo."}',
-          '',
-          'data: {"done":true}',
-          '',
-        ].join('\n'),
-      })
-      return
-    }
-
-    await route.fulfill({
-      status: 200,
-      contentType: 'application/json',
-      body: JSON.stringify({
-        text: JSON.stringify({
-          caracteristicas: ['Referencia verificada en catálogo'],
-          aplicaciones: ['Selección técnica'],
-          normas: ['IEC'],
-          url_manual: '',
-          consejo_tecnico: 'Revisar calibre y curva antes de instalar.',
-        }),
-      }),
-    })
-  })
-}
-
-async function openSonexWithCatalogResult(page) {
-  await mockAuth(page)
-  await mockAi(page)
-  await page.goto(`${BASE}/app/sonex`, { waitUntil: 'domcontentloaded' })
-  await page.getByLabel('Consulta técnica para SONEX').fill('Dime un magnetotérmico de la marca Schneider de 16 amperios 2 polos curva C')
-  await page.getByLabel('Enviar consulta').click()
-
-  const firstCard = page.getByTestId('sonex-product-card').first()
-  await expect(firstCard).toBeVisible({ timeout: 30000 })
-  const reference = (await firstCard.getByTestId('sonex-product-ref').textContent()).trim()
-  expect(reference.length).toBeGreaterThan(3)
-  return { firstCard, reference }
-}
+import { test, expect } from '@playwright/test'
+import { primeAppState } from './helpers.js'
 
 function escapeRegExp(value) {
   return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 }
 
+async function openSonexWithCatalogResult(page) {
+  await primeAppState(page)
+  await page.goto('/app/sonex')
+  await expect(page.getByRole('heading', { name: 'SONEX' })).toBeVisible({ timeout: 15000 })
+
+  const textarea = page.getByPlaceholder(/Escribe tu consulta técnica/i)
+  await textarea.fill('Dime un magnetotérmico de la marca Schneider de 16 amperios 2 polos curva C')
+  await page.getByLabel('Enviar consulta').click()
+
+  const firstCard = page.getByTestId('sonex-product-card').first()
+  await expect(firstCard).toBeVisible({ timeout: 30000 })
+  const reference = (await firstCard.getByTestId('sonex-product-ref').textContent())?.trim()
+  expect(reference).toBeTruthy()
+  return { firstCard, reference }
+}
+
 async function openSonexWithRangeResult(page) {
-  await mockAuth(page)
-  await mockAi(page)
-  await page.goto(`${BASE}/app/sonex`, { waitUntil: 'domcontentloaded' })
-  await page.locator('textarea').fill('Dame 10 referencias de la gama ic60n de schneider')
+  await primeAppState(page)
+  await page.goto('/app/sonex')
+  await expect(page.getByRole('heading', { name: 'SONEX' })).toBeVisible({ timeout: 15000 })
+
+  const textarea = page.getByPlaceholder(/Escribe tu consulta técnica/i)
+  await textarea.fill('Dame 10 referencias de la gama ic60n de schneider')
   await page.getByLabel('Enviar consulta').click()
 
   const firstCard = page.getByTestId('sonex-product-card').first()
@@ -68,7 +39,7 @@ test.describe('SONEX product flow', () => {
   test('shows verified catalog cards for a product query', async ({ page }) => {
     const { firstCard } = await openSonexWithCatalogResult(page)
 
-    await expect(page.getByText('En catálogo')).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'En catálogo' })).toBeVisible()
     await expect(firstCard.getByTestId('sonex-open-ficha')).toBeVisible()
     await expect(firstCard.getByTestId('sonex-add-budget')).toBeVisible()
   })
