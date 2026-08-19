@@ -1,9 +1,23 @@
-import { describe, expect, it } from 'vitest'
-import { prepareSonexTurn } from '../services/sonexTurnOrchestrator'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 describe('SONEX credentialless catalog integration', () => {
+  beforeEach(() => {
+    vi.resetModules()
+    vi.stubEnv('VITE_SUPABASE_URL', '')
+    vi.stubEnv('VITE_SUPABASE_ANON_KEY', '')
+  })
+
+  afterEach(() => {
+    vi.unstubAllEnvs()
+  })
+
+  async function prepare(message: string) {
+    const { prepareSonexTurn } = await import('../services/sonexTurnOrchestrator')
+    return prepareSonexTurn(message)
+  }
+
   it('returns a verified Schneider 16A 2P curve C catalog card', async () => {
-    const turn = await prepareSonexTurn(
+    const turn = await prepare(
       'Dime un magnetotérmico de la marca Schneider de 16 amperios 2 polos curva C',
     )
 
@@ -17,7 +31,7 @@ describe('SONEX credentialless catalog integration', () => {
   })
 
   it('returns ten Schneider iC60N cards for an explicit range request', async () => {
-    const turn = await prepareSonexTurn('Dame 10 referencias de la gama ic60n de schneider')
+    const turn = await prepare('Dame 10 referencias de la gama ic60n de schneider')
 
     expect(turn.kind).toBe('catalog')
     expect(turn.catalogCards).toHaveLength(10)
