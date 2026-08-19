@@ -51,6 +51,12 @@ replace(
     1,
 )
 
+# Vercel builders do not provide the system libraries required by Playwright's
+# downloaded Chromium. Keep local/default Playwright unchanged and swap only the
+# executable/launch args on Vercel to the serverless Chromium build.
+playwright_path = ROOT / 'app/playwright.config.js'
+playwright_path.write_text("""import { defineConfig } from '@playwright/test'\nimport serverlessChromium from '@sparticuz/chromium'\n\nconst isVercel = Boolean(process.env.VERCEL)\nconst serverlessLaunchOptions = isVercel\n  ? {\n      executablePath: await serverlessChromium.executablePath(),\n      args: serverlessChromium.args,\n      headless: true,\n    }\n  : undefined\n\nexport default defineConfig({\n  testDir: '.',\n  testMatch: ['e2e/*.spec.js', 'tests/*.spec.js'],\n  fullyParallel: true,\n  forbidOnly: !!process.env.CI,\n  retries: process.env.CI ? 2 : 0,\n  workers: process.env.CI ? 2 : 1,\n  reporter: [['html', { outputFolder: 'playwright-report' }], ['list']],\n  webServer: {\n    command: 'npm run dev -- --host 127.0.0.1',\n    url: 'http://127.0.0.1:5173',\n    reuseExistingServer: !process.env.CI,\n    timeout: 120_000,\n  },\n  use: {\n    baseURL: 'http://127.0.0.1:5173',\n    trace: 'on-first-retry',\n    screenshot: 'only-on-failure',\n    viewport: { width: 1280, height: 720 },\n    actionTimeout: 15000,\n  },\n  projects: [\n    {\n      name: 'chromium',\n      use: {\n        browserName: 'chromium',\n        ...(serverlessLaunchOptions ? { launchOptions: serverlessLaunchOptions } : {}),\n      },\n    },\n  ],\n})\n""")
+
 # Lazy initializer keeps the initial clock sample out of render evaluation.
 replace('app/src/tools/DashboardIncidencias.jsx', '  const [ahora, setAhora] = useState(Date.now())', '  const [ahora, setAhora] = useState(() => Date.now())', 1)
 
