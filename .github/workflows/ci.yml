@@ -13,7 +13,7 @@ concurrency:
 
 jobs:
   quality:
-    name: lint-test-build-e2e
+    name: lint-typecheck-test-build-e2e
     runs-on: ubuntu-latest
     timeout-minutes: 30
 
@@ -28,7 +28,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
           cache: npm
           cache-dependency-path: app/package-lock.json
 
@@ -36,7 +36,16 @@ jobs:
         run: npm ci
 
       - name: Lint
-        run: npm run lint
+        run: npm run lint -- --max-warnings=0
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Full dependency audit report
+        run: npm audit --audit-level=high || true
+
+      - name: Production dependency audit
+        run: npm audit --omit=dev --audit-level=high
 
       - name: Unit tests
         run: npm run test
@@ -48,4 +57,7 @@ jobs:
         run: npx playwright install --with-deps chromium
 
       - name: End-to-end tests
+        env:
+          VITE_SUPABASE_URL: ''
+          VITE_SUPABASE_ANON_KEY: ''
         run: npm run test:e2e
