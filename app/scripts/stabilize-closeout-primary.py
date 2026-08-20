@@ -8,19 +8,31 @@ def path(name):
     return ROOT / name
 
 
+def read_preserving_newline(p):
+    raw = p.read_bytes()
+    newline = '\r\n' if b'\r\n' in raw else '\n'
+    return raw.decode('utf-8').replace('\r\n', '\n'), newline
+
+
+def write_preserving_newline(p, text, newline):
+    if newline == '\r\n':
+        text = text.replace('\n', '\r\n')
+    p.write_bytes(text.encode('utf-8'))
+
+
 def replace(name, old, new, count=-1):
     p = path(name)
-    text = p.read_text()
+    text, newline = read_preserving_newline(p)
     if old not in text:
         raise SystemExit(f"Expected pattern not found in {name}: {old[:120]!r}")
-    p.write_text(text.replace(old, new, count))
+    write_preserving_newline(p, text.replace(old, new, count), newline)
 
 
 def prepend(name, directive):
     p = path(name)
-    text = p.read_text()
+    text, newline = read_preserving_newline(p)
     if directive not in text:
-        p.write_text(directive + "\n" + text)
+        write_preserving_newline(p, directive + "\n" + text, newline)
 
 
 # Dead code / stale variables.

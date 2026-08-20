@@ -14,7 +14,7 @@ concurrency:
 
 jobs:
   closeout:
-    if: github.event.pull_request.head.ref == 'chatgpt/pfc-hardening-20260818'
+    if: github.event.pull_request.head.ref == 'chatgpt/pfc-hardening-20260818' && github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
     timeout-minutes: 45
 
@@ -105,11 +105,9 @@ jobs:
           echo "remote head: $remote_sha"
           test "$tested_sha" = "$remote_sha"
 
-      - name: Remove temporary closeout controls
+      - name: Remove temporary non-workflow closeout controls
         run: |
           rm -f .stabilization-maintenance-trigger
-          rm -f .github/workflows/stabilization-maintenance.yml
-          rm -f .github/workflows/stabilization-closeout-observable.yml
           rm -f app/scripts/stabilize-closeout-primary.py
           rm -f app/scripts/stabilize-closeout-extra.py
 
@@ -117,7 +115,9 @@ jobs:
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git restore -- app/e2e/screenshots
           git add -A
+          git restore --staged .github/workflows
           git diff --cached --check
           git diff --cached --stat
           git commit -m 'chore: close stabilization quality gates'
