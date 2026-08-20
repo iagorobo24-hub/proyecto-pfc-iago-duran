@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect -- image error state must reset when the external image source changes */
 import { useState, useEffect } from 'react'
 import ProductImage from '../ui/ProductImage'
 import styles from './LinearRefCard.module.css'

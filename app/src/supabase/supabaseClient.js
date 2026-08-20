@@ -21,6 +21,8 @@ function createStubClient() {
   const noopSession = () => Promise.resolve({ data: { session: null }, error: null })
   const noopUser = () => Promise.resolve({ data: { user: null }, error: null })
 
+  // Deterministic development/E2E catalog. These records are used only when
+  // Supabase credentials are absent; production always reads the real catalog.
   const MOCK_PRODUCTS = [
     {
       id: 1,
@@ -33,7 +35,133 @@ function createStubClient() {
       tipo: 'Monofásico',
       precio: 15.5,
       Gama: 'Acti 9',
-      Subgama: 'iC60',
+      Subgama: 'iC60N',
+      pdf_url: 'https://example.com/pdf'
+    },
+    {
+      id: 4,
+      ref_fabricante: 'STUB-IC60N-02',
+      name: 'Acti 9 iC60N 1P 6A C magnetotérmico',
+      marca: 'Schneider Electric',
+      brand_id: 1,
+      familia: 'Distribución de potencia',
+      subfamilia: 'Interruptores Magnetotérmicos',
+      tipo: 'Monofásico',
+      precio: 16.1,
+      Gama: 'Acti 9',
+      Subgama: 'iC60N',
+      pdf_url: 'https://example.com/pdf'
+    },
+    {
+      id: 5,
+      ref_fabricante: 'STUB-IC60N-03',
+      name: 'Acti 9 iC60N 1P 10A C magnetotérmico',
+      marca: 'Schneider Electric',
+      brand_id: 1,
+      familia: 'Distribución de potencia',
+      subfamilia: 'Interruptores Magnetotérmicos',
+      tipo: 'Monofásico',
+      precio: 16.8,
+      Gama: 'Acti 9',
+      Subgama: 'iC60N',
+      pdf_url: 'https://example.com/pdf'
+    },
+    {
+      id: 6,
+      ref_fabricante: 'STUB-IC60N-04',
+      name: 'Acti 9 iC60N 1P 16A C magnetotérmico',
+      marca: 'Schneider Electric',
+      brand_id: 1,
+      familia: 'Distribución de potencia',
+      subfamilia: 'Interruptores Magnetotérmicos',
+      tipo: 'Monofásico',
+      precio: 17.2,
+      Gama: 'Acti 9',
+      Subgama: 'iC60N',
+      pdf_url: 'https://example.com/pdf'
+    },
+    {
+      id: 7,
+      ref_fabricante: 'STUB-IC60N-05',
+      name: 'Acti 9 iC60N 2P 16A C curva magnetotérmico',
+      marca: 'Schneider Electric',
+      brand_id: 1,
+      familia: 'Distribución de potencia',
+      subfamilia: 'Interruptores Magnetotérmicos',
+      tipo: 'Bifásico',
+      precio: 28.4,
+      Gama: 'Acti 9',
+      Subgama: 'iC60N',
+      pdf_url: 'https://example.com/pdf'
+    },
+    {
+      id: 8,
+      ref_fabricante: 'STUB-IC60N-06',
+      name: 'Acti 9 iC60N 2P 20A C magnetotérmico',
+      marca: 'Schneider Electric',
+      brand_id: 1,
+      familia: 'Distribución de potencia',
+      subfamilia: 'Interruptores Magnetotérmicos',
+      tipo: 'Bifásico',
+      precio: 29.1,
+      Gama: 'Acti 9',
+      Subgama: 'iC60N',
+      pdf_url: 'https://example.com/pdf'
+    },
+    {
+      id: 9,
+      ref_fabricante: 'STUB-IC60N-07',
+      name: 'Acti 9 iC60N 2P 25A C magnetotérmico',
+      marca: 'Schneider Electric',
+      brand_id: 1,
+      familia: 'Distribución de potencia',
+      subfamilia: 'Interruptores Magnetotérmicos',
+      tipo: 'Bifásico',
+      precio: 30.2,
+      Gama: 'Acti 9',
+      Subgama: 'iC60N',
+      pdf_url: 'https://example.com/pdf'
+    },
+    {
+      id: 10,
+      ref_fabricante: 'STUB-IC60N-08',
+      name: 'Acti 9 iC60N 3P 16A C magnetotérmico',
+      marca: 'Schneider Electric',
+      brand_id: 1,
+      familia: 'Distribución de potencia',
+      subfamilia: 'Interruptores Magnetotérmicos',
+      tipo: 'Trifásico',
+      precio: 39.4,
+      Gama: 'Acti 9',
+      Subgama: 'iC60N',
+      pdf_url: 'https://example.com/pdf'
+    },
+    {
+      id: 11,
+      ref_fabricante: 'STUB-IC60N-09',
+      name: 'Acti 9 iC60N 3P 20A C magnetotérmico',
+      marca: 'Schneider Electric',
+      brand_id: 1,
+      familia: 'Distribución de potencia',
+      subfamilia: 'Interruptores Magnetotérmicos',
+      tipo: 'Trifásico',
+      precio: 40.3,
+      Gama: 'Acti 9',
+      Subgama: 'iC60N',
+      pdf_url: 'https://example.com/pdf'
+    },
+    {
+      id: 12,
+      ref_fabricante: 'STUB-IC60N-10',
+      name: 'Acti 9 iC60N 4P 16A C magnetotérmico',
+      marca: 'Schneider Electric',
+      brand_id: 1,
+      familia: 'Distribución de potencia',
+      subfamilia: 'Interruptores Magnetotérmicos',
+      tipo: 'Tetrapolar',
+      precio: 49.6,
+      Gama: 'Acti 9',
+      Subgama: 'iC60N',
       pdf_url: 'https://example.com/pdf'
     },
     {
@@ -256,4 +384,5 @@ function createSupabaseClient() {
   }
 }
 
+/** @type {import('@supabase/supabase-js').SupabaseClient} */
 export const supabase = createSupabaseClient()

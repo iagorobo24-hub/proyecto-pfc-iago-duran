@@ -46,6 +46,8 @@ npm run test:e2e
 npm run build
 ```
 
+Playwright debe ser autocontenido: `playwright.config.js` arranca el servidor Vite para E2E. El workflow `.github/workflows/ci.yml` define la batería automática de lint, Vitest, build y Playwright para cambios versionados.
+
 No es obligatorio ejecutar toda la batería para un cambio puramente documental, pero debe declararse qué se ejecutó y qué no. Un test verde no sustituye la revisión del comportamiento ni justifica debilitar una prueba válida.
 
 ## Hechos canónicos actuales del PFC
@@ -53,9 +55,11 @@ No es obligatorio ejecutar toda la batería para un cambio puramente documental,
 - 7 herramientas funcionales + 1 Dashboard Global.
 - Frontend React/Vite con React Router.
 - Supabase como backend principal de autenticación y datos; Firebase es legado/historia.
-- `/api/ai` actúa como gateway serverless y admite varios modelos/proveedores.
+- `/api/ai` actúa como gateway serverless, admite varios modelos/proveedores y exige una sesión Supabase válida mediante Bearer token.
+- Las claves de los proveedores de IA permanecen en servidor; el navegador no debe llamar directamente a OpenRouter/Groq.
 - No existe un único modelo de IA global.
 - Existen suites Vitest y Playwright; el número de tests verdes debe medirse por commit.
+- La sección de actividad del Dashboard es analítica local del navegador, no analítica global.
 - Los recuentos del catálogo son datos de base de datos y deben fecharse.
 - El proyecto es académico y no se presenta como integración oficial con sistemas corporativos.
 

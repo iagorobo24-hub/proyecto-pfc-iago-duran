@@ -12,7 +12,9 @@
     "test:watch": "vitest",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
-    "test:all": "vitest run && playwright test"
+    "test:all": "vitest run && playwright test",
+    "verify:deploy": "npm run lint -- --max-warnings=0 && npm run typecheck && npm run test && npm run build",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.105.4",
@@ -44,13 +46,14 @@
     "globals": "^16.5.0",
     "happy-dom": "^20.9.0",
     "pg": "^8.21.0",
-    "puppeteer-core": "^24.43.1",
-    "puppeteer-extra": "^3.3.6",
-    "puppeteer-extra-plugin-stealth": "^2.11.2",
     "react-doctor": "^0.1.6",
     "react-is": "^19.2.6",
+    "typescript": "^6.0.3",
     "vite": "^7.3.1",
     "vitest": "^4.1.7",
     "ws": "^8.21.0"
+  },
+  "engines": {
+    "node": "24.x"
   }
 }

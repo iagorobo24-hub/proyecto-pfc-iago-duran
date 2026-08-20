@@ -1,9 +1,22 @@
+/* eslint-disable react-hooks/set-state-in-effect -- hook loads and migrates testimonials from Supabase/localStorage external sources */
 import { useState, useEffect, useCallback } from 'react'
 import { supabase } from '../supabase/supabaseClient'
 import { useAuth } from '../contexts/AuthContext'
 import { safeGetJSON, safeSetJSON, safeRemoveItem } from '../utils/storage'
 
 const LS_KEY = 'pfc_testimonios'
+const PUBLIC_COLUMNS = 'id,nombre,texto,rating,created_at'
+
+function toPublicTestimonio(row) {
+  if (!row) return row
+  return {
+    id: row.id,
+    nombre: row.nombre,
+    texto: row.texto,
+    rating: row.rating,
+    created_at: row.created_at,
+  }
+}
 
 export default function useTestimonios() {
   const { user } = useAuth()
@@ -11,7 +24,6 @@ export default function useTestimonios() {
   const [cargando, setCargando] = useState(true)
   const [error, setError] = useState(null)
 
-  // Cargar testimonios desde Supabase al montar
   const cargar = useCallback(async () => {
     setCargando(true)
     setError(null)
@@ -19,29 +31,24 @@ export default function useTestimonios() {
     try {
       const { data, error: supError } = await supabase
         .from('testimonios')
-        .select('*')
+        .select(PUBLIC_COLUMNS)
         .order('created_at', { ascending: false })
 
       if (supError) throw supError
 
       if (data && data.length > 0) {
-        setTestimonios(data)
-        // Cache local
-        safeSetJSON(LS_KEY, data)
+        const publicData = data.map(toPublicTestimonio)
+        setTestimonios(publicData)
+        safeSetJSON(LS_KEY, publicData)
       } else {
-        // Fallback: si Supabase devuelve vacío, probar localStorage
         const local = safeGetJSON(LS_KEY, [])
-        if (local.length > 0) {
-          setTestimonios(local)
-        } else {
-          setTestimonios([])
-        }
+        setTestimonios(local.length > 0 ? local.map(toPublicTestimonio) : [])
       }
     } catch (e) {
       console.warn('[Testimonios] Error cargando de Supabase, usando localStorage:', e.message)
       setError(e.message)
       const local = safeGetJSON(LS_KEY, [])
-      setTestimonios(local)
+      setTestimonios(local.map(toPublicTestimonio))
     } finally {
       setCargando(false)
     }
@@ -52,15 +59,17 @@ export default function useTestimonios() {
   }, [cargar])
 
   const agregar = useCallback(async (nuevo) => {
-    // Optimistic: añadir al estado local inmediatamente
     const tempId = Date.now()
-    const optimista = { ...nuevo, id: tempId, created_at: new Date().toISOString() }
+    const optimista = toPublicTestimonio({
+      ...nuevo,
+      id: tempId,
+      created_at: new Date().toISOString(),
+    })
     setTestimonios(prev => [optimista, ...prev])
 
     try {
       const payload = {
         nombre: nuevo.nombre.trim(),
-        email: nuevo.email?.trim() || null,
         texto: nuevo.texto.trim(),
         rating: nuevo.rating,
         user_id: user?.id || null,
@@ -69,27 +78,29 @@ export default function useTestimonios() {
       const { data, error: supError } = await supabase
         .from('testimonios')
         .insert(payload)
-        .select()
+        .select(PUBLIC_COLUMNS)
         .single()
 
       if (supError) throw supError
 
-      // Reemplazar el optimista con el real de la DB
+      const publicData = toPublicTestimonio(data)
       setTestimonios(prev =>
-        prev.map(t => t.id === tempId ? { ...data, id: data.id } : t)
+        prev.map(t => t.id === tempId ? publicData : t)
       )
 
-      // Actualizar cache local
-      const local = safeGetJSON(LS_KEY, [])
-      safeSetJSON(LS_KEY, [data, ...local])
+      const local = safeGetJSON(LS_KEY, []).map(toPublicTestimonio)
+      safeSetJSON(LS_KEY, [publicData, ...local])
 
-      return data
+      return publicData
     } catch (e) {
       console.warn('[Testimonios] Error guardando en Supabase, guardando solo local:', e.message)
 
-      // Fallback: guardar en localStorage
-      const local = safeGetJSON(LS_KEY, [])
-      const localEntry = { ...nuevo, id: tempId, created_at: new Date().toISOString() }
+      const local = safeGetJSON(LS_KEY, []).map(toPublicTestimonio)
+      const localEntry = toPublicTestimonio({
+        ...nuevo,
+        id: tempId,
+        created_at: new Date().toISOString(),
+      })
       safeSetJSON(LS_KEY, [localEntry, ...local])
       setError(e.message)
 
@@ -98,9 +109,8 @@ export default function useTestimonios() {
   }, [user])
 
   const eliminar = useCallback(async (id) => {
-    // Optimistic: eliminar del estado local
     const prev = testimonios
-    setTestimonios(prev => prev.filter(t => t.id !== id))
+    setTestimonios(current => current.filter(t => t.id !== id))
 
     try {
       const { error: supError } = await supabase
@@ -110,16 +120,14 @@ export default function useTestimonios() {
 
       if (supError) throw supError
 
-      // Actualizar cache local
-      const local = safeGetJSON(LS_KEY, [])
+      const local = safeGetJSON(LS_KEY, []).map(toPublicTestimonio)
       safeSetJSON(LS_KEY, local.filter(t => t.id !== id))
     } catch (e) {
       console.warn('[Testimonios] Error eliminando de Supabase:', e.message)
-      // Rollback optimista
       setTestimonios(prev)
       setError(e.message)
     }
-  }, [user])
+  }, [testimonios])
 
   const migrarDesdeLocal = useCallback(async () => {
     const local = safeGetJSON(LS_KEY, [])
@@ -129,21 +137,21 @@ export default function useTestimonios() {
     for (const t of local) {
       if (!t.nombre || !t.texto || !t.rating) continue
       try {
-        const { data } = await supabase
+        const { data, error: supError } = await supabase
           .from('testimonios')
           .insert({
             nombre: t.nombre,
-            email: t.email || null,
             texto: t.texto,
             rating: t.rating,
             user_id: user.id,
-            created_at: t.fecha || t.created_at || new Date().toISOString(),
+            created_at: t.created_at || new Date().toISOString(),
           })
-          .select()
+          .select(PUBLIC_COLUMNS)
           .single()
-        if (data) insertados.push(data)
+
+        if (!supError && data) insertados.push(toPublicTestimonio(data))
       } catch {
-        // Si falla uno, seguir con el siguiente
+        // Si falla uno, seguir con el siguiente.
       }
     }
 
@@ -153,7 +161,6 @@ export default function useTestimonios() {
     }
   }, [user])
 
-  // Auto-migrar localStorage → Supabase cuando el usuario existe
   useEffect(() => {
     if (!cargando && user?.id) {
       const local = safeGetJSON(LS_KEY, [])

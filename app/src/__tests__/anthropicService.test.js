@@ -1,5 +1,19 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
+import { supabase } from '../supabase/supabaseClient'
 import { sanitizeUrl, parseAIJsonResponse, callAnthropicAI, callAnthropicAIStream } from '../services/anthropicService'
+
+vi.mock('../supabase/supabaseClient', () => ({
+  supabase: {
+    auth: {
+      getSession: vi.fn(),
+    },
+  },
+}))
+
+const validSession = {
+  data: { session: { access_token: 'test-access-token' } },
+  error: null,
+}
 
 describe('sanitizeUrl', () => {
   it('returns valid https URL unchanged', () => {
@@ -66,9 +80,10 @@ describe('sanitizeUrl', () => {
 describe('callAnthropicAI', () => {
   beforeEach(() => {
     vi.useFakeTimers()
+    supabase.auth.getSession.mockResolvedValue(validSession)
   })
 
-  it('returns text from a successful API call', async () => {
+  it('returns text from a successful API call and sends the session token', async () => {
     globalThis.fetch = vi.fn().mockResolvedValue({
       ok: true,
       headers: new Map(Object.entries({ 'content-type': 'application/json' })),
@@ -83,8 +98,21 @@ describe('callAnthropicAI', () => {
     expect(result.model).toBe('claude-3.5-haiku')
     expect(fetch).toHaveBeenCalledWith('/api/ai', expect.objectContaining({
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer test-access-token',
+      },
     }))
+  })
+
+  it('fails before calling the API when there is no authenticated session', async () => {
+    supabase.auth.getSession.mockResolvedValue({ data: { session: null }, error: null })
+    globalThis.fetch = vi.fn()
+
+    vi.advanceTimersByTime(60001)
+    await expect(callAnthropicAI({ messages: [{ role: 'user', content: 'hi' }] }))
+      .rejects.toThrow('Sesión no disponible')
+    expect(fetch).not.toHaveBeenCalled()
   })
 
   it('throws on non-ok response with error message', async () => {
@@ -168,6 +196,7 @@ describe('callAnthropicAI', () => {
 describe('callAnthropicAIStream', () => {
   beforeEach(() => {
     vi.useFakeTimers()
+    supabase.auth.getSession.mockResolvedValue(validSession)
   })
 
   function mockSSEResponse(chunks, doneAfter = true) {
@@ -263,6 +292,7 @@ describe('callAnthropicAIStream', () => {
 
     const callBody = JSON.parse(fetch.mock.calls[0][1].body)
     expect(callBody.stream).toBe(true)
+    expect(fetch.mock.calls[0][1].headers.Authorization).toBe('Bearer test-access-token')
   })
 })
 
@@ -325,4 +355,3 @@ describe('parseAIJsonResponse', () => {
     expect(result.message).toContain('age')
   })
 })
-

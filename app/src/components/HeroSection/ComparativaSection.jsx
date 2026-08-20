@@ -3,28 +3,28 @@ import styles from './ComparativaSection.module.css'
 
 const COMPARATIVAS = [
   {
-    antes: 'Buscar en 5 catálogos PDF distintos',
-    despues: 'Consulta unificada con IA en segundos',
+    antes: 'Buscar referencias en fuentes separadas',
+    despues: 'Consulta unificada desde el catálogo y SONEX',
+    beneficio: 'Menos cambio de contexto',
     icono: '🔍',
-    metricas: { antes: '25 min', despues: '2 min', mejora: '-92%' },
   },
   {
-    antes: 'Errores de picking cada 10 pedidos',
-    despues: 'Simulador con incidencias reales',
+    antes: 'Practicar procesos de almacén solo de forma teórica',
+    despues: 'Recorrer un flujo interactivo con incidencias y puntuación',
+    beneficio: 'Práctica guiada',
     icono: '📦',
-    metricas: { antes: '10% error', despues: '2% error', mejora: '-80%' },
   },
   {
-    antes: 'Presupuestos a mano en Excel',
-    despues: 'Generación con referencias del catálogo',
+    antes: 'Preparar presupuestos manualmente',
+    despues: 'Partir de referencias del catálogo y exportar el resultado',
+    beneficio: 'Flujo más consistente',
     icono: '📄',
-    metricas: { antes: '45 min', despues: '5 min', mejora: '-89%' },
   },
   {
-    antes: 'Incidencias en papel sin trazabilidad',
-    despues: 'Dashboard con diagnóstico IA automático',
+    antes: 'Registrar incidencias sin un flujo común',
+    despues: 'Centralizar registro, seguimiento y diagnóstico asistido',
+    beneficio: 'Mayor trazabilidad',
     icono: '🛡️',
-    metricas: { antes: '4h respuesta', despues: '30min respuesta', mejora: '-87%' },
   },
 ]
 
@@ -32,10 +32,10 @@ export default function ComparativaSection() {
   return (
     <section className={styles.section} id="comparativa">
       <div className={styles.container}>
-        <div className={styles.badge}>IMPACTO REAL</div>
-        <h2 className={styles.title}>Antes vs. Después</h2>
+        <div className={styles.badge}>MEJORAS DE FLUJO</div>
+        <h2 className={styles.title}>Antes vs. con la suite</h2>
         <p className={styles.subtitle}>
-          La diferencia que marca contar con herramientas técnicas integradas
+          Beneficios funcionales derivados de integrar herramientas y datos en un mismo entorno. No se presentan porcentajes sin una medición reproducible que los respalde.
         </p>
 
         <div className={styles.grid}>
@@ -53,23 +53,15 @@ export default function ComparativaSection() {
                 <div className={styles.colAntes}>
                   <div className={styles.colLabel}>Antes</div>
                   <div className={styles.colValue}>{item.antes}</div>
-                  <div className={styles.colMetrica}>{item.metricas.antes}</div>
                 </div>
                 <div className={styles.vs}>VS</div>
                 <div className={styles.colDespues}>
-                  <div className={styles.colLabel}>Después</div>
+                  <div className={styles.colLabel}>Con la suite</div>
                   <div className={styles.colValue}>{item.despues}</div>
-                  <div className={styles.colMejora}>{item.metricas.mejora}</div>
                 </div>
               </div>
               <div className={styles.bar}>
-                <div className={styles.barBg}>
-                  <div
-                    className={styles.barFill}
-                    style={{ width: item.metricas.mejora }}
-                  />
-                </div>
-                <span className={styles.barLabel}>{item.metricas.mejora}</span>
+                <span className={styles.barLabel}>{item.beneficio}</span>
               </div>
             </motion.div>
           ))}

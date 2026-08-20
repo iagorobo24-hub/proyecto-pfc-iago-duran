@@ -175,6 +175,8 @@ useEffect(() => {
    }
   }
   load()
+  // `paso` is intentionally read as a snapshot guard; including it would refetch after setPaso advances the hierarchy.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [categoria, marca])
 
   useEffect(() => {

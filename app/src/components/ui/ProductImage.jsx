@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect -- image fallback state must reset when src changes */
 import { useState, useEffect } from 'react'
 import { getBrandLogoData } from '../../services/brandService'
 import styles from './ProductImage.module.css'

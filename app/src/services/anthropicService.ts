@@ -1,30 +1,22 @@
 /**
  * @file anthropicService.ts
- * @description Servicio cliente para interactuar con la API de inteligencia artificial de Anthropic (Claude).
- * Proporciona llamadas estándar de chat, streaming de respuestas de IA en tiempo real,
- * parseo seguro de respuestas formateadas en JSON y limitación de tasa de peticiones (rate limiting) en el cliente.
+ * @description Cliente unificado para el gateway de IA de la aplicación.
+ * Todas las llamadas pasan por /api/ai y adjuntan la sesión Supabase activa.
  */
 
 import type { AIRequestBody, AIResponse } from '../types/ai';
+import { supabase } from '../supabase/supabaseClient';
 import { logWarn, logError } from '../utils/logger';
 
-// Configuración del limitador de tasa de peticiones (Rate Limit) en el lado del cliente
 const CLIENT_RATE_LIMIT = {
-  maxCalls: 20,       // Máximo de llamadas permitidas
-  windowMs: 60 * 1000, // Ventana de tiempo (1 minuto)
+  maxCalls: 20,
+  windowMs: 60 * 1000,
 };
 
-// Almacén en memoria de los timestamps de las llamadas realizadas en el minuto activo
 const clientRateLimitStore: { calls: number[] } = { calls: [] };
 
-/**
- * Verifica si el cliente excede la tasa límite de peticiones antes de disparar llamadas a la API de IA.
- * 
- * @returns {object} { allowed: boolean, remaining: number }
- */
 function checkClientRateLimit(): { allowed: boolean; remaining: number } {
   const now = Date.now();
-  // Limpiar llamadas obsoletas fuera del rango de 1 minuto
   clientRateLimitStore.calls = clientRateLimitStore.calls.filter((t) => now - t < CLIENT_RATE_LIMIT.windowMs);
 
   if (clientRateLimitStore.calls.length >= CLIENT_RATE_LIMIT.maxCalls) {
@@ -35,13 +27,20 @@ function checkClientRateLimit(): { allowed: boolean; remaining: number } {
   return { allowed: true, remaining: CLIENT_RATE_LIMIT.maxCalls - clientRateLimitStore.calls.length };
 }
 
-/**
- * Limpia bloques de código formateados (```json ... ```) de la respuesta de la IA
- * e intenta parsear el string limpio como un objeto JSON válido.
- * 
- * @param {string} text - Texto bruto devuelto por la IA
- * @returns {(Record<string, unknown> | null)} Objeto JSON parsed o null si falla
- */
+async function getAIRequestHeaders(): Promise<Record<string, string>> {
+  const { data, error } = await supabase.auth.getSession();
+  const token = data?.session?.access_token;
+
+  if (error || !token) {
+    throw new Error('Sesión no disponible. Inicia sesión de nuevo para usar las funciones de IA.');
+  }
+
+  return {
+    'Content-Type': 'application/json',
+    Authorization: `Bearer ${token}`,
+  };
+}
+
 function parseAIResponse(text: string): Record<string, unknown> | null {
   try {
     const cleaned = text.replace(/```json|```/g, '').trim();
@@ -52,14 +51,6 @@ function parseAIResponse(text: string): Record<string, unknown> | null {
   }
 }
 
-/**
- * Desinfecta (sanitize) URLs devueltas por la IA para prevenir ataques XSS,
- * validando protocolos seguros o devolviendo un enlace vacío '#'.
- * 
- * @export
- * @param {string} url - URL cruda
- * @returns {string} URL desinfectada
- */
 export function sanitizeUrl(url: string): string {
   if (!url) return '';
   try {
@@ -71,7 +62,6 @@ export function sanitizeUrl(url: string): string {
   }
 }
 
-// Estructura interna de respuesta del endpoint local /api/ai
 interface AIResponseData {
   text?: string;
   error?: string;
@@ -81,13 +71,6 @@ interface AIResponseData {
   [key: string]: unknown;
 }
 
-/**
- * Envía una petición estándar al servicio de Inteligencia Artificial para recibir una respuesta textual.
- * 
- * @export
- * @param {AIRequestBody} body - Cuerpo de la petición (proveedor, modelo, mensajes, etc.)
- * @returns {Promise<AIResponse>} Respuesta estructurada de la IA
- */
 export async function callAnthropicAI(body: AIRequestBody): Promise<AIResponse> {
   const rateCheck = checkClientRateLimit();
   if (!rateCheck.allowed) {
@@ -95,18 +78,17 @@ export async function callAnthropicAI(body: AIRequestBody): Promise<AIResponse> 
   }
 
   try {
+    const headers = await getAIRequestHeaders();
     const response = await fetch('/api/ai', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers,
       body: JSON.stringify({
         provider: body.provider || 'openrouter',
         model: body.model || 'meta-llama/llama-3.3-70b-instruct:free',
         messages: body.messages || [],
         system: body.system || '',
         max_tokens: body.max_tokens || 1000,
-        temperature: body.temperature || 0.7
+        temperature: body.temperature || 0.7,
       }),
     });
 
@@ -122,8 +104,7 @@ export async function callAnthropicAI(body: AIRequestBody): Promise<AIResponse> 
     }
 
     if (!response.ok) {
-      const detailsStr = data.details ? ` - Details: ${JSON.stringify(data.details)}` : '';
-      const errorMsg = `${data.error || data.hint || `Error ${response.status}`}${detailsStr}`;
+      const errorMsg = data.error || data.hint || `Error ${response.status}`;
       throw new Error(errorMsg);
     }
 
@@ -140,15 +121,6 @@ export async function callAnthropicAI(body: AIRequestBody): Promise<AIResponse> 
   }
 }
 
-/**
- * Ejecuta una petición de IA esperando recibir una respuesta en formato JSON estructurado
- * y ejecuta una validación adicional si se especifica.
- * 
- * @export
- * @param {string} text - Respuesta en texto bruto a parsear y validar
- * @param {function} [validator] - Validador opcional que evalúa la estructura del JSON
- * @returns {object} Estado indicando error, mensaje explicativo y los datos parseados
- */
 export function parseAIJsonResponse(
   text: string,
   validator?: (data: Record<string, unknown>) => { valid: boolean; message?: string }
@@ -169,15 +141,6 @@ export function parseAIJsonResponse(
   return { error: false, data: parsed };
 }
 
-/**
- * Envía una petición de IA habilitando el flujo de streaming en tiempo real (Server-Sent Events).
- * Invoca el callback de chunk conforme se leen los datos secuencialmente del stream.
- * 
- * @export
- * @param {AIRequestBody} body - Parámetros de configuración de la petición
- * @param {function} onChunk - Callback ejecutado ante la llegada de cada fragmento de texto
- * @param {function} [onDone] - Callback opcional ejecutado al finalizar por completo el stream
- */
 export async function callAnthropicAIStream(
   body: AIRequestBody,
   onChunk: (text: string) => void,
@@ -189,9 +152,10 @@ export async function callAnthropicAIStream(
   }
 
   try {
+    const headers = await getAIRequestHeaders();
     const response = await fetch('/api/ai', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers,
       body: JSON.stringify({
         provider: body.provider || 'openrouter',
         model: body.model || 'meta-llama/llama-3.3-70b-instruct:free',
@@ -199,14 +163,13 @@ export async function callAnthropicAIStream(
         system: body.system || '',
         max_tokens: body.max_tokens || 1000,
         temperature: body.temperature || 0.7,
-        stream: true
+        stream: true,
       }),
     });
 
     if (!response.ok) {
       const errData = await response.json().catch(() => ({ error: `Error ${response.status}` }));
-      const detailsStr = errData.details ? ` - Details: ${JSON.stringify(errData.details)}` : '';
-      throw new Error(`${errData.error || `Error ${response.status}`}${detailsStr}`);
+      throw new Error(errData.error || `Error ${response.status}`);
     }
 
     const reader = response.body!.getReader();
@@ -219,24 +182,25 @@ export async function callAnthropicAIStream(
       buffer += decoder.decode(value, { stream: true });
       const lines = buffer.split('\n');
       buffer = lines.pop() || '';
+
       for (const line of lines) {
-        if (line.startsWith('data: ')) {
-          const dataStr = line.slice(6).trim();
-          try {
-            const parsed = JSON.parse(dataStr);
-            if (parsed.done) {
-              onDone?.();
-              return;
-            }
-            if (parsed.content) {
-              onChunk(parsed.content);
-            }
-          } catch {
-            // Ignorar líneas malformadas
+        if (!line.startsWith('data: ')) continue;
+        const dataStr = line.slice(6).trim();
+        try {
+          const parsed = JSON.parse(dataStr);
+          if (parsed.done) {
+            onDone?.();
+            return;
           }
+          if (parsed.content) {
+            onChunk(parsed.content);
+          }
+        } catch {
+          // Ignorar líneas SSE malformadas.
         }
       }
     }
+
     onDone?.();
   } catch (error) {
     logError('[AI Service] Stream failed:', error);
@@ -249,6 +213,5 @@ export default {
   callAnthropicAIStream,
   parseAIJsonResponse,
   parseAIResponse,
-  sanitizeUrl
+  sanitizeUrl,
 };
-

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect -- auth state is initialized from Playwright/Supabase external session sources */
 /**
  * @file AuthContext.jsx
  * @description Proveedor de contexto para la gestión del estado de autenticación de usuarios.
@@ -15,7 +16,7 @@ const AuthContext = createContext()
 /**
  * Hook personalizado para consumir el contexto de autenticación.
  * Lanza un error si se consume fuera de AuthProvider.
- * 
+ *
  * @export
  * @returns {object} Contexto de autenticación (user, loading, loginWithGoogle, logout)
  */
@@ -28,7 +29,7 @@ export function useAuth() {
 /**
  * Componente Proveedor que gestiona el ciclo de vida de la sesión de usuario de Supabase.
  * Muestra una pantalla de carga mientras se recupera la sesión inicial.
- * 
+ *
  * @export
  * @param {object} props - Propiedades del componente
  * @param {React.ReactNode} props.children - Componentes hijos
@@ -39,7 +40,6 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true)
   const migratedRef = useRef(false)
 
-  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => {
     // Soporte para E2E tests con Playwright — solo en desarrollo para simular usuarios
     if (import.meta.env.DEV && window.__PW_MOCK_USER__) {
@@ -47,7 +47,7 @@ export function AuthProvider({ children }) {
       setLoading(false)
       return
     }
-    
+
     // Verificar sesión existente en Supabase al cargar la app
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null)
@@ -132,4 +132,4 @@ export function AuthProvider({ children }) {
       ) : children}
     </AuthContext.Provider>
   )
-}
+}

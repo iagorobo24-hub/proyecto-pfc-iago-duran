@@ -87,9 +87,9 @@ export default function Roadmap() {
           transition={{ duration: 0.6 }}
         >
           <span className={styles.badge}>Evolución del proyecto</span>
-          <h2 className={styles.title}>Roadmap</h2>
+          <h2 className={styles.title}>Roadmap histórico</h2>
           <p className={styles.subtitle}>
-            {doneCount} de {totalCount} fases completadas. Cada fase suma capacidades nuevas al ecosistema.
+            {doneCount} de {totalCount} fases figuran como completadas. Las cifras, modelos y recuentos que aparecen dentro de cada fase describen el estado de aquella etapa y no una métrica actual garantizada.
           </p>
           <div className={styles.progressBar}>
             <div

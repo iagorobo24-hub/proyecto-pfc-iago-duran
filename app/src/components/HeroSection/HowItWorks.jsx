@@ -9,7 +9,7 @@ const HowItWorks = () => {
     {
       step: '01',
       title: 'Elige tu herramienta',
-      desc: 'Explora el catálogo de 7 herramientas profesionales: fichas técnicas, asistente IA, KPIs, simulador y más.',
+      desc: 'Explora 7 herramientas integradas: fichas técnicas, SONEX, KPIs, simulador, incidencias, presupuestos y formación.',
       icon: <MousePointerClick size={28} />,
       link: '/app',
       linkText: 'Ver herramientas'
@@ -17,7 +17,7 @@ const HowItWorks = () => {
     {
       step: '02',
       title: 'Consulta y analiza',
-      desc: 'Accede a +64.000 referencias, pide ayuda a SONEX con IA o analiza métricas logísticas en tiempo real.',
+      desc: 'Navega por el catálogo técnico clasificado, pide ayuda a SONEX o analiza métricas logísticas desde el mismo entorno.',
       icon: <BarChart3 size={28} />,
       link: '/app/fichas',
       linkText: 'Explorar catálogo'
@@ -25,7 +25,7 @@ const HowItWorks = () => {
     {
       step: '03',
       title: 'Exporta resultados',
-      desc: 'Genera presupuestos, fichas técnicas en PDF y simulaciones listas para presentar al cliente.',
+      desc: 'Genera presupuestos e informes en PDF y conserva el resultado de los flujos que lo requieren.',
       icon: <FileDown size={28} />,
       link: '/app/presupuestos',
       linkText: 'Crear presupuesto'
@@ -58,7 +58,7 @@ const HowItWorks = () => {
           <span className={styles.badge}>Proceso simple</span>
           <h2 className={styles.title}>¿Cómo funciona?</h2>
           <p className={styles.subtitle}>
-            Tres pasos para empezar a trabajar con herramientas profesionales.
+            Tres pasos para empezar a trabajar con las herramientas del proyecto.
           </p>
         </motion.header>
 

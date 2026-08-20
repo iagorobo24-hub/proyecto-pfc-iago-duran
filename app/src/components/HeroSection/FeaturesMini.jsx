@@ -1,11 +1,11 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { 
-  BookText, 
-  Calculator, 
-  Cpu, 
-  FileSpreadsheet, 
-  Package, 
+import {
+  BookText,
+  Calculator,
+  Cpu,
+  FileSpreadsheet,
+  Package,
   Database,
   FileDown,
   Zap
@@ -15,43 +15,43 @@ import styles from './styles/FeaturesMini.module.css';
 const FeaturesMini = () => {
   const features = [
     {
-      title: "Asistente SONEX",
-      desc: "Consultor de material eléctrico con IA avanzada.",
+      title: 'Asistente SONEX',
+      desc: 'Consultas técnicas asistidas por IA con contexto del catálogo.',
       icon: <Cpu size={20} />
     },
     {
-      title: "Catálogo Real",
-      desc: "Más de 64k referencias clasificadas por Familia y Marca.",
+      title: 'Catálogo técnico',
+      desc: 'Referencias clasificadas por familias, marcas y categorías.',
       icon: <BookText size={20} />
     },
     {
-      title: "KPI Analítica",
-      desc: "Métricas logísticas y rendimiento de almacén en tiempo real.",
+      title: 'KPI Logístico',
+      desc: 'Seis indicadores operativos, histórico y visualización gráfica.',
       icon: <Calculator size={20} />
     },
     {
-      title: "Presupuestos",
-      desc: "Generador de simulaciones de costes profesionales.",
+      title: 'Presupuestos',
+      desc: 'Generación de presupuestos con referencias del catálogo.',
       icon: <FileSpreadsheet size={20} />
     },
     {
-      title: "Simulador de Almacén",
-      desc: "Gestión interactiva de invento y espacio de almacén.",
+      title: 'Simulador de Almacén',
+      desc: 'Flujo interactivo desde recepción hasta expedición.',
       icon: <Package size={20} />
     },
     {
-      title: "Base de Datos Cloud",
-      desc: "PostgreSQL en Supabase con sincronización en tiempo real y RLS.",
+      title: 'Persistencia cloud',
+      desc: 'PostgreSQL en Supabase para datos y sesiones de usuario.',
       icon: <Database size={20} />
     },
     {
-      title: "Exportación PDF",
-      desc: "Genera informes y fichas técnicas listos para el cliente.",
+      title: 'Exportación PDF',
+      desc: 'Generación de documentos desde los módulos que lo requieren.',
       icon: <FileDown size={20} />
     },
     {
-      title: "Despliegue Continuo",
-      desc: "Arquitectura serverless en Vercel con actualizaciones automáticas.",
+      title: 'Despliegue continuo',
+      desc: 'SPA y funciones serverless desplegadas mediante Vercel.',
       icon: <Zap size={20} />
     }
   ];
@@ -72,7 +72,7 @@ const FeaturesMini = () => {
   };
 
   return (
-    <motion.section 
+    <motion.section
       className={styles.featuresWrapper}
       variants={container}
       initial="hidden"
@@ -80,8 +80,8 @@ const FeaturesMini = () => {
       viewport={{ once: true }}
     >
       {features.map((feature, index) => (
-        <motion.div 
-          key={index} 
+        <motion.div
+          key={index}
           className={styles.featureCard}
           variants={item}
         >

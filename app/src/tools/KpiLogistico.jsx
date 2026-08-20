@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect -- tool mirrors asynchronously loaded KPI history into editable local state */
 import { useState, useEffect, useCallback } from "react";
 import { TrendingUp } from 'lucide-react';
 import useUserData from '../hooks/useUserData'
@@ -120,12 +121,6 @@ export default function KPILogistico() {
     { key: "ubicaciones_total", label: "UBICACIONES TOTALES", placeholder: "12000" },
     { key: "devoluciones", label: "DEVOLUCIONES", placeholder: "7" },
   ];
-
-  const semaforo = (kpi, valor) => {
-    const b = BENCHMARKS[kpi]; if (!b) return null;
-    if (b.invertido) { if (valor <= b.bueno) return { label: "Objetivo", color: "var(--success)", bg: "var(--success-soft)" }; if (valor >= b.malo) return { label: "Crítico", color: "var(--error)", bg: "var(--error-soft)" }; return { label: "Atención", color: "var(--warning)", bg: "var(--warning-soft)" }; }
-    if (valor >= b.bueno) return { label: "Objetivo", color: "var(--success)", bg: "var(--success-soft)" }; if (valor <= b.malo) return { label: "Crítico", color: "var(--error)", bg: "var(--error-soft)" }; return { label: "Atención", color: "var(--warning)", bg: "var(--warning-soft)" };
-  };
 
   return (
     <div className={styles.layout}>

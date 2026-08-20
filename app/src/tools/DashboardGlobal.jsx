@@ -124,12 +124,12 @@ function AnalyticsFooter() {
     <div className={styles.analyticsSection}>
       <div className={styles.analyticsHeader}>
         <Activity size={16} />
-        <span>Actividad</span>
+        <span>Actividad local · este navegador</span>
       </div>
       <div className={styles.analyticsGrid}>
         <div className={styles.analyticsItem}>
           <div className={styles.analyticsValue}>{summary.total}</div>
-          <div className={styles.analyticsLabel}>Eventos totales</div>
+          <div className={styles.analyticsLabel}>Eventos guardados</div>
         </div>
         <div className={styles.analyticsItem}>
           <div className={styles.analyticsValue}>{summary.hoy}</div>
@@ -137,15 +137,15 @@ function AnalyticsFooter() {
         </div>
         <div className={styles.analyticsItem}>
           <div className={styles.analyticsValue}>{summary.pageViews}</div>
-          <div className={styles.analyticsLabel}>Vistas de página</div>
+          <div className={styles.analyticsLabel}>Vistas locales</div>
         </div>
         <div className={styles.analyticsItem}>
           <div className={styles.analyticsValue}>{summary.uniquePages}</div>
-          <div className={styles.analyticsLabel}>Rutas distintas</div>
+          <div className={styles.analyticsLabel}>Rutas locales</div>
         </div>
         <div className={styles.analyticsItem}>
           <div className={styles.analyticsValue}>{summary.aiErrors}</div>
-          <div className={styles.analyticsLabel}>Errores IA</div>
+          <div className={styles.analyticsLabel}>Errores IA locales</div>
         </div>
         <div className={styles.analyticsItem}>
           <div className={styles.analyticsValue}>{summary.searchNoResults}</div>
@@ -159,6 +159,7 @@ function AnalyticsFooter() {
               {tool}: {count}
             </span>
           ))}
+          <span className={styles.analyticsTool}>Solo se conservan hasta 500 eventos en este dispositivo</span>
         </div>
       )}
     </div>

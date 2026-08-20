@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect -- search loading/result state intentionally synchronizes with the debounced query */
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { Outlet, useSearchParams, useNavigate, useLocation } from 'react-router-dom'
 import { useToast } from '../../contexts/ToastContext'
@@ -19,6 +20,7 @@ export default function PresupuestosLayout() {
   const [searchParams] = useSearchParams()
 
   const hook = usePresupuestos()
+  const { dispatchPartidas, setCategoria } = hook
   const [numPresupuesto, setNumPresupuesto] = useState(genNum())
   const [categorias, setCategorias] = useState([])
   const [consulta, setConsulta] = useState('')
@@ -78,12 +80,12 @@ export default function PresupuestosLayout() {
       }
 
       if (nuevo) {
-        hook.dispatchPartidas({ type: 'CLEAR' })
-        hook.setCategoria('')
+        dispatchPartidas({ type: 'CLEAR' })
+        setCategoria('')
         setNumPresupuesto(genNum())
       }
 
-      hook.dispatchPartidas({
+      dispatchPartidas({
         type: 'ADD_FROM_CATALOG',
         ref: referencia,
         desc: producto || referencia,
@@ -95,7 +97,7 @@ export default function PresupuestosLayout() {
 
     importFromQuery()
     return () => { cancelled = true }
-  }, [searchParams, hook.dispatchPartidas, hook.setCategoria, navigate, toast])
+  }, [searchParams, dispatchPartidas, setCategoria, navigate, toast])
 
   const guardarPresupuesto = useCallback(() => {
     if (hook.partidas.length === 0) { toast.show('Añade al menos un producto', 'error'); return }
@@ -135,19 +137,19 @@ export default function PresupuestosLayout() {
   const totalFinal = totalBase + ivaAmount
 
   const handleCategoriaClick = useCallback((catId) => {
-    hook.setCategoria(catId)
+    setCategoria(catId)
     if (!location.pathname.includes('seleccion')) {
       navigate('/app/presupuestos/seleccion')
     }
-  }, [hook.setCategoria, navigate, location.pathname])
+  }, [setCategoria, navigate, location.pathname])
 
   const handleSearchResultClick = useCallback((p) => {
     const key = p.ref_fabricante || p.ref
-    hook.dispatchPartidas({ type: 'ADD_FROM_CATALOG', ref: key, desc: p.name || p.desc, precio: p.precio || 0 })
+    dispatchPartidas({ type: 'ADD_FROM_CATALOG', ref: key, desc: p.name || p.desc, precio: p.precio || 0 })
     toast.show(`${key} añadido al presupuesto`, 'success')
     setConsulta('')
     setSugerenciasBusqueda([])
-  }, [hook.dispatchPartidas, toast])
+  }, [dispatchPartidas, toast])
 
   const handleSearchKeyDown = useCallback((e) => {
     if (e.key === 'Enter' && sugerenciasBusqueda.length > 0) {

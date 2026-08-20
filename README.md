@@ -19,23 +19,30 @@ Suite web académica orientada al sector eléctrico y logístico. El repositorio
 
 La aplicación usa React 19, Vite 7, React Router 7, Supabase, Vercel Functions, OpenRouter/Groq, Vitest y Playwright. Las versiones exactas deben tomarse de `app/package.json`; la arquitectura de despliegue y cabeceras se define en `app/vercel.json`.
 
-El gateway `/api/ai` mantiene lista blanca de modelos, límites de entrada, CORS y limitación de peticiones. **No existe un único modelo de IA para toda la aplicación**: los módulos pueden seleccionar modelos diferentes y el gateway dispone de fallbacks.
+El gateway `/api/ai` mantiene lista blanca de modelos, límites de entrada, CORS, limitación de peticiones y **requiere una sesión Supabase válida mediante Bearer token**. Las credenciales de los proveedores permanecen en servidor. Los módulos pueden seleccionar modelos diferentes y el gateway dispone de fallbacks; no existe un único modelo permanente para toda la aplicación.
 
-## Testing
+## Testing y CI
 
-El repositorio contiene suites de Vitest y múltiples especificaciones Playwright, y `app/package.json` define `test`, `test:e2e` y `test:all`. Este README **no fija un número de tests verdes ni una cobertura** porque esas métricas solo deben publicarse después de una ejecución fresca del commit correspondiente.
+El repositorio contiene suites de Vitest y múltiples especificaciones Playwright. Playwright arranca su propio servidor de desarrollo para que la ejecución E2E sea autocontenida. El workflow `.github/workflows/ci.yml` ejecuta instalación reproducible, lint, Vitest, build y E2E en los cambios versionados.
+
+Este README **no fija un número de tests verdes ni una cobertura**: esas métricas solo son válidas cuando proceden de una ejecución fresca del commit correspondiente.
 
 ```bash
 cd app
-npm install
-npm run build
+npm ci
+npm run lint
 npm run test
+npm run build
 npm run test:e2e
 ```
 
 ## Datos y métricas
 
 Las cantidades de productos, usuarios, rendimiento, coste y consumo de servicios son datos temporales. La documentación académica evita convertir snapshots históricos en cifras actuales. Para catálogo, el código dispone de `getCatalogStats()`; para resultados de pruebas, debe conservarse el log de la ejecución que los respalda.
+
+La sección de actividad del Dashboard es **analítica local del navegador**: se guarda en `localStorage` y conserva como máximo 500 eventos. No representa analítica global ni multiusuario. Una analítica centralizada requiere un backend activo y políticas de acceso específicas.
+
+Los testimonios públicos solo leen y cachean `id`, nombre, texto, valoración y fecha. El formulario no solicita email. La seguridad definitiva de las operaciones de base de datos depende además de las políticas RLS del proyecto Supabase desplegado.
 
 ## Documentación académica
 
@@ -44,6 +51,8 @@ La fuente principal está en [`proyecto-fin-ciclo/`](./proyecto-fin-ciclo/00-REA
 ## Seguridad y alcance
 
 La aplicación es un proyecto académico. Las respuestas generadas por IA, especialmente sobre normativa, instalación, seguridad eléctrica, compatibilidad o especificaciones de producto, **no sustituyen la documentación oficial del fabricante, la normativa aplicable ni la validación de un profesional cualificado**.
+
+El frontend aplica CSP y otras cabeceras defensivas; el gateway IA autentica cada llamada y no registra prompts en su telemetría operativa. El limitador del gateway sigue siendo una defensa por instancia serverless: una cuota global durable requeriría un almacén externo compartido.
 
 ## Licencia
 

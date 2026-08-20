@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { getBrandLogoData } from '../../services/brandService'
 import { getEtiquetaSubcategoria, getCategoriaMeta } from '../../data/categories'
 import Button from '../ui/Button'
@@ -27,7 +27,6 @@ function FichasTecnicasContent({
   subcategoria,
   grupos,
   referencia,
-  categorias,
   marcasDisponibles,
   gamasDisponibles,
   tiposDisponibles,

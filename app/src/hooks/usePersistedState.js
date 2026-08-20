@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect -- hook mirrors asynchronously loaded persisted state by contract */
 /**
  * @file usePersistedState.js
  * @description Hook personalizado que simplifica el uso de estado persistente.

@@ -68,7 +68,7 @@ test.describe('SONEX product flow', () => {
   test('shows verified catalog cards for a product query', async ({ page }) => {
     const { firstCard } = await openSonexWithCatalogResult(page)
 
-    await expect(page.getByText('En catálogo')).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'En catálogo' })).toBeVisible()
     await expect(firstCard.getByTestId('sonex-open-ficha')).toBeVisible()
     await expect(firstCard.getByTestId('sonex-add-budget')).toBeVisible()
   })

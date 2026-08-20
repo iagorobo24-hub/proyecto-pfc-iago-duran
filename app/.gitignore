@@ -61,6 +61,11 @@ scripts/ejecutar-*
 scripts/load-siemens*
 scripts/generate-siemens*
 
+# Test reports generated locally/CI
+playwright-report/
+test-results/
+coverage/
+
 # Diagramas generados
 docs/diagrams/*.html
 generar_*.py
