@@ -384,4 +384,5 @@ function createSupabaseClient() {
   }
 }
 
+/** @type {import('@supabase/supabase-js').SupabaseClient} */
 export const supabase = createSupabaseClient()

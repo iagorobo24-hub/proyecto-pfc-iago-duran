@@ -314,10 +314,8 @@ test.describe('Tests de Funcionalidad Real — PFC Iago Durán', () => {
           await expect(opt).toBeVisible()
           
           const nextBtn = page.getByRole('button', { name: /Continuar/i })
-          let clicked = false
           for (let attempt = 0; attempt < 5; attempt++) {
             if (await nextBtn.isVisible().catch(() => false)) {
-              clicked = true
               break
             }
             await opt.click().catch(() => {})

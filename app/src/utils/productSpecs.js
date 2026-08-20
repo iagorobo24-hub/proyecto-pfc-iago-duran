@@ -192,6 +192,7 @@ export function scoreProductMatch(product = {}, criteria = {}) {
     / A$|mA$|kA$|^\dP|Curva /.test(spec)
   ).length
 
+  /** @type {'exact' | 'partial' | 'related'} */
   let matchType = 'related'
   if (criteria.subfamily && sameText(product.subfamilia, criteria.subfamily) && requestedSpecs > 0 && technicalMatches >= requestedSpecs) {
     matchType = 'exact'

@@ -136,7 +136,7 @@ export async function generarPDFResumenIncidencias(incidencias, datosDelegacion 
   pdf.text('Todas las incidencias', 20, y); y += 7
   pdf.setFont('helvetica', 'normal')
   pdf.setFontSize(9)
-  incidencias.forEach((inc, idx) => {
+  incidencias.forEach((inc) => {
     const estadoIcon = inc.estado === 'Resuelta' ? '✓' : inc.estado === 'Crítica' ? '!!' : '○'
     const line = `${estadoIcon} [${inc.severidad}] ${inc.equipo} — ${inc.sintoma} | ${inc.zona} | ${inc.estado}`
     const lines = pdf.splitTextToSize(line, pageWidth - 40)

@@ -72,7 +72,7 @@ Expected: 0 errors, 0 warnings.
 - Keep: `app/tsconfig.json` with `strict: false` unless the existing code already passes stricter settings without broad changes.
 
 **Interfaces:**
-- Produces: `npm run typecheck` using direct `typescript` devDependency and Node 20 runtime declaration.
+- Produces: `npm run typecheck` using direct `typescript` devDependency and Node 24 runtime declaration.
 
 - [ ] **Step 1: Add TypeScript as a direct dev dependency through npm**
 
@@ -80,7 +80,7 @@ Use npm to add a compatible current TypeScript release and regenerate the lockfi
 
 - [ ] **Step 2: Add scripts/runtime declaration**
 
-`package.json` must include `"typecheck": "tsc --noEmit"` and an `engines.node` contract compatible with Node 20.
+`package.json` must include `"typecheck": "tsc --noEmit"` and an `engines.node` contract compatible with Node 24.
 
 - [ ] **Step 3: Add typecheck to CI/deploy verification**
 
@@ -115,7 +115,7 @@ Run `npx update-browserslist-db@latest` only if the compatible npm refresh does 
 - [ ] **Step 4: Audit after refresh**
 
 Run: `npm audit --json` and `npm outdated --json || true`.
-Expected: no unresolved high/critical vulnerability. Major-only updates may remain outdated and must be reported rather than forced.
+Expected: no unresolved high/critical production vulnerability. Dev-only major-only findings may remain only when their dependency path, usage and migration constraint are explicitly reported rather than forced.
 
 - [ ] **Step 5: Prove reproducibility**
 
@@ -136,7 +136,7 @@ No merge to `main`.
 
 - [ ] **Step 2: Inspect the GitHub Actions run for the candidate SHA**
 
-Expected job steps: checkout, Node 20, `npm ci`, lint, typecheck, unit, build, Playwright Chromium install, E2E.
+Expected job steps: checkout, Node 24, `npm ci`, lint, typecheck, unit, build, Playwright Chromium install, E2E.
 
 - [ ] **Step 3: If E2E fails, diagnose before changing code**
 

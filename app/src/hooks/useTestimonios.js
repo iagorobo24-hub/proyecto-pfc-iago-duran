@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect -- hook loads and migrates testimonials from Supabase/localStorage external sources */
 import { useState, useEffect, useCallback } from 'react'
 import { supabase } from '../supabase/supabaseClient'
 import { useAuth } from '../contexts/AuthContext'

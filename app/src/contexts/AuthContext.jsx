@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect -- auth state is initialized from Playwright/Supabase external session sources */
 /**
  * @file AuthContext.jsx
  * @description Proveedor de contexto para la gestión del estado de autenticación de usuarios.
@@ -39,7 +40,6 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true)
   const migratedRef = useRef(false)
 
-  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => {
     // Soporte para E2E tests con Playwright — solo en desarrollo para simular usuarios
     if (import.meta.env.DEV && window.__PW_MOCK_USER__) {

@@ -5,7 +5,7 @@ import PresupuestosSeleccion from './PresupuestosSeleccion'
 
 export default function PresupuestosWizard() {
   const navigate = useNavigate()
-  const { categoria, historial, cargarPresupuesto, partidas } = usePresupuestosContext()
+  const { categoria, historial, cargarPresupuesto } = usePresupuestosContext()
 
   if (categoria) {
     return <PresupuestosSeleccion />

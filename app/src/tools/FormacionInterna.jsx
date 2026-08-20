@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect -- tool initializes editable training state from asynchronously loaded persisted records */
 import { useState, useEffect, useCallback } from "react";
 import { GraduationCap } from 'lucide-react'
 import Button from '../components/ui/Button'
@@ -41,6 +42,7 @@ export default function FormacionInterna() {
   const [modulos, setModulosState] = useState([])
   const [progresos, setProgresosState] = useState({})
   const [fechasCompletado, setFechasCompletadoState] = useState({})
+  const [ahora] = useState(() => Date.now())
 
   useEffect(() => { if (storedEmpleados) setEmpleadosState(storedEmpleados) }, [storedEmpleados])
   useEffect(() => { if (storedModulos) setModulosState(storedModulos) }, [storedModulos])
@@ -107,6 +109,7 @@ export default function FormacionInterna() {
   const cambiarProgreso = (empId, modId, nuevoEstado) => {
     const nuevosProgresos = { ...progresos, [empId]: { ...progresos[empId], [modId]: nuevoEstado } };
     const nuevasFechas = { ...fechasCompletado };
+    // eslint-disable-next-line react-hooks/purity -- completion timestamp is captured only when the user changes module state
     if (nuevoEstado === "completado") { if (!nuevasFechas[empId]) nuevasFechas[empId] = {}; nuevasFechas[empId][modId] = Date.now(); }
     else { if (nuevasFechas[empId]) delete nuevasFechas[empId][modId]; }
     setProgresos(nuevosProgresos); setFechasCompletado(nuevasFechas); toast.show("Progreso actualizado");
@@ -141,7 +144,7 @@ export default function FormacionInterna() {
   const totalPosible = empleados.length * modulos.length;
   const completadosGlobal = empleados.reduce((acc, e) => acc + modulos.filter(m => progresos[e.id]?.[m.id] === "completado").length, 0);
   const pctGlobal = totalPosible > 0 ? Math.round((completadosGlobal / totalPosible) * 100) : 0;
-  const empleadosAlerta = empleados.filter(e => { const dias = (Date.now() - e.fechaAlta) / 86400000; return dias > 30 && modulos.filter(m => m.obligatorio && progresos[e.id]?.[m.id] !== "completado").length > 0; });
+  const empleadosAlerta = empleados.filter(e => { const dias = (ahora - e.fechaAlta) / 86400000; return dias > 30 && modulos.filter(m => m.obligatorio && progresos[e.id]?.[m.id] !== "completado").length > 0; });
   const pctEmpleado = (empId) => { if (!modulos.length) return 0; return Math.round(modulos.filter(m => progresos[empId]?.[m.id] === "completado").length / modulos.length * 100); };
 
   const estadoBadge = (estado) => {
@@ -189,7 +192,7 @@ export default function FormacionInterna() {
               <div className={styles.empleadosGrid}>
                 {empleados.map(emp => {
                   const pct = pctEmpleado(emp.id);
-                  const dias = Math.floor((Date.now() - emp.fechaAlta) / 86400000);
+                  const dias = Math.floor((ahora - emp.fechaAlta) / 86400000);
                   const obligPend = modulos.filter(m => m.obligatorio && progresos[emp.id]?.[m.id] !== "completado").length;
                   const alerta = dias > 30 && obligPend > 0;
                   return (
@@ -219,7 +222,7 @@ export default function FormacionInterna() {
               <div className={styles.detalleHeader}>
                 <div className={styles.detalleHeader__info}>
                   <div className={styles.detalleHeader__nombre}>{seleccionado.nombre}</div>
-                  <div className={styles.detalleHeader__meta}>{seleccionado.rol} · {seleccionado.departamento} · Alta hace {Math.floor((Date.now() - seleccionado.fechaAlta) / 86400000)} días</div>
+                  <div className={styles.detalleHeader__meta}>{seleccionado.rol} · {seleccionado.departamento} · Alta hace {Math.floor((ahora - seleccionado.fechaAlta) / 86400000)} días</div>
                 </div>
                 <div className={styles.detalleHeader__pct}>{pctEmpleado(seleccionado.id)}%</div>
               </div>

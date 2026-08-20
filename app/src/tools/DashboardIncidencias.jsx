@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect -- tool mirrors asynchronously loaded persisted incidents into editable local state */
 import { useState, useEffect, useRef, useCallback } from 'react';
 import useUserData from '../hooks/useUserData';
 import IncidenciasLista from '../components/incidencias/IncidenciasLista';
@@ -27,7 +28,7 @@ export default function DashboardIncidencias() {
   const [modo, setModo] = useState('lista')
   const [form, setForm] = useState({ equipo: '', zona: 'Zona A — Recepción', operario: '', sintoma: '', severidad: 'Media' })
   const [cargandoIA, setCargandoIA] = useState(false)
-  const [ahora, setAhora] = useState(Date.now())
+  const [ahora, setAhora] = useState(() => Date.now())
   const [exportandoPDF, setExportandoPDF] = useState(false)
   const contentRef = useRef(null)
 

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect -- hook synchronizes asynchronously loaded persisted data into local editable state */
 /**
  * @file useUserData.js
  * @description Hook genérico de persistencia híbrida: Supabase (para usuarios autenticados)
@@ -59,7 +60,9 @@ export default function useUserData(module, field, defaultValue = null, legacyKe
 
   // Referencia para mantener el valor por defecto estable en callbacks asíncronos
   const defaultValueRef = useRef(defaultValue)
-  defaultValueRef.current = defaultValue
+  useEffect(() => {
+    defaultValueRef.current = defaultValue
+  }, [defaultValue])
 
   /**
    * Carga los datos desde Supabase (si el usuario está logueado y migrado) o desde localStorage.
@@ -120,7 +123,7 @@ export default function useUserData(module, field, defaultValue = null, legacyKe
     } finally {
       if (mountedRef.current) setLoading(false)
     }
-  }, [userId, module, field, localStorageKey, migrationDone])
+  }, [userId, module, field, localStorageKey])
 
   // Desencadenar la carga de datos iniciales o ante cambios de sesión
   useEffect(() => {

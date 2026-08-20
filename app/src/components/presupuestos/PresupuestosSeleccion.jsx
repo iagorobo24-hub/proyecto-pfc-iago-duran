@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect -- dependent catalog filters are intentionally reset before each asynchronous hierarchy query */
 import { useState, useEffect, useMemo, Fragment } from 'react'
 import { useNavigate } from 'react-router-dom'
 import catalogService from '../../services/catalogService'
@@ -23,7 +24,6 @@ export default function PresupuestosSeleccion() {
   const [anadidos, setAnadidos] = useState({})
   const [errorCatalogo, setErrorCatalogo] = useState(null)
 
-  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => {
     if (!categoria) return
     setMarca(null)
@@ -44,7 +44,6 @@ export default function PresupuestosSeleccion() {
     })
   }, [categoria])
 
-  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => {
     if (!marca || !categoria) return
     setGama(null)
@@ -63,7 +62,6 @@ export default function PresupuestosSeleccion() {
     })
   }, [categoria, marca])
 
-  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => {
     if (!marca || !gama || !categoria) return
     setTipo(null)
@@ -81,7 +79,6 @@ export default function PresupuestosSeleccion() {
     })
   }, [categoria, marca, gama])
 
-  // eslint-disable-next-line react-hooks/set-state-in-effect
   useEffect(() => {
     if (!marca || !gama || !tipo || !categoria) return
     setCargandoCatalogo(true)

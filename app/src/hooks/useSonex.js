@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect -- active chat session is initialized from asynchronously loaded persisted sessions */
 /**
  * @file useSonex.js
  * @description Hook personalizado para gestionar el estado de conversación, historial

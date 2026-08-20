@@ -397,7 +397,7 @@ describe('buildSystemPrompt — estructura del prompt del sistema', () => {
 
   it('el orden del prompt es: identidad → directrices → modo → categoría → contexto catálogo', () => {
     /* Verify the structural ordering by testing a reconstructed prompt */
-    const buildFullPrompt = (modo = 'busqueda', categoria = '', contexto = '') => {
+    const buildFullPrompt = (_modo = 'busqueda', categoria = '', contexto = '') => {
       const identidad = 'Eres SONEX, un técnico superior del sector eléctrico'
       const directrices = 'Directrices obligatorias:\n- Responde siempre con rigor técnico'
       const modoInstrucciones = 'Modo BÚSQUEDA activado.'

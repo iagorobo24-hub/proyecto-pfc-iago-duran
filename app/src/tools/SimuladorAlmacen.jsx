@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect -- simulator synchronizes persisted profile/history and stage timer state by contract */
 import { useState, useRef, useEffect, useCallback } from "react";
 import Button from '../components/ui/Button'
 import useUserData from '../hooks/useUserData'

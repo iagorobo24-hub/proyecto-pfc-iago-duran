@@ -112,7 +112,6 @@ export function ThemeProvider({ children }) {
     )
 
     // Determinar la dirección de la transición antes de actualizar el estado
-    const isDarkToLight = dark // true si estamos en oscuro y vamos a claro
     const isLightToDark = !dark // true si estamos en claro y vamos a oscuro
 
     // Iniciar la transición de vista del DOM
