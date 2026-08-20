@@ -1,0 +1,124 @@
+name: Stabilization closeout observable
+
+on:
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+concurrency:
+  group: pfc-stabilization-closeout
+  cancel-in-progress: true
+
+jobs:
+  closeout:
+    if: github.event.pull_request.head.ref == 'chatgpt/pfc-hardening-20260818'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout stabilization branch
+        uses: actions/checkout@v4
+        with:
+          ref: chatgpt/pfc-hardening-20260818
+          fetch-depth: 0
+
+      - name: Setup Node.js 24
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+
+      - name: Apply verified scoped codemods
+        run: |
+          python app/scripts/stabilize-closeout-primary.py
+          python app/scripts/stabilize-closeout-extra.py
+
+      - name: Remove unused browser tooling and install TypeScript
+        working-directory: app
+        run: |
+          npm uninstall --save-dev puppeteer-core puppeteer-extra puppeteer-extra-plugin-stealth
+          npm install --save-dev 'typescript@^6.0.3'
+
+      - name: Capture dependency baseline
+        working-directory: app
+        run: |
+          echo '--- npm outdated before compatible refresh ---'
+          npm outdated || true
+          echo '--- full npm audit before compatible refresh ---'
+          npm audit --audit-level=high || true
+
+      - name: Refresh compatible dependencies
+        working-directory: app
+        run: |
+          npm update
+          npx update-browserslist-db@latest
+
+      - name: Verify dependency security and reproducibility
+        working-directory: app
+        run: |
+          echo '--- npm outdated after compatible refresh ---'
+          npm outdated || true
+          echo '--- full audit after compatible refresh ---'
+          npm audit --audit-level=high || true
+          echo '--- production high/critical gate ---'
+          npm audit --omit=dev --audit-level=high
+          rm -rf node_modules
+          npm ci
+
+      - name: Lint with zero-warning gate
+        working-directory: app
+        run: npm run lint -- --max-warnings=0
+
+      - name: Typecheck
+        working-directory: app
+        run: npm run typecheck
+
+      - name: Unit tests
+        working-directory: app
+        run: npm run test
+
+      - name: Production build
+        working-directory: app
+        run: npm run build
+
+      - name: Install Playwright Chromium
+        working-directory: app
+        run: npx playwright install --with-deps chromium
+
+      - name: End-to-end tests
+        working-directory: app
+        env:
+          VITE_SUPABASE_URL: ''
+          VITE_SUPABASE_ANON_KEY: ''
+        run: npm run test:e2e
+
+      - name: Guard against concurrent branch movement
+        run: |
+          tested_sha=$(git rev-parse HEAD)
+          git fetch origin chatgpt/pfc-hardening-20260818
+          remote_sha=$(git rev-parse origin/chatgpt/pfc-hardening-20260818)
+          echo "tested base: $tested_sha"
+          echo "remote head: $remote_sha"
+          test "$tested_sha" = "$remote_sha"
+
+      - name: Remove temporary closeout controls
+        run: |
+          rm -f .stabilization-maintenance-trigger
+          rm -f .github/workflows/stabilization-maintenance.yml
+          rm -f .github/workflows/stabilization-closeout-observable.yml
+          rm -f app/scripts/stabilize-closeout-primary.py
+          rm -f app/scripts/stabilize-closeout-extra.py
+
+      - name: Commit verified closeout tree
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git diff --cached --check
+          git diff --cached --stat
+          git commit -m 'chore: close stabilization quality gates'
+          git push origin HEAD:chatgpt/pfc-hardening-20260818
