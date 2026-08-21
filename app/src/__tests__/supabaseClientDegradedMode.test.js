@@ -18,6 +18,20 @@ describe('Supabase degraded client boundary', () => {
     expect(result).toMatchObject({ data: [], error: null })
   })
 
+  it('does not expose catalog fixtures by default when Supabase is explicitly disabled', async () => {
+    const module = await import('../supabase/supabaseClient')
+
+    const client = module.createSupabaseClient({
+      enabled: false,
+      configured: false,
+      mode: 'local',
+      missing: ['VITE_SUPABASE_URL', 'VITE_SUPABASE_ANON_KEY'],
+    })
+
+    const products = await client.from('products').select('*')
+    expect(products.data).toEqual([])
+  })
+
   it('does not expose development catalog fixtures when degraded catalog data is disabled', async () => {
     const module = await import('../supabase/supabaseClient')
 
