@@ -1,3 +1,15 @@
+/**
+ * Supabase configuration resolver.
+ *
+ * Modes:
+ *   - 'cloud': VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY are set → full auth + DB
+ *   - 'local': env vars missing or VITE_SUPABASE_ENABLED=false → degraded mode, no DB
+ *
+ * To switch to cloud mode, set these in .env.local or Vercel Environment Variables:
+ *   VITE_SUPABASE_URL=https://<project>.supabase.co
+ *   VITE_SUPABASE_ANON_KEY=<anon-key>
+ *   VITE_SUPABASE_ENABLED=true  (optional, defaults to true if keys are present)
+ */
 export function resolveSupabaseConfig(env = {}) {
   const missing = []
   if (!env.VITE_SUPABASE_URL) missing.push('VITE_SUPABASE_URL')
