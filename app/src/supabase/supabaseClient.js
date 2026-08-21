@@ -351,7 +351,11 @@ export function createStubClient({ includeMockCatalog = true } = {}) {
 
 export function createSupabaseClient(
   config = supabaseConfig,
-  { allowMockCatalog = import.meta.env.DEV || import.meta.env.MODE === 'test' } = {},
+  {
+    allowMockCatalog = (import.meta.env.DEV || import.meta.env.MODE === 'test')
+      && config.enabled
+      && !config.configured,
+  } = {},
 ) {
   if (config.mode !== 'cloud') {
     return createStubClient({ includeMockCatalog: allowMockCatalog })
