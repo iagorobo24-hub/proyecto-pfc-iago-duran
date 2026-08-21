@@ -1,7 +1,7 @@
 // @vitest-environment happy-dom
 
-import React from 'react'
-import { cleanup, render, screen, waitFor } from '@testing-library/react'
+import React, { useState } from 'react'
+import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 const mocks = vi.hoisted(() => ({
@@ -35,14 +35,26 @@ function StateProbe() {
   return React.createElement('div', { 'data-testid': 'auth-state' }, `${auth.backendMode}:${auth.loading}`)
 }
 
-let capturedAuth
-function CaptureAuth() {
-  capturedAuth = useAuth()
-  return React.createElement('span', null, 'capture-ready')
+function LoginProbe() {
+  const { loginWithGoogle } = useAuth()
+  const [message, setMessage] = useState('')
+
+  const handleLogin = async () => {
+    try {
+      await loginWithGoogle()
+      setMessage('unexpected-success')
+    } catch (error) {
+      setMessage(error.message)
+    }
+  }
+
+  return React.createElement(React.Fragment, null,
+    React.createElement('button', { type: 'button', onClick: handleLogin }, 'try-login'),
+    React.createElement('span', { 'data-testid': 'login-result' }, message),
+  )
 }
 
 beforeEach(() => {
-  capturedAuth = undefined
   mocks.config.enabled = true
   mocks.config.configured = true
   mocks.config.mode = 'cloud'
@@ -84,10 +96,10 @@ describe('AuthProvider degraded behavior', () => {
     mocks.config.enabled = false
     mocks.config.mode = 'local'
 
-    render(React.createElement(AuthProvider, null, React.createElement(CaptureAuth)))
-    await waitFor(() => expect(capturedAuth).toBeDefined())
+    render(React.createElement(AuthProvider, null, React.createElement(LoginProbe)))
+    fireEvent.click(screen.getByText('try-login'))
 
-    await expect(capturedAuth.loginWithGoogle()).rejects.toThrow('modo local')
+    await waitFor(() => expect(screen.getByTestId('login-result').textContent).toContain('modo local'))
     expect(mocks.signInWithOAuth).not.toHaveBeenCalled()
   })
 
