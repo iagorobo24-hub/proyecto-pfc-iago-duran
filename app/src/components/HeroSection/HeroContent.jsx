@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Linkedin, CheckCircle } from 'lucide-react';
+import { ArrowRight, CheckCircle } from 'lucide-react';
+import { Linkedin } from '../BrandIcons';
 import { supabaseConfig } from '../../supabase/config';
 import styles from './styles/HeroContent.module.css';
 
