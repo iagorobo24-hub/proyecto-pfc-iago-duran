@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Linkedin, CheckCircle } from 'lucide-react';
+import { supabaseConfig } from '../../supabase/config';
 import styles from './styles/HeroContent.module.css';
 
 const TITLE_TEXT = 'Suite de herramientas para técnicos del sector eléctrico';
@@ -33,6 +34,8 @@ const TypingTitle = () => {
 };
 
 const HeroContent = () => {
+  const cloudEnabled = supabaseConfig.mode === 'cloud';
+
   return (
     <div className={styles.content}>
       <motion.div
@@ -100,7 +103,9 @@ const HeroContent = () => {
         animate={{ opacity: 1 }}
         transition={{ duration: 1, delay: 0.8 }}
       >
-        Autenticación con Google · persistencia cloud · despliegue continuo
+        {cloudEnabled
+          ? 'Autenticación con Google · persistencia cloud · despliegue continuo'
+          : 'Modo local disponible · datos guardados en este navegador · funciones cloud desactivadas'}
       </motion.p>
     </div>
   );
