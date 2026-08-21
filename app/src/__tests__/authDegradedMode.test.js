@@ -1,7 +1,7 @@
 // @vitest-environment happy-dom
 
 import React, { useState } from 'react'
-import { cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { act, cleanup, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 const mocks = vi.hoisted(() => ({
@@ -28,7 +28,7 @@ vi.mock('../utils/migrateLocalStorage', () => ({
   migrateLocalStorageToSupabase: mocks.migrate,
 }))
 
-import { AuthProvider, useAuth } from '../contexts/AuthContext'
+import { AUTH_INIT_TIMEOUT_MS, AuthProvider, useAuth } from '../contexts/AuthContext'
 
 function StateProbe() {
   const auth = useAuth()
@@ -66,7 +66,10 @@ beforeEach(() => {
   mocks.migrate.mockReset().mockResolvedValue({ migrated: 0 })
 })
 
-afterEach(() => cleanup())
+afterEach(() => {
+  cleanup()
+  vi.useRealTimers()
+})
 
 describe('AuthProvider degraded behavior', () => {
   it('renders public children immediately while a cloud session is still unresolved', () => {
@@ -109,5 +112,18 @@ describe('AuthProvider degraded behavior', () => {
     render(React.createElement(AuthProvider, null, React.createElement(StateProbe)))
 
     await waitFor(() => expect(screen.getByTestId('auth-state').textContent).toBe('unavailable:false'))
+  })
+
+  it('marks cloud auth unavailable when session initialization never resolves', async () => {
+    vi.useFakeTimers()
+
+    render(React.createElement(AuthProvider, null, React.createElement(StateProbe)))
+    expect(screen.getByTestId('auth-state').textContent).toBe('cloud:true')
+
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(AUTH_INIT_TIMEOUT_MS)
+    })
+
+    expect(screen.getByTestId('auth-state').textContent).toBe('unavailable:false')
   })
 })
