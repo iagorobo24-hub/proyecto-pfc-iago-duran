@@ -125,7 +125,7 @@ export default function App() {
           {/* Subrutas del sistema de Presupuestos */}
           <Route path="presupuestos" element={<Suspense fallback={<PageLoader />}><PresupuestosLayout /></Suspense>}>
             <Route index element={<Suspense fallback={<PageLoader />}><PresupuestosWizard /></Suspense>} />
-            <Route path="seleccion" element={<Suspense fallback={<PageLoader />}><PresupuestosSeleccion /></Suspense>} />
+            <Route path="seleccion" element={<Suspense fallback={<PageLoader />}><CloudFeatureGate><PresupuestosSeleccion /></CloudFeatureGate></Suspense>} />
             <Route path="editor" element={<Suspense fallback={<PageLoader />}><PresupuestosEditor /></Suspense>} />
             <Route path="gestion" element={<Suspense fallback={<PageLoader />}><PresupuestosGestion /></Suspense>} />
             <Route path="pdf" element={<Suspense fallback={<PageLoader />}><PresupuestosPdf /></Suspense>} />
