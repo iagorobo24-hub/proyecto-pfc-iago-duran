@@ -1,9 +1,15 @@
 // @vitest-environment happy-dom
 
 import React from 'react'
+import { readFileSync } from 'node:fs'
+import { dirname, resolve } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { cleanup, render, screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { MemoryRouter } from 'react-router-dom'
+
+const appRoot = resolve(dirname(fileURLToPath(import.meta.url)), '../..')
+const readAppFile = path => readFileSync(resolve(appRoot, path), 'utf8')
 
 const mocks = vi.hoisted(() => ({
   auth: { user: null, loading: false, backendMode: 'local', loginWithGoogle: vi.fn(), logout: vi.fn() },
@@ -80,5 +86,21 @@ describe('degraded UI contract', () => {
     expect(mocks.catalogStats).not.toHaveBeenCalled()
     expect(screen.queryByText('Familias en DB')).toBeNull()
     expect(screen.getByText('Herramientas Integradas')).toBeTruthy()
+  })
+
+  it('gates catalog and SONEX routes behind a shared cloud feature boundary', () => {
+    const appSource = readAppFile('src/App.jsx')
+
+    expect(appSource).toContain("import CloudFeatureGate from './components/auth/CloudFeatureGate'")
+    expect(appSource).toContain('<CloudFeatureGate><FichasTecnicasPage /></CloudFeatureGate>')
+    expect(appSource).toContain('<CloudFeatureGate><SonexPage /></CloudFeatureGate>')
+  })
+
+  it('keeps budgets local while closing only its catalog controls', () => {
+    const budgetsSource = readAppFile('src/components/presupuestos/PresupuestosLayout.jsx')
+
+    expect(budgetsSource).toContain("const { backendMode } = useAuth()")
+    expect(budgetsSource).toContain('Catálogo no disponible en modo local')
+    expect(budgetsSource).toContain("backendMode === 'cloud'")
   })
 })
