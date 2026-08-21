@@ -26,4 +26,20 @@ test.describe('Supabase degraded mode', () => {
     await page.getByRole('button', { name: 'Entrar en modo local' }).click()
     await expect(page).toHaveURL(/\/app\/?$/)
   })
+
+  test('cloud-only catalog and SONEX tools close explicitly in local mode', async ({ page }) => {
+    await page.goto('/app/fichas')
+    await expect(page.getByText('Esta función necesita la base de datos y no está disponible en modo local.')).toBeVisible()
+
+    await page.goto('/app/sonex')
+    await expect(page.getByText('Esta función necesita la base de datos y no está disponible en modo local.')).toBeVisible()
+  })
+
+  test('budgets keep local editing available while catalog controls are closed', async ({ page }) => {
+    await page.goto('/app/presupuestos')
+
+    await expect(page.getByText('Nuevo presupuesto')).toBeVisible()
+    await expect(page.getByText('Catálogo no disponible en modo local')).toBeVisible()
+    await expect(page.getByRole('search')).toHaveCount(0)
+  })
 })
