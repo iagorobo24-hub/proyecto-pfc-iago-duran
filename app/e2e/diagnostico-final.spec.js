@@ -26,7 +26,7 @@ test.describe('Diagnóstico Final', () => {
     const results = []
 
     for (const p of pages) {
-      let status = 'OK'
+      let status
       let notes = ''
 
       try {

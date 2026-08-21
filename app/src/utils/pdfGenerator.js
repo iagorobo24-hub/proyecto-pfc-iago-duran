@@ -176,7 +176,7 @@ export async function generarPDFKPICompleto({ kpis, datos, informe, BENCHMARKS }
   const rows = Object.entries(BENCHMARKS).map(([key, b]) => {
     const valor = kpis[key]
     const objStr = b.invertido ? `< ${b.bueno}` : `> ${b.bueno}`
-    let estado = '✓'
+    let estado
     if (b.invertido) { estado = valor <= b.bueno ? '✓ Objetivo' : valor >= b.malo ? '✗ Crítico' : '⚠ Atención' }
     else { estado = valor >= b.bueno ? '✓ Objetivo' : valor <= b.malo ? '✗ Crítico' : '⚠ Atención' }
     return [b.label, `${valor.toFixed(1)} ${b.unidad}`, objStr, estado]
