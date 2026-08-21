@@ -3,7 +3,7 @@ import { mockAuth } from './helpers.js'
 
 const BASE = 'http://localhost:5173'
 
-test.describe('Test de Integración Backend — Supabase y API', () => {
+test.describe('Test de Integración Backend — Supabase y API @functional', () => {
   test.beforeEach(async ({ page }) => {
     await mockAuth(page)
   })

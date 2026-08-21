@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-test.describe('Supabase degraded mode', () => {
+test.describe('Supabase degraded mode @smoke', () => {
   test('landing renders immediately and describes local operation without DB metrics', async ({ page }) => {
     await page.goto('/')
 

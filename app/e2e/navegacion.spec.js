@@ -3,7 +3,7 @@ import { mockAuth } from './helpers'
 
 const BASE = 'http://localhost:5173'
 
-test.describe('Navegación entre Herramientas', () => {
+test.describe('Navegación entre Herramientas @smoke', () => {
   test.beforeEach(async ({ page }) => {
     await mockAuth(page)
   })

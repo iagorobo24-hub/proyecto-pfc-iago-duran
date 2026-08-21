@@ -3,7 +3,7 @@ import { mockAuth, takeScreenshot } from './helpers'
 
 const BASE = 'http://localhost:5173'
 
-test.describe('Auditoría Completa — Proyecto PFC Iago Durán', () => {
+test.describe('Auditoría Completa — Proyecto PFC Iago Durán @functional', () => {
 
   test.beforeEach(async ({ page }) => {
     await mockAuth(page)

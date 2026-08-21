@@ -3,7 +3,7 @@ import { mockAuth } from './helpers'
 
 const BASE = 'http://localhost:5173'
 
-test.describe('Diagnóstico Rápido', () => {
+test.describe('Diagnóstico Rápido @smoke', () => {
   test.beforeEach(async ({ page }) => {
     await mockAuth(page)
     page.on('pageerror', err => console.error('[JS ERROR]', err.message))

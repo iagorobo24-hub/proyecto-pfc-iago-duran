@@ -3,7 +3,7 @@ import { mockAuth } from '../e2e/helpers'
 
 const BASE = 'http://localhost:5173'
 
-test.describe('Verificación Visual Completa', () => {
+test.describe('Verificación Visual Completa @visual', () => {
   test.beforeEach(async ({ page }) => {
     await mockAuth(page)
   })

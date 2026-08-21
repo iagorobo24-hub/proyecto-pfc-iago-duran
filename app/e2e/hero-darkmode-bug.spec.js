@@ -3,7 +3,7 @@ import { mockAuth } from './helpers.js'
 
 const BASE = 'http://localhost:5173'
 
-test.describe('Test de Bug Hero en Modo Oscuro — Landing Page', () => {
+test.describe('Test de Bug Hero en Modo Oscuro — Landing Page @functional', () => {
   test.beforeEach(async ({ page }) => {
     await mockAuth(page)
   })

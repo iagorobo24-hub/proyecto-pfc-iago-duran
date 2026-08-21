@@ -3,7 +3,7 @@ import { mockAuth } from './helpers'
 
 const BASE = 'http://localhost:5173'
 
-test.describe('Fichas Técnicas — Vista Tabla y Marcas', () => {
+test.describe('Fichas Técnicas — Vista Tabla y Marcas @functional', () => {
 
   test.beforeEach(async ({ page }) => {
     await mockAuth(page)

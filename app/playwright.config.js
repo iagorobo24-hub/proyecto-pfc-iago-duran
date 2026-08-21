@@ -3,6 +3,7 @@ import { defineConfig } from '@playwright/test'
 export default defineConfig({
   testDir: '.',
   testMatch: ['e2e/*.spec.js', 'tests/*.spec.js'],
+  grep: process.env.E2E_TIER ? new RegExp(`@${process.env.E2E_TIER}`) : undefined,
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,

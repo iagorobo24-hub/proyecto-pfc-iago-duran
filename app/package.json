@@ -11,6 +11,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
+    "test:e2e:smoke": "E2E_TIER=smoke playwright test",
+    "test:e2e:visual": "E2E_TIER=visual playwright test",
     "test:e2e:ui": "playwright test --ui",
     "test:all": "vitest run && playwright test",
     "verify:deploy": "npm run lint -- --max-warnings=0 && npm run typecheck && npm run test && npm run build",
@@ -53,6 +55,6 @@
     "ws": "^8.21.0"
   },
   "engines": {
-    "node": "24.x"
+    "node": ">=22"
   }
 }

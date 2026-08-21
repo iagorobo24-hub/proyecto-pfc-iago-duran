@@ -64,7 +64,7 @@ async function openSonexWithRangeResult(page) {
   return { firstCard }
 }
 
-test.describe('SONEX product flow', () => {
+test.describe('SONEX product flow @functional', () => {
   test('shows verified catalog cards for a product query', async ({ page }) => {
     const { firstCard } = await openSonexWithCatalogResult(page)
 

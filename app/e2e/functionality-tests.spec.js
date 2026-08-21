@@ -7,7 +7,7 @@ import { SonexPage } from './pages/sonex-page.js'
 
 const BASE = 'http://localhost:5173'
 
-test.describe('Tests de Funcionalidad Real — PFC Iago Durán', () => {
+test.describe('Tests de Funcionalidad Real — PFC Iago Durán @functional', () => {
   test.beforeEach(async ({ page }) => {
     await mockAuth(page)
     // Diable animations for faster tests

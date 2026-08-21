@@ -3,7 +3,7 @@ import { mockAuth } from './helpers'
 
 const BASE = 'http://localhost:5173'
 
-test.describe('Diagnóstico Final', () => {
+test.describe('Diagnóstico Final @functional', () => {
   test.beforeEach(async ({ page }) => {
     await mockAuth(page)
   })

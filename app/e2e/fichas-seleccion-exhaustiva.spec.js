@@ -33,7 +33,7 @@ async function clickCategoryByName(page, categoryName) {
   return false
 }
 
-test.describe('Fichas Técnicas — Matriz de Selección Exhaustiva', () => {
+test.describe('Fichas Técnicas — Matriz de Selección Exhaustiva @visual', () => {
   let jsErrors = []
 
   test.beforeEach(async ({ page }) => {

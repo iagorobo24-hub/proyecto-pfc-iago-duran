@@ -34,7 +34,7 @@ async function checkPageContent(page) {
   expect(hasCrashes).toBe(false)
 }
 
-test.describe('Theme Audit — Light & Dark Mode', () => {
+test.describe('Theme Audit — Light & Dark Mode @visual', () => {
   test.beforeEach(async ({ page }) => {
     await mockAuth(page)
   })

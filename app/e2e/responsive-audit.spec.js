@@ -24,7 +24,7 @@ const TOOL_PAGES = [
   { name: 'SONEX', path: '/app/sonex', heading: null, text: /soy sonex/i },
 ]
 
-test.describe('Auditoría Responsive', () => {
+test.describe('Auditoría Responsive @visual', () => {
   test.beforeEach(async ({ page }) => {
     await mockAuth(page)
   })
