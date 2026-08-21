@@ -67,6 +67,7 @@ export default defineConfig({
     }),
   ],
   build: {
+    chunkSizeWarningLimit: 800,
     // Evita precargar el bundle pesado de PDFs en cascada al inicializar la app.
     modulePreload: {
       resolveDependencies(url, deps) {
@@ -83,7 +84,8 @@ export default defineConfig({
           if (id.includes('node_modules/recharts')) return 'vendor-charts'
           if (id.includes('node_modules/lucide-react')) return 'vendor-icons'
           if (id.includes('node_modules/dompurify') || id.includes('node_modules/marked')) return 'vendor-utils'
-          if (id.includes('node_modules/jspdf') || id.includes('node_modules/html2canvas')) return 'vendor-pdf'
+          if (id.includes('node_modules/@supabase')) return 'vendor-supabase'
+          if (id.includes('node_modules/jspdf') || id.includes('node_modules/html2canvas') || id.includes('node_modules/canvg')) return 'vendor-pdf'
         },
       },
     },
