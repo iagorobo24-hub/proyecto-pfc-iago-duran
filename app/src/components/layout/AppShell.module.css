@@ -44,6 +44,23 @@
   grid-row: 1;
 }
 
+.cloudStatus {
+  position: fixed;
+  top: calc(var(--topbar-h) + var(--space-2));
+  right: var(--space-3);
+  z-index: 1200;
+  max-width: calc(100vw - var(--space-6));
+  padding: 6px 10px;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+  box-shadow: var(--shadow-sm);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  pointer-events: none;
+}
+
 .sidebar {
   grid-column: 1;
   grid-row: 2;
@@ -112,6 +129,11 @@
 @media (max-width: 640px) {
   .main {
     padding-bottom: var(--safe-bottom);
+  }
+
+  .cloudStatus {
+    right: var(--space-2);
+    font-size: 11px;
   }
 }
 
