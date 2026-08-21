@@ -24,7 +24,10 @@ vi.mock('../contexts/AuthContext', () => ({
 vi.mock('../contexts/ToastContext', () => ({
   useToast: () => ({ toast: { show: mocks.toastShow } }),
 }))
-vi.mock('../supabase/config', () => ({ supabaseConfig: mocks.config }))
+vi.mock('../supabase/config', () => ({
+  supabaseConfig: mocks.config,
+  canUseCatalog: backendMode => backendMode === 'cloud',
+}))
 vi.mock('../supabase/supabaseClient', () => ({
   supabase: { from: vi.fn() },
 }))
@@ -62,27 +65,23 @@ afterEach(() => cleanup())
 describe('degraded UI contract', () => {
   it('offers local entry instead of Google OAuth on the login page', () => {
     render(React.createElement(MemoryRouter, null, React.createElement(LoginPage)))
-
     expect(screen.getByRole('button', { name: 'Entrar en modo local' })).toBeTruthy()
     expect(screen.queryByRole('button', { name: 'Continuar con Google' })).toBeNull()
   })
 
   it('marks the application shell as local without blocking its content', () => {
     render(React.createElement(MemoryRouter, null, React.createElement(AppShell)))
-
     expect(screen.getByText('Modo local · Cloud desactivado')).toBeTruthy()
   })
 
   it('describes local persistence on the landing hero', () => {
     render(React.createElement(MemoryRouter, null, React.createElement(HeroContent)))
-
     expect(screen.getByText(/Modo local disponible/)).toBeTruthy()
     expect(screen.queryByText(/persistencia cloud/)).toBeNull()
   })
 
   it('does not query or present database-derived landing metrics in local mode', () => {
     render(React.createElement(StatsSection))
-
     expect(mocks.catalogStats).not.toHaveBeenCalled()
     expect(screen.queryByText('Familias en DB')).toBeNull()
     expect(screen.getByText('Herramientas Integradas')).toBeTruthy()
@@ -90,7 +89,6 @@ describe('degraded UI contract', () => {
 
   it('gates catalog and SONEX routes behind a shared cloud feature boundary', () => {
     const appSource = readAppFile('src/App.jsx')
-
     expect(appSource).toContain("import CloudFeatureGate from './components/auth/CloudFeatureGate'")
     expect(appSource).toContain('<CloudFeatureGate><FichasTecnicasPage /></CloudFeatureGate>')
     expect(appSource).toContain('<CloudFeatureGate><SonexPage /></CloudFeatureGate>')
@@ -98,9 +96,8 @@ describe('degraded UI contract', () => {
 
   it('keeps budgets local while closing only its catalog controls', () => {
     const budgetsSource = readAppFile('src/components/presupuestos/PresupuestosLayout.jsx')
-
     expect(budgetsSource).toContain("const { backendMode } = useAuth()")
     expect(budgetsSource).toContain('Catálogo no disponible en modo local')
-    expect(budgetsSource).toContain("backendMode === 'cloud'")
+    expect(budgetsSource).toContain('canUseCatalog(backendMode)')
   })
 })
