@@ -3,6 +3,7 @@ import { useState, useEffect, useCallback, useRef } from 'react'
 import { Outlet, useSearchParams, useNavigate, useLocation } from 'react-router-dom'
 import { useToast } from '../../contexts/ToastContext'
 import { useAuth } from '../../contexts/AuthContext'
+import { canUseCatalog } from '../../supabase/config'
 import catalogService from '../../services/catalogService'
 import { getCategoriaMeta } from '../../data/categories'
 import usePresupuestos from '../../hooks/usePresupuestos'
@@ -20,7 +21,7 @@ export default function PresupuestosLayout() {
   const { toast } = useToast()
   const { backendMode } = useAuth()
   const [searchParams] = useSearchParams()
-  const catalogAvailable = backendMode === 'cloud'
+  const catalogAvailable = canUseCatalog(backendMode)
 
   const hook = usePresupuestos()
   const { dispatchPartidas, setCategoria } = hook
