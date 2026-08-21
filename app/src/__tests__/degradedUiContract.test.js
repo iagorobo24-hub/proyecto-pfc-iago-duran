@@ -100,4 +100,13 @@ describe('degraded UI contract', () => {
     expect(budgetsSource).toContain('Catálogo no disponible en modo local')
     expect(budgetsSource).toContain('canUseCatalog(backendMode)')
   })
+
+  it('gates only the budget catalog-selection subroute while leaving local budget routes open', () => {
+    const appSource = readAppFile('src/App.jsx')
+
+    expect(appSource).toContain('<CloudFeatureGate><PresupuestosSeleccion /></CloudFeatureGate>')
+    expect(appSource).toContain('<PresupuestosEditor />')
+    expect(appSource).toContain('<PresupuestosGestion />')
+    expect(appSource).toContain('<PresupuestosPdf />')
+  })
 })
