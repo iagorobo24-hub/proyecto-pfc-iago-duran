@@ -4,7 +4,7 @@ test.describe('Supabase degraded mode', () => {
   test('landing renders immediately and describes local operation without DB metrics', async ({ page }) => {
     await page.goto('/')
 
-    await expect(page.getByRole('link', { name: 'Acceder a la aplicación' })).toBeVisible()
+    await expect(page.getByRole('main').getByRole('link', { name: 'Acceder a la aplicación' })).toBeVisible()
     await expect(page.getByText('Cargando sesión…')).toHaveCount(0)
     await expect(page.getByText(/Modo local disponible/)).toBeVisible()
     await expect(page.getByText('Familias en DB')).toHaveCount(0)
