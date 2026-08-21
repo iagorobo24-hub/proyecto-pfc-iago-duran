@@ -11,14 +11,18 @@ describe('resolveSupabaseConfig', () => {
 
   it('reports missing URL explicitly', () => {
     expect(resolveSupabaseConfig({ VITE_SUPABASE_ANON_KEY: 'anon-key' })).toEqual({
+      enabled: true,
       configured: false,
+      mode: 'local',
       missing: ['VITE_SUPABASE_URL'],
     })
   })
 
   it('reports every missing required variable', () => {
     expect(resolveSupabaseConfig({})).toEqual({
+      enabled: true,
       configured: false,
+      mode: 'local',
       missing: ['VITE_SUPABASE_URL', 'VITE_SUPABASE_ANON_KEY'],
     })
   })
