@@ -15,4 +15,14 @@ export function resolveSupabaseConfig(env = {}) {
   }
 }
 
+export function canUseCatalog(backendMode, env = import.meta.env) {
+  if (backendMode === 'cloud') return true
+  if (backendMode !== 'local') return false
+
+  const config = resolveSupabaseConfig(env)
+  const isDevelopmentFixture = env.DEV === true || env.MODE === 'test'
+
+  return isDevelopmentFixture && config.enabled && !config.configured
+}
+
 export const supabaseConfig = resolveSupabaseConfig(import.meta.env)
