@@ -1,10 +1,11 @@
 import { useAuth } from '../../contexts/AuthContext'
+import { canUseCatalog } from '../../supabase/config'
 import styles from '../ui/ErrorBoundary.module.css'
 
 export default function CloudFeatureGate({ children }) {
   const { backendMode } = useAuth()
 
-  if (backendMode === 'cloud') return children
+  if (canUseCatalog(backendMode)) return children
 
   return (
     <div className={styles.container} role="status">
