@@ -1,167 +1,98 @@
 # PFC Stabilization Closeout Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+**Status:** **CLOSED — completed and merged on 20 August 2026.**
 
-**Goal:** Close the current stabilization branch with reproducible static-analysis, dependency, unit, build and browser-test gates on one final HEAD.
+This file is retained as the historical execution record for the stabilization initiative. The implementation-time branch constraints below are no longer active instructions for current work.
 
-**Architecture:** Keep product behavior unchanged. Tighten quality controls around the existing React/Vite application, fix only warnings that represent real code debt or contract mistakes, refresh compatible dependencies through npm-generated lockfiles, and use GitHub Actions/Vercel as reproducible remote executors.
+## Verified closure evidence
 
-**Tech Stack:** React 19, Vite 7, Vitest 4, Playwright, ESLint 9, TypeScript, npm, GitHub Actions, Vercel.
+- Stabilization branch: `chatgpt/pfc-hardening-20260818`.
+- Final validated branch SHA: `70171319388195520443ffa96bc9e7b456470b64`.
+- GitHub Actions run: `32382242651` — **success**.
+- Merge commit on `main`: `69401ee9d85f31ccff745ab9e487d3a4ecf9613c`.
+- Post-merge delivery commit: `3083b6c862c2f5f5f0bb0890e5f0eb15a8b6d5bf` (`docs: add validated final TFC memory`).
+- ESLint: **PASS**, zero-warning gate (`--max-warnings=0`).
+- TypeScript: **PASS** (`tsc --noEmit`).
+- Reproducibility: **PASS** (`npm ci`).
+- Production dependency audit: **0 vulnerabilities** with `npm audit --omit=dev --audit-level=high`.
+- Development audit: **2 high findings** remain only in `camoufox-js -> adm-zip`; npm's available remediation requires the breaking `camoufox-js@0.12.0` major, so it was deliberately not forced during stabilization.
+- Vitest: **22 files / 314 tests passed**.
+- Production build: **PASS**. The existing ~589 kB PDF vendor chunk warning remains non-blocking performance debt.
+- Playwright Chromium: **159 / 159 tests passed** with two workers.
+- SONEX: all four previously failing product-flow cases passed, including the 10-reference Schneider iC60N request, direct Fichas navigation and budget creation.
+- Vercel: **READY** on the final branch SHA, the merge commit, and the post-merge `main` delivery commit.
+- The final DOCX memory is versioned under `proyecto-fin-ciclo/desarrollo-entrega-final/`; its delivery README records the binary/render validation and keeps chapters `01-10` as the canonical regeneration source.
 
-**Spec:** `docs/superpowers/specs/2026-08-19-pfc-stabilization-closeout-design.md`
+## Confirmed SONEX diagnosis
 
-## Global Constraints
+The original browser failures were caused by test-environment contamination: Playwright inherited `VITE_SUPABASE_*` values for the paused/unresolvable Supabase project, so the app attempted real network access instead of the credentialless stub. The permanent CI now clears those variables for E2E, regression coverage protects the credentialless catalog path, and the ambiguous `En catálogo` locator was replaced by a semantic heading locator. The product search contract was not weakened to make tests pass.
 
-- Work only on `chatgpt/pfc-hardening-20260818`; do not modify or merge `main`.
+## Implementation-time constraints — historical
+
+These constraints governed the work before merge:
+
+- Work only on `chatgpt/pfc-hardening-20260818`; do not modify or merge `main` during implementation.
 - Do not make live Supabase changes while the production project is paused.
 - Do not perform major dependency migrations unless required for a blocking vulnerability.
 - Do not weaken tests or hide real lint defects to obtain green output.
 - Preserve application behavior unless a warning exposes a confirmed bug.
-- Final proof must belong to one final commit SHA.
+- Final proof must belong to one final candidate SHA before merge.
 
 ---
 
-### Task 1: Eliminate ESLint warning debt
+### Task 1: Eliminate ESLint warning debt — CLOSED
 
-**Files:**
-- Modify: `app/eslint.config.js`
-- Modify only warning-producing source/test files identified by the fresh lint output.
-- Test: existing Vitest/Playwright tests plus `npm run lint`.
+- [x] Capture a fresh lint warning inventory.
+- [x] Classify warnings by responsible layer.
+- [x] Remove dead code and stale suppressions.
+- [x] Fix hook dependency warnings at source where appropriate.
+- [x] Keep only narrow, justified local suppressions for intentional synchronization effects.
+- [x] Restore unused-variable enforcement as a blocking rule.
+- [x] Verify `npm run lint -- --max-warnings=0` with zero warnings/errors.
 
-**Interfaces:**
-- Consumes: current ESLint configuration and warning inventory.
-- Produces: blocking `no-unused-vars` again and a zero-warning lint run, with narrow local suppressions only where behavior must remain unchanged.
+### Task 2: Add typecheck and runtime contracts — CLOSED
 
-- [ ] **Step 1: Capture a fresh lint warning inventory**
+- [x] Add TypeScript as a direct development dependency through npm-generated dependency state.
+- [x] Add `npm run typecheck` using `tsc --noEmit` and align the runtime contract with Node 24.
+- [x] Make typecheck a permanent CI gate.
+- [x] Resolve the actual TypeScript contract errors without broad strict-mode migration.
+- [x] Verify typecheck PASS.
 
-Run through the remote build gate: `npm run lint`.
-Expected baseline: 0 errors and the current warning set.
+### Task 3: Audit and refresh compatible dependencies — CLOSED WITH JUSTIFIED DEV-ONLY DEBT
 
-- [ ] **Step 2: Classify every warning**
+- [x] Capture `npm outdated` / `npm audit` evidence.
+- [x] Refresh compatible dependencies without `npm audit fix --force`.
+- [x] Refresh Browserslist data.
+- [x] Remove unused Puppeteer tooling rather than carrying dead vulnerable dependencies.
+- [x] Verify production audit at 0 vulnerabilities.
+- [x] Record the remaining two dev-only high findings in `camoufox-js -> adm-zip`; major remediation deferred because it is breaking and outside the stabilization scope.
+- [x] Prove lockfile reproducibility with `npm ci`.
 
-Classify as dead code, stale suppression, hook dependency defect, intentional synchronization effect, or manual memoization warning. Record the responsible file and whether behavior can change.
+### Task 4: Close the browser/CI gate — CLOSED
 
-- [ ] **Step 3: Fix dead code and stale suppressions**
+- [x] Diagnose the four SONEX failures before changing product behavior.
+- [x] Confirm Supabase environment leakage as the root cause.
+- [x] Isolate Playwright from `VITE_SUPABASE_*` in permanent CI.
+- [x] Add credentialless SONEX regression coverage and use the semantic catalog heading locator.
+- [x] Verify the complete GitHub Actions gate on the final candidate.
+- [x] Verify **159 / 159 Playwright tests passed** with no skipped SONEX closure cases.
 
-Remove unused imports/variables/arguments and obsolete `eslint-disable` comments without changing runtime behavior.
+### Task 5: Final branch verification — CLOSED
 
-- [ ] **Step 4: Fix hook dependency warnings at source**
+- [x] Verify Vercel READY on final validated SHA `70171319388195520443ffa96bc9e7b456470b64`.
+- [x] Review the stabilization diff against `main` and remove temporary/debug artifacts and closeout machinery before merge.
+- [x] Confirm excluded work remained excluded: no live Supabase migration/RLS/central analytics implementation, no Vite 8 migration and no unrelated feature expansion.
+- [x] Merge PR #8 only after permanent CI and Vercel evidence were green.
+- [x] Add the validated final TFC memory to `main` and update the delivery contract.
+- [x] Record closure evidence in this historical plan.
 
-For each `exhaustive-deps`/memoization warning, inspect the hook's data flow and use the smallest stable dependency representation. Do not add dependencies mechanically if that changes effect cadence.
+## Remaining work after stabilization
 
-- [ ] **Step 5: Handle intentional synchronization effects narrowly**
+The stabilization initiative itself is closed. Remaining items are separate maintenance/evolution work, not blockers for this closeout:
 
-Where synchronous state reset in an effect is intentionally tied to an external/source change and a structural rewrite would be disproportionate, use one local suppression with a short reason immediately above the affected effect. Do not disable the rule globally.
+- Live Supabase RLS/database/central analytics work remains deferred while the production project is paused.
+- The ~589 kB PDF vendor chunk is a non-blocking performance optimization opportunity.
+- `camoufox-js -> adm-zip` retains two dev-only high audit findings; remediation requires a separately validated breaking major upgrade.
+- Dependabot PRs #9 (`actions/setup-node` 4 → 7) and #10 (`actions/checkout` 4 → 7) are post-closeout major GitHub Actions maintenance. Their current CI runs are green, but they remain deliberately outside this stabilization record and should be evaluated/merged separately.
 
-- [ ] **Step 6: Restore `no-unused-vars` to error severity**
-
-Update `app/eslint.config.js` so unused variables block CI again.
-
-- [ ] **Step 7: Verify lint**
-
-Run: `npm run lint`
-Expected: 0 errors, 0 warnings.
-
-### Task 2: Add typecheck and runtime contracts
-
-**Files:**
-- Modify: `app/package.json`
-- Modify: `app/package-lock.json`
-- Modify: `.github/workflows/ci.yml`
-- Modify: `app/vercel.json` only if needed for the build command contract.
-- Keep: `app/tsconfig.json` with `strict: false` unless the existing code already passes stricter settings without broad changes.
-
-**Interfaces:**
-- Produces: `npm run typecheck` using direct `typescript` devDependency and Node 24 runtime declaration.
-
-- [ ] **Step 1: Add TypeScript as a direct dev dependency through npm**
-
-Use npm to add a compatible current TypeScript release and regenerate the lockfile; do not hand-edit lock data.
-
-- [ ] **Step 2: Add scripts/runtime declaration**
-
-`package.json` must include `"typecheck": "tsc --noEmit"` and an `engines.node` contract compatible with Node 24.
-
-- [ ] **Step 3: Add typecheck to CI/deploy verification**
-
-Order: lint → typecheck → unit tests → build → E2E.
-
-- [ ] **Step 4: Run typecheck**
-
-Run: `npm run typecheck`
-Expected: PASS. If existing TS errors appear, fix the responsible types minimally without enabling a broad strict migration.
-
-### Task 3: Audit and refresh compatible dependencies
-
-**Files:**
-- Modify: `app/package-lock.json`
-- Modify: `app/package.json` only when a direct declaration needs an explicit compatible version update.
-
-**Interfaces:**
-- Produces: npm-ci-reproducible lockfile, refreshed Browserslist data, and security audit evidence.
-
-- [ ] **Step 1: Capture dependency evidence**
-
-Run: `npm outdated --json || true` and `npm audit --json` on the branch before updating.
-
-- [ ] **Step 2: Update within existing semver ranges**
-
-Run: `npm update` so patch/minor-compatible direct and transitive packages refresh through npm's resolver.
-
-- [ ] **Step 3: Refresh Browserslist data**
-
-Run `npx update-browserslist-db@latest` only if the compatible npm refresh does not already remove the stale-data warning; commit the npm-generated lockfile changes.
-
-- [ ] **Step 4: Audit after refresh**
-
-Run: `npm audit --json` and `npm outdated --json || true`.
-Expected: no unresolved high/critical production vulnerability. Dev-only major-only findings may remain only when their dependency path, usage and migration constraint are explicitly reported rather than forced.
-
-- [ ] **Step 5: Prove reproducibility**
-
-Run: `npm ci` in CI followed by the full verification commands.
-
-### Task 4: Close the browser/CI gate
-
-**Files:**
-- Modify: `.github/workflows/ci.yml` only if the existing run exposes a CI-specific defect.
-- Modify: `app/playwright.config.js` or E2E helpers/tests only for reproducible, confirmed failures; never weaken assertions simply to pass.
-
-**Interfaces:**
-- Produces: a fresh successful GitHub Actions run containing lint, typecheck, unit, build, Playwright install and E2E on one SHA.
-
-- [ ] **Step 1: Push final candidate changes to the stabilization branch**
-
-No merge to `main`.
-
-- [ ] **Step 2: Inspect the GitHub Actions run for the candidate SHA**
-
-Expected job steps: checkout, Node 24, `npm ci`, lint, typecheck, unit, build, Playwright Chromium install, E2E.
-
-- [ ] **Step 3: If E2E fails, diagnose before changing code**
-
-Read the failed step logs, reproduce via the workflow evidence, identify root cause, then add/adjust a test only if needed and make the smallest responsible fix.
-
-- [ ] **Step 4: Require the full run to be green**
-
-No skipped E2E and no substituted historical run.
-
-### Task 5: Final branch verification
-
-**Files:** no new product changes expected.
-
-- [ ] **Step 1: Verify Vercel on the same final SHA**
-
-Expected: deployment success after lint + typecheck + unit + build gate.
-
-- [ ] **Step 2: Compare branch to `main`**
-
-Confirm merge-base, ahead/behind state, and review every changed path for scope.
-
-- [ ] **Step 3: Confirm excluded work remains excluded**
-
-No live Supabase migration/RLS/analytics implementation, no Vite 8 migration, no unrelated feature work.
-
-- [ ] **Step 4: Record closure evidence**
-
-Report final SHA; lint/typecheck/unit/build/E2E results; dependency/audit state; remaining justified debt; Git state; and actions not performed.
+No historical test result in this document should be interpreted as evidence for a later code state after future product changes; current work must always use fresh CI and deployment evidence.
