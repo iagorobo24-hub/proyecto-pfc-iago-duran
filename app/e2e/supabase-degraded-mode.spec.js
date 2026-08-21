@@ -38,7 +38,7 @@ test.describe('Supabase degraded mode', () => {
   test('budgets keep local editing available while catalog controls are closed', async ({ page }) => {
     await page.goto('/app/presupuestos')
 
-    await expect(page.getByText('Nuevo presupuesto')).toBeVisible()
+    await expect(page.getByRole('button', { name: 'Nuevo presupuesto' })).toBeVisible()
     await expect(page.getByText('Catálogo no disponible en modo local')).toBeVisible()
     await expect(page.getByRole('search')).toHaveCount(0)
   })
