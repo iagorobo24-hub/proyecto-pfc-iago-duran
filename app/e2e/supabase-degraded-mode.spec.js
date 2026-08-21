@@ -42,4 +42,12 @@ test.describe('Supabase degraded mode', () => {
     await expect(page.getByText('Catálogo no disponible en modo local')).toBeVisible()
     await expect(page.getByRole('search')).toHaveCount(0)
   })
+
+  test('budget catalog selection closes while editor remains locally reachable', async ({ page }) => {
+    await page.goto('/app/presupuestos/seleccion')
+    await expect(page.getByText('Esta función necesita la base de datos y no está disponible en modo local.')).toBeVisible()
+
+    await page.goto('/app/presupuestos/editor')
+    await expect(page.getByText('Función cloud no disponible')).toHaveCount(0)
+  })
 })
