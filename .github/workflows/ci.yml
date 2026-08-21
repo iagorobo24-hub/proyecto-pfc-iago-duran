@@ -57,7 +57,4 @@ jobs:
         run: npx playwright install --with-deps chromium
 
       - name: End-to-end tests
-        env:
-          VITE_SUPABASE_URL: ''
-          VITE_SUPABASE_ANON_KEY: ''
         run: npm run test:e2e

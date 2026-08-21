@@ -10,6 +10,7 @@ import { Routes, Route } from 'react-router-dom'
 import AppShell from './components/layout/AppShell'
 import LoginPage from './components/auth/LoginPage'
 import ProtectedRoute from './components/auth/ProtectedRoute'
+import CloudFeatureGate from './components/auth/CloudFeatureGate'
 import LandingPage from './pages/LandingPage'
 import NotFound from './pages/NotFound'
 import useDocumentTitle from './hooks/useDocumentTitle'
@@ -116,7 +117,7 @@ export default function App() {
           <Route index element={<Suspense fallback={<PageLoader />}><DashboardGlobalPage /></Suspense>} />
           
           {/* Módulos principales */}
-          <Route path="fichas"       element={<Suspense fallback={<PageLoader />}><FichasTecnicasPage /></Suspense>} />
+          <Route path="fichas"       element={<Suspense fallback={<PageLoader />}><CloudFeatureGate><FichasTecnicasPage /></CloudFeatureGate></Suspense>} />
           <Route path="almacen"      element={<Suspense fallback={<PageLoader />}><SimuladorAlmacenPage /></Suspense>} />
           <Route path="incidencias"  element={<Suspense fallback={<PageLoader />}><DashboardIncidenciasPage /></Suspense>} />
           <Route path="kpi"          element={<Suspense fallback={<PageLoader />}><KpiLogisticoPage /></Suspense>} />
@@ -124,7 +125,7 @@ export default function App() {
           {/* Subrutas del sistema de Presupuestos */}
           <Route path="presupuestos" element={<Suspense fallback={<PageLoader />}><PresupuestosLayout /></Suspense>}>
             <Route index element={<Suspense fallback={<PageLoader />}><PresupuestosWizard /></Suspense>} />
-            <Route path="seleccion" element={<Suspense fallback={<PageLoader />}><PresupuestosSeleccion /></Suspense>} />
+            <Route path="seleccion" element={<Suspense fallback={<PageLoader />}><CloudFeatureGate><PresupuestosSeleccion /></CloudFeatureGate></Suspense>} />
             <Route path="editor" element={<Suspense fallback={<PageLoader />}><PresupuestosEditor /></Suspense>} />
             <Route path="gestion" element={<Suspense fallback={<PageLoader />}><PresupuestosGestion /></Suspense>} />
             <Route path="pdf" element={<Suspense fallback={<PageLoader />}><PresupuestosPdf /></Suspense>} />
@@ -132,7 +133,7 @@ export default function App() {
           
           {/* Módulos de formación e IA */}
           <Route path="formacion"    element={<Suspense fallback={<PageLoader />}><FormacionInternaPage /></Suspense>} />
-          <Route path="sonex"        element={<Suspense fallback={<PageLoader />}><SonexPage /></Suspense>} />
+          <Route path="sonex"        element={<Suspense fallback={<PageLoader />}><CloudFeatureGate><SonexPage /></CloudFeatureGate></Suspense>} />
           
           {/* Manejo de rutas desconocidas dentro de la aplicación */}
           <Route path="*" element={<NotFound />} />
@@ -141,4 +142,3 @@ export default function App() {
     </ErrorBoundary>
   )
 }
-

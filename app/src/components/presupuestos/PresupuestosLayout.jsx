@@ -2,6 +2,8 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { Outlet, useSearchParams, useNavigate, useLocation } from 'react-router-dom'
 import { useToast } from '../../contexts/ToastContext'
+import { useAuth } from '../../contexts/AuthContext'
+import { canUseCatalog } from '../../supabase/config'
 import catalogService from '../../services/catalogService'
 import { getCategoriaMeta } from '../../data/categories'
 import usePresupuestos from '../../hooks/usePresupuestos'
@@ -17,7 +19,9 @@ export default function PresupuestosLayout() {
   const navigate = useNavigate()
   const location = useLocation()
   const { toast } = useToast()
+  const { backendMode } = useAuth()
   const [searchParams] = useSearchParams()
+  const catalogAvailable = canUseCatalog(backendMode)
 
   const hook = usePresupuestos()
   const { dispatchPartidas, setCategoria } = hook
@@ -30,6 +34,11 @@ export default function PresupuestosLayout() {
   const processedImportRef = useRef('')
 
   useEffect(() => {
+    if (!catalogAvailable) {
+      setCategorias([])
+      return
+    }
+
     catalogService.getCategorias().then(dbCats => {
       const enriched = dbCats.map(cat => {
         const meta = getCategoriaMeta(cat.id)
@@ -37,10 +46,17 @@ export default function PresupuestosLayout() {
       })
       setCategorias(enriched)
     }).catch(() => setCategorias([]))
-  }, [])
+  }, [catalogAvailable])
 
   useEffect(() => {
     if (debounceRef.current) clearTimeout(debounceRef.current)
+
+    if (!catalogAvailable) {
+      setSugerenciasBusqueda([])
+      setBusquedaCargando(false)
+      return
+    }
+
     if (consulta.trim().length >= 2) {
       setBusquedaCargando(true)
       debounceRef.current = setTimeout(async () => {
@@ -53,7 +69,7 @@ export default function PresupuestosLayout() {
       setBusquedaCargando(false)
     }
     return () => { if (debounceRef.current) clearTimeout(debounceRef.current) }
-  }, [consulta])
+  }, [consulta, catalogAvailable])
 
   useEffect(() => {
     const nuevo = searchParams.get('nuevo') === '1'
@@ -70,7 +86,7 @@ export default function PresupuestosLayout() {
       let producto = productoParam
       let precio = parseFloat(precioParam) || 0
 
-      if (!producto) {
+      if (!producto && catalogAvailable) {
         const catalogProduct = await catalogService.getProductoPorRef(referencia)
         if (cancelled) return
         if (catalogProduct) {
@@ -97,7 +113,7 @@ export default function PresupuestosLayout() {
 
     importFromQuery()
     return () => { cancelled = true }
-  }, [searchParams, dispatchPartidas, setCategoria, navigate, toast])
+  }, [searchParams, dispatchPartidas, setCategoria, navigate, toast, catalogAvailable])
 
   const guardarPresupuesto = useCallback(() => {
     if (hook.partidas.length === 0) { toast.show('Añade al menos un producto', 'error'); return }
@@ -178,55 +194,61 @@ export default function PresupuestosLayout() {
     <PresupuestosContext.Provider value={value}>
       <div className={styles.layout}>
         <aside className={styles.sidebar} aria-label="Presupuestos">
-          <div className={styles.sidebar__search} role="search">
-            <input
-              className={styles.sidebar__searchInput}
-              value={consulta}
-              onChange={e => setConsulta(e.target.value)}
-              onKeyDown={handleSearchKeyDown}
-              placeholder="Buscar referencia..."
-              aria-label="Buscar producto por referencia o nombre"
-              aria-autocomplete="list"
-              autoComplete="off"
-            />
-            {sugerenciasBusqueda.length > 0 && (
-              <ul className={styles.sidebar__sugerencias} role="listbox" aria-label="Sugerencias de búsqueda">
-                {sugerenciasBusqueda.map(p => (
-                  <li
-                    key={p.id}
-                    className={styles.sidebar__sugerenciaItem}
-                    role="option"
-                    tabIndex={0}
-                    onClick={() => handleSearchResultClick(p)}
-                    onKeyDown={e => { if (e.key === 'Enter') handleSearchResultClick(p) }}
+          {catalogAvailable ? (
+            <>
+              <div className={styles.sidebar__search} role="search">
+                <input
+                  className={styles.sidebar__searchInput}
+                  value={consulta}
+                  onChange={e => setConsulta(e.target.value)}
+                  onKeyDown={handleSearchKeyDown}
+                  placeholder="Buscar referencia..."
+                  aria-label="Buscar producto por referencia o nombre"
+                  aria-autocomplete="list"
+                  autoComplete="off"
+                />
+                {sugerenciasBusqueda.length > 0 && (
+                  <ul className={styles.sidebar__sugerencias} role="listbox" aria-label="Sugerencias de búsqueda">
+                    {sugerenciasBusqueda.map(p => (
+                      <li
+                        key={p.id}
+                        className={styles.sidebar__sugerenciaItem}
+                        role="option"
+                        tabIndex={0}
+                        onClick={() => handleSearchResultClick(p)}
+                        onKeyDown={e => { if (e.key === 'Enter') handleSearchResultClick(p) }}
+                      >
+                        <span className={styles.sidebar__sugerenciaRef}>{p.ref_fabricante}</span>
+                        <span className={styles.sidebar__sugerenciaName}>{p.name}</span>
+                        <span className={styles.sidebar__sugerenciaMarca}>{p.marca}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+                {busquedaCargando && <div className={styles.sidebar__busquedaCargando}>Buscando...</div>}
+              </div>
+              <div className={styles.sidebar__label} id="presup-categories-label">Categorías</div>
+              <nav aria-labelledby="presup-categories-label">
+                {categorias.map(c => (
+                  <button
+                    key={c.id}
+                    className={`${styles.sidebar__catBtn} ${isActive(c.id) ? styles.sidebar__catBtnActive : ''}`}
+                    onClick={() => handleCategoriaClick(c.id)}
+                    aria-pressed={isActive(c.id)}
+                    aria-label={`Seleccionar ${c.label}`}
                   >
-                    <span className={styles.sidebar__sugerenciaRef}>{p.ref_fabricante}</span>
-                    <span className={styles.sidebar__sugerenciaName}>{p.name}</span>
-                    <span className={styles.sidebar__sugerenciaMarca}>{p.marca}</span>
-                  </li>
+                    <div className={styles.sidebar__catBtn__icon} aria-hidden="true">{c.icon}</div>
+                    <div className={styles.sidebar__catBtn__info}>
+                      <div className={styles.sidebar__catBtn__name}>{c.label}</div>
+                      <div className={styles.sidebar__catBtn__count}>Ver catálogo</div>
+                    </div>
+                  </button>
                 ))}
-              </ul>
-            )}
-            {busquedaCargando && <div className={styles.sidebar__busquedaCargando}>Buscando...</div>}
-          </div>
-          <div className={styles.sidebar__label} id="presup-categories-label">Categorías</div>
-          <nav aria-labelledby="presup-categories-label">
-            {categorias.map(c => (
-              <button
-                key={c.id}
-                className={`${styles.sidebar__catBtn} ${isActive(c.id) ? styles.sidebar__catBtnActive : ''}`}
-                onClick={() => handleCategoriaClick(c.id)}
-                aria-pressed={isActive(c.id)}
-                aria-label={`Seleccionar ${c.label}`}
-              >
-                <div className={styles.sidebar__catBtn__icon} aria-hidden="true">{c.icon}</div>
-                <div className={styles.sidebar__catBtn__info}>
-                  <div className={styles.sidebar__catBtn__name}>{c.label}</div>
-                  <div className={styles.sidebar__catBtn__count}>Ver catálogo</div>
-                </div>
-              </button>
-            ))}
-          </nav>
+              </nav>
+            </>
+          ) : (
+            <div className={styles.sidebar__label}>Catálogo no disponible en modo local</div>
+          )}
 
           <div className={styles.sidebar__actions}>
             <button

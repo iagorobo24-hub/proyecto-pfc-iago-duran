@@ -41,7 +41,7 @@ function useMobile() {
  * @returns {JSX.Element}
  */
 export default function AppShell() {
-  const { user } = useAuth()
+  const { user, backendMode } = useAuth()
   const location = useLocation()
   const navigate = useNavigate()
   const isMobile = useMobile()
@@ -142,6 +142,14 @@ export default function AppShell() {
       <div className={styles.topbar}>
         <Topbar />
       </div>
+
+      {backendMode !== 'cloud' && (
+        <div className={styles.cloudStatus} role="status">
+          {backendMode === 'local'
+            ? 'Modo local · Cloud desactivado'
+            : 'Modo local · Cloud no disponible'}
+        </div>
+      )}
 
       {/* Barra lateral: se monta solo en pantallas de escritorio */}
       {!isMobile && (
