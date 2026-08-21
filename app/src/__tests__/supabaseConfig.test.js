@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { resolveSupabaseConfig } from '../supabase/config'
+import { canUseCatalog, resolveSupabaseConfig } from '../supabase/config'
 
 describe('resolveSupabaseConfig', () => {
   it('reports configured only when URL and anon key are present', () => {
@@ -52,5 +52,21 @@ describe('resolveSupabaseConfig', () => {
 
   it('only treats the exact string false as the explicit disable switch', () => {
     expect(resolveSupabaseConfig({ VITE_SUPABASE_ENABLED: 'FALSE' }).enabled).toBe(true)
+  })
+})
+
+describe('canUseCatalog', () => {
+  it('allows the real catalog in cloud mode', () => {
+    expect(canUseCatalog('cloud', {})).toBe(true)
+  })
+
+  it('allows the deterministic catalog stub only for unconfigured development/test fixtures', () => {
+    expect(canUseCatalog('local', { DEV: true })).toBe(true)
+    expect(canUseCatalog('local', { MODE: 'test' })).toBe(true)
+  })
+
+  it('closes the catalog when Supabase is explicitly disabled or unexpectedly unavailable', () => {
+    expect(canUseCatalog('local', { DEV: true, VITE_SUPABASE_ENABLED: 'false' })).toBe(false)
+    expect(canUseCatalog('unavailable', { DEV: true })).toBe(false)
   })
 })
