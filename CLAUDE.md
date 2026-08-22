@@ -1,3 +1,16 @@
+# Política de usuario — CI remota no bloqueante
+
+> **Prioridad alta.** La disponibilidad o ejecución de CI remota (GitHub Actions o equivalente) no es requisito para cerrar una tarea o fase, hacer commits autorizados ni declarar readiness local.
+
+- No bloquear progreso si CI no arranca, queda en cola, se cancela o no puede ejecutarse por agotamiento de minutos gratuitos, billing/spending limits, rate limits, caídas del proveedor o restricciones equivalentes.
+- No gastar ni reintentar CI limitada/de pago solo para obtener un check verde ceremonial salvo petición explícita del usuario.
+- Cuando CI remota no esté disponible, ejecutar cuando sea viable los equivalentes locales relevantes y registrar comandos, exit codes/resultados y qué queda sin verificar.
+- Nunca afirmar que CI remota pasó si no llegó a ejecutarse.
+- Si CI sí se ejecuta y detecta un fallo real de tests, build o seguridad, investigar el defecto subyacente: esta regla elimina la disponibilidad de CI como bloqueo, no los fallos reales.
+- Un check exclusivamente remoto puede quedar como `REMOTE_CI_NOT_RUN` / `UNVERIFIED_REMOTE` sin impedir avanzar de fase, salvo que la tarea actual lo exija expresamente.
+
+Esta sección prevalece sobre cualquier requisito posterior que convierta la mera ejecución o estado verde de CI remota en gate formal de fase.
+
 # CLAUDE.md — guía operativa del repositorio
 
 ## Objetivo
