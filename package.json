@@ -2,9 +2,10 @@
   "name": "proyecto-pfc-iago-duran",
   "private": true,
   "scripts": {
-    "build": "vite build"
+    "build": "vite build",
+    "postinstall": "cd app && npm ci"
   },
-  "devDependencies": {
+  "dependencies": {
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "vite": "^8.2.1",
