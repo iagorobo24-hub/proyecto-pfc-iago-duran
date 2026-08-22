@@ -97,3 +97,4 @@ docs/diagrams/*.html
 scratch/
 app/db_stats.js
 
+bun.lock
