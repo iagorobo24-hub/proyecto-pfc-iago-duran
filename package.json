@@ -2,7 +2,7 @@
   "name": "proyecto-pfc-iago-duran",
   "private": true,
   "scripts": {
-    "build": "cd app && npm ci && npm run build"
+    "build": "cd app && npm ci && npm run build && cd .. && rm -rf dist && cp -r app/dist dist"
   },
   "dependencies": {
     "react": "^19.2.0",
