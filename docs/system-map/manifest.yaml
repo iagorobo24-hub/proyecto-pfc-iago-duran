@@ -1,0 +1,24 @@
+psm:
+  psm_version: "0.3.0-alpha"
+  spec_version: "0.1.4-alpha"
+  map_version: "0.1.0"
+  map_created_at: "2026-10-27"
+  map_last_updated: "2026-10-27"
+  profile: "lite"
+  status: "draft"
+  source:
+    repository: "https://github.com/iagorobo24-hub/proyecto-pfc-iago-duran"
+    ref: "main"
+    commit: "56d8666e3647cb2b4ca3e8f2f1ce6f591bc61572"
+    audit_mode: "remote"
+    worktree: "n_a"
+  canonical_docs:
+    readme_md: "README.md"
+    agents_md: "AGENTS.md"
+    claude_md: "CLAUDE.md"
+  coverage:
+    domains: "unknown"
+    flows: "unknown"
+    boundaries: "unknown"
+    invariants: "unknown"
+domains: []
